@@ -1,0 +1,83 @@
+{
+    "common": {
+        "name":                     "telegram",
+        "require": {
+            "js-controller": ">0.6.6"
+        },
+        "version": "0.0.1",
+        "title":                    "Telegram Adapter",
+        "desc":                     {
+            "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a broker",
+            "de": "Adapter ermöglicht eine Kommunikation mit dem telegram broker und kann auch selbst ein broker/server sein",
+            "ru": "Драйвер позволяет подключатся к telegram брокерам, а также самому выступать в роли брокера"
+        },
+        "authors": [
+            "bluefox <dogafox@gmail.com>"
+        ],
+        "license":                  "MIT",
+        "platform":                 "Javascript/Node.js",
+        "mode":                     "daemon",
+        "messagebox":               true,
+        "readme":                   "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
+        "loglevel":                 "info",
+        "icon":                     "telegram.png",
+        "keywords":                 ["notification", "telegram", "message"],
+        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
+		"type":                     "communication"
+    },
+    "native": {
+        "token":        "",
+        "password":     "",
+        "text2command": ""
+    },
+    "objects": [
+
+    ],
+    "instanceObjects": [
+        {
+            "_id":  "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id":  "info.connection",
+            "type": "state",
+            "common": {
+                "role":  "indicator.connected",
+                "name":  "If connected to Telegram server",
+                "type":  "boolean",
+                "read":  true,
+                "write": false,
+                "def":   false
+            },
+            "native": {}
+        },
+        {
+            "_id":  "communicate.request",
+            "type": "state",
+            "common": {
+                "role":  "text",
+                "name":  "Last received request",
+                "type":  "string",
+                "read":  true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id":  "communicate.response",
+            "type": "state",
+            "common": {
+                "role":  "text",
+                "name":  "Send text through telegram",
+                "type":  "string",
+                "read":  true,
+                "write": true
+            },
+            "native": {}
+        }
+    ]
+}

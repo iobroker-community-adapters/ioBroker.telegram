@@ -1,0 +1,132 @@
+<html>
+
+<!-- these 4 files always have to be included -->
+<link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
+<script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
+
+<!-- these three files  have to be always included -->
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+<script type="text/javascript" src="../../js/translate.js"></script>
+<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+
+<style>
+    .help {
+        font-size: small
+    }
+    .value, .repeat {
+        width: 300px;
+    }
+</style>
+<!-- you have to define 2 functions in the global scope: -->
+<script type="text/javascript">
+    var isStarted =   null;
+
+    systemDictionary = {
+        "telegram adapter settings":  {"en": "telegram adapter settings",  "de": "telegram Adapter-Einstellungen",  "ru": "Настройки драйвера telegram"},
+        "Token:":                 {"en": "Token:",                 "de": "Token:",                 "ru": "Токен:"}
+    };
+
+    function encrypt(key, value) {
+        var result="";
+        for(var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+
+    function decrypt(key, value) {
+        var result = "";
+        for(var i = 0; i < value.length; ++i) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+
+    // the function loadSettings has to exist ...
+    function load(settings, onChange) {
+        // example: select elements with id=key and class=value and insert value
+        for (var key in settings) {
+            // example: select elements with id=key and class=value and insert value
+            if ($('#' + key + '.value').attr('type') == 'checkbox') {
+                $('#' + key + '.value').prop('checked', settings[key]).change(function () {
+                    onChange();
+                });
+            } else {
+                $('#' + key + '.value').val(settings[key]).change(function () {
+                    onChange();
+                }).keyup(function () {
+                    $(this).trigger('change');
+                });
+            }
+        }
+
+        settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
+
+        getAdapterInstances('text2command', function (list) {
+            var text =  '<option value="">' + _('none') + '</option>';
+            for (var l = 0; l < list.length; l++) {
+                text += '<option value="' + list[l]._id +'" ' + (settings.text2command == list[l]._id ? 'selected' : '') + '>' + list[l]._id.replace('system.adapter.', '') + '</option>';
+            }
+            $('#text2command').html(text);
+        });
+        $('#passwordRepeat').val(settings.password);
+
+        // Signal to admin, that no changes yet
+        onChange(false);
+    }
+
+    function save(callback) {
+        // example: select elements with class=value and build settings object
+        var obj = {};
+        $('.value').each(function () {
+            var $this = $(this);
+            obj[$this.attr('id')] = $this.val();
+        });
+
+        if ($('#passwordRepeat').val() !== obj.password) {
+            showMessage(_('Password confirmation is not equal with password'));
+            return;
+        }
+        obj.password = encrypt('Zgfr56gFe87jJON', obj.password);
+
+        callback(obj);
+    }
+</script>
+
+<!-- you have to put your config page in a div with id adapter-container -->
+<div id="adapter-container">
+
+    <table><tr>
+        <td><img src="telegram.png" width="100px"></td>
+        <td style="padding-top: 20px;padding-left: 10px"><h3 class="translate">telegram adapter settings</h3></td>
+    </tr></table>
+
+    <table>
+        <tr>
+            <td colspan='3'><h4 class="translate">Main settings</h4></td>
+        </tr>
+        <tr>
+            <td class="translate">Token:</td>
+            <td><input id="token" class="value" ></td>
+            <td class="translate help">Read README.md how to get token</td>
+        </tr>
+        <tr>
+            <td class="translate">Password:</td>
+            <td><input id="password" class="value" type="password"></td>
+            <td class="translate help">Leave it blank if no password desired</td>
+        </tr>
+        <tr>
+            <td class="translate">Password repeat:</td>
+            <td><input id="passwordRepeat" class="repeat" type="password"></td>
+            <td class="translate help">Repeat password</td>
+        </tr>
+        <tr>
+            <td class="translate">Text2Command Instance:</td>
+            <td><select id="text2command" class="value" /></td>
+            <td class="translate help">All requests will be sent to this text2Command instance</td>
+        </tr>
+    </table>
+</div>
+</html>
