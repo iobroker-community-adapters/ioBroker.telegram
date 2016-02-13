@@ -17,7 +17,7 @@ After that you will get the Token.
 
 You should set password for communication in configuration dialog.
 
-To authenticate user by Bot write "/password <phrase>", where <phrase> is your configured password.
+To authenticate user by Bot write "/password phrase", where **phrase** is your configured password.
 
 You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')``` 
 or to specific user ```sendTo('telegram', '@userName Test message')```.
