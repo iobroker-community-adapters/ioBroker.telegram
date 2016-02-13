@@ -189,6 +189,8 @@ function main() {
             users[msg.from.id] = msg.from.name;
         }
 
+        // todo support commands: state, instances, running
+
 
         if (adapter.config.password && !users[msg.from.id]) {
             bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));

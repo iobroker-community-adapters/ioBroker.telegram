@@ -32,6 +32,9 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
 
 You can send message over state too, just set state *"telegram.<INSTANCE>.communicate.response"* with value *"@userName Test message"*.
 
+## Usage
+You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
+
 ## Changelog
 ### 0.0.1 (2016-02-13)
 * (bluefox) intial commit
