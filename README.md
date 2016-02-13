@@ -1,12 +1,12 @@
-![Logo](admin/mqtt.png)
-ioBroker MQTT Adapter
+![Logo](admin/telegram.png)
+ioBroker telegram Adapter
 ==============
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.mqtt.svg)](https://www.npmjs.com/package/iobroker.mqtt)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.mqtt.svg)](https://www.npmjs.com/package/iobroker.mqtt)
-[![Tests](https://travis-ci.org/ioBroker/ioBroker.mqtt.svg?branch=master)](https://travis-ci.org/ioBroker/ioBroker.mqtt)
+[![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
+[![Tests](https://travis-ci.org/ioBroker/ioBroker.telegram.svg?branch=master)](https://travis-ci.org/ioBroker/ioBroker.telegram)
 
-[![NPM](https://nodei.co/npm/iobroker.mqtt.png?downloads=true)](https://nodei.co/npm/iobroker.mqtt/)
+[![NPM](https://nodei.co/npm/iobroker.telegram.png?downloads=true)](https://nodei.co/npm/iobroker.telegram/)
 
 Ask [@BotFather](https://telegram.me/botfather) to create new bot ```/newbot```. 
 
@@ -23,7 +23,9 @@ You can send message to all authenticated users over messageBox ```sendTo('teleg
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
 You can specifiy user in that way too:
-```sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
+
+```
+sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
     console.log('Sent to ' + res + ' users');
 });
 ```
