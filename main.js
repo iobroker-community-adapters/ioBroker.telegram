@@ -113,6 +113,20 @@ function decrypt(key, value) {
     }
     return result;
 }
+function storeUser(id, name) {
+    if (users[id] !== name) {
+        for (var u in users) {
+            if (users[u] == name) {
+                delete users[u];
+            }
+        }
+        users[id] = name;
+
+        if (adapter.config.rememberUsers) {
+            adapter.setState('communicate.users', JSON.stringify(users));
+        }
+    }
+}
 
 function main() {
 
@@ -130,9 +144,23 @@ function main() {
 
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
 
+    if (adapter.config.rememberUsers) {
+        adapter.getState('communicate.users', function (err, state) {
+            if (err) adapter.log.error(err);
+            if (state && state.val) {
+                try {
+                    users = JSON.parse(state.val);
+                } catch (err) {
+                    if (err) adapter.log.error(err);
+                    adapter.log.error('Cannot parse stored user IDs!');
+                }
+            }
+        });
+    }
 
     adapter.config.users = adapter.config.users || '';
     adapter.config.users = adapter.config.users.split(',');
+    adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
 
     for (var u = adapter.config.users.length - 1; u >= 0; u--) {
         adapter.config.users[u] = adapter.config.users[u].trim().toLowerCase();
@@ -171,12 +199,14 @@ function main() {
             return;
         }
 
-        var m = msg.text.match(/\/password (.+)/);
 
         if (adapter.config.password) {
+            var m = msg.text.match(/^\/password (.+)$/);
+            if (!m) m = msg.text.match(/^\/p (.+)$/);
+
             if (m) {
                 if (adapter.config.password === m[1]) {
-                    users[msg.from.id] = msg.from.first_name;
+                    storeUser(msg.from.id, msg.from.first_name);
                     bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
                     return;
                 } else {
@@ -185,15 +215,80 @@ function main() {
                     if (users[msg.from.id]) delete users[msg.from.id];
                 }
             }
-        } else {
-            users[msg.from.id] = msg.from.name;
         }
 
-        // todo support commands: state, instances, running
 
-
+        // todo support commands: state, instances, running, restart
         if (adapter.config.password && !users[msg.from.id]) {
             bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+            return;
+        }
+
+        storeUser(msg.from.id, msg.from.first_name);
+
+        // Check set state
+        m = msg.text.match(/^\/state (.+) (.+)$/);
+        if (m) {
+            var id1  = m[1];
+            var val1 = m[2];
+            // clear by timeout id
+            var memoryLeak1 = setTimeout(function () {
+                msg         = null;
+                memoryLeak1 = null;
+                id1         = null;
+                val1        = null;
+            }, 1000);
+
+            adapter.getForeignState(id1, function (err, state) {
+                if (memoryLeak1) {
+                    clearTimeout(memoryLeak1);
+                    memoryLeak1 = null;
+                    m = null;
+                }
+                if (msg) {
+                    if (err) bot.sendMessage(msg.from.id, err);
+                    if (state) {
+                        adapter.setForeignState(id1, val1, function (err) {
+                            if (msg) {
+                                if (err) {
+                                    bot.sendMessage(msg.from.id, err);
+                                } else {
+                                    bot.sendMessage(msg.from.id, _('Done', systemLang));
+                                }
+                            }
+                        });
+                    } else {
+                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                    }
+                }
+            });
+        }
+
+        // Check get state
+        m = msg.text.match(/^\/state (.+)$/);
+        if (m) {
+            var id2 = m[1];
+          // clear by timeout id
+            var memoryLeak2 = setTimeout(function () {
+                id2         = null;
+                msg         = null;
+                memoryLeak2 = null;
+            }, 1000);
+            adapter.getForeignState(id2, function (err, state) {
+                if (memoryLeak2) {
+                    clearTimeout(memoryLeak2);
+                    memoryLeak2 = null;
+                    m = null;
+                }
+                if (msg) {
+                    if (err) bot.sendMessage(msg.from.id, err);
+                    if (state) {
+                        bot.sendMessage(msg.from.id, state.val.toString());
+                    } else {
+                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                    }
+                }
+            });
             return;
         }
 

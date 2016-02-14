@@ -26,9 +26,10 @@
 		"type":                     "communication"
     },
     "native": {
-        "token":        "",
-        "password":     "",
-        "text2command": ""
+        "token":         "",
+        "password":      "",
+        "text2command":  "",
+        "rememberUsers": true
     },
     "objects": [
 
@@ -76,6 +77,18 @@
                 "type":  "string",
                 "read":  true,
                 "write": true
+            },
+            "native": {}
+        },
+        {
+            "_id":  "communicate.users",
+            "type": "state",
+            "common": {
+                "role":  "text",
+                "name":  "Users as json, which are constantly authenticated",
+                "type":  "string",
+                "read":  false,
+                "write": false
             },
             "native": {}
         }

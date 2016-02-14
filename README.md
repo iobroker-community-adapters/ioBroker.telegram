@@ -19,6 +19,8 @@ You should set password for communication in configuration dialog.
 
 To authenticate user by Bot write "/password phrase", where **phrase** is your configured password.
 
+**Note:** you can use short form "/p phrase".
+ 
 You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')``` 
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
@@ -30,7 +32,7 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
 });
 ```
 
-You can send message over state too, just set state *"telegram.<INSTANCE>.communicate.response"* with value *"@userName Test message"*.
+You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"*.
 
 ## Usage
 You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
