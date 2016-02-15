@@ -89,7 +89,7 @@ function processMessage(obj) {
                 if (typeof obj.message === 'object') {
                     count = sendMessage(obj.message.text, obj.message.user);
                 } else {
-                    count = sendMessage(obj.message.text);
+                    count = sendMessage(obj.message);
                 }
                 if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
             }
