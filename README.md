@@ -38,6 +38,10 @@ You can send message over state too, just set state *"telegram.INSTANCE.communic
 You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
 
 ## Changelog
+### 0.1.0 (2016-02-20)
+* (bluefox) fix double responses.
+* (bluefox) inform about new start
+
 ### 0.0.2 (2016-02-15)
 * (bluefox) fix error with sendTo
 

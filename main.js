@@ -30,7 +30,11 @@ adapter.on('ready',   function () {
 });
 
 adapter.on('unload',  function () {
-    sendMessage(_('Restarting... Reauthenticate!'));
+    if (adapter.config.rememberUsers) {
+        sendMessage(_('Restarting...'));
+    } else {
+        sendMessage(_('Restarting... Reauthenticate!'));
+    }
     adapter.setState('info.connection', false, true);
 });
 
@@ -43,6 +47,13 @@ adapter.on('stateChange', function (id, state) {
 });
 
 function sendMessage(text, user) {
+    if (!text && text !== 0) {
+        adapter.log.warn('Invalid text: null');
+        return;
+    }
+    // convert
+    text = text.toString();
+
     var count = 0;
     var u;
     if (user) {
@@ -82,6 +93,11 @@ function sendMessage(text, user) {
 
 function processMessage(obj) {
     if (!obj || !obj.command) return;
+    // Ignore own answers
+    if (obj.message && obj.message.response) {
+        return;
+    }
+
     switch (obj.command) {
         case 'send': {
             if (obj.message) {
@@ -113,6 +129,7 @@ function decrypt(key, value) {
     }
     return result;
 }
+
 function storeUser(id, name) {
     if (users[id] !== name) {
         for (var u in users) {
@@ -181,6 +198,7 @@ function main() {
     bot.getMe().then(function (data) {
         adapter.log.info('getMe: ' + JSON.stringify(data));
         adapter.setState('info.connection', true, true);
+        sendMessage(_('Started!'));
     });
 
     // Matches /echo [whatever]
