@@ -7,9 +7,9 @@
         "version": "0.1.0",
         "title":                    "Telegram Adapter",
         "desc":                     {
-            "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a broker",
-            "de": "Adapter ermöglicht eine Kommunikation mit dem telegram broker und kann auch selbst ein broker/server sein",
-            "ru": "Драйвер позволяет подключатся к telegram брокерам, а также самому выступать в роли брокера"
+            "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
+            "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
+            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через броузер"
         },
         "authors": [
             "bluefox <dogafox@gmail.com>"
