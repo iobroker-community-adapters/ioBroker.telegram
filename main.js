@@ -15,6 +15,7 @@ var utils       = require(__dirname + '/lib/utils'); // Get common adapter utils
 var adapter     = utils.adapter('telegram');
 var _           = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
+var fs          = require('fs');
 
 var bot;
 var users      = {};
@@ -60,8 +61,13 @@ function sendMessage(text, user) {
         for (u in users) {
             if (users[u] == user) {
                 count++;
-                adapter.log.debug('Send message to "' + user + '": ' + text);
-                bot.sendMessage(u, text);
+                if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
+                    adapter.log.debug('Send photo to "' + user + '": ' + text);
+                    bot.sendPhoto(u, text);
+                } else {
+                    adapter.log.debug('Send message to "' + user + '": ' + text);
+                    bot.sendMessage(u, text);
+                }
                 break;
             }
         }
@@ -74,8 +80,13 @@ function sendMessage(text, user) {
         for (u in users) {
             if (users[u] == m[1]) {
                 count++;
-                adapter.log.debug('Send message to "' + m[1] + '": ' + text);
-                bot.sendMessage(u, text);
+                if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
+                    adapter.log.debug('Send photo to "' + m[1] + '": ' + text);
+                    bot.sendPhoto(u, text);
+                } else {
+                    adapter.log.debug('Send message to "' + m[1] + '": ' + text);
+                    bot.sendMessage(u, text);
+                }
                 break;
             }
         }
@@ -83,8 +94,13 @@ function sendMessage(text, user) {
         // Send to all users
         for (u in users) {
             count++;
-            adapter.log.debug('Send message to "' + users[u] + '": ' + text);
-            bot.sendMessage(u, text);
+            if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
+                adapter.log.debug('Send photo to "' + users[u] + '": ' + text);
+                bot.sendPhoto(u, text);
+            } else {
+                adapter.log.debug('Send message to "' + users[u] + '": ' + text);
+                bot.sendMessage(u, text);
+            }
             break;
         }
     }

@@ -37,7 +37,12 @@ You can send message over state too, just set state *"telegram.INSTANCE.communic
 ## Usage
 You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
 
+To send photo, just send a path to file instead of text: ```sendTo('telegram', 'absolute/path/file.png')```.
+
 ## Changelog
+### 0.2.0 (2016-04-12)
+* (bluefox) add send photo possibility
+
 ### 0.1.0 (2016-02-20)
 * (bluefox) fix double responses.
 * (bluefox) inform about new start
