@@ -74,11 +74,12 @@ function sendMessage(text, user) {
         return count;
     }
 
-    var m = text.match(/\b@(.+)\b/);
+    var m = text.match(/^@(.+?)\b/);
     if (m) {
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         for (u in users) {
-            if (users[u] == m[1]) {
+            var re = new RegExp(m[1],'i');
+            if (users[u].match(re)) {
                 count++;
                 if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
                     adapter.log.debug('Send photo to "' + m[1] + '": ' + text);
@@ -101,7 +102,7 @@ function sendMessage(text, user) {
                 adapter.log.debug('Send message to "' + users[u] + '": ' + text);
                 bot.sendMessage(u, text);
             }
-            break;
+            //break;
         }
     }
     return count;
