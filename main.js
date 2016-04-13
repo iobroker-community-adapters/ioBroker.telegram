@@ -74,7 +74,7 @@ function sendMessage(text, user) {
         return count;
     }
 
-    var m = text.match(/\b@(.+)\b/);
+    var m = text.match(/^@(.+?)\b/);
     if (m) {
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         for (u in users) {
