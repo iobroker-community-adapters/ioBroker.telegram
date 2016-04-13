@@ -101,7 +101,7 @@ function sendMessage(text, user) {
                 adapter.log.debug('Send message to "' + users[u] + '": ' + text);
                 bot.sendMessage(u, text);
             }
-            break;
+            //break;
         }
     }
     return count;
