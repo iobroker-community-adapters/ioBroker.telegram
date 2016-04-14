@@ -31,12 +31,12 @@ adapter.on('ready',   function () {
 });
 
 adapter.on('unload',  function () {
-    if (adapter.config.rememberUsers) {
+    if (adapter && adapter.config && adapter.config.rememberUsers) {
         sendMessage(_('Restarting...'));
     } else {
         sendMessage(_('Restarting... Reauthenticate!'));
     }
-    adapter.setState('info.connection', false, true);
+    if (adapter && adapter.setState) adapter.setState('info.connection', false, true);
 });
 
 // is called if a subscribed state changes
@@ -102,7 +102,6 @@ function sendMessage(text, user) {
                 adapter.log.debug('Send message to "' + users[u] + '": ' + text);
                 bot.sendMessage(u, text);
             }
-            //break;
         }
     }
     return count;

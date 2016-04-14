@@ -40,6 +40,9 @@ You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.te
 To send photo, just send a path to file instead of text: ```sendTo('telegram', 'absolute/path/file.png')```.
 
 ## Changelog
+### 0.2.2 (2016-04-14)
+* (Jonas) fix unload
+
 ### 0.2.1 (2016-04-13)
 * (Jonas) fix configuration and send to more than one user
 
