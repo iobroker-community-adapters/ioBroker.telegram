@@ -330,7 +330,7 @@ function main() {
 
         // Send to text2command
         if (adapter.config.text2command) {
-            adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text, id: msg.from.id, user: msg.from.first_name}, function (response) {
+            adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#'), id: msg.from.id, user: msg.from.first_name}, function (response) {
                 if (response && response.response) {
                     adapter.log.debug('Send response: ' + response.response);
                     bot.sendMessage(response.id, response.response);
