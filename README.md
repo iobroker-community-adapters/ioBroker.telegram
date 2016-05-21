@@ -39,6 +39,36 @@ You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.te
 
 To send photo, just send a path to file instead of text: ```sendTo('telegram', 'absolute/path/file.png')```.
 
+Example how to send screeenshot from webcam to telegram:
+
+```
+var request = require('request');
+var fs      = require('fs');
+
+function sendImage() {
+    request.get({url: 'http://login:pass@ipaddress/web/tmpfs/snap.jpg', encoding: 'binary'}, function (err, response, body) {
+        fs.writeFile("/tmp/snap.jpg", body, 'binary', function(err) {
+        
+        if (err) {
+            console.error(err);
+        } else {
+            console.log('Snapshot sent');
+            sendTo('telegram.0', '/tmp/snap.jpg');
+        }
+      }); 
+    });
+}
+on("someState", function (obj) {
+    if (obj.state.val) {
+        // send 4 images: immediately, in 5, 15 and 30 seconds
+        sendImage();
+        setTimeout(sendImage, 5000);
+        setTimeout(sendImage, 15000);
+        setTimeout(sendImage, 30000);
+    }
+});
+
+```
 ## Changelog
 ### 0.2.4 (2016-05-08)
 * (bluefox) replace "_" with " " when sending to text2command
