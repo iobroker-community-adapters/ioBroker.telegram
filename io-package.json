@@ -4,7 +4,14 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.2.4",
+        "version": "0.3.0",
+        "news": {
+            "0.3.0": {
+                "en": "restart connection every hour",
+                "de": "restart connection every hour",
+                "ru": "restart connection every hour"
+            }
+        },
         "title":                    "Telegram Adapter",
         "desc":                     {
             "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
@@ -26,10 +33,10 @@
 		"type":                     "communication"
     },
     "native": {
-        "token":         "",
-        "password":      "",
-        "text2command":  "",
-        "rememberUsers": true
+        "token":          "",
+        "password":       "",
+        "text2command":   "",
+        "rememberUsers":  true
     },
     "objects": [
 

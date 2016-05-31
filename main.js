@@ -20,6 +20,7 @@ var fs          = require('fs');
 var bot;
 var users      = {};
 var systemLang = 'en';
+var reconnectTimer = null;
 
 adapter.on('message', function (obj) {
     if (obj) processMessage(obj);
@@ -31,6 +32,8 @@ adapter.on('ready',   function () {
 });
 
 adapter.on('unload',  function () {
+    if (reconnectTimer) clearInterval(reconnectTimer);
+
     if (adapter && adapter.config && adapter.config.rememberUsers) {
         sendMessage(_('Restarting...'));
     } else {
@@ -83,10 +86,10 @@ function sendMessage(text, user) {
                 count++;
                 if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
                     adapter.log.debug('Send photo to "' + m[1] + '": ' + text);
-                    bot.sendPhoto(u, text);
+                    if (bot) bot.sendPhoto(u, text);
                 } else {
                     adapter.log.debug('Send message to "' + m[1] + '": ' + text);
-                    bot.sendMessage(u, text);
+                    if (bot) bot.sendMessage(u, text);
                 }
                 break;
             }
@@ -97,10 +100,10 @@ function sendMessage(text, user) {
             count++;
             if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
                 adapter.log.debug('Send photo to "' + users[u] + '": ' + text);
-                bot.sendPhoto(u, text);
+                if (bot) bot.sendPhoto(u, text);
             } else {
                 adapter.log.debug('Send message to "' + users[u] + '": ' + text);
-                bot.sendMessage(u, text);
+                if (bot) bot.sendMessage(u, text);
             }
         }
     }
@@ -161,6 +164,172 @@ function storeUser(id, name) {
     }
 }
 
+function connect() {
+    if (bot) {
+        try {
+            bot.initPolling();
+        } catch (e) {
+            
+        }
+        // Check connection
+        bot.getMe().then(function (data) {
+            adapter.log.info('getMe (reconnect): ' + JSON.stringify(data));
+            adapter.setState('info.connection', true, true);
+        });
+    } else {
+        // Setup polling way
+        bot = new TelegramBot(adapter.config.token, {polling: true});
+
+        // Check connection
+        bot.getMe().then(function (data) {
+            adapter.log.info('getMe: ' + JSON.stringify(data));
+            adapter.setState('info.connection', true, true);
+            sendMessage(_('Started!'));
+        });
+
+        // Matches /echo [whatever]
+        bot.onText(/(.+)/, function (msg) {
+            var now = new Date().getTime();
+
+            // ignore all messages older than 30 seconds
+            if (now - msg.date * 1000 > 30000) {
+                adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: ' + msg.text);
+                bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
+                return;
+            }
+
+            if (msg.text == '/password') {
+                bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+                return;
+            }
+
+
+            if (adapter.config.password) {
+                var m = msg.text.match(/^\/password (.+)$/);
+                if (!m) m = msg.text.match(/^\/p (.+)$/);
+
+                if (m) {
+                    if (adapter.config.password === m[1]) {
+                        storeUser(msg.from.id, msg.from.first_name);
+                        bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
+                        return;
+                    } else {
+                        adapter.log.warn('Got invalid password from ' + msg.from.first_name + ': ' + m[1]);
+                        bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
+                        if (users[msg.from.id]) delete users[msg.from.id];
+                    }
+                }
+            }
+
+
+            // todo support commands: state, instances, running, restart
+            if (adapter.config.password && !users[msg.from.id]) {
+                bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+                return;
+            }
+
+            storeUser(msg.from.id, msg.from.first_name);
+
+            // Check set state
+            m = msg.text.match(/^\/state (.+) (.+)$/);
+            if (m) {
+                var id1  = m[1];
+                var val1 = m[2];
+                // clear by timeout id
+                var memoryLeak1 = setTimeout(function () {
+                    msg         = null;
+                    memoryLeak1 = null;
+                    id1         = null;
+                    val1        = null;
+                }, 1000);
+
+                adapter.getForeignState(id1, function (err, state) {
+                    if (memoryLeak1) {
+                        clearTimeout(memoryLeak1);
+                        memoryLeak1 = null;
+                        m = null;
+                    }
+                    if (msg) {
+                        if (err) bot.sendMessage(msg.from.id, err);
+                        if (state) {
+                            adapter.setForeignState(id1, val1, function (err) {
+                                if (msg) {
+                                    if (err) {
+                                        bot.sendMessage(msg.from.id, err);
+                                    } else {
+                                        bot.sendMessage(msg.from.id, _('Done', systemLang));
+                                    }
+                                }
+                            });
+                        } else {
+                            bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                        }
+                    }
+                });
+            }
+
+            // Check get state
+            m = msg.text.match(/^\/state (.+)$/);
+            if (m) {
+                var id2 = m[1];
+                // clear by timeout id
+                var memoryLeak2 = setTimeout(function () {
+                    id2         = null;
+                    msg         = null;
+                    memoryLeak2 = null;
+                }, 1000);
+                adapter.getForeignState(id2, function (err, state) {
+                    if (memoryLeak2) {
+                        clearTimeout(memoryLeak2);
+                        memoryLeak2 = null;
+                        m = null;
+                    }
+                    if (msg) {
+                        if (err) bot.sendMessage(msg.from.id, err);
+                        if (state) {
+                            bot.sendMessage(msg.from.id, state.val.toString());
+                        } else {
+                            bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                        }
+                    }
+                });
+                return;
+            }
+
+            adapter.log.debug('Got message from ' + msg.from.first_name + ': ' + msg.text);
+
+            // Send to text2command
+            if (adapter.config.text2command) {
+                adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.from.id, user: msg.from.first_name}, function (response) {
+                    if (response && response.response) {
+                        adapter.log.debug('Send response: ' + response.response);
+                        bot.sendMessage(response.id, response.response);
+                    }
+                });
+            }
+
+            adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
+                if (err) adapter.log.error(err);
+            });
+        });
+
+        // Any kind of message
+        /*bot.on('message', function (msg) {
+         var now = new Date().getTime();
+         // ignore all messages older than 30 seconds
+         if (now - msg.date * 1000 > 30000) {
+         bot.sendMessage(msg.from.id, 'Message ignored: ' + msg.text);
+         }
+
+         //var chatId = msg.chat.id;
+         // photo can be: a file path, a stream or a Telegram file_id
+         //var photo = 'cats.png';
+         //bot.sendPhoto(chatId, photo, {caption: 'Lovely kittens'});
+         bot.sendMessage(msg.from.id, 'Got it!' + msg.text);
+         });*/
+    }
+}
+
 function main() {
 
     if (!adapter.config.token) {
@@ -172,7 +341,7 @@ function main() {
     adapter.subscribeStates('communicate.response');
 
     // clear states
-    adapter.setState('communicate.request', '', true);
+    adapter.setState('communicate.request',  '', true);
     adapter.setState('communicate.response', '', true);
 
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
@@ -207,155 +376,8 @@ function main() {
         }
     });
 
-    // Setup polling way
-    bot = new TelegramBot(adapter.config.token, {polling: true});
-
-    // Check connection
-    bot.getMe().then(function (data) {
-        adapter.log.info('getMe: ' + JSON.stringify(data));
-        adapter.setState('info.connection', true, true);
-        sendMessage(_('Started!'));
-    });
-
-    // Matches /echo [whatever]
-    bot.onText(/(.+)/, function (msg) {
-        var now = new Date().getTime();
-
-        // ignore all messages older than 30 seconds
-        if (now - msg.date * 1000 > 30000) {
-            adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: ' + msg.text);
-            bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
-            return;
-        }
-
-        if (msg.text == '/password') {
-            bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
-            return;
-        }
-
-
-        if (adapter.config.password) {
-            var m = msg.text.match(/^\/password (.+)$/);
-            if (!m) m = msg.text.match(/^\/p (.+)$/);
-
-            if (m) {
-                if (adapter.config.password === m[1]) {
-                    storeUser(msg.from.id, msg.from.first_name);
-                    bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
-                    return;
-                } else {
-                    adapter.log.warn('Got invalid password from ' + msg.from.first_name + ': ' + m[1]);
-                    bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
-                    if (users[msg.from.id]) delete users[msg.from.id];
-                }
-            }
-        }
-
-
-        // todo support commands: state, instances, running, restart
-        if (adapter.config.password && !users[msg.from.id]) {
-            bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
-            return;
-        }
-
-        storeUser(msg.from.id, msg.from.first_name);
-
-        // Check set state
-        m = msg.text.match(/^\/state (.+) (.+)$/);
-        if (m) {
-            var id1  = m[1];
-            var val1 = m[2];
-            // clear by timeout id
-            var memoryLeak1 = setTimeout(function () {
-                msg         = null;
-                memoryLeak1 = null;
-                id1         = null;
-                val1        = null;
-            }, 1000);
-
-            adapter.getForeignState(id1, function (err, state) {
-                if (memoryLeak1) {
-                    clearTimeout(memoryLeak1);
-                    memoryLeak1 = null;
-                    m = null;
-                }
-                if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err);
-                    if (state) {
-                        adapter.setForeignState(id1, val1, function (err) {
-                            if (msg) {
-                                if (err) {
-                                    bot.sendMessage(msg.from.id, err);
-                                } else {
-                                    bot.sendMessage(msg.from.id, _('Done', systemLang));
-                                }
-                            }
-                        });
-                    } else {
-                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
-                    }
-                }
-            });
-        }
-
-        // Check get state
-        m = msg.text.match(/^\/state (.+)$/);
-        if (m) {
-            var id2 = m[1];
-          // clear by timeout id
-            var memoryLeak2 = setTimeout(function () {
-                id2         = null;
-                msg         = null;
-                memoryLeak2 = null;
-            }, 1000);
-            adapter.getForeignState(id2, function (err, state) {
-                if (memoryLeak2) {
-                    clearTimeout(memoryLeak2);
-                    memoryLeak2 = null;
-                    m = null;
-                }
-                if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err);
-                    if (state) {
-                        bot.sendMessage(msg.from.id, state.val.toString());
-                    } else {
-                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
-                    }
-                }
-            });
-            return;
-        }
-
-        adapter.log.debug('Got message from ' + msg.from.first_name + ': ' + msg.text);
-
-        // Send to text2command
-        if (adapter.config.text2command) {
-            adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.from.id, user: msg.from.first_name}, function (response) {
-                if (response && response.response) {
-                    adapter.log.debug('Send response: ' + response.response);
-                    bot.sendMessage(response.id, response.response);
-                }
-            });
-        }
-
-        adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
-            if (err) adapter.log.error(err);
-        });
-    });
-
-    // Any kind of message
-    /*bot.on('message', function (msg) {
-        var now = new Date().getTime();
-        // ignore all messages older than 30 seconds
-        if (now - msg.date * 1000 > 30000) {
-            bot.sendMessage(msg.from.id, 'Message ignored: ' + msg.text);
-        }
-
-        //var chatId = msg.chat.id;
-        // photo can be: a file path, a stream or a Telegram file_id
-        //var photo = 'cats.png';
-        //bot.sendPhoto(chatId, photo, {caption: 'Lovely kittens'});
-        bot.sendMessage(msg.from.id, 'Got it!' + msg.text);
-    });*/
+    // init polling every hour
+    reconnectTimer = setInterval(connect, 3600000);
+    connect();
 }
 

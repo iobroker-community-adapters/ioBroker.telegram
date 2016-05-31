@@ -40,6 +40,9 @@ You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.te
 To send photo, just send a path to file instead of text: ```sendTo('telegram', 'absolute/path/file.png')```.
 
 ## Changelog
+### 0.3.0 (2016-05-31)
+* (bluefox) restart connection every hour
+
 ### 0.2.4 (2016-05-08)
 * (bluefox) replace "_" with " " when sending to text2command
 
