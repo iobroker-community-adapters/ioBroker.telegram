@@ -96,6 +96,17 @@ sendTo('telegram.0', {
 });
 ```
 
+**Possible options**:
+- *disable_notification*: Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound. (all types)
+- *parse_mode*: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. (message)
+- *disable_web_page_preview*: Disables link previews for links in this message (message)
+- *caption*: Caption for the document, photo or video, 0-200 characters (video, audio, photo, document)
+- *duration*: Duration of sent video or audio in seconds (audio, video)
+- *performer*: Performer of the audio file (audio)
+- *title*: Track name of the audio file (audio)
+- *width*: Video width (video)
+- *height*: Video height (video)
+
 Adapter tries to detect the type of message (photo, video, audio, document, sticker, action, location) depends on text in the message if the text is path to existing file, it will be sent as according type.
 
 Location will be detected on attribute latitude:
