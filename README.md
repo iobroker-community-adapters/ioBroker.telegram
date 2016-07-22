@@ -20,7 +20,9 @@ You should set password for communication in configuration dialog.
 To authenticate user by Bot write "/password phrase", where **phrase** is your configured password.
 
 **Note:** you can use short form "/p phrase".
- 
+
+To add nice avatar picture enter ```/setuserpic``` and upload him desired picture (512x512 pixels), like this one [logo](img/logo.png).
+
 You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')``` 
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
@@ -39,7 +41,7 @@ You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.te
 
 To send photo, just send a path to file instead of text: ```sendTo('telegram', 'absolute/path/file.png')```.
 
-Example how to send screeenshot from webcam to telegram:
+Example how to send screenshot from webcam to telegram:
 
 ```
 var request = require('request');
@@ -54,6 +56,7 @@ function sendImage() {
         } else {
             console.log('Snapshot sent');
             sendTo('telegram.0', '/tmp/snap.jpg');
+            //sendTo('telegram.0', {text: '/tmp/snap.jpg', caption: 'Snapshot'});
         }
       }); 
     });
@@ -69,7 +72,56 @@ on("someState", function (obj) {
 });
 
 ```
+
+Following messages are reserved for actions:
+
+- *typing* - for text messages,
+- *upload_photo* - for photos,
+- *upload_video* - for videos,
+- *record_video* - for videos,
+- *record_audio* - for audio,
+- *upload_audio* - for audio,
+- *upload_document* - for documents,
+- *find_location* - for location data
+
+In this case the action command will be sent.
+
+The description for telegram API can be found [here](https://core.telegram.org/bots/api) and you can use all options defined in this api, just by including that into send object. E.g.:
+
+```
+sendTo('telegram.0', {
+    text:                   '/tmp/snap.jpg',
+    caption:                'Snapshot',
+    disable_notification:   true
+});
+```
+
+Adapter tries to detect the type of message (photo, video, audio, document, sticker, action, location) depends on text in the message if the text is path to existing file, it will be sent as according type.
+
+Location will be detected on attribute latitude:
+```
+sendTo('telegram.0', {
+    latitude:               52.522430,
+    longitude:              13.372234,
+    disable_notification:   true
+});
+```
+
+## Chat ID
+From version 0.4.0 you can use chat ID to send messages to chat.
+
+```sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');```
+
+TODO:
+- web hook support
+- venue
+- dialogs
+
 ## Changelog
+### 0.4.0 (2016-07-21)
+* (bluefox) allow send messages to chats via chat-ID
+* (bluefox) support of video(mp4), audio, document, location, sticker, action
+
 ### 0.3.0 (2016-05-31)
 * (bluefox) restart connection every hour
 

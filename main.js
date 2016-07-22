@@ -50,27 +50,98 @@ adapter.on('stateChange', function (id, state) {
     }
 });
 
-function sendMessage(text, user) {
-    if (!text && text !== 0) {
+var actions = [
+    'typing', 'upload_photo', 'upload_video', 'record_video', 'record_audio', 'upload_document', 'find_location'
+];
+
+function _sendMessageHelper(dest, name, text, options) {
+    if (options.latitude !== undefined) {
+        adapter.log.debug('Send location to "' + name + '": ' + text);
+        if (bot) bot.sendLocation(dest, parseFloat(options.longitude), parseFloat(options.latitude), options).then(function () {
+            adapter.log.debug('Location sent');
+        }, function (error) {
+            adapter.log.error('Cannot send location: ' + error);
+        });
+    } else if (actions.indexOf(text) !== -1) {
+        adapter.log.debug('Send action to "' + name + '": ' + text);
+        if (bot) bot.sendChatAction(dest, text).then(function () {
+            adapter.log.debug('Action sent');
+        }, function (error) {
+            adapter.log.error('Cannot send action: ' + error);
+        });
+    } else if (text.match(/\.webp$/i) && fs.existsSync(text)) {
+        adapter.log.debug('Send video to "' + name + '": ' + text);
+        if (bot) bot.sendSticker(dest, text, options).then(function () {
+            adapter.log.debug('Sticker sent');
+        }, function (error) {
+            adapter.log.error('Cannot send sticker: ' + error);
+        });
+    } else if (text.match(/\.mp4$/i) && fs.existsSync(text)) {
+        adapter.log.debug('Send video to "' + name + '": ' + text);
+        if (bot) bot.sendVideo(dest, text, options).then(function () {
+            adapter.log.debug('Video sent');
+        }, function (error) {
+            adapter.log.error('Cannot send video: ' + error);
+        });
+    } else if (text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
+        adapter.log.debug('Send document to "' + name + '": ' + text);
+        if (bot) bot.sendDocument(dest, text, options).then(function () {
+            adapter.log.debug('Document sent');
+        }, function (error) {
+            adapter.log.error('Cannot send document: ' + error);
+        });
+    } else if (text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) {
+        adapter.log.debug('Send audio to "' + name + '": ' + text);
+        if (bot) bot.sendAudio(dest, text, options).then(function () {
+            adapter.log.debug('Audio sent');
+        }, function (error) {
+            adapter.log.error('Cannot send audio: ' + error);
+        });
+    } else if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
+        adapter.log.debug('Send photo to "' + name + '": ' + text);
+        if (bot) bot.sendPhoto(dest, text, options).then(function () {
+            adapter.log.debug('Photo sent');
+        }, function (error) {
+            adapter.log.error('Cannot send photo: ' + error);
+        });
+    } else {
+        adapter.log.debug('Send message to "' + name + '": ' + text);
+        if (bot) bot.sendMessage(dest, text, options).then(function () {
+            adapter.log.debug('Message sent');
+        }, function (error) {
+            adapter.log.error('Cannot send message: ' + error);
+        });
+    }
+}
+
+function sendMessage(text, user, chatId, options) {
+    if (!text && text !== 0 && (!options || !options.latitude)) {
         adapter.log.warn('Invalid text: null');
         return;
     }
+
+    if (options) {
+        if (options.chatId !== undefined) delete options.chatId;
+        if (options.text   !== undefined) delete options.text;
+        if (options.user   !== undefined) delete options.user;
+    }
+
     // convert
-    text = text.toString();
+    if (text !== undefined && text !== null) text = text.toString();
+
+    if (chatId) {
+        _sendMessageHelper(chatId, 'chat', text, options);
+        return 1;
+    }
 
     var count = 0;
     var u;
+
     if (user) {
         for (u in users) {
-            if (users[u] == user) {
+            if (users[u] === user) {
                 count++;
-                if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
-                    adapter.log.debug('Send photo to "' + user + '": ' + text);
-                    bot.sendPhoto(u, text);
-                } else {
-                    adapter.log.debug('Send message to "' + user + '": ' + text);
-                    bot.sendMessage(u, text);
-                }
+                _sendMessageHelper(u, user, text, options);
                 break;
             }
         }
@@ -84,13 +155,7 @@ function sendMessage(text, user) {
             var re = new RegExp(m[1],'i');
             if (users[u].match(re)) {
                 count++;
-                if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
-                    adapter.log.debug('Send photo to "' + m[1] + '": ' + text);
-                    if (bot) bot.sendPhoto(u, text);
-                } else {
-                    adapter.log.debug('Send message to "' + m[1] + '": ' + text);
-                    if (bot) bot.sendMessage(u, text);
-                }
+                _sendMessageHelper(u, m[1], text, options);
                 break;
             }
         }
@@ -98,13 +163,7 @@ function sendMessage(text, user) {
         // Send to all users
         for (u in users) {
             count++;
-            if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
-                adapter.log.debug('Send photo to "' + users[u] + '": ' + text);
-                if (bot) bot.sendPhoto(u, text);
-            } else {
-                adapter.log.debug('Send message to "' + users[u] + '": ' + text);
-                if (bot) bot.sendMessage(u, text);
-            }
+            _sendMessageHelper(u, users[u], text, options);
         }
     }
     return count;
@@ -122,7 +181,7 @@ function processMessage(obj) {
             if (obj.message) {
                 var count;
                 if (typeof obj.message === 'object') {
-                    count = sendMessage(obj.message.text, obj.message.user);
+                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
                 } else {
                     count = sendMessage(obj.message);
                 }

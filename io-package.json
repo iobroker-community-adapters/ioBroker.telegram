@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.3.0",
+        "version": "0.4.0",
         "news": {
+            "0.4.0": {
+                "en": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
+                "de": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
+                "ru": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action"
+            },
             "0.3.0": {
                 "en": "restart connection every hour",
                 "de": "restart connection every hour",
