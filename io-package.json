@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.4.0",
+        "version": "0.4.1",
         "news": {
+            "0.4.1": {
+                "en": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
+                "de": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
+                "ru": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId"
+            },
             "0.4.0": {
                 "en": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
                 "de": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
@@ -74,6 +79,30 @@
             "common": {
                 "role":  "text",
                 "name":  "Last received request",
+                "type":  "string",
+                "read":  true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id":  "communicate.requestChatId",
+            "type": "state",
+            "common": {
+                "role":  "text",
+                "name":  "Chat ID of last received request",
+                "type":  "string",
+                "read":  true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id":  "communicate.requestUserId",
+            "type": "state",
+            "common": {
+                "role":  "text",
+                "name":  "User ID of last received request",
                 "type":  "string",
                 "read":  true,
                 "write": false

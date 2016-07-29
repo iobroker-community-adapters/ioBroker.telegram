@@ -123,12 +123,35 @@ From version 0.4.0 you can use chat ID to send messages to chat.
 
 ```sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');```
 
+## Special commands
+
+### /state stateName - read state value
+You can request the value of state if you now the ID:
+
+```
+/state system.adapter.admin.0.memHeapTotal
+> 56.45
+```
+
+### /state stateName value - set state value
+You can set the value of state if you now the ID:
+
+```
+/state hm-rpc.0.JEQ0ABCDE.3.STOP true
+> Done
+```
+
 TODO:
 - web hook support
 - venue
 - dialogs
 
 ## Changelog
+### 0.4.1 (2016-07-29)
+* (bluefox) response to chatId and not to userId
+* (bluefox) cut messages with @
+* (bluefox) add new states: requestChatId and requestUserId
+
 ### 0.4.0 (2016-07-21)
 * (bluefox) allow send messages to chats via chat-ID
 * (bluefox) support of video(mp4), audio, document, location, sticker, action

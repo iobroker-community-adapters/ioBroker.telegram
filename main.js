@@ -55,7 +55,7 @@ var actions = [
 ];
 
 function _sendMessageHelper(dest, name, text, options) {
-    if (options.latitude !== undefined) {
+    if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) bot.sendLocation(dest, parseFloat(options.longitude), parseFloat(options.latitude), options).then(function () {
             adapter.log.debug('Location sent');
@@ -257,13 +257,17 @@ function connect() {
                 return;
             }
 
-            if (msg.text == '/password') {
+            // sometimes telegram sends messages like "message@user_name"
+            var pos = msg.text.lastIndexOf('@');
+            if (pos !== -1) msg.text = msg.text.substring(0, pos);
+
+            if (msg.text === '/password') {
                 bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
                 return;
             }
 
-
             if (adapter.config.password) {
+                // if user sent password
                 var m = msg.text.match(/^\/password (.+)$/);
                 if (!m) m = msg.text.match(/^\/p (.+)$/);
 
@@ -281,7 +285,7 @@ function connect() {
             }
 
 
-            // todo support commands: state, instances, running, restart
+            // todo support commands: instances, running, restart
             if (adapter.config.password && !users[msg.from.id]) {
                 bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
                 return;
@@ -359,33 +363,23 @@ function connect() {
 
             // Send to text2command
             if (adapter.config.text2command) {
-                adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.from.id, user: msg.from.first_name}, function (response) {
+                adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.chat.id, user: msg.from.first_name}, function (response) {
                     if (response && response.response) {
                         adapter.log.debug('Send response: ' + response.response);
                         bot.sendMessage(response.id, response.response);
                     }
                 });
             }
-
+            adapter.setState('communicate.requestChatId', msg.chat.id, function (err) {
+                if (err) adapter.log.error(err);
+            });
+            adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', function (err) {
+                if (err) adapter.log.error(err);
+            });
             adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
                 if (err) adapter.log.error(err);
             });
         });
-
-        // Any kind of message
-        /*bot.on('message', function (msg) {
-         var now = new Date().getTime();
-         // ignore all messages older than 30 seconds
-         if (now - msg.date * 1000 > 30000) {
-         bot.sendMessage(msg.from.id, 'Message ignored: ' + msg.text);
-         }
-
-         //var chatId = msg.chat.id;
-         // photo can be: a file path, a stream or a Telegram file_id
-         //var photo = 'cats.png';
-         //bot.sendPhoto(chatId, photo, {caption: 'Lovely kittens'});
-         bot.sendMessage(msg.from.id, 'Got it!' + msg.text);
-         });*/
     }
 }
 
