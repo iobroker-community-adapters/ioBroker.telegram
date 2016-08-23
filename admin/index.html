@@ -24,8 +24,49 @@
     var isStarted =   null;
 
     systemDictionary = {
-        "telegram adapter settings":  {"en": "telegram adapter settings",  "de": "telegram Adapter-Einstellungen",  "ru": "Настройки драйвера telegram"},
-        "Token:":                 {"en": "Token:",                 "de": "Token:",                 "ru": "Токен:"}
+        "telegram adapter settings":    {"en": "telegram adapter settings", "de": "telegram Adapter-Einstellungen", "ru": "Настройки драйвера telegram"},
+        "Restarting...":                {"en": "Restarting...",             "de": "Bot wird neu gestartet.",        "ru": "Перезапуск бота."},
+        "Started!":                     {"en": "Started!",                  "de": "Gestartet.",                     "ru": "Бот запущен."},
+        "Token:":                       {"en": "Token:",                    "de": "Token:",                         "ru": "Токен:"},
+        "Main settings":                {"en": "Main settings",             "de": "Haupteinstellungen",             "ru": "Main settings"},
+        "Texts":                        {"en": "Texts",                     "de": "Texte",                          "ru": "Тексты"},
+        "Read README.md how to get token": {
+            "en": "Read README.md how to get token",
+            "de": "Lese README.md um Token zu holen",
+            "ru": "В README.md можно найти, как получить токен"
+        },
+        "Password:":                    {"en": "Password:",                 "de": "Kennwort:",                      "ru": "Пароль:"},
+        "Leave it blank if no password desired": {
+            "en": "Leave it blank if no password desired",
+            "de": "Lehr lassen, falls Kennwort nicht erwünscht",
+            "ru": "Оставить пустым, если опрос пароля не нужен"
+        },
+        "Password repeat:":             {"en": "Password repeat:",          "de": "Kennwortwiederholung:",          "ru": "Повтор пароля:"},
+        "Repeat password":              {"en": "Repeat password",           "de": "Kennwort Wiederholen",           "ru": "Повторите пароль"},
+        "Text2Command Instance:":       {"en": "Text2Command Instance:",    "de": "Text2Command Instance:",         "ru": "Text2Command:"},
+        "All requests will be sent to this text2Command instance": {
+            "en": "All requests will be sent to this text2Command instance",
+            "de": "Alle Anfragen werden an diese text2Command Instanz weitergeleitet",
+            "ru": "Все сообщения от клиентов будут пересылаться на етот text2Command драйвер"
+        },
+        "Store user's IDs:":            {"en": "Store user's IDs:",         "de": "Anwender-IDs speichern:",        "ru": "Сохранять ID клиентов:"},
+        "Remember authenticated users": {
+            "en": "Remember authenticated users",
+            "de": "Speichere authentifizierte Anwender um kein Kennwort mehr zu fragen",
+            "ru": "Запоминпать ID клиентов, которые ввели пароль, что бы не спрашивать больше"
+        },
+        '"Started" text:':              {"en": 'Started:',                  "de": 'Gestartet:',                     "ru": 'Запущен:'},
+        "restarted_help":               {
+            "en": "This text will be sent to clients at new start of bot",
+            "de": "Dieser Text wird bei Neustart an die Clients gesendet",
+            "ru": "Этот текст будет послан всем клиентам при старте бота"
+        },
+        '"Restarting" text:':           {"en": 'Restarting:',               "de": 'Neustart:',                      "ru": 'Остановка:'},
+        "restarting_help":              {
+            "en": "This text will be sent to clients by stopping of bot",
+            "de": "Dieser Text wird beim Anhalten vom Bot an die Clients gesendet",
+            "ru": "Этот текст будет послан всем клиентам при остановке бота"
+        }
     };
 
     function encrypt(key, value) {
@@ -48,9 +89,10 @@
     function load(settings, onChange) {
         settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
 
-        // example: select elements with id=key and class=value and insert value
+        if (settings.restarted  === undefined || settings.restarted  === '_') settings.restarted = _('Started!');
+        if (settings.restarting === undefined || settings.restarting === '_') settings.restarting = _('Restarting...');
+
         for (var key in settings) {
-            // example: select elements with id=key and class=value and insert value
             if ($('#' + key + '.value').attr('type') == 'checkbox') {
                 $('#' + key + '.value').prop('checked', settings[key]).change(function () {
                     onChange();
@@ -63,7 +105,6 @@
                 });
             }
         }
-
 
         getAdapterInstances('text2command', function (list) {
             var text =  '<option value="">' + _('none') + '</option>';
@@ -108,9 +149,9 @@
         <td style="padding-top: 20px;padding-left: 10px"><h3 class="translate">telegram adapter settings</h3></td>
     </tr></table>
 
-    <table>
+    <table style="width: 100%">
         <tr>
-            <td colspan='3'><h4 class="translate">Main settings</h4></td>
+            <td colspan='3'><h4 class="translate" style="width: 90%">Main settings</h4></td>
         </tr>
         <tr>
             <td class="translate">Token:</td>
@@ -133,10 +174,23 @@
             <td class="translate help">All requests will be sent to this text2Command instance</td>
         </tr>
         <tr>
-        <td class="translate">Store user's IDs:</td>
-        <td><input id="rememberUsers" class="value" type="checkbox"/></td>
-        <td class="translate help">Remember authenticated users</td>
-    </tr>
+            <td class="translate">Store user's IDs:</td>
+            <td><input id="rememberUsers" class="value" type="checkbox"/></td>
+            <td class="translate help">Remember authenticated users</td>
+        </tr>
+        <tr>
+            <td colspan='3'><h4 class="translate" style="width: 90%">Texts</h4></td>
+        </tr>
+        <tr>
+            <td class="translate">"Started" text:</td>
+            <td><input id="restarted" class="value"/></td>
+            <td class="translate help">restarted_help</td>
+        </tr>
+        <tr>
+            <td class="translate">"Restarting" text:</td>
+            <td><input id="restarting" class="value"/></td>
+            <td class="translate help">restarting_help</td>
+        </tr>
     </table>
 </div>
 </html>

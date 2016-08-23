@@ -118,6 +118,25 @@ sendTo('telegram.0', {
 });
 ```
 
+### Keyboard
+You can show keyboard in the client:
+
+```
+sendTo('telegram.0', {
+    text:   'Press button',
+    reply_markup: {
+        keyboard: [
+            ['Line 1, Button 1', 'Line 1, Button 2'],
+            ['Line 2, Button 3', 'Line 2, Button 4']
+        ],
+        resize_keyboard:   true,
+        one_time_keyboard: true
+    }
+});
+```
+
+You can read more [here](https://core.telegram.org/bots/api#inlinekeyboardmarkup) and [here](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating).
+
 ## Chat ID
 From version 0.4.0 you can use chat ID to send messages to chat.
 
@@ -147,6 +166,10 @@ TODO:
 - dialogs
 
 ## Changelog
+### 0.4.2 (2016-08-22)
+* (bluefox) translations
+* (bluefox) configurable restarting/started texts
+
 ### 0.4.1 (2016-07-29)
 * (bluefox) response to chatId and not to userId
 * (bluefox) cut messages with @

@@ -34,10 +34,15 @@ adapter.on('ready',   function () {
 adapter.on('unload',  function () {
     if (reconnectTimer) clearInterval(reconnectTimer);
 
-    if (adapter && adapter.config && adapter.config.rememberUsers) {
-        sendMessage(_('Restarting...'));
-    } else {
-        sendMessage(_('Restarting... Reauthenticate!'));
+    if (adapter && adapter.config) {
+        if (adapter.config.restarting !== '') {
+            // default text
+            if (adapter.config.restarting === '_' || adapter.config.restarting === null || adapter.config.restarting === undefined) {
+                sendMessage(adapter.config.rememberUsers ? _('Restarting...') : _('Restarting... Reauthenticate!'));
+            } else {
+                sendMessage(adapter.config.restarting);
+            }
+        } 
     }
     if (adapter && adapter.setState) adapter.setState('info.connection', false, true);
 });
@@ -243,7 +248,15 @@ function connect() {
         bot.getMe().then(function (data) {
             adapter.log.info('getMe: ' + JSON.stringify(data));
             adapter.setState('info.connection', true, true);
-            sendMessage(_('Started!'));
+
+            if (adapter.config.restarted !== '') {
+                // default text
+                if (adapter.config.restarted === '_' || adapter.config.restarted === null || adapter.config.restarted === undefined) {
+                    sendMessage(_('Started!'));
+                } else {
+                    sendMessage(adapter.config.restarted);
+                }
+            }
         });
 
         // Matches /echo [whatever]
@@ -283,8 +296,7 @@ function connect() {
                     }
                 }
             }
-
-
+            
             // todo support commands: instances, running, restart
             if (adapter.config.password && !users[msg.from.id]) {
                 bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));

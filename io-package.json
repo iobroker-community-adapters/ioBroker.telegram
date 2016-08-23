@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.4.1",
+        "version": "0.4.2",
         "news": {
+            "0.4.2": {
+                "en": "translations\nconfigurable restarting/started texts",
+                "de": "translations\nconfigurable restarting/started texts",
+                "ru": "translations\nconfigurable restarting/started texts"
+            },
             "0.4.1": {
                 "en": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
                 "de": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
@@ -46,7 +51,9 @@
         "token":          "",
         "password":       "",
         "text2command":   "",
-        "rememberUsers":  true
+        "rememberUsers":  true,
+        "restarting":     "_",
+        "restarted":      "_"
     },
     "objects": [
 
