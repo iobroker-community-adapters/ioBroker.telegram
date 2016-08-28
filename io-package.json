@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.4.2",
+        "version": "0.4.3",
         "news": {
+            "0.4.3": {
+                "en": "filter out double messages",
+                "de": "Ausfiltern doppelte Meldungen",
+                "ru": "Отфильтровывать двойные сообщения"
+            },
             "0.4.2": {
                 "en": "translations\nconfigurable restarting/started texts",
                 "de": "translations\nconfigurable restarting/started texts",

@@ -166,6 +166,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 0.4.3 (2016-08-28)
+* (bluefox) filter out double messages
+
 ### 0.4.2 (2016-08-22)
 * (bluefox) translations
 * (bluefox) configurable restarting/started texts

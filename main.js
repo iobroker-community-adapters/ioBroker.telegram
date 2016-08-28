@@ -9,7 +9,7 @@
  */
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
-"use strict";
+'use strict';
 
 var utils       = require(__dirname + '/lib/utils'); // Get common adapter utils
 var adapter     = utils.adapter('telegram');
@@ -21,6 +21,8 @@ var bot;
 var users      = {};
 var systemLang = 'en';
 var reconnectTimer = null;
+var lastMessageTime = 0;
+var lastMessageText = '';
 
 adapter.on('message', function (obj) {
     if (obj) processMessage(obj);
@@ -177,9 +179,17 @@ function sendMessage(text, user, chatId, options) {
 function processMessage(obj) {
     if (!obj || !obj.command) return;
     // Ignore own answers
-    if (obj.message && obj.message.response) {
+    if (obj.message && obj.message.response) return;
+
+    // filter out double messages
+    var json = JSON.stringify(obj);
+    if (lastMessageTime && lastMessageText === JSON.stringify(obj) && new Date().getTime() - lastMessageTime < 1200) {
+        adapter.log.debug('Filter out double message [first was for ' + (new Date().getTime() - lastMessageTime) + 'ms]: ' + json);
         return;
     }
+
+    lastMessageTime = new Date().getTime();
+    lastMessageText = json;
 
     switch (obj.command) {
         case 'send': {
