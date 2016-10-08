@@ -98,7 +98,7 @@ sendTo('telegram.0', {
 
 **Possible options**:
 - *disable_notification*: Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound. (all types)
-- *parse_mode*: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. (message)
+- *parse_mode*: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. Possible values: "Markdown", "HTML" (message)
 - *disable_web_page_preview*: Disables link previews for links in this message (message)
 - *caption*: Caption for the document, photo or video, 0-200 characters (video, audio, photo, document)
 - *duration*: Duration of sent video or audio in seconds (audio, video)
