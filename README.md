@@ -166,6 +166,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 0.4.4 (2016-10-12)
+* (bluefox) support of blockly
+
 ### 0.4.3 (2016-08-28)
 * (bluefox) filter out double messages
 

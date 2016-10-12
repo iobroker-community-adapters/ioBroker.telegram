@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.4.3",
+        "version": "0.4.4",
         "news": {
+            "0.4.4": {
+                "en": "support of blockly",
+                "de": "Blockly-Unterstützung",
+                "ru": "Поддержка blockly"
+            },
             "0.4.3": {
                 "en": "filter out double messages",
                 "de": "Ausfiltern doppelte Meldungen",
@@ -50,7 +55,8 @@
         "icon":                     "telegram.png",
         "keywords":                 ["notification", "telegram", "message"],
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
-		"type":                     "communication"
+		"type":                     "communication",
+        "blockly":                  true
     },
     "native": {
         "token":          "",
