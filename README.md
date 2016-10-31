@@ -26,7 +26,7 @@ To add nice avatar picture enter ```/setuserpic``` and upload him desired pictur
 You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')``` 
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
-You can specifiy user in that way too:
+You can specify user in that way too:
 
 ```
 sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
@@ -160,12 +160,31 @@ You can set the value of state if you now the ID:
 > Done
 ```
 
+## Polling or Server mode
+If polling mode is used, the adapter polls every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to 300 ms.
+
+To use server mode you ioBroker instance must be reachable from internet (e.g. with noip.com dynamic DNS service). 
+
+Telegram can work only with HTTPS servers, but you can use **let's encrypt** certificates. 
+
+Following settings must be provided for server mode:
+
+- URL - in form https://yourdomain.com:8443. 
+- IP - Ip address, where the server will be bound. Default 0.0.0.0. Do not change it if you are not sure.
+- Port - actually only 443, 80, 88, 8443 ports are supported by telegram, but you can forward ports to any one through your router.
+- Public certificate - required. 
+- Private key - required.
+- Chain certificate (optional)
+- Let's encrypt options - It is very easy to setup **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
+
 TODO:
-- web hook support
 - venue
 - dialogs
 
 ## Changelog
+### 1.0.0 (2016-10-31)
+* (bluefox) server mode with web hooks
+
 ### 0.4.4 (2016-10-12)
 * (bluefox) support of blockly
 

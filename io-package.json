@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "0.4.4",
+        "version": "1.0.0",
         "news": {
+            "1.0.0": {
+                "en": "Server mode, no polling",
+                "de": "Server-Modus, kein Polling",
+                "ru": "Поддержка сервера без поллинга"
+            },
             "0.4.4": {
                 "en": "support of blockly",
                 "de": "Blockly-Unterstützung",
@@ -56,15 +61,31 @@
         "keywords":                 ["notification", "telegram", "message"],
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
 		"type":                     "communication",
-        "blockly":                  true
+        "blockly":                  true,
+        "config":{
+            "minWidth":   800,
+            "width":      1224,
+            "height":     600
+        }
     },
     "native": {
+        "server":         "false",
+        "port":           8443,
+        "bind":           "0.0.0.0",
         "token":          "",
         "password":       "",
         "text2command":   "",
         "rememberUsers":  true,
         "restarting":     "_",
-        "restarted":      "_"
+        "restarted":      "_",
+        "url":            "",
+        "certPublic":     "",
+        "certPrivate":    "",
+        "certChained":    "",
+
+        "leEnabled":      false,
+        "leUpdate":       false,
+        "leCheckPort":    80
     },
     "objects": [
 

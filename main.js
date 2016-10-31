@@ -16,13 +16,20 @@ var adapter     = utils.adapter('telegram');
 var _           = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
 var fs          = require('fs');
+var LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
 
 var bot;
-var users      = {};
-var systemLang = 'en';
-var reconnectTimer = null;
+var users           = {};
+var systemLang      = 'en';
+var reconnectTimer  = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
+
+var server = {
+    app:       null,
+    server:    null,
+    settings:  adapter.config
+};
 
 adapter.on('message', function (obj) {
     if (obj) processMessage(obj);
@@ -30,7 +37,34 @@ adapter.on('message', function (obj) {
 });
 
 adapter.on('ready',   function () {
-    main();
+    adapter.config.server = adapter.config.server === 'true';
+
+    if (adapter.config.server) {
+        adapter.config.port = parseInt(adapter.config.port, 10);
+
+        // Load certificates
+        adapter.getCertificates(function (err, certificates, leConfig) {
+            adapter.config.certificates = certificates;
+            adapter.config.leConfig     = leConfig;
+            adapter.config.secure       = true;
+
+            server.server = LE.createServer(handleWebHook, adapter.config, adapter.config.certificates, adapter.config.leConfig, adapter.log);
+            if (server.server) {
+                server.server.__server = server;
+                adapter.getPort(adapter.config.port, function (port) {
+                    if (port != adapter.config.port && !adapter.config.findNextPort) {
+                        adapter.log.error('port ' + adapter.config.port + ' already in use');
+                        process.exit(1);
+                    }
+                    server.server.listen(port, (!adapter.config.bind || adapter.config.bind === '0.0.0.0') ? undefined : adapter.config.bind || undefined);
+                    adapter.log.info('https server listening on port ' + port);
+                    main();
+                });
+            }
+        });
+    } else {
+        main();
+    }
 });
 
 adapter.on('unload',  function () {
@@ -44,7 +78,14 @@ adapter.on('unload',  function () {
             } else {
                 sendMessage(adapter.config.restarting);
             }
-        } 
+        }
+        try {
+            if (server.server) {
+                server.server.close();
+            }
+        } catch (e) {
+            console.error('Cannot close server: ' + e);
+        }
     }
     if (adapter && adapter.setState) adapter.setState('info.connection', false, true);
 });
@@ -60,6 +101,53 @@ adapter.on('stateChange', function (id, state) {
 var actions = [
     'typing', 'upload_photo', 'upload_video', 'record_video', 'record_audio', 'upload_document', 'find_location'
 ];
+
+function handleWebHook(req, res) {
+    if (req.method === 'POST' && req.url === '/' + adapter.config.token) {
+        //
+        //{
+        //    "update_id":10000,
+        //    "message":{
+        //       "date":1441645532,
+        //       "chat":{
+        //           "last_name":"Test Lastname",
+        //           "id":1111111,
+        //           "first_name":"Test",
+        //           "username":"Test"
+        //       },
+        //       "message_id":1365,
+        //       "from": {
+        //           "last_name":"Test Lastname",
+        //           "id":1111111,
+        //           "first_name":"Test",
+        //           "username":"Test"
+        //       },
+        //       "text":"/start"
+        //    }
+        //}
+        var body = '';
+        req.on('data', function(data) {
+            body += data;
+            if (body.length > 100000) {
+                res.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
+                res.end('<!doctype html><html><head><title>413</title></head><body>413: Request Entity Too Large</body></html>');
+            }
+        });
+        req.on('end', function() {
+            try {
+                var msg = JSON.parse(body);
+            } catch (e) {
+                adapter.log.error('Cannot parse webhook response!: ' + e);
+                return;
+            }
+            res.end('OK');
+            bot.processUpdate(msg);
+        });
+    } else {
+        res.writeHead(404, 'Resource Not Found', {'Content-Type': 'text/html'});
+        res.end('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
+    }
+}
 
 function _sendMessageHelper(dest, name, text, options) {
     if (options && options.latitude !== undefined) {
@@ -238,12 +326,147 @@ function storeUser(id, name) {
     }
 }
 
+function processTelegramText(msg) {
+    var now = new Date().getTime();
+
+    // ignore all messages older than 30 seconds
+    if (now - msg.date * 1000 > 30000) {
+        adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: ' + msg.text);
+        bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
+        return;
+    }
+
+    // sometimes telegram sends messages like "message@user_name"
+    var pos = msg.text.lastIndexOf('@');
+    if (pos !== -1) msg.text = msg.text.substring(0, pos);
+
+    if (msg.text === '/password') {
+        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+        return;
+    }
+
+    if (adapter.config.password) {
+        // if user sent password
+        var m = msg.text.match(/^\/password (.+)$/);
+        if (!m) m = msg.text.match(/^\/p (.+)$/);
+
+        if (m) {
+            if (adapter.config.password === m[1]) {
+                storeUser(msg.from.id, msg.from.first_name);
+                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
+                return;
+            } else {
+                adapter.log.warn('Got invalid password from ' + msg.from.first_name + ': ' + m[1]);
+                bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
+                if (users[msg.from.id]) delete users[msg.from.id];
+            }
+        }
+    }
+
+    // todo support commands: instances, running, restart
+    if (adapter.config.password && !users[msg.from.id]) {
+        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+        return;
+    }
+
+    storeUser(msg.from.id, msg.from.first_name);
+
+    // Check set state
+    m = msg.text.match(/^\/state (.+) (.+)$/);
+    if (m) {
+        var id1  = m[1];
+        var val1 = m[2];
+        // clear by timeout id
+        var memoryLeak1 = setTimeout(function () {
+            msg         = null;
+            memoryLeak1 = null;
+            id1         = null;
+            val1        = null;
+        }, 1000);
+
+        adapter.getForeignState(id1, function (err, state) {
+            if (memoryLeak1) {
+                clearTimeout(memoryLeak1);
+                memoryLeak1 = null;
+                m = null;
+            }
+            if (msg) {
+                if (err) bot.sendMessage(msg.from.id, err);
+                if (state) {
+                    adapter.setForeignState(id1, val1, function (err) {
+                        if (msg) {
+                            if (err) {
+                                bot.sendMessage(msg.from.id, err);
+                            } else {
+                                bot.sendMessage(msg.from.id, _('Done', systemLang));
+                            }
+                        }
+                    });
+                } else {
+                    bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                }
+            }
+        });
+    }
+
+    // Check get state
+    m = msg.text.match(/^\/state (.+)$/);
+    if (m) {
+        var id2 = m[1];
+        // clear by timeout id
+        var memoryLeak2 = setTimeout(function () {
+            id2         = null;
+            msg         = null;
+            memoryLeak2 = null;
+        }, 1000);
+        adapter.getForeignState(id2, function (err, state) {
+            if (memoryLeak2) {
+                clearTimeout(memoryLeak2);
+                memoryLeak2 = null;
+                m = null;
+            }
+            if (msg) {
+                if (err) bot.sendMessage(msg.from.id, err);
+                if (state) {
+                    bot.sendMessage(msg.from.id, state.val.toString());
+                } else {
+                    bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                }
+            }
+        });
+        return;
+    }
+
+    adapter.log.debug('Got message from ' + msg.from.first_name + ': ' + msg.text);
+
+    // Send to text2command
+    if (adapter.config.text2command) {
+        adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.chat.id, user: msg.from.first_name}, function (response) {
+            if (response && response.response) {
+                adapter.log.debug('Send response: ' + response.response);
+                bot.sendMessage(response.id, response.response);
+            }
+        });
+    }
+    adapter.setState('communicate.requestChatId', msg.chat.id, function (err) {
+        if (err) adapter.log.error(err);
+    });
+    adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', function (err) {
+        if (err) adapter.log.error(err);
+    });
+    adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
+        if (err) adapter.log.error(err);
+    });
+}
+
 function connect() {
     if (bot) {
-        try {
-            bot.initPolling();
-        } catch (e) {
-            
+        if (!adapter.config.server) {
+            try {
+                bot.initPolling();
+            } catch (e) {
+
+            }
         }
         // Check connection
         bot.getMe().then(function (data) {
@@ -251,8 +474,18 @@ function connect() {
             adapter.setState('info.connection', true, true);
         });
     } else {
-        // Setup polling way
-        bot = new TelegramBot(adapter.config.token, {polling: true});
+        if (adapter.config.server) {
+            // Setup server way
+            bot = new TelegramBot(adapter.config.token, {polling: false});
+            if (adapter.config.url[adapter.config.url.length - 1] === '/') {
+                adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
+            }
+            bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
+        } else {
+            // Setup polling way
+            bot = new TelegramBot(adapter.config.token, {polling: true});
+            bot.setWebHook('');
+        }
 
         // Check connection
         bot.getMe().then(function (data) {
@@ -270,143 +503,11 @@ function connect() {
         });
 
         // Matches /echo [whatever]
-        bot.onText(/(.+)/, function (msg) {
-            var now = new Date().getTime();
-
-            // ignore all messages older than 30 seconds
-            if (now - msg.date * 1000 > 30000) {
-                adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: ' + msg.text);
-                bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
-                return;
-            }
-
-            // sometimes telegram sends messages like "message@user_name"
-            var pos = msg.text.lastIndexOf('@');
-            if (pos !== -1) msg.text = msg.text.substring(0, pos);
-
-            if (msg.text === '/password') {
-                bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
-                return;
-            }
-
-            if (adapter.config.password) {
-                // if user sent password
-                var m = msg.text.match(/^\/password (.+)$/);
-                if (!m) m = msg.text.match(/^\/p (.+)$/);
-
-                if (m) {
-                    if (adapter.config.password === m[1]) {
-                        storeUser(msg.from.id, msg.from.first_name);
-                        bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
-                        return;
-                    } else {
-                        adapter.log.warn('Got invalid password from ' + msg.from.first_name + ': ' + m[1]);
-                        bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
-                        if (users[msg.from.id]) delete users[msg.from.id];
-                    }
-                }
-            }
-            
-            // todo support commands: instances, running, restart
-            if (adapter.config.password && !users[msg.from.id]) {
-                bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
-                return;
-            }
-
-            storeUser(msg.from.id, msg.from.first_name);
-
-            // Check set state
-            m = msg.text.match(/^\/state (.+) (.+)$/);
-            if (m) {
-                var id1  = m[1];
-                var val1 = m[2];
-                // clear by timeout id
-                var memoryLeak1 = setTimeout(function () {
-                    msg         = null;
-                    memoryLeak1 = null;
-                    id1         = null;
-                    val1        = null;
-                }, 1000);
-
-                adapter.getForeignState(id1, function (err, state) {
-                    if (memoryLeak1) {
-                        clearTimeout(memoryLeak1);
-                        memoryLeak1 = null;
-                        m = null;
-                    }
-                    if (msg) {
-                        if (err) bot.sendMessage(msg.from.id, err);
-                        if (state) {
-                            adapter.setForeignState(id1, val1, function (err) {
-                                if (msg) {
-                                    if (err) {
-                                        bot.sendMessage(msg.from.id, err);
-                                    } else {
-                                        bot.sendMessage(msg.from.id, _('Done', systemLang));
-                                    }
-                                }
-                            });
-                        } else {
-                            bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
-                        }
-                    }
-                });
-            }
-
-            // Check get state
-            m = msg.text.match(/^\/state (.+)$/);
-            if (m) {
-                var id2 = m[1];
-                // clear by timeout id
-                var memoryLeak2 = setTimeout(function () {
-                    id2         = null;
-                    msg         = null;
-                    memoryLeak2 = null;
-                }, 1000);
-                adapter.getForeignState(id2, function (err, state) {
-                    if (memoryLeak2) {
-                        clearTimeout(memoryLeak2);
-                        memoryLeak2 = null;
-                        m = null;
-                    }
-                    if (msg) {
-                        if (err) bot.sendMessage(msg.from.id, err);
-                        if (state) {
-                            bot.sendMessage(msg.from.id, state.val.toString());
-                        } else {
-                            bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
-                        }
-                    }
-                });
-                return;
-            }
-
-            adapter.log.debug('Got message from ' + msg.from.first_name + ': ' + msg.text);
-
-            // Send to text2command
-            if (adapter.config.text2command) {
-                adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.chat.id, user: msg.from.first_name}, function (response) {
-                    if (response && response.response) {
-                        adapter.log.debug('Send response: ' + response.response);
-                        bot.sendMessage(response.id, response.response);
-                    }
-                });
-            }
-            adapter.setState('communicate.requestChatId', msg.chat.id, function (err) {
-                if (err) adapter.log.error(err);
-            });
-            adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', function (err) {
-                if (err) adapter.log.error(err);
-            });
-            adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
-                if (err) adapter.log.error(err);
-            });
-        });
+        bot.onText(/(.+)/, processTelegramText);
     }
 }
 
 function main() {
-
     if (!adapter.config.token) {
         adapter.log.error('Token is not set!');
         return;

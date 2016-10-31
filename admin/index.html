@@ -30,6 +30,53 @@
         "Token:":                       {"en": "Token:",                    "de": "Token:",                         "ru": "Токен:"},
         "Main settings":                {"en": "Main settings",             "de": "Haupteinstellungen",             "ru": "Main settings"},
         "Texts":                        {"en": "Texts",                     "de": "Texte",                          "ru": "Тексты"},
+        "IP:":                    {"en": "IP:",                     "de": "IP:",                     "ru": "IP:"},
+        "Port:":                  {"en": "Port:",                   "de": "Port:",                   "ru": "Порт:"},
+        "Public certificate:":    {"en": "Public certificate:",     "de": "Publikzertifikat:",       "ru": "'Public' сертификат:"},
+        "Private certificate:":   {"en": "Private certificate:",    "de": "Privatzertifikat:",       "ru": "'Private' сертификат:"},
+        "Chained certificate:":   {"en": "Chained certificate:",    "de": "Kettenzertifikat:",       "ru": "'Chained' сертификат:"},
+        "Listen on all IPs":      {"en": "Listen on all IPs",       "de": "Alle IPs zulassen",       "ru": "Открыть для всех IP адресов"},
+        "Type:":                  {"en": "Type:",                   "de": "Typ:",                    "ru": "Тип:"},
+        "polling":                {"en": "polling",                 "de": "ständig Abfragen",        "ru": "опрос"},
+        "server":                 {"en": "server",                  "de": "Server",                  "ru": "сервер"},
+        "Server settings":        {"en": "Server settings",         "de": "Servereinstellungen",     "ru": "Настройки сервера"},
+        "URL:":                   {"en": "URL:",                    "de": "URL:",                    "ru": "URL:"},
+        "URL may not be empty":   {"en": "URL may not be empty!",   "de": "URL darf nicht lehr sein!", "ru": "Нужен URL сервера"},
+        "url_help":               {
+            "en": "like \"https://mydomain.noip.com:8443\"",
+            "de": "wie \"https://mydomain.noip.com:8443\"",
+            "ru": "пример: \"https://mydomain.noip.com:8443\""
+        },
+        "port_help":               {
+            "en": "Currently supported: 443, 80, 88, 8443",
+            "de": "Aktuell unterstüzt: 443, 80, 88, 8443",
+            "ru": "Поддерживаются 443, 80, 88, 8443"
+        },
+        "Let's Encrypt settings": {
+            "en": "Let's Encrypt settings",
+            "de": "Einstellungen Let's Encrypt",
+            "ru": "Настройкт Let's Encrypt"
+        },
+        "Use Lets Encrypt certificates:": {
+            "en": "Use Let's Encrypt certificates:",
+            "de": "Benutzen Let's Encrypt Zertifikate:",
+            "ru": "Использовать сертификаты Let's Encrypt:"
+        },
+        "Use this instance for automatic update:": {
+            "en": "Use this instance for automatic update:",
+            "de": "Benutze diese Instanz für automatische Updates:",
+            "ru": "Обновлять сертификаты в этом драйвере:"
+        },
+        "Port to check the domain:": {
+            "en": "Port to check the domain:",
+            "de": "Port um die Domain zu prüfen:",
+            "ru": "Порт для проверки доменного имени:"
+        },
+        "Set certificates or load it first in the system settings (right top).":    {
+            "en": "Set certificates or load it first in the system settings (right top).",
+            "de": "Setze Zertificate oder lade die erst unter System/Einstellungen (oben rechts).",
+            "ru": "Нужно выбрать сертификаты или сначала загрузить их в системных настройках (вверху справа)."
+        },
         "Read README.md how to get token": {
             "en": "Read README.md how to get token",
             "de": "Lese README.md um Token zu holen",
@@ -85,26 +132,65 @@
         return result;
     }
 
+    function showHideSettings() {
+        if ($('#server').val() === 'true') {
+            $('#tabs').tabs('option', 'disabled', []);
+            $('.le-settings').show();
+
+            if ($('#leEnabled').prop('checked')) {
+                $('.le-sub-settings').show();
+                if ($('#leUpdate').prop('checked')) {
+                    $('.le-sub-settings-update').show();
+                } else {
+                    $('.le-sub-settings-update').hide();
+                }
+            } else {
+                $('.le-sub-settings').hide();
+            }
+        } else {
+            $('#tabs').tabs('option', 'disabled', [1]);
+        }
+    }
+
     // the function loadSettings has to exist ...
     function load(settings, onChange) {
+        $('#tabs').tabs();
         settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
+
+        if (!settings.lePort) settings.lePort = 80;
+        if (!settings.server) settings.server = 'false';
+
+        getIPs(function(ips) {
+            for (var i = 0; i < ips.length; i++) {
+                $('#bind').append('<option value="' + ips[i].address + '">' + ips[i].name + '</option>');
+            }
+            $('#bind.value').val(settings.bind);
+        });
 
         if (settings.restarted  === undefined || settings.restarted  === '_') settings.restarted = _('Started!');
         if (settings.restarting === undefined || settings.restarting === '_') settings.restarting = _('Restarting...');
 
         for (var key in settings) {
-            if ($('#' + key + '.value').attr('type') == 'checkbox') {
+            if ($('#' + key + '.value').attr('type') === 'checkbox') {
                 $('#' + key + '.value').prop('checked', settings[key]).change(function () {
+                    var id = $(this).attr('id');
+                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
                     onChange();
                 });
             } else {
                 $('#' + key + '.value').val(settings[key]).change(function () {
+                    var id = $(this).attr('id');
+                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
                     onChange();
                 }).keyup(function () {
                     $(this).trigger('change');
                 });
             }
         }
+
+        fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
+        fillSelectCertificates('#certPrivate', 'private', settings.certPrivate);
+        fillSelectCertificates('#certChained', 'chained', settings.certChained);
 
         getAdapterInstances('text2command', function (list) {
             var text =  '<option value="">' + _('none') + '</option>';
@@ -115,6 +201,8 @@
         });
         $('#passwordRepeat').val(settings.password);
 
+        showHideSettings();
+
         // Signal to admin, that no changes yet
         onChange(false);
     }
@@ -124,12 +212,22 @@
         var obj = {};
         $('.value').each(function () {
             var $this = $(this);
-            if ($this.attr('type') == 'checkbox') {
+            if ($this.attr('type') === 'checkbox') {
                 obj[$this.attr('id')] = $this.prop('checked');
             } else {
                 obj[$this.attr('id')] = $this.val();
             }
         });
+
+        if ($('#server').val() === 'true') {
+            if (!$('#certPublic').val() || !$('#certPrivate').val()) {
+                showMessage(_('Set certificates or load it first in the system settings (right top).'));
+                return;
+            }
+            if (!$('#url').val()) {
+                showMessage(_('URL may not be empty'));
+            }
+        }
 
         if ($('#passwordRepeat').val() !== obj.password) {
             showMessage(_('Password confirmation is not equal with password'));
@@ -149,48 +247,105 @@
         <td style="padding-top: 20px;padding-left: 10px"><h3 class="translate">telegram adapter settings</h3></td>
     </tr></table>
 
-    <table style="width: 100%">
-        <tr>
-            <td colspan='3'><h4 class="translate" style="width: 90%">Main settings</h4></td>
-        </tr>
-        <tr>
-            <td class="translate">Token:</td>
-            <td><input id="token" class="value inputStyle" /></td>
-            <td><a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a></td>
-        </tr>
-        <tr>
-            <td class="translate">Password:</td>
-            <td><input id="password" class="value inputStyle" type="password"/></td>
-            <td class="translate help">Leave it blank if no password desired</td>
-        </tr>
-        <tr>
-            <td class="translate">Password repeat:</td>
-            <td><input id="passwordRepeat" class="inputStyle" type="password"/></td>
-            <td class="translate help">Repeat password</td>
-        </tr>
-        <tr>
-            <td class="translate">Text2Command Instance:</td>
-            <td><select id="text2command" class="value"></select></td>
-            <td class="translate help">All requests will be sent to this text2Command instance</td>
-        </tr>
-        <tr>
-            <td class="translate">Store user's IDs:</td>
-            <td><input id="rememberUsers" class="value" type="checkbox"/></td>
-            <td class="translate help">Remember authenticated users</td>
-        </tr>
-        <tr>
-            <td colspan='3'><h4 class="translate" style="width: 90%">Texts</h4></td>
-        </tr>
-        <tr>
-            <td class="translate">"Started" text:</td>
-            <td><input id="restarted" class="value"/></td>
-            <td class="translate help">restarted_help</td>
-        </tr>
-        <tr>
-            <td class="translate">"Restarting" text:</td>
-            <td><input id="restarting" class="value"/></td>
-            <td class="translate help">restarting_help</td>
-        </tr>
-    </table>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1" class="translate">Main settings</a></li>
+            <li><a href="#tabs-2" class="translate">Server settings</a></li>
+        </ul>
+        <div id="tabs-1">
+            <table style="width: 100%">
+                <tr>
+                    <td colspan='3'><h4 class="translate" style="width: 90%">Main settings</h4></td>
+                </tr>
+                <tr>
+                    <td><label class="translate" for="server">Type:</label></td>
+                    <td>
+                        <select id="server" class="value inputStyle" >
+                            <option value="false" class="translate">polling</option>
+                            <option value="true"  class="translate">server</option>
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="translate">Token:</td>
+                    <td><input id="token" class="value inputStyle" /></td>
+                    <td><a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a></td>
+                </tr>
+                <tr>
+                    <td class="translate">Password:</td>
+                    <td><input id="password" class="value inputStyle" type="password"/></td>
+                    <td class="translate help">Leave it blank if no password desired</td>
+                </tr>
+                <tr>
+                    <td class="translate">Password repeat:</td>
+                    <td><input id="passwordRepeat" class="inputStyle" type="password"/></td>
+                    <td class="translate help">Repeat password</td>
+                </tr>
+                <tr>
+                    <td class="translate">Text2Command Instance:</td>
+                    <td><select id="text2command" class="value inputStyle"></select></td>
+                    <td class="translate help">All requests will be sent to this text2Command instance</td>
+                </tr>
+                <tr>
+                    <td class="translate">Store user's IDs:</td>
+                    <td><input id="rememberUsers" class="value" type="checkbox"/></td>
+                    <td class="translate help">Remember authenticated users</td>
+                </tr>
+                <tr>
+                    <td colspan='3'><h4 class="translate" style="width: 90%">Texts</h4></td>
+                </tr>
+                <tr>
+                    <td class="translate">"Started" text:</td>
+                    <td><input id="restarted" class="value inputStyle"/></td>
+                    <td class="translate help">restarted_help</td>
+                </tr>
+                <tr>
+                    <td class="translate">"Restarting" text:</td>
+                    <td><input id="restarting" class="value inputStyle"/></td>
+                    <td class="translate help">restarting_help</td>
+                </tr>
+            </table>
+        </div>
+        <div id="tabs-2">
+            <table style="width: 100%">
+                <tr class="server">
+                    <td ><label class="translate" for="url">URL:</label></td>
+                    <td><input class="value inputStyle" id="url"/></td>
+                    <td class="translate help">url_help</td>
+                </tr>
+                <tr class="server">
+                    <td ><label class="translate" for="bind">IP:</label></td>
+                    <td colspan="2"><select class="value inputStyle" id="bind"></select></td>
+                    <td></td>
+                </tr>
+                <tr class="server">
+                    <td><label class="translate" for="port">Port:</label></td>
+                    <td><input class="value" id="port" size="5" maxlength="5" type="number"/></td>
+                    <td class="translate help">port_help</td>
+                </tr>
+                <tr class="server">
+                    <td><label class="translate" for="certPublic">Public certificate:</label></td>
+                    <td><select id="certPublic" class="value" style="width: 200px"></select></td>
+                    <td></td>
+                </tr>
+                <tr class="server">
+                    <td><label class="translate" for="certPrivate">Private certificate:</label></td>
+                    <td><select id="certPrivate" class="value" style="width: 200px"></select></td>
+                    <td></td>
+                </tr>
+                <tr class="server">
+                    <td><label class="translate" for="certChained">Chained certificate:</label></td>
+                    <td><select id="certChained" class="value" style="width: 200px"></select></td>
+                    <td></td>
+                </tr>
+                <tr class="server">
+                    <td colspan='3'><h4 class="translate" style="width: 90%">Let's Encrypt settings</h4></td>
+                </tr>
+                <tr class="server le-settings"><td><label for="leEnabled" class="translate">Use Lets Encrypt certificates:</label></td><td><input  class="value" id="leEnabled"   type="checkbox" /></td><td></td></tr>
+                <tr class="server le-settings le-sub-settings"><td><label for="leUpdate" class="translate">Use this instance for automatic update:</label></td><td><input  class="value" id="leUpdate" type="checkbox" /></td><td></td></tr>
+                <tr class="server le-settings le-sub-settings le-sub-settings-update"><td><label for="lePort" class="translate">Port to check the domain:</label></td><td><input class="value number" id="lePort" type="number" size="5" maxlength="5" /></td><td></td></tr>
+            </table>
+        </div>
 </div>
 </html>
