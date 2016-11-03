@@ -220,7 +220,7 @@
         });
 
         if ($('#server').val() === 'true') {
-            if (!$('#certPublic').val() || !$('#certPrivate').val()) {
+            if (!$('#leEnabled').prop('checked') && (!$('#certPublic').val() || !$('#certPrivate').val())) {
                 showMessage(_('Set certificates or load it first in the system settings (right top).'));
                 return;
             }

@@ -172,8 +172,8 @@ Following settings must be provided for server mode:
 - URL - in form https://yourdomain.com:8443. 
 - IP - Ip address, where the server will be bound. Default 0.0.0.0. Do not change it if you are not sure.
 - Port - actually only 443, 80, 88, 8443 ports are supported by telegram, but you can forward ports to any one through your router.
-- Public certificate - required. 
-- Private key - required.
+- Public certificate - required, if **let's encrypt** is disabled. 
+- Private key - required, if **let's encrypt** is disabled.
 - Chain certificate (optional)
 - Let's encrypt options - It is very easy to setup **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
 
