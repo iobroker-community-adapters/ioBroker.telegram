@@ -154,57 +154,105 @@ function _sendMessageHelper(dest, name, text, options) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) bot.sendLocation(dest, parseFloat(options.longitude), parseFloat(options.latitude), options).then(function () {
             adapter.log.debug('Location sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send location: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send location [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send location [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else if (actions.indexOf(text) !== -1) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
         if (bot) bot.sendChatAction(dest, text).then(function () {
             adapter.log.debug('Action sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send action: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send action [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else if (text.match(/\.webp$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
         if (bot) bot.sendSticker(dest, text, options).then(function () {
+            options = null;
             adapter.log.debug('Sticker sent');
         }, function (error) {
-            adapter.log.error('Cannot send sticker: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send sticker [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else if (text.match(/\.mp4$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
         if (bot) bot.sendVideo(dest, text, options).then(function () {
             adapter.log.debug('Video sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send video: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send video [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else if (text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send document to "' + name + '": ' + text);
         if (bot) bot.sendDocument(dest, text, options).then(function () {
             adapter.log.debug('Document sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send document: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send document [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else if (text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send audio to "' + name + '": ' + text);
         if (bot) bot.sendAudio(dest, text, options).then(function () {
             adapter.log.debug('Audio sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send audio: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send audio [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send photo to "' + name + '": ' + text);
         if (bot) bot.sendPhoto(dest, text, options).then(function () {
             adapter.log.debug('Photo sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send photo: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) bot.sendMessage(dest, text, options).then(function () {
             adapter.log.debug('Message sent');
+            options = null;
         }, function (error) {
-            adapter.log.error('Cannot send message: ' + error);
+            if (options.chatId) {
+                adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send message [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
         });
     }
 }

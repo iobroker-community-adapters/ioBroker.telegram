@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.0",
+        "version": "1.0.1",
         "news": {
+            "1.0.1": {
+                "en": "Show user name in error message",
+                "de": "Zeige Username bei Fehler",
+                "ru": "Показывать имя пользователя при ошибках"
+            },
             "1.0.0": {
                 "en": "Server mode, no polling",
                 "de": "Server-Modus, kein Polling",

@@ -182,6 +182,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.1 (2016-11-04)
+* (bluefox) Show user name in error message
+
 ### 1.0.0 (2016-10-31)
 * (bluefox) server mode with web hooks
 
