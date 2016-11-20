@@ -67,7 +67,7 @@
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
 		"type":                     "communication",
         "blockly":                  true,
-        "config":{
+        "config": {
             "minWidth":   800,
             "width":      1224,
             "height":     600
