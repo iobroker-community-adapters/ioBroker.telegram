@@ -55,6 +55,7 @@ describe('Test Telegram', function() {
             config.common.enabled  = true;
             config.common.loglevel = 'debug';
 
+            config.native.server = true;
             config.native.token = 'asd';
 
             setup.setAdapterConfig(config.common, config.native);
