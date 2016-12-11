@@ -11,7 +11,7 @@ function checkConnectionOfAdapter(cb, counter) {
         return;
     }
 
-    states.getState('system.adapter.javascript.0.alive', function (err, state) {
+    states.getState('system.adapter.telegram.0.alive', function (err, state) {
         if (err) console.error(err);
         if (state && state.val) {
             cb && cb();
@@ -55,6 +55,7 @@ describe('Test Telegram', function() {
             config.common.enabled  = true;
             config.common.loglevel = 'debug';
 
+            config.native.server = false;
             config.native.token = 'asd';
 
             setup.setAdapterConfig(config.common, config.native);
