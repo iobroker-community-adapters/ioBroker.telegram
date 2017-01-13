@@ -35,9 +35,24 @@ Blockly.Sendto.blocks['telegram'] =
 
 Blockly.Blocks['telegram'] = {
     init: function() {
+        var options = [[Blockly.Words['telegram_anyInstance'][systemLang], '']];
+        if (typeof main !== 'undefined' && main.instances) {
+            for (var i = 0; i < main.instances.length; i++) {
+                var m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
+                if (m) {
+                    var k = parseInt(m[1], 10);
+                    options.push(['telegram.' + k, '.' + k]);
+                }
+            }
+        } else {
+            for (var n = 0; n <= 4; n++) {
+                options.push(['telegram.' + n, '.' + n]);
+            }
+        }
+
         this.appendDummyInput('INSTANCE')
             .appendField(Blockly.Words['telegram'][systemLang])
-            .appendField(new Blockly.FieldDropdown([[Blockly.Words['telegram_anyInstance'][systemLang], ''], ['telegram.0', '.0'], ['telegram.1', '.1'], ['telegram.2', '.2'], ['telegram.3', '.3'], ['telegram.4', '.4']]), 'INSTANCE');
+            .appendField(new Blockly.FieldDropdown(options), 'INSTANCE');
 
         this.appendValueInput('MESSAGE')
             .appendField(Blockly.Words['telegram_message'][systemLang]);

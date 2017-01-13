@@ -1,7 +1,7 @@
 {
   "name": "iobroker.telegram",
   "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "bluefox <dogafox@gmail.com>",
   "homepage": "https://github.com/ioBroker/ioBroker.telegram",
   "repository": {
@@ -28,7 +28,7 @@
     "grunt-replace": "^0.9.3",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-jscs": "^2.0.0",
-    "grunt-http": "^2.0.0",
+    "grunt-http": "^1.6.0",
     "mocha": "^2.3.4",
     "chai": "^3.4.1"
   },

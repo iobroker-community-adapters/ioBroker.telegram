@@ -182,6 +182,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.2 (2017-01-13)
+* (bluefox) show only installed instances in blockly
+
 ### 1.0.1 (2016-11-04)
 * (bluefox) Show user name in error message
 
