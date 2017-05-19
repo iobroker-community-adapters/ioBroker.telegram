@@ -8,22 +8,22 @@ ioBroker telegram Adapter
 
 [![NPM](https://nodei.co/npm/iobroker.telegram.png?downloads=true)](https://nodei.co/npm/iobroker.telegram/)
 
-Ask [@BotFather](https://telegram.me/botfather) to create new bot ```/newbot```. 
+Ask [@BotFather](https://telegram.me/botfather) to create new bot ```/newbot```.
 
 You will be asked to enter name of the bot and then the username.
 After that you will get the Token.
 
 ![Screenshot](img/chat.png)
 
-You should set password for communication in configuration dialog.
+You should set password for communication in configuration dialog. After this start the adapter.
 
-To authenticate user by Bot write "/password phrase", where **phrase** is your configured password.
+To start a conversation with your bot you need to authenticate user with "/password phrase", where **phrase** is your configured password. So open a new conversation with your generated Bot in Telegram and then you need to enter the passwort as first command.
 
 **Note:** you can use short form "/p phrase".
 
 To add nice avatar picture enter ```/setuserpic``` and upload him desired picture (512x512 pixels), like this one [logo](img/logo.png).
 
-You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')``` 
+You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')```
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
 You can specify user in that way too:
@@ -50,7 +50,7 @@ var fs      = require('fs');
 function sendImage() {
     request.get({url: 'http://login:pass@ipaddress/web/tmpfs/snap.jpg', encoding: 'binary'}, function (err, response, body) {
         fs.writeFile("/tmp/snap.jpg", body, 'binary', function(err) {
-        
+
         if (err) {
             console.error(err);
         } else {
@@ -58,7 +58,7 @@ function sendImage() {
             sendTo('telegram.0', '/tmp/snap.jpg');
             //sendTo('telegram.0', {text: '/tmp/snap.jpg', caption: 'Snapshot'});
         }
-      }); 
+      });
     });
 }
 on("someState", function (obj) {
@@ -163,16 +163,16 @@ You can set the value of state if you now the ID:
 ## Polling or Server mode
 If polling mode is used, the adapter polls every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to 300 ms.
 
-To use server mode you ioBroker instance must be reachable from internet (e.g. with noip.com dynamic DNS service). 
+To use server mode you ioBroker instance must be reachable from internet (e.g. with noip.com dynamic DNS service).
 
-Telegram can work only with HTTPS servers, but you can use **let's encrypt** certificates. 
+Telegram can work only with HTTPS servers, but you can use **let's encrypt** certificates.
 
 Following settings must be provided for server mode:
 
-- URL - in form https://yourdomain.com:8443. 
+- URL - in form https://yourdomain.com:8443.
 - IP - Ip address, where the server will be bound. Default 0.0.0.0. Do not change it if you are not sure.
 - Port - actually only 443, 80, 88, 8443 ports are supported by telegram, but you can forward ports to any one through your router.
-- Public certificate - required, if **let's encrypt** is disabled. 
+- Public certificate - required, if **let's encrypt** is disabled.
 - Private key - required, if **let's encrypt** is disabled.
 - Chain certificate (optional)
 - Let's encrypt options - It is very easy to setup **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
