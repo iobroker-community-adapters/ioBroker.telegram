@@ -11,24 +11,24 @@
 /*jslint node: true */
 'use strict';
 
-var utils       = require(__dirname + '/lib/utils'); // Get common adapter utils
-var adapter     = utils.adapter('telegram');
-var _           = require(__dirname + '/lib/words.js');
+var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
+var adapter = utils.adapter('telegram');
+var _ = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
-var fs          = require('fs');
-var LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
+var fs = require('fs');
+var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 
 var bot;
-var users           = {};
-var systemLang      = 'en';
-var reconnectTimer  = null;
+var users = {};
+var systemLang = 'en';
+var reconnectTimer = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
 
 var server = {
-    app:       null,
-    server:    null,
-    settings:  adapter.config
+    app: null,
+    server: null,
+    settings: adapter.config
 };
 
 adapter.on('message', function (obj) {
@@ -36,7 +36,7 @@ adapter.on('message', function (obj) {
     processMessages();
 });
 
-adapter.on('ready',   function () {
+adapter.on('ready', function () {
     adapter.config.server = adapter.config.server === 'true';
 
     if (adapter.config.server) {
@@ -45,8 +45,8 @@ adapter.on('ready',   function () {
         // Load certificates
         adapter.getCertificates(function (err, certificates, leConfig) {
             adapter.config.certificates = certificates;
-            adapter.config.leConfig     = leConfig;
-            adapter.config.secure       = true;
+            adapter.config.leConfig = leConfig;
+            adapter.config.secure = true;
 
             server.server = LE.createServer(handleWebHook, adapter.config, adapter.config.certificates, adapter.config.leConfig, adapter.log);
             if (server.server) {
@@ -67,7 +67,7 @@ adapter.on('ready',   function () {
     }
 });
 
-adapter.on('unload',  function () {
+adapter.on('unload', function () {
     if (reconnectTimer) clearInterval(reconnectTimer);
 
     if (adapter && adapter.config) {
@@ -126,14 +126,14 @@ function handleWebHook(req, res) {
         //    }
         //}
         var body = '';
-        req.on('data', function(data) {
+        req.on('data', function (data) {
             body += data;
             if (body.length > 100000) {
                 res.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
                 res.end('<!doctype html><html><head><title>413</title></head><body>413: Request Entity Too Large</body></html>');
             }
         });
-        req.on('end', function() {
+        req.on('end', function () {
             try {
                 var msg = JSON.parse(body);
             } catch (e) {
@@ -152,17 +152,19 @@ function handleWebHook(req, res) {
 function _sendMessageHelper(dest, name, text, options) {
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
-        if (bot) bot.sendLocation(dest, parseFloat(options.longitude), parseFloat(options.latitude), options).then(function () {
-            adapter.log.debug('Location sent');
-            options = null;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send location [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send location [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
+        if (bot) {
+            bot.sendLocation(dest, parseFloat(options.longitude), parseFloat(options.latitude), options).then(function () {
+                adapter.log.debug('Location sent');
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send location [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send location [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
     } else if (actions.indexOf(text) !== -1) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
         if (bot) bot.sendChatAction(dest, text).then(function () {
@@ -176,84 +178,96 @@ function _sendMessageHelper(dest, name, text, options) {
             }
             options = null;
         });
-    } else if (text.match(/\.webp$/i) && fs.existsSync(text)) {
+    } else if (text && text.match(/\.webp$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
-        if (bot) bot.sendSticker(dest, text, options).then(function () {
-            options = null;
-            adapter.log.debug('Sticker sent');
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send sticker [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
-    } else if (text.match(/\.mp4$/i) && fs.existsSync(text)) {
+        if (bot) {
+            bot.sendSticker(dest, text, options).then(function () {
+                options = null;
+                adapter.log.debug('Sticker sent');
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send sticker [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
+    } else if (text && text.match(/\.mp4$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
-        if (bot) bot.sendVideo(dest, text, options).then(function () {
-            adapter.log.debug('Video sent');
-            options = null;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send video [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
-    } else if (text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
+        if (bot) {
+            bot.sendVideo(dest, text, options).then(function () {
+                adapter.log.debug('Video sent');
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send video [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
+    } else if (text && text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send document to "' + name + '": ' + text);
-        if (bot) bot.sendDocument(dest, text, options).then(function () {
-            adapter.log.debug('Document sent');
-            options = null;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send document [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
-    } else if (text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) {
+        if (bot) {
+            bot.sendDocument(dest, text, options).then(function () {
+                adapter.log.debug('Document sent');
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send document [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
+    } else if (text && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send audio to "' + name + '": ' + text);
-        if (bot) bot.sendAudio(dest, text, options).then(function () {
-            adapter.log.debug('Audio sent');
-            options = null;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send audio [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
-    } else if (text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
+        if (bot) {
+            bot.sendAudio(dest, text, options).then(function () {
+                adapter.log.debug('Audio sent');
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send audio [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
+    } else if (text && text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send photo to "' + name + '": ' + text);
-        if (bot) bot.sendPhoto(dest, text, options).then(function () {
-            adapter.log.debug('Photo sent');
-            options = null;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
+        if (bot) {
+            bot.sendPhoto(dest, text, options).then(function () {
+                adapter.log.debug('Photo sent');
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
-        if (bot) bot.sendMessage(dest, text, options).then(function () {
-            adapter.log.debug('Message sent');
-            options = null;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send message [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
+        if (bot) {
+            bot.sendMessage(dest, text || '', options).then(function () {
+                adapter.log.debug('Message sent');
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send message [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
     }
 }
 
@@ -265,8 +279,8 @@ function sendMessage(text, user, chatId, options) {
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text   !== undefined) delete options.text;
-        if (options.user   !== undefined) delete options.user;
+        if (options.text !== undefined) delete options.text;
+        if (options.user !== undefined) delete options.user;
     }
 
     // convert
@@ -297,7 +311,7 @@ function sendMessage(text, user, chatId, options) {
     if (m) {
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         for (u in users) {
-            var re = new RegExp(m[1],'i');
+            var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
                 count++;
                 _sendMessageHelper(u, m[1], text, options);
@@ -424,14 +438,14 @@ function processTelegramText(msg) {
     // Check set state
     m = msg.text.match(/^\/state (.+) (.+)$/);
     if (m) {
-        var id1  = m[1];
+        var id1 = m[1];
         var val1 = m[2];
         // clear by timeout id
         var memoryLeak1 = setTimeout(function () {
-            msg         = null;
+            msg = null;
             memoryLeak1 = null;
-            id1         = null;
-            val1        = null;
+            id1 = null;
+            val1 = null;
         }, 1000);
 
         adapter.getForeignState(id1, function (err, state) {
@@ -465,8 +479,8 @@ function processTelegramText(msg) {
         var id2 = m[1];
         // clear by timeout id
         var memoryLeak2 = setTimeout(function () {
-            id2         = null;
-            msg         = null;
+            id2 = null;
+            msg = null;
             memoryLeak2 = null;
         }, 1000);
         adapter.getForeignState(id2, function (err, state) {
@@ -491,7 +505,11 @@ function processTelegramText(msg) {
 
     // Send to text2command
     if (adapter.config.text2command) {
-        adapter.sendTo(adapter.config.text2command, 'send', {text: msg.text.replace(/\//g, '#').replace(/_/g, ' '), id: msg.chat.id, user: msg.from.first_name}, function (response) {
+        adapter.sendTo(adapter.config.text2command, 'send', {
+            text: msg.text.replace(/\//g, '#').replace(/_/g, ' '),
+            id: msg.chat.id,
+            user: msg.from.first_name
+        }, function (response) {
             if (response && response.response) {
                 adapter.log.debug('Send response: ' + response.response);
                 bot.sendMessage(response.id, response.response);
@@ -567,7 +585,7 @@ function main() {
     adapter.subscribeStates('communicate.response');
 
     // clear states
-    adapter.setState('communicate.request',  '', true);
+    adapter.setState('communicate.request', '', true);
     adapter.setState('communicate.response', '', true);
 
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
