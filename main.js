@@ -270,7 +270,9 @@ function sendMessage(text, user, chatId, options) {
     }
 
     // convert
-    if (text !== undefined && text !== null) text = text.toString();
+    if (text !== undefined && text !== null) {
+        text = text.toString();
+    }
 
     if (chatId) {
         _sendMessageHelper(chatId, 'chat', text, options);
@@ -291,7 +293,7 @@ function sendMessage(text, user, chatId, options) {
         return count;
     }
 
-    var m = text.match(/^@(.+?)\b/);
+    var m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
     if (m) {
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         for (u in users) {

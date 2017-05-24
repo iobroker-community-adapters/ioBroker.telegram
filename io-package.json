@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.2",
+        "version": "1.0.3",
         "news": {
+            "1.0.3": {
+                "en": "Fix position message",
+                "de": "Korrigiere Positionsmeldung",
+                "ru": "Исправлено сообщение с координатами"
+            },
             "1.0.2": {
                 "en": "show only installed instances in blockly",
                 "de": "Zeige nur installierten Instanzen im Blockly",
