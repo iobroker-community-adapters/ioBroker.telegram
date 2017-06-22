@@ -153,7 +153,7 @@ function _sendMessageHelper(dest, name, text, options) {
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
-            bot.sendLocation(dest, parseFloat(options.longitude), parseFloat(options.latitude), options).then(function () {
+            bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options).then(function () {
                 adapter.log.debug('Location sent');
                 options = null;
             }, function (error) {

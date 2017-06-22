@@ -182,6 +182,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.4 (2017-06-22)
+* (dwm) Fix longitude and latitude
+
 ### 1.0.3 (2017-05-24)
 * (bluefox) Fix position message
 
