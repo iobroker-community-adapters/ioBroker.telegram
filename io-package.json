@@ -157,6 +157,18 @@
             "native": {}
         },
         {
+            "_id":  "communicate.requestMessageId",
+            "type": "state",
+            "common": {
+                "role":  "text",
+                "name":  "Message ID of last received request",
+                "type":  "string",
+                "read":  true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
             "_id":  "communicate.requestUserId",
             "type": "state",
             "common": {
