@@ -24,6 +24,7 @@ var systemLang = 'en';
 var reconnectTimer = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
+var callbackQueryId = 0;
 
 var server = {
     app: null,
@@ -253,6 +254,49 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
+    } else if (options && options.answerCallbackQuery !== undefined) {
+        adapter.log.debug('Send answerCallbackQuery to "' + name +'"');
+        if (options.answerCallbackQuery.showAlert == undefined) options.answerCallbackQuery.showAlert = false;
+        if (bot) {
+            bot.answerCallbackQuery(callbackQueryId,options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert).then(function () {
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send answerCallbackQuery [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send answerCallbackQuery [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        } 
+    } else if (options && options.editMessageReplyMarkup !== undefined) {
+        adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
+        if (bot) {
+            bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options).then(function () {
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send editMessageReplyMarkup [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send editMessageReplyMarkup [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        } 
+    } else if (options && options.editMessageText !== undefined) {
+        adapter.log.debug('Send editMessageText to "' + name + '"');
+        if (bot) {
+            bot.editMessageText(text, options.editMessageText.options).then(function () {
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send editMessageText [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send editMessageText [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        } 
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) {
@@ -519,6 +563,9 @@ function processTelegramText(msg) {
     adapter.setState('communicate.requestChatId', msg.chat.id, function (err) {
         if (err) adapter.log.error(err);
     });
+    adapter.setState('communicate.requestMessageId', msg.message_id, function (err) {
+        if (err) adapter.log.error(err);
+    });
     adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', function (err) {
         if (err) adapter.log.error(err);
     });
@@ -572,6 +619,19 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
+        
+        // callback InlineKeyboardButton
+        bot.on('callback_query', function (msg) {
+        // write received answer into variable
+            adapter.log.debug('callback_query: ' + JSON.stringify(msg));
+            adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
+                if (err) adapter.log.error(err);
+            });
+            callbackQueryId = msg.id;
+            adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
+                if (err) adapter.log.error(err);
+            });
+        });
     }
 }
 
