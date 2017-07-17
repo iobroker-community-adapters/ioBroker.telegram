@@ -4,13 +4,8 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.5",
+        "version": "1.0.4",
         "news": {
-            "1.0.5": {
-                "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Features: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
-            },
             "1.0.4": {
                 "en": "Fix longitude and latitude",
                 "de": "Korrigiere longitude and latitude",
