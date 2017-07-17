@@ -622,15 +622,15 @@ function connect() {
         
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
-        // записываем полученный ответ в переменную
-          adapter.log.debug('callback_query: ' + JSON.stringify(msg));
-          adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
-            if (err) adapter.log.error(err);
-          });
-          callbackQueryId = msg.id;
-          adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
-              if (err) adapter.log.error(err);
-          });
+        // write received answer into variable
+            adapter.log.debug('callback_query: ' + JSON.stringify(msg));
+            adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
+                if (err) adapter.log.error(err);
+            });
+            callbackQueryId = msg.id;
+            adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
+                if (err) adapter.log.error(err);
+            });
         });
     }
 }
