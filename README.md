@@ -119,7 +119,7 @@ sendTo('telegram.0', {
 ```
 
 ### Keyboard
-You can show keyboard in the client:
+You can show keyboard **ReplyKeyboardMarkup** in the client:
 
 ```
 sendTo('telegram.0', {
@@ -135,12 +135,119 @@ sendTo('telegram.0', {
 });
 ```
 
+You can read more [here](https://core.telegram.org/bots/api#replykeyboardmarkup) and [here](https://core.telegram.org/bots#keyboards).
+
+You can show keyboard **InlineKeyboardMarkup** in the client:
+
+```
+sendTo('telegram', {
+    user: user,
+    text: 'Click the button',
+    reply_markup: {
+        inline_keyboard: [
+            [{ text: 'Button 1_1', callback_data: '1_1' }],
+            [{ text: 'Button 1_2', callback_data: '1_2' }]
+        ]
+    }
+});
+```
+
 You can read more [here](https://core.telegram.org/bots/api#inlinekeyboardmarkup) and [here](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating).
+
+**NOTE:** *After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).*
+
+### answerCallbackQuery
+Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, *True* is returned.
+
+```
+if (command ==="1_2") {
+    sendTo('telegram', {
+        user: user,
+        text: 'Button 1_2 pressed',
+        answerCallbackQuery: {
+            text: "Pressed!",
+            showAlert: false // Optional parameter
+        }
+   });
+}                      
+```
+
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegrambotanswercallbackquerycallbackqueryid-text-showalert-options--promise). 
 
 ## Chat ID
 From version 0.4.0 you can use chat ID to send messages to chat.
 
 ```sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');```
+
+## Updating messages
+The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with *inline keyboards* using callback queries, but can also help reduce clutter in conversations with regular chat bots. 
+
+### editMessageText
+Use this method to edit text sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
+
+```
+if (command ==="1_2") { 
+    sendTo('telegram', { 
+        user: user, 
+        text: 'New text before buttons', 
+        editMessageText: { 
+            options: { 
+                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                message_id: getState("telegram.0.communicate.requestMessageId").val, 
+                reply_markup: { 
+                    inline_keyboard: [ 
+                        [{ text: 'Button 1', callback_data: '2_1' }], 
+                        [{ text: 'Button 2', callback_data: '2_2' }] 
+                    ], 
+                } 
+            } 
+        } 
+    }); 
+}
+```
+*or new text for last message:*
+```
+if (command ==="1_2") { 
+    sendTo('telegram', { 
+        user: user, 
+        text: 'New text message', 
+        editMessageText: { 
+            options: { 
+                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                message_id: getState("telegram.0.communicate.requestMessageId").val, 
+            } 
+        } 
+    }); 
+}
+```
+
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).     
+
+### editMessageReplyMarkup
+Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned. 
+
+```
+if (command ==="1_2") { 
+    sendTo('telegram', { 
+        user: user, 
+        text: 'New text before buttons', 
+        editMessageText: { 
+            options: { 
+                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                message_id: getState("telegram.0.communicate.requestMessageId").val, 
+                reply_markup: { 
+                    inline_keyboard: [ 
+                        [{ text: 'Button 1', callback_data: '2_1' }], 
+                        [{ text: 'Button 2', callback_data: '2_2' }] 
+                    ], 
+                } 
+            } 
+        } 
+    }); 
+}
+```
+
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise). 
 
 ## Special commands
 
@@ -182,6 +289,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.5 (2017-07-18)
+* (Haba) inline keyboard and new functions: answerCallbackQuery, editMessageText, editMessageReplyMarkup
+
 ### 1.0.4 (2017-06-22)
 * (dwm) Fix longitude and latitude
 
