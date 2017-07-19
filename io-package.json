@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.5",
+        "version": "1.0.6",
         "news": {
+	    "1.0.6": {
+		 "en": "Fix an incorrect order of writing variables",
+		 "de": "Fix an incorrect order of writing variables",
+		 "ru": "Исправлена очередность записи переменных"
+	    },
 	    "1.0.5": {
 		 "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
 		 "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
