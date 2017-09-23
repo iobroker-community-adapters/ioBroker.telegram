@@ -21,7 +21,7 @@
     "message"
   ],
   "dependencies": {
-    "node-telegram-bot-api": "^0.24.0"
+    "node-telegram-bot-api": "^0.28.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
