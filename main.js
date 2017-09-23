@@ -300,7 +300,7 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (options && options.deleteMessage !== undefined) {
         adapter.log.debug('Send deleteMessage to "' + name + '"');
         if (bot) {
-            bot.deleteMessage(options.deleteMessage.chat_id, options.deleteMessage.message_id).then(function () {
+            bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id).then(function () {
                 options = null;
             }, function (error) {
                 if (options.chatId) {
