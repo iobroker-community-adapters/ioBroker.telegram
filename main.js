@@ -297,6 +297,20 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         } 
+    } else if (options && options.deleteMessage !== undefined) {
+        adapter.log.debug('Send deleteMessage to "' + name + '"');
+        if (bot) {
+            bot.deleteMessage(options.deleteMessage.chat_id, options.deleteMessage.message_id).then(function () {
+                options = null;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send deleteMessage [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send deleteMessage [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        } 
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) {
@@ -316,10 +330,11 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-    if (!text && text !== 0 && (!options || !options.latitude)) {
+    if ((text == undefined) && (typeof options !== 'object')) 
+      if(!text && text !== 0 && (!options || !options.latitude)) {
         adapter.log.warn('Invalid text: null');
         return;
-    }
+      }
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
