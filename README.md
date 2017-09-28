@@ -205,6 +205,7 @@ if (command ==="1_2") {
     });
 }
 ```
+
 *or new text for last message:*
 ```
 if (command ==="1_2") {
@@ -257,9 +258,12 @@ Returns *True* on success.
 ```
 if (command ==="delete") {
     sendTo('telegram', {
+        user: user,
         deleteMessage: {
-            chat_id: getState("telegram.0.communicate.requestChatId").val, 
-            message_id: getState("telegram.0.communicate.requestMessageId").val,
+            options: {
+                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                message_id: getState("telegram.0.communicate.requestMessageId").val
+            }
         }
     });
 }
