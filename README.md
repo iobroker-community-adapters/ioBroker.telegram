@@ -163,7 +163,6 @@ Use this method to send answers to callback queries sent from inline keyboards. 
 if (command ==="1_2") {
     sendTo('telegram', {
         user: user,
-        text: 'Button 1_2 pressed',
         answerCallbackQuery: {
             text: "Pressed!",
             showAlert: false // Optional parameter
@@ -205,6 +204,7 @@ if (command ==="1_2") {
     });
 }
 ```
+
 *or new text for last message:*
 ```
 if (command ==="1_2") {
@@ -249,6 +249,27 @@ if (command ==="1_2") {
 
 You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).
 
+### deleteMessage
+Use this method to delete a message, including service messages, with the following limitations:
+- A message can only be deleted if it was sent less than 48 hours ago.
+Returns *True* on success.
+
+```
+if (command ==="delete") {
+    sendTo('telegram', {
+        user: user,
+        deleteMessage: {
+            options: {
+                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                message_id: getState("telegram.0.communicate.requestMessageId").val
+            }
+        }
+    });
+}
+```
+
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/master/doc/api.md#TelegramBot+deleteMessage).
+
 ## Special commands
 
 ### /state stateName - read state value
@@ -289,6 +310,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.7 (2017-09-27)
+* (Haba) New function: deleteMessage. Update version lib node-telegram-bot-api
+
 ### 1.0.6 (2017-07-19)
 * (Haba) Fix an incorrect order of writing variables
 

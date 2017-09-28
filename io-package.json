@@ -4,8 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.6",
+        "version": "1.0.7",
         "news": {
+	    "1.0.7": {
+    		 "en": "added functions: deleteMessage",
+    		 "de": "added functions: deleteMessage",
+    		 "ru": "Добавлена функция: deleteMessage"
+    	    },
     	    "1.0.6": {
     		 "en": "Fix an incorrect order of writing variables",
     		 "de": "Fix an incorrect order of writing variables",
