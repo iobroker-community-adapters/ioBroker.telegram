@@ -163,7 +163,6 @@ Use this method to send answers to callback queries sent from inline keyboards. 
 if (command ==="1_2") {
     sendTo('telegram', {
         user: user,
-        text: 'Button 1_2 pressed',
         answerCallbackQuery: {
             text: "Pressed!",
             showAlert: false // Optional parameter
