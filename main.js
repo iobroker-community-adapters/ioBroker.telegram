@@ -634,7 +634,9 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        
+        bot.on('message', (msg) => {
+          adapter.log.debug("Received message: " + JSON.stringify(msg));
+        });
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
         // write received answer into variable
@@ -646,6 +648,12 @@ function connect() {
             adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
             });    
+        });
+        bot.on('polling_error', (error) => {
+          adapter.log.error(error.code);  // => 'EFATAL'
+        });
+        bot.on('webhook_error', (error) => {
+          adapter.log.error(error.code);  // => 'EPARSE'
         });
     }
 }
