@@ -593,7 +593,13 @@ function connect() {
     if (bot) {
         if (!adapter.config.server) {
             try {
-                bot.initPolling();
+                if (bot.isPolling())
+                    adapter.log.debug("bot polling = true");
+                else {
+                    adapter.log.debug("bot restart");
+                    bot.stopPolling();
+                    bot.startPolling();
+                }
             } catch (e) {
 
             }
@@ -650,10 +656,10 @@ function connect() {
             });    
         });
         bot.on('polling_error', (error) => {
-          adapter.log.error(error.code);  // => 'EFATAL'
+          adapter.log.error('polling_error:' + error.code + ", " + error);  // => 'EFATAL'
         });
         bot.on('webhook_error', (error) => {
-          adapter.log.error(error.code);  // => 'EPARSE'
+          adapter.log.error('webhook_error:' + error.code + ", " + error);  // => 'EPARSE'
         });
     }
 }
