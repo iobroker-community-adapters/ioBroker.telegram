@@ -4,22 +4,27 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.7",
+        "version": "1.0.8",
         "news": {
-	    "1.0.7": {
-    		 "en": "added functions: deleteMessage",
-    		 "de": "added functions: deleteMessage",
-    		 "ru": "Добавлена функция: deleteMessage"
+            "1.0.8": {
+                "en": "Removed deprecated function\nCatch webhook errors",
+                "de": "Entfernen der veralteten Funktion\nFangen Webhook-Fehler ab",
+                "ru": "Удалена устаревшую функцию\nОтловля ошибок webhook"
+            },
+	        "1.0.7": {
+    		    "en": "added functions: deleteMessage",
+    		    "de": "added functions: deleteMessage",
+    		    "ru": "Добавлена функция: deleteMessage"
     	    },
     	    "1.0.6": {
-    		 "en": "Fix an incorrect order of writing variables",
-    		 "de": "Fix an incorrect order of writing variables",
-    		 "ru": "Исправлена очередность записи переменных"
+    		    "en": "Fix an incorrect order of writing variables",
+    		    "de": "Fix an incorrect order of writing variables",
+    		    "ru": "Исправлена очередность записи переменных"
     	    },
     	    "1.0.5": {
-    		 "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-    		 "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-    		 "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
+    		    "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+    		    "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+    		    "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
     	    },
     	    "1.0.4": {
                 "en": "Fix longitude and latitude",

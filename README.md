@@ -310,6 +310,10 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.8 (2017-10-03)
+* (Haba1234) initPolling() this is deprecated. -> startPolling()
+* (Haba1234) Add log polling_error and webhook_error.
+
 ### 1.0.7 (2017-09-27)
 * (Haba) New function: deleteMessage. Update version lib node-telegram-bot-api
 
