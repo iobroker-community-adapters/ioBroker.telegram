@@ -1,5 +1,5 @@
 ![Logo](admin/telegram.png)
-ioBroker telegram Adapter
+# ioBroker telegram Adapter
 ==============
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
@@ -8,6 +8,7 @@ ioBroker telegram Adapter
 
 [![NPM](https://nodei.co/npm/iobroker.telegram.png?downloads=true)](https://nodei.co/npm/iobroker.telegram/)
 
+## Configuration
 Ask [@BotFather](https://telegram.me/botfather) to create new bot ```/newbot```.
 
 You will be asked to enter name of the bot and then the username.
