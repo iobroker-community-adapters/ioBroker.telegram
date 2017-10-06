@@ -594,11 +594,16 @@ function connect() {
         if (!adapter.config.server) {
             try {
                 if (bot.isPolling())
-                    adapter.log.debug("bot polling = true");
+                    adapter.log.debug("bot polling OK");
                 else {
-                    adapter.log.debug("bot restart");
-                    bot.stopPolling();
-                    bot.startPolling();
+                    adapter.log.debug("bot restarting...");
+                    bot.stopPolling().then(
+                        response => {
+                            adapter.log.debug("Start Polling");
+                            bot.startPolling();
+                        },
+                        error => adapter.log.error("Error stop polling")
+                    );
                 }
             } catch (e) {
 
@@ -660,6 +665,14 @@ function connect() {
         });
         bot.on('webhook_error', (error) => {
           adapter.log.error('webhook_error:' + error.code + ", " + error);  // => 'EPARSE'
+          adapter.log.debug("bot restarting...");
+          bot.stopPolling().then(
+              response => {
+                  adapter.log.debug("Start Polling");
+                  bot.startPolling();
+              },
+              error => adapter.log.error("Error stop polling")
+          );
         });
     }
 }
