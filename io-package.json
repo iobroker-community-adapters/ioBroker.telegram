@@ -1,6 +1,6 @@
 {
     "common": {
-        "name":                     "telegram",
+        "name": "telegram",
         "require": {
             "js-controller": ">0.6.6"
         },
@@ -11,22 +11,22 @@
                 "de": "Entfernen der veralteten Funktion\nFangen Webhook-Fehler ab",
                 "ru": "Удалена устаревшую функцию\nОтловля ошибок webhook"
             },
-	        "1.0.7": {
-    		    "en": "added functions: deleteMessage",
-    		    "de": "added functions: deleteMessage",
-    		    "ru": "Добавлена функция: deleteMessage"
-    	    },
-    	    "1.0.6": {
-    		    "en": "Fix an incorrect order of writing variables",
-    		    "de": "Fix an incorrect order of writing variables",
-    		    "ru": "Исправлена очередность записи переменных"
-    	    },
-    	    "1.0.5": {
-    		    "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-    		    "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-    		    "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
-    	    },
-    	    "1.0.4": {
+            "1.0.7": {
+                "en": "added functions: deleteMessage",
+                "de": "added functions: deleteMessage",
+                "ru": "Добавлена функция: deleteMessage"
+            },
+            "1.0.6": {
+                "en": "Fix an incorrect order of writing variables",
+                "de": "Fix an incorrect order of writing variables",
+                "ru": "Исправлена очередность записи переменных"
+            },
+            "1.0.5": {
+                "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
+            },
+            "1.0.4": {
                 "en": "Fix longitude and latitude",
                 "de": "Korrigiere longitude and latitude",
                 "ru": "Исправлено сообщение с координатами"
@@ -82,8 +82,8 @@
                 "ru": "restart connection every hour"
             }
         },
-        "title":                    "Telegram Adapter",
-        "desc":                     {
+        "title": "Telegram Adapter",
+        "desc": {
             "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
             "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
             "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через броузер"
@@ -91,48 +91,49 @@
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
-        "license":                  "MIT",
-        "platform":                 "Javascript/Node.js",
-        "mode":                     "daemon",
-        "messagebox":               true,
-        "readme":                   "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
-        "loglevel":                 "info",
-        "icon":                     "telegram.png",
-        "keywords":                 ["notification", "telegram", "message"],
-        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
-		"type":                     "communication",
-        "blockly":                  true,
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "messagebox": true,
+        "readme": "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
+        "loglevel": "info",
+        "icon": "telegram.png",
+        "keywords": [
+            "notification",
+            "telegram",
+            "message"
+        ],
+        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
+        "type": "messaging",
+        "blockly": true,
         "config": {
-            "minWidth":   800,
-            "width":      1224,
-            "height":     600
+            "minWidth": 800,
+            "width": 1224,
+            "height": 600
         }
     },
     "native": {
-        "server":         "false",
-        "port":           8443,
-        "bind":           "0.0.0.0",
-        "token":          "",
-        "password":       "",
-        "text2command":   "",
-        "rememberUsers":  true,
-        "restarting":     "_",
-        "restarted":      "_",
-        "url":            "",
-        "certPublic":     "",
-        "certPrivate":    "",
-        "certChained":    "",
-
-        "leEnabled":      false,
-        "leUpdate":       false,
-        "leCheckPort":    80
+        "server": "false",
+        "port": 8443,
+        "bind": "0.0.0.0",
+        "token": "",
+        "password": "",
+        "text2command": "",
+        "rememberUsers": true,
+        "restarting": "_",
+        "restarted": "_",
+        "url": "",
+        "certPublic": "",
+        "certPrivate": "",
+        "certChained": "",
+        "leEnabled": false,
+        "leUpdate": false,
+        "leCheckPort": 80
     },
-    "objects": [
-
-    ],
+    "objects": [],
     "instanceObjects": [
         {
-            "_id":  "info",
+            "_id": "info",
             "type": "channel",
             "common": {
                 "name": "Information"
@@ -140,86 +141,86 @@
             "native": {}
         },
         {
-            "_id":  "info.connection",
+            "_id": "info.connection",
             "type": "state",
             "common": {
-                "role":  "indicator.connected",
-                "name":  "If connected to Telegram server",
-                "type":  "boolean",
-                "read":  true,
+                "role": "indicator.connected",
+                "name": "If connected to Telegram server",
+                "type": "boolean",
+                "read": true,
                 "write": false,
-                "def":   false
+                "def": false
             },
             "native": {}
         },
         {
-            "_id":  "communicate.request",
+            "_id": "communicate.request",
             "type": "state",
             "common": {
-                "role":  "text",
-                "name":  "Last received request",
-                "type":  "string",
-                "read":  true,
+                "role": "text",
+                "name": "Last received request",
+                "type": "string",
+                "read": true,
                 "write": false
             },
             "native": {}
         },
         {
-            "_id":  "communicate.requestChatId",
+            "_id": "communicate.requestChatId",
             "type": "state",
             "common": {
-                "role":  "text",
-                "name":  "Chat ID of last received request",
-                "type":  "string",
-                "read":  true,
+                "role": "text",
+                "name": "Chat ID of last received request",
+                "type": "string",
+                "read": true,
                 "write": false
             },
             "native": {}
         },
         {
-            "_id":  "communicate.requestMessageId",
+            "_id": "communicate.requestMessageId",
             "type": "state",
             "common": {
-                "role":  "text",
-                "name":  "Message ID of last received request",
-                "type":  "string",
-                "read":  true,
+                "role": "text",
+                "name": "Message ID of last received request",
+                "type": "string",
+                "read": true,
                 "write": false
             },
             "native": {}
         },
         {
-            "_id":  "communicate.requestUserId",
+            "_id": "communicate.requestUserId",
             "type": "state",
             "common": {
-                "role":  "text",
-                "name":  "User ID of last received request",
-                "type":  "string",
-                "read":  true,
+                "role": "text",
+                "name": "User ID of last received request",
+                "type": "string",
+                "read": true,
                 "write": false
             },
             "native": {}
         },
         {
-            "_id":  "communicate.response",
+            "_id": "communicate.response",
             "type": "state",
             "common": {
-                "role":  "text",
-                "name":  "Send text through telegram",
-                "type":  "string",
-                "read":  true,
+                "role": "text",
+                "name": "Send text through telegram",
+                "type": "string",
+                "read": true,
                 "write": true
             },
             "native": {}
         },
         {
-            "_id":  "communicate.users",
+            "_id": "communicate.users",
             "type": "state",
             "common": {
-                "role":  "text",
-                "name":  "Users as json, which are constantly authenticated",
-                "type":  "string",
-                "read":  false,
+                "role": "text",
+                "name": "Users as json, which are constantly authenticated",
+                "type": "string",
+                "read": false,
                 "write": false
             },
             "native": {}
