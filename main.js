@@ -209,7 +209,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
+    } else if (text && text.match(/\.(txt|doc|docx|csv|gif)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send document to "' + name + '": ' + text);
         if (bot) {
             bot.sendDocument(dest, text, options).then(function () {
