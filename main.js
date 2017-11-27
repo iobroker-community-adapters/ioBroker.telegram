@@ -194,7 +194,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.mp4$/i) && fs.existsSync(text)) {
+    } else if (text && text.match(/\.(mp4|gif)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
         if (bot) {
             bot.sendVideo(dest, text, options).then(function () {
