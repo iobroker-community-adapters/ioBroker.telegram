@@ -6,6 +6,11 @@
         },
         "version": "1.0.8",
         "news": {
+            "1.0.9": {
+                "en": "Allow send gif",
+                "de": "GIF zulassen",
+                "ru": "Разрешить отправку gif"
+            },
             "1.0.8": {
                 "en": "Removed deprecated function\nCatch webhook errors",
                 "de": "Entfernen der veralteten Funktion\nFangen Webhook-Fehler ab",

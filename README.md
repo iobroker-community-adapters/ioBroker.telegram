@@ -311,6 +311,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.9 (2017-11-27)
+* (kirovilya) Allow send gif via sendDocument
+
 ### 1.0.8 (2017-10-03)
 * (Haba1234) initPolling() this is deprecated. -> startPolling()
 * (Haba1234) Add log polling_error and webhook_error.
