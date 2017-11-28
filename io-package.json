@@ -4,7 +4,7 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.8",
+        "version": "1.0.9",
         "news": {
             "1.0.9": {
                 "en": "Allow send gif",
