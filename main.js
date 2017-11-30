@@ -151,12 +151,14 @@ function handleWebHook(req, res) {
 }
 
 function _sendMessageHelper(dest, name, text, options) {
+    var count = 0;
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
             bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options).then(function () {
                 adapter.log.debug('Location sent');
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send location [chatId - ' + options.chatId + ']: ' + error);
@@ -171,6 +173,7 @@ function _sendMessageHelper(dest, name, text, options) {
         if (bot) bot.sendChatAction(dest, text).then(function () {
             adapter.log.debug('Action sent');
             options = null;
+            count++;
         }, function (error) {
             if (options.chatId) {
                 adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
@@ -185,6 +188,7 @@ function _sendMessageHelper(dest, name, text, options) {
             bot.sendSticker(dest, text, options).then(function () {
                 options = null;
                 adapter.log.debug('Sticker sent');
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
@@ -200,6 +204,7 @@ function _sendMessageHelper(dest, name, text, options) {
             bot.sendVideo(dest, text, options).then(function () {
                 adapter.log.debug('Video sent');
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
@@ -215,6 +220,7 @@ function _sendMessageHelper(dest, name, text, options) {
             bot.sendDocument(dest, text, options).then(function () {
                 adapter.log.debug('Document sent');
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
@@ -230,6 +236,7 @@ function _sendMessageHelper(dest, name, text, options) {
             bot.sendAudio(dest, text, options).then(function () {
                 adapter.log.debug('Audio sent');
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
@@ -245,6 +252,7 @@ function _sendMessageHelper(dest, name, text, options) {
             bot.sendPhoto(dest, text, options).then(function () {
                 adapter.log.debug('Photo sent');
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
@@ -260,6 +268,7 @@ function _sendMessageHelper(dest, name, text, options) {
         if (bot) {
             bot.answerCallbackQuery(callbackQueryId,options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert).then(function () {
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send answerCallbackQuery [chatId - ' + options.chatId + ']: ' + error);
@@ -274,6 +283,7 @@ function _sendMessageHelper(dest, name, text, options) {
         if (bot) {
             bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options).then(function () {
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send editMessageReplyMarkup [chatId - ' + options.chatId + ']: ' + error);
@@ -288,6 +298,7 @@ function _sendMessageHelper(dest, name, text, options) {
         if (bot) {
             bot.editMessageText(text, options.editMessageText.options).then(function () {
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send editMessageText [chatId - ' + options.chatId + ']: ' + error);
@@ -302,6 +313,7 @@ function _sendMessageHelper(dest, name, text, options) {
         if (bot) {
             bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id).then(function () {
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send deleteMessage [chatId - ' + options.chatId + ']: ' + error);
@@ -317,6 +329,7 @@ function _sendMessageHelper(dest, name, text, options) {
             bot.sendMessage(dest, text || '', options).then(function () {
                 adapter.log.debug('Message sent');
                 options = null;
+                count++;
             }, function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
@@ -327,6 +340,8 @@ function _sendMessageHelper(dest, name, text, options) {
             });
         }
     }
+
+    return count;
 }
 
 function sendMessage(text, user, chatId, options) {
@@ -348,8 +363,7 @@ function sendMessage(text, user, chatId, options) {
     }
 
     if (chatId) {
-        _sendMessageHelper(chatId, 'chat', text, options);
-        return 1;
+        return _sendMessageHelper(chatId, 'chat', text, options);
     }
 
     var count = 0;
@@ -358,8 +372,7 @@ function sendMessage(text, user, chatId, options) {
     if (user) {
         for (u in users) {
             if (users[u] === user) {
-                count++;
-                _sendMessageHelper(u, user, text, options);
+                count +=_sendMessageHelper(u, user, text, options);
                 break;
             }
         }
@@ -372,16 +385,14 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
-                count++;
-                _sendMessageHelper(u, m[1], text, options);
+                count +=_sendMessageHelper(u, m[1], text, options);
                 break;
             }
         }
     } else {
         // Send to all users
         for (u in users) {
-            count++;
-            _sendMessageHelper(u, users[u], text, options);
+            count += _sendMessageHelper(u, users[u], text, options);
         }
     }
     return count;
@@ -617,14 +628,14 @@ function connect() {
     } else {
         if (adapter.config.server) {
             // Setup server way
-            bot = new TelegramBot(adapter.config.token, {polling: false});
+            bot = new TelegramBot(adapter.config.token, {polling: false, filepath: true});
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
             }
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-            bot = new TelegramBot(adapter.config.token, {polling: true});
+            bot = new TelegramBot(adapter.config.token, {polling: true, filepath: true});
             bot.setWebHook('');
         }
 
