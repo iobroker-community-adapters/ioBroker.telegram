@@ -53,7 +53,7 @@ adapter.on('ready', function () {
             if (server.server) {
                 server.server.__server = server;
                 adapter.getPort(adapter.config.port, function (port) {
-                    if (port != adapter.config.port && !adapter.config.findNextPort) {
+                    if (parseInt(port, 10) !== adapter.config.port && !adapter.config.findNextPort) {
                         adapter.log.error('port ' + adapter.config.port + ' already in use');
                         process.exit(1);
                     }
@@ -256,7 +256,9 @@ function _sendMessageHelper(dest, name, text, options) {
         }
     } else if (options && options.answerCallbackQuery !== undefined) {
         adapter.log.debug('Send answerCallbackQuery to "' + name +'"');
-        if (options.answerCallbackQuery.showAlert == undefined) options.answerCallbackQuery.showAlert = false;
+        if (options.answerCallbackQuery.showAlert === undefined) {
+            options.answerCallbackQuery.showAlert = false;
+        }
         if (bot) {
             bot.answerCallbackQuery(callbackQueryId,options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert).then(function () {
                 options = null;
@@ -330,16 +332,17 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-    if ((text == undefined) && (typeof options !== 'object')) 
-      if(!text && text !== 0 && (!options || !options.latitude)) {
-        adapter.log.warn('Invalid text: null');
-        return;
-      }
+    if (!text && (typeof options !== 'object'))  {
+        if (!text && text !== 0 && (!options || !options.latitude)) {
+            adapter.log.warn('Invalid text: null');
+            return;
+        }
+    }
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text !== undefined) delete options.text;
-        if (options.user !== undefined) delete options.user;
+        if (options.text !== undefined)   delete options.text;
+        if (options.user !== undefined)   delete options.user;
     }
 
     // convert
@@ -437,7 +440,7 @@ function decrypt(key, value) {
 function storeUser(id, name) {
     if (users[id] !== name) {
         for (var u in users) {
-            if (users[u] == name) {
+            if (users[u] === name) {
                 delete users[u];
             }
         }
@@ -594,15 +597,17 @@ function connect() {
         if (!adapter.config.server) {
             try {
                 if (bot.isPolling())
-                    adapter.log.debug("bot polling OK");
+                    adapter.log.debug('bot polling OK');
                 else {
-                    adapter.log.debug("bot restarting...");
+                    adapter.log.debug('bot restarting...');
                     bot.stopPolling().then(
-                        response => {
-                            adapter.log.debug("Start Polling");
+                        function (response) {
+                            adapter.log.debug('Start Polling');
                             bot.startPolling();
                         },
-                        error => adapter.log.error("Error stop polling")
+                        function (error) {
+                            adapter.log.error('Error stop polling: ' + error);
+                        }
                     );
                 }
             } catch (e) {
@@ -645,8 +650,8 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        bot.on('message', (msg) => {
-          adapter.log.debug("Received message: " + JSON.stringify(msg));
+        bot.on('message', function (msg) {
+          adapter.log.debug('Received message: ' + JSON.stringify(msg));
         });
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
@@ -660,18 +665,20 @@ function connect() {
                 if (err) adapter.log.error(err);
             });    
         });
-        bot.on('polling_error', (error) => {
-          adapter.log.error('polling_error:' + error.code + ", " + error);  // => 'EFATAL'
+        bot.on('polling_error', function (error) {
+          adapter.log.error('polling_error:' + error.code + ', ' + error);  // => 'EFATAL'
         });
-        bot.on('webhook_error', (error) => {
-          adapter.log.error('webhook_error:' + error.code + ", " + error);  // => 'EPARSE'
-          adapter.log.debug("bot restarting...");
+        bot.on('webhook_error', function (error) {
+          adapter.log.error('webhook_error:' + error.code + ', ' + error);  // => 'EPARSE'
+          adapter.log.debug('bot restarting...');
           bot.stopPolling().then(
-              response => {
-                  adapter.log.debug("Start Polling");
+              function (response) {
+                  adapter.log.debug('Start Polling');
                   bot.startPolling();
               },
-              error => adapter.log.error("Error stop polling")
+              function (error) {
+                  adapter.log.error('Error stop polling: ' + error);
+              }
           );
         });
     }
