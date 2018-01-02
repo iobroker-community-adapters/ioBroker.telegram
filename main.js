@@ -12,7 +12,7 @@
 'use strict';
 
 var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
-var adapter = utils.adapter('telegram');
+var adapter = utils.Adapter('telegram');
 var _ = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
