@@ -1,5 +1,5 @@
 ![Logo](admin/telegram.png)
-ioBroker telegram Adapter
+# ioBroker telegram Adapter
 ==============
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
@@ -8,6 +8,7 @@ ioBroker telegram Adapter
 
 [![NPM](https://nodei.co/npm/iobroker.telegram.png?downloads=true)](https://nodei.co/npm/iobroker.telegram/)
 
+## Configuration
 Ask [@BotFather](https://telegram.me/botfather) to create new bot ```/newbot```.
 
 You will be asked to enter name of the bot and then the username.
@@ -310,6 +311,13 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.9 (2017-11-27)
+* (kirovilya) Allow send gif via sendDocument
+
+### 1.0.8 (2017-10-03)
+* (Haba1234) initPolling() this is deprecated. -> startPolling()
+* (Haba1234) Add log polling_error and webhook_error.
+
 ### 1.0.7 (2017-09-27)
 * (Haba) New function: deleteMessage. Update version lib node-telegram-bot-api
 
@@ -385,7 +393,7 @@ TODO:
 
 The MIT License (MIT)
 
-Copyright (c) 2016, bluefox<dogafox@gmail.com>
+Copyright (c) 2016-2017, bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
