@@ -1,7 +1,11 @@
-Gruntfile.js
+gulpfile.js
 tasks
-test
-tmp
+node_modules
 .idea
+.git
+/node_modules
+test
 .travis.yml
 appveyor.yml
+gulpfile.js
+admin/i18n
