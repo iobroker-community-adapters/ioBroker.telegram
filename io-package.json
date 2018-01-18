@@ -8,14 +8,14 @@
         "news": {
             "1.0.10": {
                 "en": "updating for Admin3",
-                "de": "updating for Admin3",
-                "ru": "updating for Admin3",
-                "pt": "updating for Admin3",
-                "nl": "updating for Admin3",
-                "fr": "updating for Admin3",
-                "it": "updating for Admin3",
-                "es": "updating for Admin3",
-                "pl": "updating for Admin3"
+                "de": "Aktualisierung für Admin3",
+                "ru": "обновление для Admin3",
+                "pt": "atualizando o Admin3",
+                "nl": "updaten voor Admin3",
+                "fr": "mise à jour pour Admin3",
+                "it": "aggiornamento per Admin3",
+                "es": "actualización para Admin3",
+                "pl": "aktualizacja dla Admin3"
             },
             "1.0.9": {
                 "en": "Allow send gif",
@@ -71,130 +71,9 @@
                 "it": "Aggiunto supporto per tastiera integrata, funzioni aggiunte: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
                 "es": "Se agregó soporte para teclado en línea, funciones añadidas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
                 "pl": "Dodano obsługę wbudowanej klawiatury, dodano funkcje: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
-            },
-            "1.0.4": {
-                "en": "Fix longitude and latitude",
-                "de": "Korrigiere longitude and latitude",
-                "ru": "Исправлено долгота и широта",
-                "pt": "Corrigir longitude e latitude",
-                "nl": "Lengte- en breedtegraad corrigeren",
-                "fr": "Fixer la longitude et la latitude",
-                "it": "Correggere longitudine e latitudine",
-                "es": "Repare la longitud y la latitud",
-                "pl": "Napraw długość i szerokość geograficzną"
-            },
-            "1.0.3": {
-                "en": "Fix position message",
-                "de": "Korrigiere Positionsmeldung",
-                "ru": "Исправлено сообщение о местоположении",
-                "pt": "Corrigir a mensagem de posição",
-                "nl": "Positiebericht repareren",
-                "fr": "Corriger le message de position",
-                "it": "Correggi messaggio di posizione",
-                "es": "Mensaje de posición de reparación",
-                "pl": "Napraw wiadomość o pozycji"
-            },
-            "1.0.2": {
-                "en": "Show only installed instances in blockly",
-                "de": "Zeige nur installierten Instanzen im Blockly",
-                "ru": "Показывать только установленные инстанции в Blockly",
-                "pt": "Mostrar apenas instâncias instaladas em bloqueio",
-                "nl": "Toon alleen geïnstalleerde instanties in blockly",
-                "fr": "Afficher uniquement les instances installées dans Blockly",
-                "it": "Mostra solo istanze installate in blocco",
-                "es": "Mostrar solo instancias instaladas en blockly",
-                "pl": "Pokaż tylko zainstalowane instancje w bloku"
-            },
-            "1.0.1": {
-                "en": "Show user name in error message",
-                "de": "Zeige Username bei Fehler",
-                "ru": "Показывать имя пользователя в сообщении об ошибке",
-                "pt": "Mostrar nome de usuário em mensagem de erro",
-                "nl": "Toon gebruikersnaam in foutmelding",
-                "fr": "Afficher le nom d'utilisateur dans le message d'erreur",
-                "it": "Mostra il nome utente nel messaggio di errore",
-                "es": "Mostrar nombre de usuario en mensaje de error",
-                "pl": "Pokaż nazwę użytkownika w komunikacie o błędzie"
-            },
-            "1.0.0": {
-                "en": "Server mode, no polling",
-                "de": "Server-Modus, kein Polling",
-                "ru": "Режим сервера, без поллинга",
-                "pt": "Modo servidor, sem pesquisa",
-                "nl": "Servermodus, geen polling",
-                "fr": "Mode serveur, pas d'interrogation",
-                "it": "Modalità server, nessun polling",
-                "es": "Modo de servidor, sin votación",
-                "pl": "Tryb serwera, bez odpytywania"
-            },
-            "0.4.4": {
-                "en": "support of blockly",
-                "de": "Blockly-Unterstützung",
-                "ru": "Поддержка blockly",
-                "pt": "Suporte de bloqueio",
-                "nl": "Ondersteuning van blockly",
-                "fr": "Support de bloc",
-                "it": "Supporto di blockly",
-                "es": "Soporte de blockly",
-                "pl": "Wsparcie blokowe"
-            },
-            "0.4.3": {
-                "en": "Filter out double messages",
-                "de": "Ausfiltern doppelte Meldungen",
-                "ru": "Отфильтровывать двойные сообщения",
-                "pt": "Filtre as mensagens duplas",
-                "nl": "Filter dubbele berichten",
-                "fr": "Filtrer les doubles messages",
-                "it": "Filtra i messaggi doppi",
-                "es": "Filtrar mensajes dobles",
-                "pl": "Odfiltruj podwójne wiadomości"
-            },
-            "0.4.2": {
-                "en": "Translations\nconfigurable restarting/started texts",
-                "de": "Übersetzungen\nkonfigurierbare Neustart/gestartete Texte",
-                "ru": "Переводы\nконфигурируемый перезапуск/запуск текстов",
-                "pt": "Traduções\nfiguravel reiniciar/iniciar textos",
-                "nl": "Vertalingen\nconfigureerbare herstart/gestarte teksten",
-                "fr": "Traductions\nconfigurable redémarrage/textes démarrés",
-                "it": "Traduzioni\nconfigurable riavvio/avvio di testi",
-                "es": "Traducciones\n reinicio configurable/textos iniciados",
-                "pl": "Tłumaczenia\nponfigurowalne wznawianie/uruchamianie tekstów"
-            },
-            "0.4.1": {
-                "en": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
-                "de": "Antwort auf chatId und nicht auf userId\nSchneiden Sie Nachrichten mit @\nfügen Sie neue Zustände hinzu: requestChatId und requestUserId",
-                "ru": "Ответ на chatId и не на userId\nвырезание сообщений с помощью @\n добавления новых состояний: requestChatId и requestUserId",
-                "pt": "Resposta a chatId e não a userId\ncortar mensagens com @\nadicionar novos estados: requestChatId e requestUserId",
-                "nl": "Reactie op chatId en niet op userId\nberichten knippen met @\nnieuwe toestanden toevoegen: requestChatId en requestUserId",
-                "fr": "Réponse à chatId et non à userId\ncouper les messages avec @\najouter de nouveaux états: requestChatId et requestUserId",
-                "it": "Risposta a chatId e non a userId\ntagliare messaggi con @\naggiungere nuovi stati: requestChatId e requestUserId",
-                "es": "Respuesta a chatId y no a userId\ncortar mensajes con @\nagregar nuevos estados: requestChatId y requestUserId",
-                "pl": "Odpowiedź na chatId, a nie na id_użytkownika\nwycinanie wiadomości za pomocą @\nDodawanie nowych stanów: requestChatId i requestUserId"
-            },
-            "0.4.0": {
-                "en": "Allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
-                "de": "Senden von Nachrichten an Chats über Chat-ID zulassen\nUnterstützung von Video (mp4), Audio, Dokument, Ort, Aufkleber, Aktion",
-                "ru": "Разрешить отправлять сообщения чатам через chat-ID\nподдержка видео (mp4), аудио, документ, местоположение, наклейка, действие",
-                "pt": "Permitir enviar mensagens para bate-papos via chat-ID\nsuporte de vídeo (mp4), áudio, documento, localização, adesivo, ação",
-                "nl": "Sta berichten naar chats toe via chat-ID\nondersteuning van video (mp4), audio, document, locatie, sticker, actie",
-                "fr": "Autoriser l'envoi de messages à des chats via l'ID de discussion\nsupport de la vidéo (mp4), audio, document, emplacement, autocollant, action",
-                "it": "Permetti di inviare messaggi a chat tramite ID chat\nsupporto di video (mp4), audio, documenti, posizione, sticker, azione",
-                "es": "Permitir enviar mensajes a chats a través de chat-ID\nsoporte de video (mp4), audio, documento, ubicación, etiqueta, acción",
-                "pl": "Zezwalaj na wysyłanie wiadomości na czaty przy użyciu identyfikatora czatu\nobsługa wideo (MP4), audio, dokument, lokalizacja, naklejki, akcja"
-            },
-            "0.3.0": {
-                "en": "Restart connection every hour",
-                "de": "Starte jede Stunde neu",
-                "ru": "Перезапускать соединение каждый час",
-                "pt": "Reinicie a conexão a cada hora",
-                "nl": "Start elk uur de verbinding opnieuw",
-                "fr": "Redémarrez la connexion toutes les heures",
-                "it": "Riavvia la connessione ogni ora",
-                "es": "Reiniciar la conexión cada hora",
-                "pl": "Ponownie uruchom połączenie co godzinę"
             }
         },
-        "title": "Telegram Adapter",
+        "title": "Telegram",
         "desc": {
             "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
             "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
