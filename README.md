@@ -311,6 +311,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.9 (2018-01-18)
+* (Haba) Updating for Admin3
+
 ### 1.0.9 (2017-11-27)
 * (kirovilya) Allow send gif via sendDocument
 

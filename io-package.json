@@ -4,94 +4,86 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.9",
+        "version": "1.0.10",
         "news": {
+            "1.0.10": {
+                "en": "updating for Admin3",
+                "de": "Aktualisierung für Admin3",
+                "ru": "обновление для Admin3",
+                "pt": "atualizando o Admin3",
+                "nl": "updaten voor Admin3",
+                "fr": "mise à jour pour Admin3",
+                "it": "aggiornamento per Admin3",
+                "es": "actualización para Admin3",
+                "pl": "aktualizacja dla Admin3"
+            },
             "1.0.9": {
                 "en": "Allow send gif",
                 "de": "GIF zulassen",
-                "ru": "Разрешить отправку gif"
+                "ru": "Разрешить отправку gif",
+                "pt": "Permitir enviar gif",
+                "nl": "Sta send gif toe",
+                "fr": "Autoriser l'envoi gif",
+                "it": "Consenti invio GIF",
+                "es": "Permitir enviar gif",
+                "pl": "Zezwalaj na wysyłanie gif"
             },
             "1.0.8": {
                 "en": "Removed deprecated function\nCatch webhook errors",
                 "de": "Entfernen der veralteten Funktion\nFangen Webhook-Fehler ab",
-                "ru": "Удалена устаревшую функцию\nОтловля ошибок webhook"
+                "ru": "Удалена устаревшая функция\nПроверка ошибок webhook",
+                "pt": "Função desativada removida\nCatch webhook errors",
+                "nl": "Gedeprecieerde functie verwijderd\nControleer webhook-fouten",
+                "fr": "Suppression de la fonction obsolète\nContrôle des erreurs de webhook",
+                "it": "Rimossa funzione deprecata\nCatch errori di webhook",
+                "es": "Se eliminó la función en desuso\nCatch webhook errors",
+                "pl": "Usunięto przestarzałą funkcję\nZaprojektuj błędy webhook"
             },
             "1.0.7": {
-                "en": "added functions: deleteMessage",
-                "de": "added functions: deleteMessage",
-                "ru": "Добавлена функция: deleteMessage"
+                "en": "Added functions: deleteMessage",
+                "de": "Funktionen hinzugefügt: deleteMessage",
+                "ru": "Добавлены функции: deleteMessage",
+                "pt": "Funções adicionadas: deleteMessage",
+                "nl": "Toegevoegde functies: deleteMessage",
+                "fr": "Fonctions ajoutées: deleteMessage",
+                "it": "Funzioni aggiunte: deleteMessage",
+                "es": "Funciones añadidas: deleteMessage",
+                "pl": "Dodano funkcje: deleteMessage"
             },
             "1.0.6": {
                 "en": "Fix an incorrect order of writing variables",
-                "de": "Fix an incorrect order of writing variables",
-                "ru": "Исправлена очередность записи переменных"
+                "de": "Korrigiert eine falsche Reihenfolge beim Schreiben von Variablen",
+                "ru": "Исправлена очередность записи переменных",
+                "pt": "Corrigir uma ordem incorreta de escrever variáveis",
+                "nl": "Een onjuiste volgorde van schrijfvariabelen corrigeren",
+                "fr": "Correction d'un ordre incorrect de variables d'écriture",
+                "it": "Correggere un ordine errato di variabili di scrittura",
+                "es": "Repara un orden incorrecto de variables de escritura",
+                "pl": "Napraw nieprawidłową kolejność zapisywania zmiennych"
             },
             "1.0.5": {
                 "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
                 "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
-            },
-            "1.0.4": {
-                "en": "Fix longitude and latitude",
-                "de": "Korrigiere longitude and latitude",
-                "ru": "Исправлено сообщение с координатами"
-            },
-            "1.0.3": {
-                "en": "Fix position message",
-                "de": "Korrigiere Positionsmeldung",
-                "ru": "Исправлено сообщение с координатами"
-            },
-            "1.0.2": {
-                "en": "show only installed instances in blockly",
-                "de": "Zeige nur installierten Instanzen im Blockly",
-                "ru": "Показывать только установленные инстанции в Blockly"
-            },
-            "1.0.1": {
-                "en": "Show user name in error message",
-                "de": "Zeige Username bei Fehler",
-                "ru": "Показывать имя пользователя при ошибках"
-            },
-            "1.0.0": {
-                "en": "Server mode, no polling",
-                "de": "Server-Modus, kein Polling",
-                "ru": "Поддержка сервера без поллинга"
-            },
-            "0.4.4": {
-                "en": "support of blockly",
-                "de": "Blockly-Unterstützung",
-                "ru": "Поддержка blockly"
-            },
-            "0.4.3": {
-                "en": "filter out double messages",
-                "de": "Ausfiltern doppelte Meldungen",
-                "ru": "Отфильтровывать двойные сообщения"
-            },
-            "0.4.2": {
-                "en": "translations\nconfigurable restarting/started texts",
-                "de": "translations\nconfigurable restarting/started texts",
-                "ru": "translations\nconfigurable restarting/started texts"
-            },
-            "0.4.1": {
-                "en": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
-                "de": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
-                "ru": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId"
-            },
-            "0.4.0": {
-                "en": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
-                "de": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
-                "ru": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action"
-            },
-            "0.3.0": {
-                "en": "restart connection every hour",
-                "de": "restart connection every hour",
-                "ru": "restart connection every hour"
+                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "pt": "Adicionado suporte para teclado inline, funções adicionadas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "nl": "Ondersteuning toegevoegd voor inline-toetsenbord, toegevoegde functies: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "fr": "Ajout du support pour le clavier en ligne, des fonctions ajoutées: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "it": "Aggiunto supporto per tastiera integrata, funzioni aggiunte: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "es": "Se agregó soporte para teclado en línea, funciones añadidas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "pl": "Dodano obsługę wbudowanej klawiatury, dodano funkcje: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
             }
         },
-        "title": "Telegram Adapter",
+        "title": "Telegram",
         "desc": {
             "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
             "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
-            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через броузер"
+            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через браузер",
+            "pt": "Este adaptador permite enviar e receber mensagens de telegramas de ioBroker e ser um bot",
+            "nl": "Met deze adapter kunt u telegramberichten van ioBroker verzenden en ontvangen en een bot zijn",
+            "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
+            "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
+            "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
+            "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem"
         },
         "authors": [
             "bluefox <dogafox@gmail.com>"
@@ -103,6 +95,7 @@
         "readme": "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
         "loglevel": "info",
         "icon": "telegram.png",
+        "materialize": true,
         "keywords": [
             "notification",
             "telegram",
