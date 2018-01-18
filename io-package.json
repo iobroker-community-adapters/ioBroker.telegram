@@ -9,89 +9,191 @@
             "1.0.9": {
                 "en": "Allow send gif",
                 "de": "GIF zulassen",
-                "ru": "Разрешить отправку gif"
+                "ru": "Разрешить отправку gif",
+                "pt": "Permitir enviar gif",
+                "nl": "Sta send gif toe",
+                "fr": "Autoriser l'envoi gif",
+                "it": "Consenti invio GIF",
+                "es": "Permitir enviar gif",
+                "pl": "Zezwalaj na wysyłanie gif"
             },
             "1.0.8": {
                 "en": "Removed deprecated function\nCatch webhook errors",
                 "de": "Entfernen der veralteten Funktion\nFangen Webhook-Fehler ab",
-                "ru": "Удалена устаревшую функцию\nОтловля ошибок webhook"
+                "ru": "Удалена устаревшая функция\nПроверка ошибок webhook",
+                "pt": "Função desativada removida\nCatch webhook errors",
+                "nl": "Gedeprecieerde functie verwijderd\nControleer webhook-fouten",
+                "fr": "Suppression de la fonction obsolète\nContrôle des erreurs de webhook",
+                "it": "Rimossa funzione deprecata\nCatch errori di webhook",
+                "es": "Se eliminó la función en desuso\nCatch webhook errors",
+                "pl": "Usunięto przestarzałą funkcję\nZaprojektuj błędy webhook"
             },
             "1.0.7": {
-                "en": "added functions: deleteMessage",
-                "de": "added functions: deleteMessage",
-                "ru": "Добавлена функция: deleteMessage"
+                "en": "Added functions: deleteMessage",
+                "de": "Funktionen hinzugefügt: deleteMessage",
+                "ru": "Добавлены функции: deleteMessage",
+                "pt": "Funções adicionadas: deleteMessage",
+                "nl": "Toegevoegde functies: deleteMessage",
+                "fr": "Fonctions ajoutées: deleteMessage",
+                "it": "Funzioni aggiunte: deleteMessage",
+                "es": "Funciones añadidas: deleteMessage",
+                "pl": "Dodano funkcje: deleteMessage"
             },
             "1.0.6": {
                 "en": "Fix an incorrect order of writing variables",
-                "de": "Fix an incorrect order of writing variables",
-                "ru": "Исправлена очередность записи переменных"
+                "de": "Korrigiert eine falsche Reihenfolge beim Schreiben von Variablen",
+                "ru": "Исправлена очередность записи переменных",
+                "pt": "Corrigir uma ordem incorreta de escrever variáveis",
+                "nl": "Een onjuiste volgorde van schrijfvariabelen corrigeren",
+                "fr": "Correction d'un ordre incorrect de variables d'écriture",
+                "it": "Correggere un ordine errato di variabili di scrittura",
+                "es": "Repara un orden incorrecto de variables de escritura",
+                "pl": "Napraw nieprawidłową kolejność zapisywania zmiennych"
             },
             "1.0.5": {
                 "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
                 "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
+                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "pt": "Adicionado suporte para teclado inline, funções adicionadas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "nl": "Ondersteuning toegevoegd voor inline-toetsenbord, toegevoegde functies: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "fr": "Ajout du support pour le clavier en ligne, des fonctions ajoutées: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "it": "Aggiunto supporto per tastiera integrata, funzioni aggiunte: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "es": "Se agregó soporte para teclado en línea, funciones añadidas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
+                "pl": "Dodano obsługę wbudowanej klawiatury, dodano funkcje: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
             },
             "1.0.4": {
                 "en": "Fix longitude and latitude",
                 "de": "Korrigiere longitude and latitude",
-                "ru": "Исправлено сообщение с координатами"
+                "ru": "Исправлено долгота и широта",
+                "pt": "Corrigir longitude e latitude",
+                "nl": "Lengte- en breedtegraad corrigeren",
+                "fr": "Fixer la longitude et la latitude",
+                "it": "Correggere longitudine e latitudine",
+                "es": "Repare la longitud y la latitud",
+                "pl": "Napraw długość i szerokość geograficzną"
             },
             "1.0.3": {
                 "en": "Fix position message",
                 "de": "Korrigiere Positionsmeldung",
-                "ru": "Исправлено сообщение с координатами"
+                "ru": "Исправлено сообщение о местоположении",
+                "pt": "Corrigir a mensagem de posição",
+                "nl": "Positiebericht repareren",
+                "fr": "Corriger le message de position",
+                "it": "Correggi messaggio di posizione",
+                "es": "Mensaje de posición de reparación",
+                "pl": "Napraw wiadomość o pozycji"
             },
             "1.0.2": {
-                "en": "show only installed instances in blockly",
+                "en": "Show only installed instances in blockly",
                 "de": "Zeige nur installierten Instanzen im Blockly",
-                "ru": "Показывать только установленные инстанции в Blockly"
+                "ru": "Показывать только установленные инстанции в Blockly",
+                "pt": "Mostrar apenas instâncias instaladas em bloqueio",
+                "nl": "Toon alleen geïnstalleerde instanties in blockly",
+                "fr": "Afficher uniquement les instances installées dans Blockly",
+                "it": "Mostra solo istanze installate in blocco",
+                "es": "Mostrar solo instancias instaladas en blockly",
+                "pl": "Pokaż tylko zainstalowane instancje w bloku"
             },
             "1.0.1": {
                 "en": "Show user name in error message",
                 "de": "Zeige Username bei Fehler",
-                "ru": "Показывать имя пользователя при ошибках"
+                "ru": "Показывать имя пользователя в сообщении об ошибке",
+                "pt": "Mostrar nome de usuário em mensagem de erro",
+                "nl": "Toon gebruikersnaam in foutmelding",
+                "fr": "Afficher le nom d'utilisateur dans le message d'erreur",
+                "it": "Mostra il nome utente nel messaggio di errore",
+                "es": "Mostrar nombre de usuario en mensaje de error",
+                "pl": "Pokaż nazwę użytkownika w komunikacie o błędzie"
             },
             "1.0.0": {
                 "en": "Server mode, no polling",
                 "de": "Server-Modus, kein Polling",
-                "ru": "Поддержка сервера без поллинга"
+                "ru": "Режим сервера, без поллинга",
+                "pt": "Modo servidor, sem pesquisa",
+                "nl": "Servermodus, geen polling",
+                "fr": "Mode serveur, pas d'interrogation",
+                "it": "Modalità server, nessun polling",
+                "es": "Modo de servidor, sin votación",
+                "pl": "Tryb serwera, bez odpytywania"
             },
             "0.4.4": {
                 "en": "support of blockly",
                 "de": "Blockly-Unterstützung",
-                "ru": "Поддержка blockly"
+                "ru": "Поддержка blockly",
+                "pt": "Suporte de bloqueio",
+                "nl": "Ondersteuning van blockly",
+                "fr": "Support de bloc",
+                "it": "Supporto di blockly",
+                "es": "Soporte de blockly",
+                "pl": "Wsparcie blokowe"
             },
             "0.4.3": {
-                "en": "filter out double messages",
+                "en": "Filter out double messages",
                 "de": "Ausfiltern doppelte Meldungen",
-                "ru": "Отфильтровывать двойные сообщения"
+                "ru": "Отфильтровывать двойные сообщения",
+                "pt": "Filtre as mensagens duplas",
+                "nl": "Filter dubbele berichten",
+                "fr": "Filtrer les doubles messages",
+                "it": "Filtra i messaggi doppi",
+                "es": "Filtrar mensajes dobles",
+                "pl": "Odfiltruj podwójne wiadomości"
             },
             "0.4.2": {
-                "en": "translations\nconfigurable restarting/started texts",
-                "de": "translations\nconfigurable restarting/started texts",
-                "ru": "translations\nconfigurable restarting/started texts"
+                "en": "Translations\nconfigurable restarting/started texts",
+                "de": "Übersetzungen\nkonfigurierbare Neustart/gestartete Texte",
+                "ru": "Переводы\nконфигурируемый перезапуск/запуск текстов",
+                "pt": "Traduções\nfiguravel reiniciar/iniciar textos",
+                "nl": "Vertalingen\nconfigureerbare herstart/gestarte teksten",
+                "fr": "Traductions\nconfigurable redémarrage/textes démarrés",
+                "it": "Traduzioni\nconfigurable riavvio/avvio di testi",
+                "es": "Traducciones\n reinicio configurable/textos iniciados",
+                "pl": "Tłumaczenia\nponfigurowalne wznawianie/uruchamianie tekstów"
             },
             "0.4.1": {
                 "en": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
-                "de": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId",
-                "ru": "response to chatId and not to userId\ncut messages with @\nadd new states: requestChatId and requestUserId"
+                "de": "Antwort auf chatId und nicht auf userId\nSchneiden Sie Nachrichten mit @\nfügen Sie neue Zustände hinzu: requestChatId und requestUserId",
+                "ru": "Ответ на chatId и не на userId\nвырезание сообщений с помощью @\n добавления новых состояний: requestChatId и requestUserId",
+                "pt": "Resposta a chatId e não a userId\ncortar mensagens com @\nadicionar novos estados: requestChatId e requestUserId",
+                "nl": "Reactie op chatId en niet op userId\nberichten knippen met @\nnieuwe toestanden toevoegen: requestChatId en requestUserId",
+                "fr": "Réponse à chatId et non à userId\ncouper les messages avec @\najouter de nouveaux états: requestChatId et requestUserId",
+                "it": "Risposta a chatId e non a userId\ntagliare messaggi con @\naggiungere nuovi stati: requestChatId e requestUserId",
+                "es": "Respuesta a chatId y no a userId\ncortar mensajes con @\nagregar nuevos estados: requestChatId y requestUserId",
+                "pl": "Odpowiedź na chatId, a nie na id_użytkownika\nwycinanie wiadomości za pomocą @\nDodawanie nowych stanów: requestChatId i requestUserId"
             },
             "0.4.0": {
-                "en": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
-                "de": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
-                "ru": "allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action"
+                "en": "Allow send messages to chats via chat-ID\nsupport of video(mp4), audio, document, location, sticker, action",
+                "de": "Senden von Nachrichten an Chats über Chat-ID zulassen\nUnterstützung von Video (mp4), Audio, Dokument, Ort, Aufkleber, Aktion",
+                "ru": "Разрешить отправлять сообщения чатам через chat-ID\nподдержка видео (mp4), аудио, документ, местоположение, наклейка, действие",
+                "pt": "Permitir enviar mensagens para bate-papos via chat-ID\nsuporte de vídeo (mp4), áudio, documento, localização, adesivo, ação",
+                "nl": "Sta berichten naar chats toe via chat-ID\nondersteuning van video (mp4), audio, document, locatie, sticker, actie",
+                "fr": "Autoriser l'envoi de messages à des chats via l'ID de discussion\nsupport de la vidéo (mp4), audio, document, emplacement, autocollant, action",
+                "it": "Permetti di inviare messaggi a chat tramite ID chat\nsupporto di video (mp4), audio, documenti, posizione, sticker, azione",
+                "es": "Permitir enviar mensajes a chats a través de chat-ID\nsoporte de video (mp4), audio, documento, ubicación, etiqueta, acción",
+                "pl": "Zezwalaj na wysyłanie wiadomości na czaty przy użyciu identyfikatora czatu\nobsługa wideo (MP4), audio, dokument, lokalizacja, naklejki, akcja"
             },
             "0.3.0": {
-                "en": "restart connection every hour",
-                "de": "restart connection every hour",
-                "ru": "restart connection every hour"
+                "en": "Restart connection every hour",
+                "de": "Starte jede Stunde neu",
+                "ru": "Перезапускать соединение каждый час",
+                "pt": "Reinicie a conexão a cada hora",
+                "nl": "Start elk uur de verbinding opnieuw",
+                "fr": "Redémarrez la connexion toutes les heures",
+                "it": "Riavvia la connessione ogni ora",
+                "es": "Reiniciar la conexión cada hora",
+                "pl": "Ponownie uruchom połączenie co godzinę"
             }
         },
         "title": "Telegram Adapter",
         "desc": {
             "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
             "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
-            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через броузер"
+            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через браузер",
+            "pt": "Este adaptador permite enviar e receber mensagens de telegramas de ioBroker e ser um bot",
+            "nl": "Met deze adapter kunt u telegramberichten van ioBroker verzenden en ontvangen en een bot zijn",
+            "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
+            "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
+            "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
+            "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem"
         },
         "authors": [
             "bluefox <dogafox@gmail.com>"
@@ -103,6 +205,7 @@
         "readme": "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
         "loglevel": "info",
         "icon": "telegram.png",
+        "materialize": true,
         "keywords": [
             "notification",
             "telegram",
