@@ -311,7 +311,7 @@ TODO:
 - dialogs
 
 ## Changelog
-### 1.0.9 (2018-01-18)
+### 1.0.10 (2018-01-18)
 * (Haba) Updating for Admin3
 
 ### 1.0.9 (2017-11-27)
@@ -396,7 +396,7 @@ TODO:
 
 The MIT License (MIT)
 
-Copyright (c) 2016-2017, bluefox <dogafox@gmail.com>
+Copyright (c) 2016-2018, bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
