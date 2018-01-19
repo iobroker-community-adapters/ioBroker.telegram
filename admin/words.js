@@ -113,7 +113,7 @@ systemDictionary = {
         "Leave it blank if no password desired": {
             "en": "Leave it blank if no password desired",
             "de": "Lehr lassen, falls Kennwort nicht erwünscht",
-            "ru": "Оставить пустым, если опрос пароля не нужен",
+            "ru": "Оставить пустым, если запрос пароля не нужен",
             "pt": "Deixe-o em branco se nenhuma senha desejada",
             "nl": "Laat het leeg als er geen wachtwoord gewenst is",
             "fr": "Laissez-le vide si aucun mot de passe n'est souhaité",
@@ -127,7 +127,7 @@ systemDictionary = {
         "All requests will be sent to this text2Command instance": {
             "en": "All requests will be sent to this text2Command instance",
             "de": "Alle Anfragen werden an diese text2Command Instanz weitergeleitet",
-            "ru": "Все сообщения от клиентов будут пересылаться на етот text2Command драйвер",
+            "ru": "Все сообщения от клиентов будут пересылаться на этот text2Command драйвер",
             "pt": "Todos os pedidos serão enviados para este exemplo de texto2Command",
             "nl": "Alle aanvragen worden verzonden naar dit text2Command-exemplaar",
             "fr": "Toutes les demandes seront envoyées à cette instance de text2Command",
@@ -139,7 +139,7 @@ systemDictionary = {
         "Remember authenticated users": {
             "en": "Remember authenticated users",
             "de": "Speichere authentifizierte Anwender um kein Kennwort mehr zu fragen",
-            "ru": "Запоминпать ID клиентов, которые ввели пароль, что бы не спрашивать больше",
+            "ru": "Запоминать ID клиентов, которые ввели пароль, что бы в дальнейшем не спрашивать",
             "pt": "Lembre-se de usuários autenticados",
             "nl": "Onthoud geverifieerde gebruikers",
             "fr": "Se souvenir des utilisateurs authentifiés",
@@ -163,7 +163,7 @@ systemDictionary = {
         "restarting_help":              {
             "en": "This text will be sent to clients by stopping of bot",
             "de": "Dieser Text wird beim Anhalten vom Bot an die Clients gesendet",
-            "ru": "Этот текст будет послан всем клиентам при остановке бота",
+            "ru": "Этот текст будет послан всем клиентам при останове бота",
             "pt": "Este texto será enviado aos clientes, parando o bot",
             "nl": "Deze tekst zal naar klanten worden verzonden door bot te stoppen",
             "fr": "Ce texte sera envoyé aux clients en arrêtant le bot",
