@@ -12,18 +12,7 @@
 <script type="text/javascript" src="../../lib/js/materialize.js"></script>
 <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 <script type="text/javascript" src="words.js"></script>
-
-<style>
-    .help {
-        font-size: small
-    }
-    .inputStyle {
-        width: 300px;
-    }
-</style>
-<!-- you have to define 2 functions in the global scope: -->
-<script type="text/javascript">
-    var isStarted =   null;
+    //var isStarted =   null;
 
     function encrypt(key, value) {
         var result="";
@@ -40,11 +29,12 @@
         }
         return result;
     }
-
+    
     function showHideSettings() {
         if ($('#server').val() === 'true') {
-            $('#tabs').tabs('option', 'disabled', []);
-            $('.le-settings').show();
+            //$('#tabs').tabs('option', 'disabled', []);
+            //$('.le-settings').show();
+            $('.le-settings').removeClass('disabled');
 
             if ($('#leEnabled').prop('checked')) {
                 $('.le-sub-settings').show();
@@ -57,50 +47,64 @@
                 $('.le-sub-settings').hide();
             }
         } else {
-            $('#tabs').tabs('option', 'disabled', [1]);
+            //$('#tabs').tabs('option', 'disabled', [1]);
+            $('.le-settings').addClass('disabled');
         }
     }
 
-    // the function loadSettings has to exist ...
     function load(settings, onChange) {
-        $('#tabs').tabs();
+        if (!settings) return;
+        //$('#tabs').tabs();
         settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
 
         if (!settings.lePort) settings.lePort = 80;
-        if (!settings.server) settings.server = 'false';
+        if (settings.server === undefined) settings.server = 'false';
 
         getIPs(function(ips) {
             for (var i = 0; i < ips.length; i++) {
                 $('#bind').append('<option value="' + ips[i].address + '">' + ips[i].name + '</option>');
             }
-            $('#bind.value').val(settings.bind);
+            $('#bind.value').val(settings.bind).select();
         });
 
-        if (settings.restarted  === undefined || settings.restarted  === '_') settings.restarted = _('Started!');
-        if (settings.restarting === undefined || settings.restarting === '_') settings.restarting = _('Restarting...');
+//        if (settings.restarted  === undefined || settings.restarted  === '_') settings.restarted = _('Started!');
+//        if (settings.restarting === undefined || settings.restarting === '_') settings.restarting = _('Restarting...');
 
-        for (var key in settings) {
-            if ($('#' + key + '.value').attr('type') === 'checkbox') {
-                $('#' + key + '.value').prop('checked', settings[key]).change(function () {
-                    var id = $(this).attr('id');
-                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
+        $('.value').each(function () {
+            var key = $(this).attr('id');
+            var $value = $('#' + key + '.value');
+            if ($value.attr('type') === 'checkbox') {
+                $value.prop('checked', settings[key]).on('change', function() {
+                    showHideSettings();
                     onChange();
                 });
             } else {
-                $('#' + key + '.value').val(settings[key]).change(function () {
-                    var id = $(this).attr('id');
-                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
+                $value.val(settings[key]).on('change', onChange).on('keyup', function() {
                     onChange();
-                }).keyup(function () {
-                    $(this).trigger('change');
+                    // Chack that only numbers entered
+                    if ($(this).hasClass('number')) {
+                        var val = $(this).val();
+                        if (val) {
+                            var newVal = '';
+                            for (var i = 0; i < val.length; i++) {
+                                if (val[i] >= '0' && val[i] <= '9') {
+                                    newVal += val[i];
+                                }
+                            }
+
+                            if (val != newVal) {
+                                $(this).val(newVal);
+                            }
+                        }
+                    }
                 });
             }
-        }
-
+        });
+        
         fillSelectCertificates('#certPublic',  'public',  settings.certPublic);
         fillSelectCertificates('#certPrivate', 'private', settings.certPrivate);
         fillSelectCertificates('#certChained', 'chained', settings.certChained);
-
+        
         getAdapterInstances('text2command', function (list) {
             var text =  '<option value="">' + _('none') + '</option>';
             for (var l = 0; l < list.length; l++) {
@@ -108,16 +112,18 @@
             }
             $('#text2command').html(text);
         });
+        
         $('#passwordRepeat').val(settings.password);
-
+        
+        $('#server').change(function() {
+            showHideSettings();
+        });
+        
         showHideSettings();
-
-        // Signal to admin, that no changes yet
         onChange(false);
     }
 
     function save(callback) {
-        // example: select elements with class=value and build settings object
         var obj = {};
         $('.value').each(function () {
             var $this = $(this);
@@ -127,7 +133,7 @@
                 obj[$this.attr('id')] = $this.val();
             }
         });
-
+        
         if ($('#server').val() === 'true') {
             if (!$('#leEnabled').prop('checked') && (!$('#certPublic').val() || !$('#certPrivate').val())) {
                 showMessage(_('Set certificates or load it first in the system settings (right top).'));
@@ -137,7 +143,7 @@
                 showMessage(_('URL may not be empty'));
             }
         }
-
+        
         if ($('#passwordRepeat').val() !== obj.password) {
             showMessage(_('Password confirmation is not equal with password'));
             return;
@@ -158,54 +164,52 @@
     <div class="row">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s2"><a href="#tabs-1" class="translate">Main settings</a></li>
+                <li class="tab col s2"><a href="#tabs-1" class="translate active">Main settings</a></li>
                 <li class="tab col s2 le-settings"><a href="#tabs-2" class="translate">Server settings</a></li>
             </ul>
         </div>
         <div id="tabs-1" class="col s12 page">
             <div class="row">
                 <div class="col s12"><h4 class="translate" style="width: 90%">Main settings</h4></div>
-            </div>
+            </div>    
             <div class="row">
-                <div class="col s12 m4">
+                <div class="col s12 m5 l2">
                     <select class="value" id="server">
                         <option value="false" class="translate">polling</option>
                         <option value="true"  class="translate">server</option>
                     </select>
-                    <label class="translate" for="server">Type:</label>
+                    <label class="translate" for="server"></label>
+                    <label><i class="translate">Type:</i></label>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col s12 m4 l8">
-                    <input id="token" class="value inputStyle" />
+                    <input id="token" class="value"/>
                     <label class="translate">Token:</label>
-                    <a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a>
+                    <label><i><a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a></i></label>
                 </div>
             </div>
             <div class="row">
                 <div class="col s12 m4 l5">
-                    <input id="password" class="value inputStyle" type="password"/>
+                    <input id="password" class="value" type="password"/>
                     <label class="translate">Password:</label>
-                    <span class="translate help">Leave it blank if no password desired</span>
+                    <label><i class="translate help">Leave it blank if no password desired</i></label>
                 </div>
                 <div class="col s12 m4 l5">
-                    <input id="passwordRepeat" class="inputStyle" type="password"/>
+                    <input id="passwordRepeat" class="value" type="password"/>
                     <label class="translate">Password repeat:</label>
-                    <span class="translate help">Repeat password</span>
+                    <label><i class="translate help">Repeat password</i></label>
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 m4 l12">
-                    <select id="text2command" class="value inputStyle"></select>
-                    <label class="translate">Text2Command Instance:</label>
-                    <span class="translate help">All requests will be sent to this text2Command instance</span>
+                <div class="col s12 m4 l5">
+                    <select id="text2command" class="value"></select>
+                    <label><span class="translate">Text2Command Instance:</span> <i class="translate help">All requests will be sent to this text2Command instance</i></label>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m4 l12">
+                <div class="col s12 m4 l5">
                     <input id="rememberUsers" class="value" type="checkbox"/>
                     <label class="translate">Store user's IDs:</label>
-                    <span class="translate help">Remember authenticated users</span>
+                </div>
+                <div class="col s12 m4 l5">
+                    <label><i class="translate help">Remember authenticated users</i></label>
                 </div>
             </div>
             <div class="row">
@@ -213,37 +217,35 @@
             </div>
             <div class="row">
                 <div class="col s12 m4 l5">
-                    <input id="restarted" class="value inputStyle"/>
+                    <input id="restarted" class="value"/>
                     <label class="translate">"Started" text:</label>
-                    <span class="translate help">restarted_help</span>
+                    <label><i class="translate help">restarted_help</i></label>
                 </div>
                 <div class="col s12 m4 l5">
-                    <input id="restarting" class="value inputStyle"/>
+                    <input id="restarting" class="value"/>
                     <label class="translate">"Restarting" text:</label>
-                    <span class="translate help">estarting_help</span>
+                    <label><i class="translate help">restarting_help</i></label>
                 </div>
             </div>
         </div>
         <div id="tabs-2" class="col s12 page">
-            <div class="row">
-                <div class="col s12 m4 l10">
-                    <input class="value inputStyle" id="url"/>
+            <div class="row server">
+                <div class="col s12 m4 l4">
+                    <input class="value" id="url"/>
                     <label class="translate" for="url">URL:</label>
-                    <span class="translate help">url_help</span>
+                    <label><i class="translate help">url_help</i></label>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 m8 l5">
+                <div class="col s12 m8 l3">
                     <select class="value" id="bind"></select>
                     <label class="translate" for="bind">IP:</label>
                 </div>
-                <div class="col s12 m4 l5">
+                <div class="col s12 m4 l2">
                     <input class="value number" id="port" size="5" maxlength="5" type="number"/>
                     <label class="translate" for="port">Port:</label>
-                    <span class="translate help">port_help</span>
+                    <label><i class="translate help">port_help</i></label>
                 </div>
             </div>
-            <div class="row">
+            <div class="row server">
                 <div class="col s12 m3 col-certPublic">
                     <select id="certPublic" class="value"></select>
                     <label class="translate" for="certPublic">Public certificate:</label>
@@ -257,28 +259,28 @@
                     <label class="translate" for="certChained">Chained certificate:</label>
                 </div>
             </div>
-            <div class="row">
+            <div class="row server">
                 <div class="col s12"><h4 class="translate" style="width: 90%">Let's Encrypt settings</h4></div>
             </div>
-            <div class="row">
-                <div class="col s11">
-                    <input class="value" id="leEnabled" type="checkbox" data-link="lets-encrypt-certificates"/>
+            <div class="row server le-settings">
+                <div class="col s12 m4 l3">
+                    <input class="value" id="leEnabled" type="checkbox"/>
                     <label for="leEnabled" class="translate">Use Lets Encrypt certificates:</label>
                 </div>
             </div>
-            <div class="row le-sub-settings">
-                <div class="col s11">
-                    <input class="value" id="leUpdate" type="checkbox" data-link="lets-encrypt-certificates"/>
+            <div class="row server le-settings le-sub-settings">
+                <div class="col s12 m4 l3">
+                    <input class="value" id="leUpdate" type="checkbox"/>
                     <label for="leUpdate" class="translate">Use this instance for automatic update:</label>
                 </div>
             </div>
-            <div class="row le-sub-settings le-sub-settings-update">
-                <div class="col s11 m4 l2">
-                    <input class="value number" id="lePort" type="number" size="5" maxlength="5" data-link="lets-encrypt-certificates"/>
+            <div class="row server le-settings le-sub-settings le-sub-settings-update">
+                <div class="col s12 m4 l2">
+                    <input class="value number" id="lePort" type="number" size="5" maxlength="5"/>
                     <label for="lePort" class="translate">Port to check the domain:</label>
                 </div>
             </div>
-        </div>
+        </div>            
     </div>
 </div>
 </body>
