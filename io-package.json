@@ -15,7 +15,7 @@
                 "fr": "Envoi d'une image sans mise en cache de disque intermédiaire",
                 "it": "Invio di un'immagine senza cache intermedia del disco",
                 "es": "Envío de una imagen sin memoria intermedia del disco",
-                "pl": "Wysyłanie obrazu bez pośredniego buforowania dysku
+                "pl": "Wysyłanie obrazu bez pośredniego buforowania dysku"
             },
             "1.0.10": {
                 "en": "updating for Admin3",
