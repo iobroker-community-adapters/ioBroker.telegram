@@ -40,7 +40,7 @@ You can send message over state too, just set state *"telegram.INSTANCE.communic
 ## Usage
 You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
 
-To send photo, just send a path to file instead of text: ```sendTo('telegram', 'absolute/path/file.png')```.
+To send photo, just send a path to file instead of text or URL: ```sendTo('telegram', 'absolute/path/file.png')``` or ```sendTo('telegram', 'https://telegram.org/img/t_logo.png')```.
 
 Example how to send screenshot from webcam to telegram:
 
@@ -311,6 +311,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.11 (2018-01-23)
+* (Haba) Sending an image without intermediate caching
+
 ### 1.0.10 (2018-01-18)
 * (Haba) Updating for Admin3
 

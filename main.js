@@ -246,7 +246,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.(jpg|png|jpeg|bmp)$/i) && fs.existsSync(text)) {
+    } else if (text && text.match(/\.(jpg|png|jpeg|bmp)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) {
         adapter.log.debug('Send photo to "' + name + '": ' + text);
         if (bot) {
             bot.sendPhoto(dest, text, options).then(function () {
