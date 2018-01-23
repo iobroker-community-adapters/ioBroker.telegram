@@ -311,6 +311,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.11 (2018-01-23)
+* (Haba) Sending an image without intermediate caching
+
 ### 1.0.10 (2018-01-18)
 * (Haba) Updating for Admin3
 
