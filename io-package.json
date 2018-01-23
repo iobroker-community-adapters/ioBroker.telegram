@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.10",
+        "version": "1.0.11",
         "news": {
+            "1.0.11": {
+                "en": "Sending an image without intermediate disk caching",
+                "de": "Senden eines Images ohne Zwischenspeicherung von Datenträgercaches",
+                "ru": "Отправка изображения без промежуточного кэширования на диске",
+                "pt": "Enviar uma imagem sem armazenamento em disco intermediário",
+                "nl": "Een afbeelding verzenden zonder tussentijdse schijfcache",
+                "fr": "Envoi d'une image sans mise en cache de disque intermédiaire",
+                "it": "Invio di un'immagine senza cache intermedia del disco",
+                "es": "Envío de una imagen sin memoria intermedia del disco",
+                "pl": "Wysyłanie obrazu bez pośredniego buforowania dysku
+            },
             "1.0.10": {
                 "en": "updating for Admin3",
                 "de": "Aktualisierung für Admin3",
