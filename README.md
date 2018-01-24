@@ -119,6 +119,17 @@ sendTo('telegram.0', {
 });
 ```
 
+### Explicit types of messages
+You have the possibility to define extra the type of the message in case you want to send the data as buffer.
+
+Following types are possible: *sticker*, *video*, *document*, *audio*, *photo*.
+```
+sendTo('telegram.0', {
+    text: fs.readFileSync('/opt/path/picture.png'),
+    type: 'photo'
+});
+```
+
 ### Keyboard
 You can show keyboard **ReplyKeyboardMarkup** in the client:
 
@@ -311,6 +322,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.1.0 (2018-01-24)
+* (bluefox) Possibility to send photo, video, document, audio as buffer.
+
 ### 1.0.11 (2018-01-23)
 * (Haba) Sending an image without intermediate caching
 
