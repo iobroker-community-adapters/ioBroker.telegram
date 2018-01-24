@@ -7,7 +7,7 @@
  *      MIT License
  *
  */
-/* jshint -W097 */// jshint strict:false
+/* jshint -W097 */ // jshint strict:false
 /*jslint node: true */
 'use strict';
 
@@ -27,6 +27,13 @@ var lastMessageTime = 0;
 var lastMessageText = '';
 var callbackQueryId = 0;
 
+var tools = require(utils.controllerDir + '/lib/tools');
+var configFile = tools.getConfigFileName();
+let tmp = configFile.split(/[\\\/]+/);
+tmp.pop(); // json
+tmp.pop(); // iobroker-data
+let tmpDir = tmp.join('/');
+
 var server = {
     app: null,
     server: null,
@@ -39,6 +46,8 @@ adapter.on('message', function (obj) {
 });
 
 adapter.on('ready', function () {
+    adapter.log.info(configFile);
+    adapter.log.info(tmpDir);
     adapter.config.server = adapter.config.server === 'true';
 
     if (adapter.config.server) {
@@ -131,7 +140,9 @@ function handleWebHook(req, res) {
         req.on('data', function (data) {
             body += data;
             if (body.length > 100000) {
-                res.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
+                res.writeHead(413, 'Request Entity Too Large', {
+                    'Content-Type': 'text/html'
+                });
                 res.end('<!doctype html><html><head><title>413</title></head><body>413: Request Entity Too Large</body></html>');
             }
         });
@@ -146,7 +157,9 @@ function handleWebHook(req, res) {
             bot.processUpdate(msg);
         });
     } else {
-        res.writeHead(404, 'Resource Not Found', {'Content-Type': 'text/html'});
+        res.writeHead(404, 'Resource Not Found', {
+            'Content-Type': 'text/html'
+        });
         res.end('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
     }
 }
@@ -157,7 +170,7 @@ function getUrlData(url, callback) {
     if (url.match(/http/)) {
         var getHttp = url.match(/https:/) ? https : http;
         getHttp.get(url, function (res) {
-            if (res.statusCode === 200 ){
+            if (res.statusCode === 200) {
                 var buf = [];
                 res.on('data', function (data) {
                     buf.push(data);
@@ -193,6 +206,34 @@ function getMessage(msg) {
     }
 }
 
+function _sendBefer(dest, type, text, options) {
+    var count = 0;
+    var bufer = text.bufer;
+    var typeList = {
+        photo: 'sendPhoto',
+        audio: 'sendAudio',
+        document: 'sendDocument',
+        sticker: 'sendSticker',
+        video: 'sendVideo',
+        voice: 'sendVoice'
+    }
+    var type = text.type.toLowerCase();
+    if (bufer && typeList[type]) {
+        bot[typeList[type]](dest, bufer, options).then(function () {
+            options = null;
+            adapter.log.debug(type + ' sent');
+            count++;
+        }, function (error) {
+            if (options.chatId) {
+                adapter.log.error('Cannot send ' + type + ' [chatId - ' + options.chatId + ']: ' + error);
+            } else {
+                adapter.log.error('Cannot send ' + type + ' [user - ' + options.user + ']: ' + error);
+            }
+            options = null;
+        });
+    }
+    return count;
+}
 
 function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
@@ -311,13 +352,13 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
             })
         }
-  } else if (options && options.answerCallbackQuery !== undefined) {
-        adapter.log.debug('Send answerCallbackQuery to "' + name +'"');
+    } else if (options && options.answerCallbackQuery !== undefined) {
+        adapter.log.debug('Send answerCallbackQuery to "' + name + '"');
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
         }
         if (bot) {
-            bot.answerCallbackQuery(callbackQueryId,options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert).then(function () {
+            bot.answerCallbackQuery(callbackQueryId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert).then(function () {
                 options = null;
                 count++;
             }, function (error) {
@@ -328,7 +369,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else if (options && options.editMessageReplyMarkup !== undefined) {
         adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
         if (bot) {
@@ -343,7 +384,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else if (options && options.editMessageText !== undefined) {
         adapter.log.debug('Send editMessageText to "' + name + '"');
         if (bot) {
@@ -358,7 +399,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else if (options && options.deleteMessage !== undefined) {
         adapter.log.debug('Send deleteMessage to "' + name + '"');
         if (bot) {
@@ -373,7 +414,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) {
@@ -396,7 +437,8 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-    if (!text && (typeof options !== 'object'))  {
+
+    if (!text && (typeof options !== 'object')) {
         if (!text && text !== 0 && (!options || !options.latitude)) {
             adapter.log.warn('Invalid text: null');
             return;
@@ -405,12 +447,12 @@ function sendMessage(text, user, chatId, options) {
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text !== undefined)   delete options.text;
-        if (options.user !== undefined)   delete options.user;
+        if (options.text !== undefined) delete options.text;
+        if (options.user !== undefined) delete options.user;
     }
-
+    adapter.log.info('type ' + typeof text + ' text = ' + JSON.stringify(text));
     // convert
-    if (text !== undefined && text !== null) {
+    if (typeof text !== "object" && text !== undefined && text !== null) {
         text = text.toString();
     }
 
@@ -424,7 +466,11 @@ function sendMessage(text, user, chatId, options) {
     if (user) {
         for (u in users) {
             if (users[u] === user) {
-                count +=_sendMessageHelper(u, user, text, options);
+                if (typeof text === 'object') {
+                    count += _sendBefer(u, user, text, options);
+                } else {
+                    count += _sendMessageHelper(u, user, text, options);
+                }
                 break;
             }
         }
@@ -437,14 +483,22 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
-                count +=_sendMessageHelper(u, m[1], text, options);
+                if (typeof text === 'object') {
+                    count += _sendBefer(u, m[1], text, options);
+                } else {
+                    count += _sendMessageHelper(u, m[1], text, options);
+                }
                 break;
             }
         }
     } else {
         // Send to all users
         for (u in users) {
-            count += _sendMessageHelper(u, users[u], text, options);
+            if (typeof text === 'object') {
+                count += _sendBefer(u, users[u], text, options);
+            } else {
+                count += _sendMessageHelper(u, users[u], text, options);
+            }
         }
     }
     return count;
@@ -466,17 +520,18 @@ function processMessage(obj) {
     lastMessageText = json;
 
     switch (obj.command) {
-        case 'send': {
-            if (obj.message) {
-                var count;
-                if (typeof obj.message === 'object') {
-                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
-                } else {
-                    count = sendMessage(obj.message);
+        case 'send':
+            {
+                if (obj.message) {
+                    var count;
+                    if (typeof obj.message === 'object') {
+                        count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    } else {
+                        count = sendMessage(obj.message);
+                    }
+                    if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
                 }
-                if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
             }
-        }
     }
 }
 
@@ -682,14 +737,20 @@ function connect() {
     } else {
         if (adapter.config.server) {
             // Setup server way
-            bot = new TelegramBot(adapter.config.token, {polling: false, filepath: true});
+            bot = new TelegramBot(adapter.config.token, {
+                polling: false,
+                filepath: true
+            });
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
             }
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-            bot = new TelegramBot(adapter.config.token, {polling: true, filepath: true});
+            bot = new TelegramBot(adapter.config.token, {
+                polling: true,
+                filepath: true
+            });
             bot.setWebHook('');
         }
 
@@ -713,7 +774,7 @@ function connect() {
         bot.on('message', getMessage);
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
-        // write received answer into variable
+            // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(msg));
             callbackQueryId = msg.id;
             adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
@@ -721,23 +782,23 @@ function connect() {
             });
             adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
-            });    
+            });
         });
         bot.on('polling_error', function (error) {
-          adapter.log.error('polling_error:' + error.code + ', ' + error);  // => 'EFATAL'
+            adapter.log.error('polling_error:' + error.code + ', ' + error); // => 'EFATAL'
         });
         bot.on('webhook_error', function (error) {
-          adapter.log.error('webhook_error:' + error.code + ', ' + error);  // => 'EPARSE'
-          adapter.log.debug('bot restarting...');
-          bot.stopPolling().then(
-              function (response) {
-                  adapter.log.debug('Start Polling');
-                  bot.startPolling();
-              },
-              function (error) {
-                  adapter.log.error('Error stop polling: ' + error);
-              }
-          );
+            adapter.log.error('webhook_error:' + error.code + ', ' + error); // => 'EPARSE'
+            adapter.log.debug('bot restarting...');
+            bot.stopPolling().then(
+                function (response) {
+                    adapter.log.debug('Start Polling');
+                    bot.startPolling();
+                },
+                function (error) {
+                    adapter.log.error('Error stop polling: ' + error);
+                }
+            );
         });
     }
 }
@@ -791,4 +852,3 @@ function main() {
     reconnectTimer = setInterval(connect, 3600000);
     connect();
 }
-
