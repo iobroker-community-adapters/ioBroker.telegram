@@ -17,7 +17,8 @@ var _ = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
-
+var https = require('https');
+var http = require('http');
 var bot;
 var users = {};
 var systemLang = 'en';
@@ -150,6 +151,49 @@ function handleWebHook(req, res) {
     }
 }
 
+
+function getUrlData(url, callback) {
+    adapter.log.debug('URL: ' + url);
+    if (url.match(/http/)) {
+        var getHttp = url.match(/https:/) ? https : http;
+        getHttp.get(url, function (res) {
+            if (res.statusCode === 200 ){
+                var buf = [];
+                res.on('data', function (data) {
+                    buf.push(data);
+                });
+                res.on('end', function () {
+                    callback(Buffer.concat(buf));
+                });
+                res.on('error', function (err) {
+                    callback(false)
+                });
+            } else {
+                callback(false)
+            }
+        });
+    } else {
+        callback(url)
+    }
+}
+
+function getMessage(msg) {
+    adapter.log.debug('Received message: ' + JSON.stringify(msg));
+    if (msg.voice) {
+        bot.getFileLink(msg.voice.file_id).then(function (result) {
+            getUrlData(result, function (res) {
+                fs.writeFile(__dirname + '/temp.ogg', res, function (err) {
+                    if (err) throw err;
+                    adapter.log.debug('It\'s saved!');
+                });
+            })
+        }, function (err) {
+            adapter.log.debug('error voice: ' + err);
+        });
+    }
+}
+
+
 function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
     if (options && options.latitude !== undefined) {
@@ -249,20 +293,25 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (text && text.match(/\.(jpg|png|jpeg|bmp)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) {
         adapter.log.debug('Send photo to "' + name + '": ' + text);
         if (bot) {
-            bot.sendPhoto(dest, text, options).then(function () {
-                adapter.log.debug('Photo sent');
-                options = null;
-                count++;
-            }, function (error) {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
+            getUrlData(text, function (res) {
+                if (res) {
+                    bot.sendPhoto(dest, res, options).then(function () {
+                        adapter.log.debug('Photo sent');
+                        options = null;
+                    }, function (error) {
+                        if (options.chatId) {
+                            adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
+                        } else {
+                            adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
+                        }
+                        options = null;
+                    });
                 } else {
-                    adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
+                    adapter.log.info('Error response from : ' + text);
                 }
-                options = null;
-            });
+            })
         }
-    } else if (options && options.answerCallbackQuery !== undefined) {
+  } else if (options && options.answerCallbackQuery !== undefined) {
         adapter.log.debug('Send answerCallbackQuery to "' + name +'"');
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
@@ -661,9 +710,7 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        bot.on('message', function (msg) {
-          adapter.log.debug('Received message: ' + JSON.stringify(msg));
-        });
+        bot.on('message', getMessage);
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
         // write received answer into variable
