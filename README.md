@@ -45,23 +45,12 @@ To send photo, just send a path to file instead of text or URL: ```sendTo('teleg
 Example how to send screenshot from webcam to telegram:
 
 ```
-var request = require('request');
-var fs      = require('fs');
-
 function sendImage() {
-    request.get({url: 'http://login:pass@ipaddress/web/tmpfs/snap.jpg', encoding: 'binary'}, function (err, response, body) {
-        fs.writeFile("/tmp/snap.jpg", body, 'binary', function(err) {
-
-        if (err) {
-            console.error(err);
-        } else {
-            console.log('Snapshot sent');
-            sendTo('telegram.0', '/tmp/snap.jpg');
-            //sendTo('telegram.0', {text: '/tmp/snap.jpg', caption: 'Snapshot'});
-        }
-      });
+    sendTo ('telegram.0', {
+        text: "http://login:pass@ipaddress/web/tmpfs/snap.jpg"
     });
 }
+
 on("someState", function (obj) {
     if (obj.state.val) {
         // send 4 images: immediately, in 5, 15 and 30 seconds
@@ -73,6 +62,21 @@ on("someState", function (obj) {
 });
 
 ```
+
+
+Example of file transfer as a buffer:
+
+```
+sendTo('telegram.0',{
+    text:   {
+        bufer:fs.readFileSync('/iobroker/node_modules/iobroker/video.mp4'),
+        type:"video"  // photo, audio, document, sticker, video, voice 
+        } 
+});
+
+```
+
+
 
 Following messages are reserved for actions:
 
