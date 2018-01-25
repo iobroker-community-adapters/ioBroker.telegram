@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.0.11",
+        "version": "1.0.12",
         "news": {
+        "1.0.12": {
+                "en": "New objects. Sending files through the buffer. Downloading the received voice file",
+                "de": "Neue Objekte Dateien durch den Puffer senden. Herunterladen der empfangenen Sprachdatei",
+                "ru": "Новые объекты. Отправка файлов через буфер. Загрузка полученного голосового файла",
+                "pt": "Novos objetos. Enviando arquivos através do buffer. Transferir o arquivo de voz recebido",
+                "nl": "Nieuwe objecten. Bestanden verzenden via de buffer. Het ontvangen spraakbestand downloaden",
+                "fr": "Nouveaux objets Envoi de fichiers via le tampon. Téléchargement du fichier vocal reçu",
+                "it": "Nuovi oggetti Invio di file attraverso il buffer. Download del file vocale ricevuto",
+                "es": "Objetos nuevos Envío de archivos a través del buffer. Descargar el archivo de voz recibido",
+                "pl": "Nowe obiekty. Przesyłanie plików przez bufor. Pobieranie odebranego pliku głosowego"
+            },
             "1.0.11": {
                 "en": "Sending an image without intermediate disk caching",
                 "de": "Senden eines Images ohne Zwischenspeicherung von Datenträgercaches",
@@ -192,6 +203,30 @@
             "common": {
                 "role": "text",
                 "name": "Message ID of last received request",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendChatId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Chat ID of last sent message by the bot",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendMessageId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Message ID of last sent message by the bot",
                 "type": "string",
                 "read": true,
                 "write": false

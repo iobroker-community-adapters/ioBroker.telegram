@@ -103,6 +103,7 @@ adapter.on('unload', function () {
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
+    adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
     if (state && !state.ack && id.indexOf('communicate.response') !== -1) {
         // Send to someone this message
         sendMessage(state.val);
@@ -235,16 +236,31 @@ function _sendBuffer(dest, type, text, options) {
     return count;
 }
 
+function saveSendRequest(msg) {
+    adapter.log.debug('Request: ' + JSON.stringify(msg));
+    adapter.setState('communicate.botSendMessageId', msg.message_id, function (err) {
+        if (err) adapter.log.error(err);
+    });
+    adapter.setState('communicate.botSendChatId', msg.chat.id, function (err) {
+        if (err) adapter.log.error(err);
+    });
+}
+
 function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
-            bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options).then(function () {
+            bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 adapter.log.debug('Location sent');
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send location [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -255,11 +271,16 @@ function _sendMessageHelper(dest, name, text, options) {
         }
     } else if (actions.indexOf(text) !== -1) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
-        if (bot) bot.sendChatAction(dest, text).then(function () {
+        if (bot) bot.sendChatAction(dest, text)
+        .then(function (response) {
+            saveSendRequest(response);
+        })
+        .then(function () {
             adapter.log.debug('Action sent');
             options = null;
             count++;
-        }, function (error) {
+        })
+        .catch(function (error) {
             if (options.chatId) {
                 adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
             } else {
@@ -270,11 +291,16 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (text && text.match(/\.webp$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
         if (bot) {
-            bot.sendSticker(dest, text, options).then(function () {
+            bot.sendSticker(dest, text, options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 options = null;
                 adapter.log.debug('Sticker sent');
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -286,11 +312,16 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (text && text.match(/\.(mp4|gif)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
         if (bot) {
-            bot.sendVideo(dest, text, options).then(function () {
+            bot.sendVideo(dest, text, options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 adapter.log.debug('Video sent');
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -302,11 +333,16 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (text && text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send document to "' + name + '": ' + text);
         if (bot) {
-            bot.sendDocument(dest, text, options).then(function () {
+            bot.sendDocument(dest, text, options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 adapter.log.debug('Document sent');
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -318,11 +354,16 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (text && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send audio to "' + name + '": ' + text);
         if (bot) {
-            bot.sendAudio(dest, text, options).then(function () {
+            bot.sendAudio(dest, text, options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 adapter.log.debug('Audio sent');
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -336,10 +377,15 @@ function _sendMessageHelper(dest, name, text, options) {
         if (bot) {
             getUrlData(text, function (res) {
                 if (res) {
-                    bot.sendPhoto(dest, res, options).then(function () {
+                    bot.sendPhoto(dest, res, options)
+                    .then(function (response) {
+                        saveSendRequest(response);
+                    })
+                    .then(function () {
                         adapter.log.debug('Photo sent');
                         options = null;
-                    }, function (error) {
+                    })
+                    .catch(function (error) {
                         if (options.chatId) {
                             adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
                         } else {
@@ -358,10 +404,15 @@ function _sendMessageHelper(dest, name, text, options) {
             options.answerCallbackQuery.showAlert = false;
         }
         if (bot) {
-            bot.answerCallbackQuery(callbackQueryId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert).then(function () {
+            bot.answerCallbackQuery(callbackQueryId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send answerCallbackQuery [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -373,10 +424,15 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (options && options.editMessageReplyMarkup !== undefined) {
         adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
         if (bot) {
-            bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options).then(function () {
+            bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send editMessageReplyMarkup [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -388,10 +444,15 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (options && options.editMessageText !== undefined) {
         adapter.log.debug('Send editMessageText to "' + name + '"');
         if (bot) {
-            bot.editMessageText(text, options.editMessageText.options).then(function () {
+            bot.editMessageText(text, options.editMessageText.options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send editMessageText [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -403,10 +464,12 @@ function _sendMessageHelper(dest, name, text, options) {
     } else if (options && options.deleteMessage !== undefined) {
         adapter.log.debug('Send deleteMessage to "' + name + '"');
         if (bot) {
-            bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id).then(function () {
+            bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
+            .then(function () {
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send deleteMessage [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -418,11 +481,16 @@ function _sendMessageHelper(dest, name, text, options) {
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) {
-            bot.sendMessage(dest, text || '', options).then(function () {
+            bot.sendMessage(dest, text || '', options)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 adapter.log.debug('Message sent');
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -450,7 +518,8 @@ function sendMessage(text, user, chatId, options) {
         if (options.text !== undefined) delete options.text;
         if (options.user !== undefined) delete options.user;
     }
-    adapter.log.info('type ' + typeof text + ' text = ' + JSON.stringify(text));
+    
+    adapter.log.debug('type ' + typeof text + ' text = ' + JSON.stringify(text));
     // convert
     if (typeof text !== "object" && text !== undefined && text !== null) {
         text = text.toString();

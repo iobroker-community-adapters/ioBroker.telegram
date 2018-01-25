@@ -311,6 +311,11 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.0.12 (2018-01-25)
+* (Haba) New objects: botSendChatId, botSendMessageId
+  (bondrogeen) Sending files through the buffer
+  (bondrogeen) Downloading the received voice file
+
 ### 1.0.11 (2018-01-23)
 * (Haba) Sending an image without intermediate caching
 
