@@ -206,20 +206,20 @@ function getMessage(msg) {
     }
 }
 
-function _sendBefer(dest, type, text, options) {
+function _sendBuffer(dest, type, text, options) {
     var count = 0;
-    var bufer = text.bufer;
+    var buffer = text.buffer;
     var typeList = {
-        photo: 'sendPhoto',
-        audio: 'sendAudio',
-        document: 'sendDocument',
-        sticker: 'sendSticker',
-        video: 'sendVideo',
-        voice: 'sendVoice'
+        photo:      'sendPhoto',
+        audio:      'sendAudio',
+        document:   'sendDocument',
+        sticker:    'sendSticker',
+        video:      'sendVideo',
+        voice:      'sendVoice'
     }
     var type = text.type.toLowerCase();
-    if (bufer && typeList[type]) {
-        bot[typeList[type]](dest, bufer, options).then(function () {
+    if (buffer && typeList[type]) {
+        bot[typeList[type]](dest, buffer, options).then(function () {
             options = null;
             adapter.log.debug(type + ' sent');
             count++;
@@ -467,7 +467,7 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             if (users[u] === user) {
                 if (typeof text === 'object') {
-                    count += _sendBefer(u, user, text, options);
+                    count += _sendBuffer(u, user, text, options);
                 } else {
                     count += _sendMessageHelper(u, user, text, options);
                 }
@@ -484,7 +484,7 @@ function sendMessage(text, user, chatId, options) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
                 if (typeof text === 'object') {
-                    count += _sendBefer(u, m[1], text, options);
+                    count += _sendBuffer(u, m[1], text, options);
                 } else {
                     count += _sendMessageHelper(u, m[1], text, options);
                 }
@@ -495,7 +495,7 @@ function sendMessage(text, user, chatId, options) {
         // Send to all users
         for (u in users) {
             if (typeof text === 'object') {
-                count += _sendBefer(u, users[u], text, options);
+                count += _sendBuffer(u, users[u], text, options);
             } else {
                 count += _sendMessageHelper(u, users[u], text, options);
             }
