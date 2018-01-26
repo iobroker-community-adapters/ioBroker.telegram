@@ -236,10 +236,10 @@ if (command ==="1_2") {
     sendTo('telegram', {
         user: user,
         text: 'New text before buttons',
-        editMessageText: {
+        editMessageReplyMarkup: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val,
-                message_id: getState("telegram.0.communicate.requestMessageId").val,
+                chat_id: getState("telegram.0.communicate.botSendChatId").val,
+                message_id: getState("telegram.0.communicate.botSendMessageId").val,
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: 'Button 1', callback_data: '2_1' }],
@@ -252,7 +252,7 @@ if (command ==="1_2") {
 }
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagereplymarkupreplymarkup-options--promise).
 
 ### deleteMessage
 Use this method to delete a message, including service messages, with the following limitations:
