@@ -344,7 +344,7 @@ TODO:
 - dialogs
 
 ## Changelog
-### 1.0.12 (2018-01-25)
+### 1.1.1 (2018-01-26)
 * (Haba) New objects: botSendChatId, botSendMessageId
 
 ### 1.1.0 (2018-01-24)
