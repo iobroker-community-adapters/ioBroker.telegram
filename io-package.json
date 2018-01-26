@@ -4,6 +4,7 @@
         "require": {
             "js-controller": ">0.6.6"
         },
+<<<<<<< HEAD
         "version": "1.0.12",
         "news": {
         "1.0.12": {
@@ -16,6 +17,20 @@
                 "it": "Nuovi oggetti Invio di file attraverso il buffer. Download del file vocale ricevuto",
                 "es": "Objetos nuevos Envío de archivos a través del buffer. Descargar el archivo de voz recibido",
                 "pl": "Nowe obiekty. Przesyłanie plików przez bufor. Pobieranie odebranego pliku głosowego"
+=======
+        "version": "1.1.0",
+        "news": {
+            "1.1.0": {
+                "en": "Possibility to send photo, video, document, audio as buffer.",
+                "de": "Möglichkeit, Foto, Video, Dokument, Audio als buffer zu senden.",
+                "ru": "Возможность отправки фото, видео, документа, аудио в качестве buffer.",
+                "pt": "Possibilidade de enviar foto, vídeo, documento, áudio como buffer.",
+                "nl": "Mogelijkheid om foto, video, document, audio als buffer te verzenden.",
+                "fr": "Possibilité d'envoyer photo, vidéo, document, audio en buffer.",
+                "it": "Possibilità di inviare foto, video, documenti, audio come buffer.",
+                "es": "Posibilidad de enviar foto, video, documento, audio como buffer.",
+                "pl": "Możliwość wysyłania zdjęć, wideo, dokumentów, audio jako buffer."
+>>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
             },
             "1.0.11": {
                 "en": "Sending an image without intermediate disk caching",

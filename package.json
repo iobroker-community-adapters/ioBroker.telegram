@@ -1,7 +1,11 @@
 {
   "name": "iobroker.telegram",
   "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
+<<<<<<< HEAD
   "version": "1.0.12",
+=======
+  "version": "1.1.0",
+>>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
   "author": "bluefox <dogafox@gmail.com>",
   "homepage": "https://github.com/ioBroker/ioBroker.telegram",
   "repository": {
