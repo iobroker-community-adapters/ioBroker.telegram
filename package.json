@@ -21,7 +21,7 @@
     "message"
   ],
   "dependencies": {
-    "node-telegram-bot-api": "^0.29.0"
+    "node-telegram-bot-api": "^0.30.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
