@@ -45,23 +45,12 @@ To send photo, just send a path to file instead of text or URL: ```sendTo('teleg
 Example how to send screenshot from webcam to telegram:
 
 ```
-var request = require('request');
-var fs      = require('fs');
-
 function sendImage() {
-    request.get({url: 'http://login:pass@ipaddress/web/tmpfs/snap.jpg', encoding: 'binary'}, function (err, response, body) {
-        fs.writeFile("/tmp/snap.jpg", body, 'binary', function(err) {
-
-        if (err) {
-            console.error(err);
-        } else {
-            console.log('Snapshot sent');
-            sendTo('telegram.0', '/tmp/snap.jpg');
-            //sendTo('telegram.0', {text: '/tmp/snap.jpg', caption: 'Snapshot'});
-        }
-      });
+    sendTo ('telegram.0', {
+        text: "http://login:pass@ipaddress/web/tmpfs/snap.jpg"
     });
 }
+
 on("someState", function (obj) {
     if (obj.state.val) {
         // send 4 images: immediately, in 5, 15 and 30 seconds
@@ -73,6 +62,21 @@ on("someState", function (obj) {
 });
 
 ```
+
+
+Example of file transfer as a buffer:
+
+```
+sendTo('telegram.0',{
+    text:   {
+        bufer:fs.readFileSync('/iobroker/node_modules/iobroker/video.mp4'),
+        type:"video"  // photo, audio, document, sticker, video, voice 
+        } 
+});
+
+```
+
+
 
 Following messages are reserved for actions:
 
@@ -243,10 +247,10 @@ if (command ==="1_2") {
     sendTo('telegram', {
         user: user,
         text: 'New text before buttons',
-        editMessageText: {
+        editMessageReplyMarkup: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val,
-                message_id: getState("telegram.0.communicate.requestMessageId").val,
+                chat_id: getState("telegram.0.communicate.botSendChatId").val,
+                message_id: getState("telegram.0.communicate.botSendMessageId").val,
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: 'Button 1', callback_data: '2_1' }],
@@ -259,7 +263,7 @@ if (command ==="1_2") {
 }
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagereplymarkupreplymarkup-options--promise).
 
 ### deleteMessage
 Use this method to delete a message, including service messages, with the following limitations:
@@ -322,8 +326,15 @@ TODO:
 - dialogs
 
 ## Changelog
+<<<<<<< HEAD
+### 1.0.12 (2018-01-25)
+* (Haba) New objects: botSendChatId, botSendMessageId
+* (bondrogeen) Sending files through the buffer
+* (bondrogeen) Downloading the received voice file
+=======
 ### 1.1.0 (2018-01-24)
 * (bluefox) Possibility to send photo, video, document, audio as buffer.
+>>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
 
 ### 1.0.11 (2018-01-23)
 * (Haba) Sending an image without intermediate caching
