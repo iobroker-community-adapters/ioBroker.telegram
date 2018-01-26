@@ -151,6 +151,7 @@ function handleWebHook(req, res) {
 }
 
 function _sendMessageHelper(dest, name, text, options) {
+     adapter.log.debug(JSON.stringify(options));
     var count = 0;
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
@@ -383,7 +384,7 @@ function sendMessage(text, user, chatId, options) {
     }
 
     // convert
-    if (text !== undefined && text !== null) {
+    if (text !== undefined && text !== null&&typeof text!=="object") {
         text = text.toString();
     }
 
