@@ -271,6 +271,7 @@ function _sendMessageHelper(dest, name, text, options) {
         }
     } else if (actions.indexOf(text) !== -1) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
+<<<<<<< HEAD
         if (bot) bot.sendChatAction(dest, text)
         .then(function (response) {
             saveSendRequest(response);
@@ -290,6 +291,28 @@ function _sendMessageHelper(dest, name, text, options) {
         });
     } else if (text && text.match(/\.webp$/i) && fs.existsSync(text)) {
         adapter.log.debug('Send video to "' + name + '": ' + text);
+=======
+        if (bot) {
+            bot.sendChatAction(dest, text).then(function () {
+                adapter.log.debug('Action sent');
+                options = null;
+                count++;
+            }, function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send action [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+        }
+    } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
+        if (typeof text === 'string') {
+            adapter.log.debug('Send sticker to "' + name + '": ' + text);
+        } else {
+            adapter.log.debug('Send sticker to "' + name + '": ' + text.length + ' bytes');
+        }
+>>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
         if (bot) {
             bot.sendSticker(dest, text, options)
             .then(function (response) {
@@ -309,8 +332,12 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.(mp4|gif)$/i) && fs.existsSync(text)) {
-        adapter.log.debug('Send video to "' + name + '": ' + text);
+    } else if (text && ((typeof text === 'string' && text.match(/\.(mp4|gif)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
+        if (typeof text === 'string') {
+            adapter.log.debug('Send video to "' + name + '": ' + text);
+        } else {
+            adapter.log.debug('Send video to "' + name + '": ' + text.length + ' bytes');
+        }
         if (bot) {
             bot.sendVideo(dest, text, options)
             .then(function (response) {
@@ -330,8 +357,12 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) {
-        adapter.log.debug('Send document to "' + name + '": ' + text);
+    } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
+        if (typeof text === 'string') {
+            adapter.log.debug('Send document to "' + name + '": ' + text);
+        } else {
+            adapter.log.debug('Send document to "' + name + '": ' + text.length + ' bytes');
+        }
         if (bot) {
             bot.sendDocument(dest, text, options)
             .then(function (response) {
@@ -351,8 +382,12 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) {
-        adapter.log.debug('Send audio to "' + name + '": ' + text);
+    } else if (text && ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio'))) {
+        if (typeof text === 'string') {
+            adapter.log.debug('Send audio to "' + name + '": ' + text);
+        } else {
+            adapter.log.debug('Send audio to "' + name + '": ' + text.length + ' bytes');
+        }
         if (bot) {
             bot.sendAudio(dest, text, options)
             .then(function (response) {
@@ -372,8 +407,12 @@ function _sendMessageHelper(dest, name, text, options) {
                 options = null;
             });
         }
-    } else if (text && text.match(/\.(jpg|png|jpeg|bmp)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) {
-        adapter.log.debug('Send photo to "' + name + '": ' + text);
+    } else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
+        if (typeof text === 'string') {
+            adapter.log.debug('Send photo to "' + name + '": ' + text);
+        } else {
+            adapter.log.debug('Send photo to "' + name + '": ' + text.length + ' bytes');
+        }
         if (bot) {
             getUrlData(text, function (res) {
                 if (res) {
@@ -515,8 +554,13 @@ function sendMessage(text, user, chatId, options) {
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
+<<<<<<< HEAD
         if (options.text !== undefined) delete options.text;
         if (options.user !== undefined) delete options.user;
+=======
+        if (options.text   !== undefined) delete options.text;
+        if (options.user   !== undefined) delete options.user;
+>>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
     }
     
     adapter.log.debug('type ' + typeof text + ' text = ' + JSON.stringify(text));
