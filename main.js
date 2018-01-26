@@ -384,7 +384,7 @@ function sendMessage(text, user, chatId, options) {
     }
 
     // convert
-    if (text !== undefined && text !== null&&typeof text!=="object") {
+    if (text !== undefined && text !== null && typeof text !== 'object') {
         text = text.toString();
     }
 
