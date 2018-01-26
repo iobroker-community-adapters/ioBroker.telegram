@@ -7,7 +7,7 @@
  *      MIT License
  *
  */
-/* jshint -W097 */ // jshint strict:false
+/* jshint -W097 */// jshint strict:false
 /*jslint node: true */
 'use strict';
 
@@ -17,8 +17,7 @@ var _ = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
-var https = require('https');
-var http = require('http');
+
 var bot;
 var users = {};
 var systemLang = 'en';
@@ -26,13 +25,6 @@ var reconnectTimer = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
 var callbackQueryId = 0;
-
-var tools = require(utils.controllerDir + '/lib/tools');
-var configFile = tools.getConfigFileName();
-let tmp = configFile.split(/[\\\/]+/);
-tmp.pop(); // json
-tmp.pop(); // iobroker-data
-let tmpDir = tmp.join('/');
 
 var server = {
     app: null,
@@ -46,8 +38,6 @@ adapter.on('message', function (obj) {
 });
 
 adapter.on('ready', function () {
-    adapter.log.info(configFile);
-    adapter.log.info(tmpDir);
     adapter.config.server = adapter.config.server === 'true';
 
     if (adapter.config.server) {
@@ -103,7 +93,6 @@ adapter.on('unload', function () {
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
     if (state && !state.ack && id.indexOf('communicate.response') !== -1) {
         // Send to someone this message
         sendMessage(state.val);
@@ -141,9 +130,7 @@ function handleWebHook(req, res) {
         req.on('data', function (data) {
             body += data;
             if (body.length > 100000) {
-                res.writeHead(413, 'Request Entity Too Large', {
-                    'Content-Type': 'text/html'
-                });
+                res.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
                 res.end('<!doctype html><html><head><title>413</title></head><body>413: Request Entity Too Large</body></html>');
             }
         });
@@ -158,82 +145,9 @@ function handleWebHook(req, res) {
             bot.processUpdate(msg);
         });
     } else {
-        res.writeHead(404, 'Resource Not Found', {
-            'Content-Type': 'text/html'
-        });
+        res.writeHead(404, 'Resource Not Found', {'Content-Type': 'text/html'});
         res.end('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
     }
-}
-
-
-function getUrlData(url, callback) {
-    adapter.log.debug('URL: ' + url);
-    if (url.match(/http/)) {
-        var getHttp = url.match(/https:/) ? https : http;
-        getHttp.get(url, function (res) {
-            if (res.statusCode === 200) {
-                var buf = [];
-                res.on('data', function (data) {
-                    buf.push(data);
-                });
-                res.on('end', function () {
-                    callback(Buffer.concat(buf));
-                });
-                res.on('error', function (err) {
-                    callback(false)
-                });
-            } else {
-                callback(false)
-            }
-        });
-    } else {
-        callback(url)
-    }
-}
-
-function getMessage(msg) {
-    adapter.log.debug('Received message: ' + JSON.stringify(msg));
-    if (msg.voice) {
-        bot.getFileLink(msg.voice.file_id).then(function (result) {
-            getUrlData(result, function (res) {
-                fs.writeFile(__dirname + '/temp.ogg', res, function (err) {
-                    if (err) throw err;
-                    adapter.log.debug('It\'s saved!');
-                });
-            })
-        }, function (err) {
-            adapter.log.debug('error voice: ' + err);
-        });
-    }
-}
-
-function _sendBuffer(dest, type, text, options) {
-    var count = 0;
-    var buffer = text.buffer;
-    var typeList = {
-        photo:      'sendPhoto',
-        audio:      'sendAudio',
-        document:   'sendDocument',
-        sticker:    'sendSticker',
-        video:      'sendVideo',
-        voice:      'sendVoice'
-    }
-    var type = text.type.toLowerCase();
-    if (buffer && typeList[type]) {
-        bot[typeList[type]](dest, buffer, options).then(function () {
-            options = null;
-            adapter.log.debug(type + ' sent');
-            count++;
-        }, function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send ' + type + ' [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send ' + type + ' [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
-    }
-    return count;
 }
 
 function saveSendRequest(msg) {
@@ -271,33 +185,17 @@ function _sendMessageHelper(dest, name, text, options) {
         }
     } else if (actions.indexOf(text) !== -1) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
-<<<<<<< HEAD
-        if (bot) bot.sendChatAction(dest, text)
-        .then(function (response) {
-            saveSendRequest(response);
-        })
-        .then(function () {
-            adapter.log.debug('Action sent');
-            options = null;
-            count++;
-        })
-        .catch(function (error) {
-            if (options.chatId) {
-                adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
-            } else {
-                adapter.log.error('Cannot send action [user - ' + options.user + ']: ' + error);
-            }
-            options = null;
-        });
-    } else if (text && text.match(/\.webp$/i) && fs.existsSync(text)) {
-        adapter.log.debug('Send video to "' + name + '": ' + text);
-=======
         if (bot) {
-            bot.sendChatAction(dest, text).then(function () {
+            bot.sendChatAction(dest, text)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
+            .then(function () {
                 adapter.log.debug('Action sent');
                 options = null;
                 count++;
-            }, function (error) {
+            })
+            .catch(function (error) {
                 if (options.chatId) {
                     adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
                 } else {
@@ -312,7 +210,6 @@ function _sendMessageHelper(dest, name, text, options) {
         } else {
             adapter.log.debug('Send sticker to "' + name + '": ' + text.length + ' bytes');
         }
->>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
         if (bot) {
             bot.sendSticker(dest, text, options)
             .then(function (response) {
@@ -414,36 +311,31 @@ function _sendMessageHelper(dest, name, text, options) {
             adapter.log.debug('Send photo to "' + name + '": ' + text.length + ' bytes');
         }
         if (bot) {
-            getUrlData(text, function (res) {
-                if (res) {
-                    bot.sendPhoto(dest, res, options)
-                    .then(function (response) {
-                        saveSendRequest(response);
-                    })
-                    .then(function () {
-                        adapter.log.debug('Photo sent');
-                        options = null;
-                    })
-                    .catch(function (error) {
-                        if (options.chatId) {
-                            adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
-                        } else {
-                            adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
-                        }
-                        options = null;
-                    });
-                } else {
-                    adapter.log.info('Error response from : ' + text);
-                }
+            bot.sendPhoto(dest, text, options)
+            .then(function (response) {
+                saveSendRequest(response);
             })
+            .then(function () {
+                adapter.log.debug('Photo sent');
+                options = null;
+                count++;
+            })
+            .catch(function (error) {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
         }
     } else if (options && options.answerCallbackQuery !== undefined) {
-        adapter.log.debug('Send answerCallbackQuery to "' + name + '"');
+        adapter.log.debug('Send answerCallbackQuery to "' + name +'"');
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
         }
         if (bot) {
-            bot.answerCallbackQuery(callbackQueryId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+            bot.answerCallbackQuery(callbackQueryId,options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert)
             .then(function (response) {
                 saveSendRequest(response);
             })
@@ -459,7 +351,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        }
+        } 
     } else if (options && options.editMessageReplyMarkup !== undefined) {
         adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
         if (bot) {
@@ -479,7 +371,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        }
+        } 
     } else if (options && options.editMessageText !== undefined) {
         adapter.log.debug('Send editMessageText to "' + name + '"');
         if (bot) {
@@ -499,11 +391,14 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        }
+        } 
     } else if (options && options.deleteMessage !== undefined) {
         adapter.log.debug('Send deleteMessage to "' + name + '"');
         if (bot) {
             bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
+            .then(function (response) {
+                saveSendRequest(response);
+            })
             .then(function () {
                 options = null;
                 count++;
@@ -516,7 +411,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        }
+        } 
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) {
@@ -544,8 +439,7 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-
-    if (!text && (typeof options !== 'object')) {
+    if (!text && (typeof options !== 'object'))  {
         if (!text && text !== 0 && (!options || !options.latitude)) {
             adapter.log.warn('Invalid text: null');
             return;
@@ -554,18 +448,12 @@ function sendMessage(text, user, chatId, options) {
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-<<<<<<< HEAD
-        if (options.text !== undefined) delete options.text;
-        if (options.user !== undefined) delete options.user;
-=======
         if (options.text   !== undefined) delete options.text;
         if (options.user   !== undefined) delete options.user;
->>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
     }
-    
-    adapter.log.debug('type ' + typeof text + ' text = ' + JSON.stringify(text));
+
     // convert
-    if (typeof text !== "object" && text !== undefined && text !== null) {
+    if (text !== undefined && text !== null) {
         text = text.toString();
     }
 
@@ -579,11 +467,7 @@ function sendMessage(text, user, chatId, options) {
     if (user) {
         for (u in users) {
             if (users[u] === user) {
-                if (typeof text === 'object') {
-                    count += _sendBuffer(u, user, text, options);
-                } else {
-                    count += _sendMessageHelper(u, user, text, options);
-                }
+                count +=_sendMessageHelper(u, user, text, options);
                 break;
             }
         }
@@ -596,22 +480,14 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
-                if (typeof text === 'object') {
-                    count += _sendBuffer(u, m[1], text, options);
-                } else {
-                    count += _sendMessageHelper(u, m[1], text, options);
-                }
+                count +=_sendMessageHelper(u, m[1], text, options);
                 break;
             }
         }
     } else {
         // Send to all users
         for (u in users) {
-            if (typeof text === 'object') {
-                count += _sendBuffer(u, users[u], text, options);
-            } else {
-                count += _sendMessageHelper(u, users[u], text, options);
-            }
+            count += _sendMessageHelper(u, users[u], text, options);
         }
     }
     return count;
@@ -633,18 +509,17 @@ function processMessage(obj) {
     lastMessageText = json;
 
     switch (obj.command) {
-        case 'send':
-            {
-                if (obj.message) {
-                    var count;
-                    if (typeof obj.message === 'object') {
-                        count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
-                    } else {
-                        count = sendMessage(obj.message);
-                    }
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
+        case 'send': {
+            if (obj.message) {
+                var count;
+                if (typeof obj.message === 'object') {
+                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                } else {
+                    count = sendMessage(obj.message);
                 }
+                if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
             }
+        }
     }
 }
 
@@ -850,20 +725,14 @@ function connect() {
     } else {
         if (adapter.config.server) {
             // Setup server way
-            bot = new TelegramBot(adapter.config.token, {
-                polling: false,
-                filepath: true
-            });
+            bot = new TelegramBot(adapter.config.token, {polling: false, filepath: true});
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
             }
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-            bot = new TelegramBot(adapter.config.token, {
-                polling: true,
-                filepath: true
-            });
+            bot = new TelegramBot(adapter.config.token, {polling: true, filepath: true});
             bot.setWebHook('');
         }
 
@@ -884,10 +753,12 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        bot.on('message', getMessage);
+        bot.on('message', function (msg) {
+          adapter.log.debug('Received message: ' + JSON.stringify(msg));
+        });
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
-            // write received answer into variable
+        // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(msg));
             callbackQueryId = msg.id;
             adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
@@ -895,23 +766,23 @@ function connect() {
             });
             adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
-            });
+            });    
         });
         bot.on('polling_error', function (error) {
-            adapter.log.error('polling_error:' + error.code + ', ' + error); // => 'EFATAL'
+          adapter.log.error('polling_error:' + error.code + ', ' + error);  // => 'EFATAL'
         });
         bot.on('webhook_error', function (error) {
-            adapter.log.error('webhook_error:' + error.code + ', ' + error); // => 'EPARSE'
-            adapter.log.debug('bot restarting...');
-            bot.stopPolling().then(
-                function (response) {
-                    adapter.log.debug('Start Polling');
-                    bot.startPolling();
-                },
-                function (error) {
-                    adapter.log.error('Error stop polling: ' + error);
-                }
-            );
+          adapter.log.error('webhook_error:' + error.code + ', ' + error);  // => 'EPARSE'
+          adapter.log.debug('bot restarting...');
+          bot.stopPolling().then(
+              function (response) {
+                  adapter.log.debug('Start Polling');
+                  bot.startPolling();
+              },
+              function (error) {
+                  adapter.log.error('Error stop polling: ' + error);
+              }
+          );
         });
     }
 }

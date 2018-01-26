@@ -45,12 +45,23 @@ To send photo, just send a path to file instead of text or URL: ```sendTo('teleg
 Example how to send screenshot from webcam to telegram:
 
 ```
+var request = require('request');
+var fs      = require('fs');
+
 function sendImage() {
-    sendTo ('telegram.0', {
-        text: "http://login:pass@ipaddress/web/tmpfs/snap.jpg"
+    request.get({url: 'http://login:pass@ipaddress/web/tmpfs/snap.jpg', encoding: 'binary'}, function (err, response, body) {
+        fs.writeFile("/tmp/snap.jpg", body, 'binary', function(err) {
+
+        if (err) {
+            console.error(err);
+        } else {
+            console.log('Snapshot sent');
+            sendTo('telegram.0', '/tmp/snap.jpg');
+            //sendTo('telegram.0', {text: '/tmp/snap.jpg', caption: 'Snapshot'});
+        }
+      });
     });
 }
-
 on("someState", function (obj) {
     if (obj.state.val) {
         // send 4 images: immediately, in 5, 15 and 30 seconds
@@ -62,21 +73,6 @@ on("someState", function (obj) {
 });
 
 ```
-
-
-Example of file transfer as a buffer:
-
-```
-sendTo('telegram.0',{
-    text:   {
-        bufer:fs.readFileSync('/iobroker/node_modules/iobroker/video.mp4'),
-        type:"video"  // photo, audio, document, sticker, video, voice 
-        } 
-});
-
-```
-
-
 
 Following messages are reserved for actions:
 
@@ -97,6 +93,28 @@ The description for telegram API can be found [here](https://core.telegram.org/b
 sendTo('telegram.0', {
     text:                   '/tmp/snap.jpg',
     caption:                'Snapshot',
+    disable_notification:   true
+});
+```
+
+**Possible options**:
+- *disable_notification*: Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound. (all types)
+- *parse_mode*: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. Possible values: "Markdown", "HTML" (message)
+- *disable_web_page_preview*: Disables link previews for links in this message (message)
+- *caption*: Caption for the document, photo or video, 0-200 characters (video, audio, photo, document)
+- *duration*: Duration of sent video or audio in seconds (audio, video)
+- *performer*: Performer of the audio file (audio)
+- *title*: Track name of the audio file (audio)
+- *width*: Video width (video)
+- *height*: Video height (video)
+
+Adapter tries to detect the type of message (photo, video, audio, document, sticker, action, location) depends on text in the message if the text is path to existing file, it will be sent as according type.
+
+Location will be detected on attribute latitude:
+```
+sendTo('telegram.0', {
+    latitude:               52.522430,
+    longitude:              13.372234,
     disable_notification:   true
 });
 ```
@@ -326,15 +344,11 @@ TODO:
 - dialogs
 
 ## Changelog
-<<<<<<< HEAD
 ### 1.0.12 (2018-01-25)
 * (Haba) New objects: botSendChatId, botSendMessageId
-* (bondrogeen) Sending files through the buffer
-* (bondrogeen) Downloading the received voice file
-=======
+
 ### 1.1.0 (2018-01-24)
 * (bluefox) Possibility to send photo, video, document, audio as buffer.
->>>>>>> 737d29e308dbc954c1fd66646006131e1984185d
 
 ### 1.0.11 (2018-01-23)
 * (Haba) Sending an image without intermediate caching
