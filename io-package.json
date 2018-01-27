@@ -244,6 +244,18 @@
                 "write": false
             },
             "native": {}
+        },
+        {
+            "_id": "communicate.pathFile",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Users as json, which are constantly authenticated",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
         }
     ]
 }
