@@ -758,6 +758,11 @@ function connect() {
         bot.onText(/(.+)/, processTelegramText);
         bot.on('message', function (msg) {
           adapter.log.debug('Received message: ' + JSON.stringify(msg));
+			if (adapter.config.storeRawRequest) {
+				adapter.setState('communicate.requestRaw', JSON.stringify(msg), function (err) {
+					if (err) adapter.log.error(err);
+				});
+			}
         });
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
@@ -769,7 +774,7 @@ function connect() {
             });
             adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
-            });    
+            });		
         });
         bot.on('polling_error', function (error) {
           adapter.log.error('polling_error:' + error.code + ', ' + error);  // => 'EFATAL'
