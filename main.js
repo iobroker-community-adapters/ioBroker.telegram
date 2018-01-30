@@ -18,6 +18,7 @@ var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 var https = require('https');
+var path = require('path');
 
 var bot;
 var users = {};
@@ -47,7 +48,7 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     adapter.config.server = adapter.config.server === 'true';
-
+    
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
  
     if (adapter.config.server) {
@@ -476,10 +477,11 @@ function saveFile(file_id, fileName, callback) {
 function getMessage(msg) {
     var date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-')
     adapter.log.debug('Received message: ' + JSON.stringify(msg));
+
     if (!fs.existsSync(tmpDirName)) fs.mkdirSync(tmpDirName);
     if (msg.voice) {
         if (!fs.existsSync(tmpDirName + '/voice')) fs.mkdirSync(tmpDirName + '/voice');
-        saveFile(msg.voice.file_id, '/voice/' + date + '.ogg', function (res) {
+        saveFile(msg.voice.file_id, adapter.config.saveFiles  ? '/voice/' + date + '.ogg' : '/voice/temp.ogg', function (res) {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, function (err) {
@@ -489,7 +491,7 @@ function getMessage(msg) {
                 adapter.log.debug(res.error);
             }
         })
-    } else if (msg.photo) {
+    } else if (adapter.config.saveFiles && msg.photo) {
         if (!fs.existsSync(tmpDirName + '/photo')) fs.mkdirSync(tmpDirName + '/photo');
         saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', function (res) {
             if (!res.error) {
@@ -502,7 +504,7 @@ function getMessage(msg) {
             }
         })
 
-    } else if (msg.video) {
+    } else if (adapter.config.saveFiles && msg.video) {
         if (!fs.existsSync(tmpDirName + '/video')) fs.mkdirSync(tmpDirName + '/video');
         saveFile(msg.video.file_id, '/video/' + date + '.mp4', function (res) {
             if (!res.error) {
@@ -514,7 +516,7 @@ function getMessage(msg) {
                 adapter.log.debug(res.error);
             }
         })
-    } else if (msg.audio) {
+    } else if (adapter.config.saveFiles && msg.audio) {
         if (!fs.existsSync(tmpDirName + '/audio')) fs.mkdirSync(tmpDirName + '/audio');
         saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', function (res) {
             if (!res.error) {
@@ -526,7 +528,7 @@ function getMessage(msg) {
                 adapter.log.debug(res.error);
             }
         })
-    } else if (msg.document) {
+    } else if (adapter.config.saveFiles && msg.document) {
         if (!fs.existsSync(tmpDirName + '/document')) fs.mkdirSync(tmpDirName + '/document');
         saveFile(msg.document.file_id, '/document/' + msg.document.file_name, function (res) {
             if (!res.error) {
