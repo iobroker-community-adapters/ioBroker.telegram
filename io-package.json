@@ -250,7 +250,7 @@
             "type": "state",
             "common": {
                 "role": "text",
-                "name": "Users as json, which are constantly authenticated",
+                "name": "The path to the last file received",
                 "type": "string",
                 "read": true,
                 "write": false
