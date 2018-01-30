@@ -113,6 +113,18 @@
             "en": "This text will be sent to clients by stopping of bot",
             "de": "Dieser Text wird beim Anhalten vom Bot an die Clients gesendet",
             "ru": "Этот текст будет послан всем клиентам при остановке бота"
+        },
+        "Save media files:":            {"en": "Save media files:",         "de": "Mediendateien speichern:",        "ru": "Сохранить медиа файлы:"},
+        "Save media files": {
+            "en": "Save all received files to the file system",
+            "de": "Speichern Sie alle empfangenen Dateien im Dateisystem",
+            "ru": "Сохранить все полученные файлы в файловую систему"
+        },
+        "Path:":            {"en": "Path:",         "de": "Pfad:",        "ru": "Путь:"},
+        "The path where files will be stored": {
+            "en": "The path where files will be stored",
+            "de": "Der Pfad, in dem Dateien gespeichert werden",
+            "ru": "Путь где будут храниться файлы"
         }
     };
 
@@ -291,6 +303,16 @@
                     <td class="translate">Store user's IDs:</td>
                     <td><input id="rememberUsers" class="value" type="checkbox"/></td>
                     <td class="translate help">Remember authenticated users</td>
+                </tr>
+                <tr>
+                    <td class="translate">Save media files:</td>
+                    <td><input id="saveFiles" class="value" type="checkbox"/></td>
+                    <td class="translate help">Save media files</td>
+                </tr>
+                <tr>
+                    <td class="translate">Path:</td>
+                    <td><input id="path" class="value inputStyle" /></td>
+                    <td class="translate help">The path where files will be stored</td>
                 </tr>
                 <tr>
                     <td colspan='3'><h4 class="translate" style="width: 90%">Texts</h4></td>
