@@ -151,6 +151,7 @@
         "password": "",
         "text2command": "",
         "rememberUsers": true,
+        "storeRawRequest": false,
         "restarting": "_",
         "restarted": "_",
         "url": "",
