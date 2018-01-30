@@ -442,7 +442,7 @@ function saveFile(file_id, fileName, callback) {
     bot.getFileLink(file_id).then(function (url) {
         adapter.log.debug('Received message: ' + url);
         https.get(url, function (res) {
-            if (res.statusCode == 200) {
+            if (res.statusCode === 200) {
                 var buf = [];
                 res.on('data', function (data) {
                     buf.push(data);
