@@ -31,7 +31,7 @@ var configFile = tools.getConfigFileName();
 var tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
 tmp.pop();
-var tmpDir = tmp.join('/') + '/tmp';
+var tmpDir = tmp.join('/') + '/iobroker-data/tmp';
 var tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
 
 var server = {
@@ -49,7 +49,7 @@ adapter.on('ready', function () {
     adapter.config.server = adapter.config.server === 'true';
 
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
-
+ 
     if (adapter.config.server) {
         adapter.config.port = parseInt(adapter.config.port, 10);
 
@@ -447,11 +447,11 @@ function saveFile(file_id, fileName, callback) {
                     buf.push(data);
                 });
                 res.on('end', function () {
-                    fs.writeFile(tmpDirName + '/' + fileName, Buffer.concat(buf), function (err) {
+                    fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), function (err) {
                         if (err) throw err;
                         callback({
-                            info: 'It\'s saved! : ' + tmpDirName + '/' + fileName,
-                            path: tmpDirName + '/' + fileName
+                            info: 'It\'s saved! : ' + tmpDirName + fileName,
+                            path: tmpDirName + fileName
                         })
                     });
                 });
@@ -474,10 +474,12 @@ function saveFile(file_id, fileName, callback) {
 }
 
 function getMessage(msg) {
+    var date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-')
     adapter.log.debug('Received message: ' + JSON.stringify(msg));
     if (!fs.existsSync(tmpDirName)) fs.mkdirSync(tmpDirName);
     if (msg.voice) {
-        saveFile(msg.voice.file_id, 'voice.ogg', function (res) {
+        if (!fs.existsSync(tmpDirName + '/voice')) fs.mkdirSync(tmpDirName + '/voice');
+        saveFile(msg.voice.file_id, '/voice/' + date + '.ogg', function (res) {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, function (err) {
@@ -488,7 +490,8 @@ function getMessage(msg) {
             }
         })
     } else if (msg.photo) {
-        saveFile(msg.photo[3].file_id, 'photo.jpg', function (res) {
+        if (!fs.existsSync(tmpDirName + '/photo')) fs.mkdirSync(tmpDirName + '/photo');
+        saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', function (res) {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, function (err) {
@@ -500,7 +503,8 @@ function getMessage(msg) {
         })
 
     } else if (msg.video) {
-        saveFile(msg.video.file_id, 'video.mp4', function (res) {
+        if (!fs.existsSync(tmpDirName + '/video')) fs.mkdirSync(tmpDirName + '/video');
+        saveFile(msg.video.file_id, '/video/' + date + '.mp4', function (res) {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, function (err) {
@@ -511,7 +515,8 @@ function getMessage(msg) {
             }
         })
     } else if (msg.audio) {
-        saveFile(msg.audio.file_id, 'audio.mp3', function (res) {
+        if (!fs.existsSync(tmpDirName + '/audio')) fs.mkdirSync(tmpDirName + '/audio');
+        saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', function (res) {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, function (err) {
@@ -522,7 +527,8 @@ function getMessage(msg) {
             }
         })
     } else if (msg.document) {
-        saveFile(msg.document.file_id, msg.document.file_name.replace(/(.*)\./, "document."), function (res) {
+        if (!fs.existsSync(tmpDirName + '/document')) fs.mkdirSync(tmpDirName + '/document');
+        saveFile(msg.document.file_id, '/document/' + msg.document.file_name, function (res) {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, function (err) {
