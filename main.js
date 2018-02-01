@@ -48,9 +48,9 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     adapter.config.server = adapter.config.server === 'true';
-    
+
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
- 
+
     if (adapter.config.server) {
         adapter.config.port = parseInt(adapter.config.port, 10);
 
@@ -824,10 +824,10 @@ function connect() {
             });
         });
         bot.on('polling_error', function (error) {
-            adapter.log.error('polling_error:' + error.code + ', ' + error); // => 'EFATAL'
+            adapter.log.error('polling_error:' + error.code + ', ' + error.message); // => 'EFATAL'
         });
         bot.on('webhook_error', function (error) {
-            adapter.log.error('webhook_error:' + error.code + ', ' + error); // => 'EPARSE'
+            adapter.log.error('webhook_error:' + error.code + ', ' + error.message); // => 'EPARSE'
             adapter.log.debug('bot restarting...');
             bot.stopPolling().then(
                 function (response) {
