@@ -4,9 +4,13 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.1",
+        "version": "1.2.2",
         "news": {
-			"1.2.1": {
+			"1.2.2": {
+                "en": "Fix error in main.js. Method renamed.",
+                "de": "Fehler in der main.js behoben. Methode umbeannt."
+            },
+            "1.2.1": {
                 "en": "Fixed error in config dialog",
                 "de": "Fehler in Konfigurations-Dialog behoben"
             },
