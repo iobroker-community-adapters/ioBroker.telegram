@@ -4,8 +4,12 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.0",
+        "version": "1.2.1",
         "news": {
+			"1.2.1": {
+                "en": "Fixed error in config dialog",
+                "de": "Fehler in Konfigurations-Dialog behoben"
+            },
             "1.2.0": {
                 "en": "Possibility to define polling interval in configuration wizard. Default is 300ms.",
                 "de": "Möglichkeit, das Polling Intervall in den Adapter-Einstellungen einzugeben. Standard ist 300ms."

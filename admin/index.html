@@ -149,7 +149,7 @@
     function showHideSettings() {
         if ($('#server').val() === 'true') {
             $('#tabs').tabs('option', 'disabled', []);
-			$('#pollingInterval').prop('disabled', [1]);
+			//$('#pollingInterval').prop('disabled', [1]);
             $('.le-settings').show();
 
             if ($('#leEnabled').prop('checked')) {
@@ -164,7 +164,7 @@
             }
         } else {
             $('#tabs').tabs('option', 'disabled', [1]);
-			$('#pollingInterval').prop('disabled', []);
+			//$('#pollingInterval').prop('disabled', []);
         }
     }
 

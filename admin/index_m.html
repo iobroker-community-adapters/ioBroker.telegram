@@ -35,7 +35,7 @@
         if ($('#server').val() === 'true') {
             $('.server-settings').removeClass('disabled');
 			$('.le-settings').removeClass('disabled');
- 			$('#pollingInterval').prop('disabled', [1]);
+ 			//$('#pollingInterval').prop('disabled', [1]);
 
             if ($('#leEnabled').prop('checked')) {
                 $('.le-sub-settings').show();
@@ -50,7 +50,7 @@
         } else {
             $('.server-settings').addClass('disabled');
             $('.le-settings').addClass('disabled');
-			$('#pollingInterval').prop('disabled', []);
+			//$('#pollingInterval').prop('disabled', []);
         }
     }
 
