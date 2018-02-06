@@ -322,6 +322,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.0 (2018-02-06)
+* (AlGu) Possibility to define polling interval in configuration wizard. Default is 300ms.
+
 ### 1.1.0 (2018-01-24)
 * (bluefox) Possibility to send photo, video, document, audio as buffer.
 

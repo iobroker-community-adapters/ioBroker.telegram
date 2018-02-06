@@ -28,6 +28,7 @@
         "Restarting...":                {"en": "Restarting...",             "de": "Bot wird neu gestartet.",        "ru": "Перезапуск бота."},
         "Started!":                     {"en": "Started!",                  "de": "Gestartet.",                     "ru": "Бот запущен."},
         "Token:":                       {"en": "Token:",                    "de": "Token:",                         "ru": "Токен:"},
+        "Polling interval (ms):":       {"en": "Polling interval (ms):",    "de": "Abfrageintervall (ms):",         "ru": "Polling interval (ms):"},
         "Main settings":                {"en": "Main settings",             "de": "Haupteinstellungen",             "ru": "Main settings"},
         "Texts":                        {"en": "Texts",                     "de": "Texte",                          "ru": "Тексты"},
         "IP:":                    {"en": "IP:",                     "de": "IP:",                     "ru": "IP:"},
@@ -38,6 +39,7 @@
         "Listen on all IPs":      {"en": "Listen on all IPs",       "de": "Alle IPs zulassen",       "ru": "Открыть для всех IP адресов"},
         "Type:":                  {"en": "Type:",                   "de": "Typ:",                    "ru": "Тип:"},
         "polling":                {"en": "polling",                 "de": "ständig Abfragen",        "ru": "опрос"},
+        "pollingInterval":        {"en": "pollingInterval",         "de": "Abfrage Intervall",        "ru": "pollingInterval"},
         "server":                 {"en": "server",                  "de": "Server",                  "ru": "сервер"},
         "Server settings":        {"en": "Server settings",         "de": "Servereinstellungen",     "ru": "Настройки сервера"},
         "URL:":                   {"en": "URL:",                    "de": "URL:",                    "ru": "URL:"},
@@ -147,6 +149,7 @@
     function showHideSettings() {
         if ($('#server').val() === 'true') {
             $('#tabs').tabs('option', 'disabled', []);
+			$('#pollingInterval').prop('disabled', []);
             $('.le-settings').show();
 
             if ($('#leEnabled').prop('checked')) {
@@ -161,6 +164,7 @@
             }
         } else {
             $('#tabs').tabs('option', 'disabled', [1]);
+			$('#pollingInterval').prop('disabled', [1]);
         }
     }
 
@@ -171,6 +175,7 @@
 
         if (!settings.lePort) settings.lePort = 80;
         if (!settings.server) settings.server = 'false';
+		if (!settings.pollingInterval) settings.pollingInterval = 300;
 
         getIPs(function(ips) {
             for (var i = 0; i < ips.length; i++) {
@@ -278,6 +283,11 @@
                         </select>
                     </td>
                     <td></td>
+                </tr>
+				<tr>
+                    <td class="translate">Polling interval (ms):</td>
+                    <td><input id="pollingInterval" class="value inputStyle" /></td>
+					<td></td>
                 </tr>
                 <tr>
                     <td class="translate">Token:</td>

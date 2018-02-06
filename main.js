@@ -165,7 +165,7 @@ function handleWebHook(req, res) {
     }
 }
 
-function _sendMessageHelper(dest, name, text, options) {
+function sendMessageHelper(dest, name, text, options) {
     var count = 0;
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
@@ -608,10 +608,15 @@ function storeUser(id, name) {
 
 function processTelegramText(msg) {
     var now = new Date().getTime();
-
-    // ignore all messages older than 30 seconds
-    if (now - msg.date * 1000 > 30000) {
-        adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: ' + msg.text);
+	var pollingInterval = 0;
+	if (adapter.config && adapter.config.pollingInterval !== undefined)
+	{
+		pollingInterval = parseFloat(adapter.config.pollingInterval);
+	}
+		
+    // ignore all messages older than 30 seconds + polling interval
+    if (now - msg.date * 1000 > pollingInterval + 30000) {
+        adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: (' + (pollingInterval + 30000) + ') ' + msg.text);
         bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
         return;
     }
@@ -786,10 +791,12 @@ function connect() {
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-            bot = new TelegramBot(adapter.config.token, {
-                polling: true,
+			var pollingOptions = {
+                polling: { interval: parseFloat(adapter.config.pollingInterval) },
                 filepath: true
-            });
+            };
+			adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
+            bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('');
         }
 
