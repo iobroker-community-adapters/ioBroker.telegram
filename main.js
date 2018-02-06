@@ -165,7 +165,7 @@ function handleWebHook(req, res) {
     }
 }
 
-function sendMessageHelper(dest, name, text, options) {
+function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
