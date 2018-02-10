@@ -279,6 +279,18 @@
                 "write": false
             },
             "native": {}
+        },
+        {
+            "_id": "communicate.pathFile",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "The path to the last file received",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
         }
     ]
 }

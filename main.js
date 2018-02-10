@@ -7,7 +7,7 @@
  *      MIT License
  *
  */
-/* jshint -W097 */// jshint strict:false
+/* jshint -W097 */ // jshint strict:false
 /*jslint node: true */
 'use strict';
 
@@ -17,6 +17,8 @@ var _ = require(__dirname + '/lib/words.js');
 var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
+var https = require('https');
+var path = require('path');
 
 var bot;
 var users = {};
@@ -25,6 +27,13 @@ var reconnectTimer = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
 var callbackQueryId = 0;
+var tools = require(utils.controllerDir + '/lib/tools');
+var configFile = tools.getConfigFileName();
+var tmp = configFile.split(/[\\\/]+/);
+tmp.pop();
+tmp.pop();
+var tmpDir = tmp.join('/') + '/iobroker-data/tmp';
+var tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
 
 var server = {
     app: null,
@@ -39,6 +48,8 @@ adapter.on('message', function (obj) {
 
 adapter.on('ready', function () {
     adapter.config.server = adapter.config.server === 'true';
+
+    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
 
     if (adapter.config.server) {
         adapter.config.port = parseInt(adapter.config.port, 10);
@@ -130,7 +141,9 @@ function handleWebHook(req, res) {
         req.on('data', function (data) {
             body += data;
             if (body.length > 100000) {
-                res.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
+                res.writeHead(413, 'Request Entity Too Large', {
+                    'Content-Type': 'text/html'
+                });
                 res.end('<!doctype html><html><head><title>413</title></head><body>413: Request Entity Too Large</body></html>');
             }
         });
@@ -145,7 +158,9 @@ function handleWebHook(req, res) {
             bot.processUpdate(msg);
         });
     } else {
-        res.writeHead(404, 'Resource Not Found', {'Content-Type': 'text/html'});
+        res.writeHead(404, 'Resource Not Found', {
+            'Content-Type': 'text/html'
+        });
         res.end('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
     }
 }
@@ -330,7 +345,7 @@ function _sendMessageHelper(dest, name, text, options) {
             });
         }
     } else if (options && options.answerCallbackQuery !== undefined) {
-        adapter.log.debug('Send answerCallbackQuery to "' + name +'"');
+        adapter.log.debug('Send answerCallbackQuery to "' + name + '"');
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
         }
@@ -351,7 +366,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else if (options && options.editMessageReplyMarkup !== undefined) {
         adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
         if (bot) {
@@ -371,7 +386,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else if (options && options.editMessageText !== undefined) {
         adapter.log.debug('Send editMessageText to "' + name + '"');
         if (bot) {
@@ -391,7 +406,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else if (options && options.deleteMessage !== undefined) {
         adapter.log.debug('Send deleteMessage to "' + name + '"');
         if (bot) {
@@ -411,7 +426,7 @@ function _sendMessageHelper(dest, name, text, options) {
                 }
                 options = null;
             });
-        } 
+        }
     } else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
         if (bot) {
@@ -439,7 +454,7 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-    if (!text && (typeof options !== 'object'))  {
+    if (!text && (typeof options !== 'object')) {
         if (!text && text !== 0 && (!options || !options.latitude)) {
             adapter.log.warn('Invalid text: null');
             return;
@@ -448,12 +463,12 @@ function sendMessage(text, user, chatId, options) {
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text   !== undefined) delete options.text;
-        if (options.user   !== undefined) delete options.user;
+        if (options.text !== undefined) delete options.text;
+        if (options.user !== undefined) delete options.user;
     }
 
     // convert
-    if (text !== undefined && text !== null) {
+    if (text !== undefined && text !== null && typeof text !== 'object') {
         text = text.toString();
     }
 
@@ -467,7 +482,7 @@ function sendMessage(text, user, chatId, options) {
     if (user) {
         for (u in users) {
             if (users[u] === user) {
-                count +=_sendMessageHelper(u, user, text, options);
+                count += _sendMessageHelper(u, user, text, options);
                 break;
             }
         }
@@ -480,7 +495,7 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
-                count +=_sendMessageHelper(u, m[1], text, options);
+                count += _sendMessageHelper(u, m[1], text, options);
                 break;
             }
         }
@@ -491,6 +506,111 @@ function sendMessage(text, user, chatId, options) {
         }
     }
     return count;
+}
+
+function saveFile(file_id, fileName, callback) {
+    bot.getFileLink(file_id).then(function (url) {
+        adapter.log.debug('Received message: ' + url);
+        https.get(url, function (res) {
+            if (res.statusCode === 200) {
+                var buf = [];
+                res.on('data', function (data) {
+                    buf.push(data);
+                });
+                res.on('end', function () {
+                    fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), function (err) {
+                        if (err) throw err;
+                        callback({
+                            info: 'It\'s saved! : ' + tmpDirName + fileName,
+                            path: tmpDirName + fileName
+                        })
+                    });
+                });
+                res.on('error', function (err) {
+                    callback({
+                        error: 'Error : ' + err
+                    })
+                });
+            } else {
+                callback({
+                    error: 'Error : statusCode !== 200'
+                });
+            }
+        });
+    }, function (err) {
+        callback({
+            error: 'Error bot.getFileLink : ' + err
+        });
+    });
+}
+
+function getMessage(msg) {
+    var date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-')
+    adapter.log.debug('Received message: ' + JSON.stringify(msg));
+
+    if (!fs.existsSync(tmpDirName)) fs.mkdirSync(tmpDirName);
+    if (msg.voice) {
+        if (!fs.existsSync(tmpDirName + '/voice')) fs.mkdirSync(tmpDirName + '/voice');
+        saveFile(msg.voice.file_id, adapter.config.saveFiles  ? '/voice/' + date + '.ogg' : '/voice/temp.ogg', function (res) {
+            if (!res.error) {
+                adapter.log.info(res.info);
+                adapter.setState('communicate.pathFile', res.path, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            } else {
+                adapter.log.debug(res.error);
+            }
+        })
+    } else if (adapter.config.saveFiles && msg.photo) {
+        if (!fs.existsSync(tmpDirName + '/photo')) fs.mkdirSync(tmpDirName + '/photo');
+        saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', function (res) {
+            if (!res.error) {
+                adapter.log.info(res.info);
+                adapter.setState('communicate.pathFile', res.path, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            } else {
+                adapter.log.debug(res.error);
+            }
+        })
+
+    } else if (adapter.config.saveFiles && msg.video) {
+        if (!fs.existsSync(tmpDirName + '/video')) fs.mkdirSync(tmpDirName + '/video');
+        saveFile(msg.video.file_id, '/video/' + date + '.mp4', function (res) {
+            if (!res.error) {
+                adapter.log.info(res.info);
+                adapter.setState('communicate.pathFile', res.path, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            } else {
+                adapter.log.debug(res.error);
+            }
+        })
+    } else if (adapter.config.saveFiles && msg.audio) {
+        if (!fs.existsSync(tmpDirName + '/audio')) fs.mkdirSync(tmpDirName + '/audio');
+        saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', function (res) {
+            if (!res.error) {
+                adapter.log.info(res.info);
+                adapter.setState('communicate.pathFile', res.path, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            } else {
+                adapter.log.debug(res.error);
+            }
+        })
+    } else if (adapter.config.saveFiles && msg.document) {
+        if (!fs.existsSync(tmpDirName + '/document')) fs.mkdirSync(tmpDirName + '/document');
+        saveFile(msg.document.file_id, '/document/' + msg.document.file_name, function (res) {
+            if (!res.error) {
+                adapter.log.info(res.info);
+                adapter.setState('communicate.pathFile', res.path, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            } else {
+                adapter.log.debug(res.error);
+            }
+        })
+    }
 }
 
 function processMessage(obj) {
@@ -509,17 +629,18 @@ function processMessage(obj) {
     lastMessageText = json;
 
     switch (obj.command) {
-        case 'send': {
-            if (obj.message) {
-                var count;
-                if (typeof obj.message === 'object') {
-                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
-                } else {
-                    count = sendMessage(obj.message);
+        case 'send':
+            {
+                if (obj.message) {
+                    var count;
+                    if (typeof obj.message === 'object') {
+                        count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    } else {
+                        count = sendMessage(obj.message);
+                    }
+                    if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
                 }
-                if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
             }
-        }
     }
 }
 
@@ -725,14 +846,20 @@ function connect() {
     } else {
         if (adapter.config.server) {
             // Setup server way
-            bot = new TelegramBot(adapter.config.token, {polling: false, filepath: true});
+            bot = new TelegramBot(adapter.config.token, {
+                polling: false,
+                filepath: true
+            });
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
             }
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-            bot = new TelegramBot(adapter.config.token, {polling: true, filepath: true});
+            bot = new TelegramBot(adapter.config.token, {
+                polling: true,
+                filepath: true
+            });
             bot.setWebHook('');
         }
 
@@ -753,12 +880,10 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        bot.on('message', function (msg) {
-          adapter.log.debug('Received message: ' + JSON.stringify(msg));
-        });
+        bot.on('message', getMessage);
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
-        // write received answer into variable
+            // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(msg));
             callbackQueryId = msg.id;
             adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
@@ -766,23 +891,23 @@ function connect() {
             });
             adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
-            });    
+            });
         });
         bot.on('polling_error', function (error) {
-          adapter.log.error('polling_error:' + error.code + ', ' + error);  // => 'EFATAL'
+            adapter.log.error('polling_error:' + error.code + ', ' + error.message); // => 'EFATAL'
         });
         bot.on('webhook_error', function (error) {
-          adapter.log.error('webhook_error:' + error.code + ', ' + error);  // => 'EPARSE'
-          adapter.log.debug('bot restarting...');
-          bot.stopPolling().then(
-              function (response) {
-                  adapter.log.debug('Start Polling');
-                  bot.startPolling();
-              },
-              function (error) {
-                  adapter.log.error('Error stop polling: ' + error);
-              }
-          );
+            adapter.log.error('webhook_error:' + error.code + ', ' + error.message); // => 'EPARSE'
+            adapter.log.debug('bot restarting...');
+            bot.stopPolling().then(
+                function (response) {
+                    adapter.log.debug('Start Polling');
+                    bot.startPolling();
+                },
+                function (error) {
+                    adapter.log.error('Error stop polling: ' + error);
+                }
+            );
         });
     }
 }
@@ -799,6 +924,7 @@ function main() {
     // clear states
     adapter.setState('communicate.request', '', true);
     adapter.setState('communicate.response', '', true);
+    adapter.setState('communicate.pathFile', '', true);
 
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
 
