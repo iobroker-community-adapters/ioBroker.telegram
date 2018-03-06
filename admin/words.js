@@ -147,6 +147,18 @@ systemDictionary = {
             "es": "Recuerde usuarios autenticados",
             "pl": "Pamiętaj o uwierzytelnionych użytkownikach"
         },
+        "Store raw request:":            {"en": "Store raw request. ",         "de": "Original request speichern. ",        "ru": "Сохранять необработанный запрос. ",    "pt": "Pedido bruto da loja. ",    "nl": "Bewaar onbewerkt verzoek. ",    "fr": "Stocker la requête brute. ",    "it": "Memorizza richiesta non elaborata. ",    "es": "Almacenar solicitud sin procesar. ",     "pl": "Zapisz surowe żądanie. "},
+        "Remember raw request data": {
+            "en": "Save original request for further processing (Caution can contain safety-critical data!)",
+            "de": "Speichere original request zur weiteren Verarbeitung (Achtung kann sicherheitskritische Daten enthalten!)",
+            "ru": "Сохраните исходный запрос для дальнейшей обработки (Внимание может содержать важные для безопасности данные!)",
+            "pt": "Salvar solicitação original para processamento posterior (Cuidado pode conter dados críticos de segurança!)",
+            "nl": "Bewaar origineel verzoek voor verdere verwerking (Voorzichtigheid kan veiligheidskritieke gegevens bevatten!)",
+            "fr": "Enregistrer la demande d'origine pour un traitement ultérieur (la mise en garde peut contenir des données critiques pour la sécurité!)",
+            "it": "Salva la richiesta originale per ulteriori elaborazioni (Attenzione può contenere dati critici per la sicurezza!)",
+            "es": "Guarde la solicitud original para un procesamiento posterior (¡la precaución puede contener datos críticos para la seguridad!)",
+            "pl": "Zapisz oryginalne żądanie do dalszego przetwarzania (Uwaga może zawierać dane krytyczne dla bezpieczeństwa!)"
+        },
         '"Started" text:':              {"en": 'Started:',                  "de": 'Gestartet:',                     "ru": 'Запущен:',                  "pt": "Começado:",                     "nl": "Begonnen:",                  "fr": "Commencé:",                            "it": "Iniziato:",                  "es": "Empezado:",                          "pl": "Rozpoczęty:"},
         "restarted_help":               {
             "en": "This text will be sent to clients at new start of bot",

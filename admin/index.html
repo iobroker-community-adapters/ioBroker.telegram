@@ -102,6 +102,12 @@
             "de": "Speichere authentifizierte Anwender um kein Kennwort mehr zu fragen",
             "ru": "Запоминпать ID клиентов, которые ввели пароль, что бы не спрашивать больше"
         },
+        "Store raw request:":            {"en": "Store raw request. ",         "de": "Original request speichern. ",        "ru": "Сохранять необработанный запрос. "},
+        "Remember raw request data": {
+            "en": "Save original request for further processing (Caution can contain safety-critical data!)",
+            "de": "Speichere original request zur weiteren Verarbeitung (Achtung kann sicherheitskritische Daten enthalten!)",
+            "ru": "Сохраните исходный запрос для дальнейшей обработки (Внимание может содержать важные для безопасности данные!)",
+        },        
         '"Started" text:':              {"en": 'Started:',                  "de": 'Gestartet:',                     "ru": 'Запущен:'},
         "restarted_help":               {
             "en": "This text will be sent to clients at new start of bot",
@@ -303,6 +309,11 @@
                     <td class="translate">Store user's IDs:</td>
                     <td><input id="rememberUsers" class="value" type="checkbox"/></td>
                     <td class="translate help">Remember authenticated users</td>
+                </tr>
+                <tr>
+                    <td class="translate">Store raw request:</td>
+                    <td><input id="storeRawRequest" class="value" type="checkbox"/></td>
+                    <td class="translate help">Remember raw request data</td>
                 </tr>
                 <tr>
                     <td class="translate">Save media files:</td>

@@ -152,6 +152,7 @@
         "password": "",
         "text2command": "",
         "rememberUsers": true,
+        "storeRawRequest": false,
         "restarting": "_",
         "restarted": "_",
         "url": "",
@@ -197,6 +198,18 @@
             },
             "native": {}
         },
+        {
+            "_id": "communicate.requestRaw",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Raw Data of last received request",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },        
         {
             "_id": "communicate.requestChatId",
             "type": "state",

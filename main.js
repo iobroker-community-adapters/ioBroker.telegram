@@ -26,7 +26,7 @@ var systemLang = 'en';
 var reconnectTimer = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
-var callbackQueryId = 0;
+var callbackQueryId = {};
 var tools = require(utils.controllerDir + '/lib/tools');
 var configFile = tools.getConfigFileName();
 var tmp = configFile.split(/[\\\/]+/);
@@ -177,6 +177,9 @@ function saveSendRequest(msg) {
 
 function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
+	if (options.chatId !== undefined && options.user === undefined) {
+		options.user = users[options.chatId];
+	}	
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
@@ -350,7 +353,7 @@ function _sendMessageHelper(dest, name, text, options) {
             options.answerCallbackQuery.showAlert = false;
         }
         if (bot) {
-            bot.answerCallbackQuery(callbackQueryId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+            bot.answerCallbackQuery(callbackQueryId[options.user],options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert)
             .then(function (response) {
                 saveSendRequest(response);
             })
@@ -880,12 +883,19 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        bot.on('message', getMessage);
+        bot.on('message', function (msg) {
+            if (adapter.config.storeRawRequest) {
+                    adapter.setState('communicate.requestRaw', JSON.stringify(msg), function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            }
+            getMessage(msg);
+        });
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
             // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(msg));
-            callbackQueryId = msg.id;
+            callbackQueryId[msg.from.id] = msg.id;
             adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
                 if (err) adapter.log.error(err);
             });
