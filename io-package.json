@@ -6,6 +6,17 @@
         },
         "version": "1.1.1",
         "news": {
+            "1.1.1": {
+                "en": "New objects",
+                "de": "Neue Objekte",
+                "ru": "Новые объекты",
+                "pt": "Novos objetos",
+                "nl": "Nieuwe objecten",
+                "fr": "Nouveaux objets",
+                "it": "Nuovi oggetti",
+                "es": "Objetos nuevos",
+                "pl": "Nowe obiekty"
+            },
             "1.1.0": {
                 "en": "Possibility to send photo, video, document, audio as buffer.",
                 "de": "Möglichkeit, Foto, Video, Dokument, Audio als buffer zu senden.",
@@ -204,6 +215,30 @@
             "common": {
                 "role": "text",
                 "name": "Message ID of last received request",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendChatId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Chat ID of last sent message by the bot",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendMessageId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Message ID of last sent message by the bot",
                 "type": "string",
                 "read": true,
                 "write": false
