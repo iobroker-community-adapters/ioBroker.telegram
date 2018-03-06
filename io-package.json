@@ -134,6 +134,7 @@
             "telegram",
             "message"
         ],
+        "restartSchedule": "4 5 * * *",
         "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
         "type": "messaging",
         "blockly": true,
