@@ -1,0 +1,39 @@
+Geketend certificaat
+Laat het leeg als er geen wachtwoord gewenst is
+Laten we de instellingen versleutelen
+Luister op alle IP's
+Belangrijkste instellingen
+berichten
+Port
+Poort om het domein te controleren
+Privé certificaat
+Openbaar certificaat
+Lees README.md hoe token te krijgen
+Onthoud geverifieerde gebruikers
+Bewaar origineel verzoek voor verdere verwerking (Voorzichtigheid kan veiligheidskritieke gegevens bevatten!)
+herhaal wachtwoord
+Het opnieuw starten ...
+Server instellingen
+Stel certificaten in of laad het eerst in de systeeminstellingen (rechtsboven).
+Begonnen!
+Alle aanvragen worden verzonden naar dit text2Command-exemplaar
+teksten
+URL is mogelijk niet leeg
+Gebruik Let's Encrypt-certificaten
+Gebruik deze instantie voor automatische update
+IP
+Wachtwoord
+Wachtwoord herhalen
+stemming
+Momenteel ondersteund: 443, 80, 88, 8443
+Begonnen
+Deze tekst wordt bij het begin van de bot naar klanten verzonden
+Het opnieuw starten:
+Deze tekst zal naar klanten worden verzonden door bot te stoppen
+server
+telegram-adapterinstellingen
+Text2Command Instance
+Token
+Type
+URL
+zoals "https://mydomain.noip.com:8443"

@@ -1,0 +1,39 @@
+Chained certificat:
+Leave it blank if no password desired
+Let's Encrypt settings
+Listen on all IPs
+Main settings
+Messages
+Port
+Port to check the domain:
+Private certificate
+Public certificate
+Read README.md how to get token
+Remember authenticated users
+Remember raw request data
+Repeat password
+Restarting...
+Server settings
+Set certificates or load it first in the system settings (right top).
+Started!
+Text2Command info
+Texts
+URL may not be empty
+Use Lets Encrypt certificates:
+Use this instance for automatic update:
+ip
+password
+password repeat
+polling
+port_help
+restarted
+restarted_help
+restarting
+restarting_help
+server
+telegram adapter settings
+text2command instance
+token
+type
+url
+url_help

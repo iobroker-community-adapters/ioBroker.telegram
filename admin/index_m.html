@@ -153,6 +153,7 @@
             <div class="col s12">
                 <ul class="tabs">
                     <li class="tab col s3"><a href="#tab-main" class="translate active">Main settings</a></li>
+                    <li class="tab col s3"><a href="#tab-messages" class="translate active">Messages</a></li>
                     <li class="tab col s3 server-settings"><a href="#tab-server" class="translate">Server settings</a></li>
                     <li class="tab col s3 le-settings"><a href="#tab-le" class="translate">Let's Encrypt SSL</a></li>
                 </ul>
@@ -169,49 +170,57 @@
                         <option value="false" class="translate">polling</option>
                         <option value="true"  class="translate">server</option>
                     </select>
-                        <label class="translate" for="server">Type:</label>
+                        <label class="translate" for="server">type</label>
                     </div>
                     <div class="input-field col s12 m8 l8">
                         <input id="token" type="text"class="value" />
-                        <label class="translate" for="token">Token:</label>
+                        <label class="translate" for="token">token</label>
                         <span><a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12 m6 l5">
                         <input id="password" class="value" type="password" />
-                        <label class="translate" for="password">Password:</label>
+                        <label class="translate" for="password">password</label>
                         <span class="translate help">Leave it blank if no password desired</span>
                     </div>
                     <div class="input-field col s12 m6 l5">
                         <input id="passwordRepeat" class="value" type="password" />
-                        <label class="translate" for="passwordRepeat">Password repeat:</label>
+                        <label class="translate" for="passwordRepeat">password repeat</label>
                         <span class="translate help">Repeat password</span>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 m6 l5">
-                        <select id="text2command" class="value"></select>
-                        <label for="text2command" class="translate">Text2Command Instance:</label>
-                        <span class="translate help">All requests will be sent to this text2Command instance</span>
-                    </div>
-                    <div class="input-field col s12 m6 l5">
+                    <div class="input-field col s12 m12 l12">
                         <input id="rememberUsers" class="value" type="checkbox" />
-                        <label class="translate" for="rememberUsers">Store user's IDs:</label>
-                        <span class="translate help">Remember authenticated users</span>
+                        <label class="translate" for="rememberUsers">Remember authenticated users</label>
                     </div>
                 </div>
-                <h6 class="translate title">Texts</h6>
+            </div>
+            <div id="tab-messages" class="col s12 page">
                 <div class="row">
                     <div class="input-field col s12 m6 l5">
                         <input id="restarted" type="text" class="value" />
-                        <label class="translate" for="restarted">"Started" text:</label>
+                        <label class="translate" for="restarted">restarted</label>
                         <span class="translate help">restarted_help</span>
                     </div>
                     <div class="input-field col s12 m6 l5">
                         <input id="restarting" type="text" class="value" />
-                        <label class="translate" for="restarting">"Restarting" text:</label>
+                        <label class="translate" for="restarting">restarting</label>
                         <span class="translate help">restarting_help</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m12 l12">
+                        <input id="storeRawRequest" class="value" type="checkbox"/>
+                        <label class="translate" for="storeRawRequest">Remember raw request data</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m12 l5">
+                        <select id="text2command" class="value"></select>
+                        <label for="text2command" class="translate">text2command instance</label>
+                        <span class="translate help">Text2Command info</span>
                     </div>
                 </div>
             </div>
@@ -219,45 +228,38 @@
                 <div class="row marg">
                     <div class="input-field col s12 l10">
                         <input class="value" type="text" id="url" />
-                        <label class="translate" for="url">URL:</label>
+                        <label class="translate" for="url">url</label>
                         <span class="translate help">url_help</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12 m8 l5">
                         <select class="value" id="bind"></select>
-                        <label class="translate" for="bind">IP:</label>
+                        <label class="translate" for="bind">ip</label>
                     </div>
                     <div class="input-field col s12 m4 l5">
                         <input class="value number" id="port" size="5" maxlength="5" type="number" />
-                        <label class="translate" for="port">Port:</label>
+                        <label class="translate" for="port">port</label>
                         <span class="translate help">port_help</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12 m4 l3 col-certPublic">
                         <select id="certPublic" class="value"></select>
-                        <label class="translate" for="certPublic">Public certificate:</label>
+                        <label class="translate" for="certPublic">public certificate</label>
                     </div>
                     <div class="input-field col s12 m4 l3 col-certPrivate">
                         <select id="certPrivate" class="value"></select>
-                        <label class="translate" for="certPrivate">Private certificate:</label>
+                        <label class="translate" for="certPrivate">private certificate</label>
                     </div>
                     <div class="input-field col s12 m4 l3 col-certChained">
                         <select id="certChained" class="value"></select>
-                        <label class="translate" for="certChained">Chained certificate:</label>
+                        <label class="translate" for="certChained">chained certificate</label>
                     </div>
                 </div>
             </div>
             <div id="tab-le" class="col s12 page">
                 <div class="row marg">
-                    <div class="col s12 m4 l5">
-                        <input id="storeRawRequest" class="value" type="checkbox"/>
-                        <label class="translate" for="storeRawRequest">Store raw request:</label>
-                    </div>
-                    <div class="col s12 m4 l5">
-                        <label><i class="translate help">Remember raw request data</i></label>
-                    </div>
                     <div class="input-field col s12 m4 top-padding">
                         <input class="value" id="leEnabled" type="checkbox" />
                         <label for="leEnabled" class="translate">Use Lets Encrypt certificates:</label>

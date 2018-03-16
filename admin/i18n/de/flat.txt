@@ -1,0 +1,39 @@
+Kettenzertifikat
+Leer lassen, falls Kennwort nicht gewünscht
+Einstellungen Let's Encrypt
+Alle IPs zulassen
+Haupteinstellungen
+Nachrichten
+Port
+Port um die Domain zu prüfen
+Privatzertifikat
+Publikzertifikat
+Lese README.md um Token zu holen
+Speichere Anwender-IDs zur Vermeidung einer erneuten Kennwortabfrage
+Speichere Original-Request zur weiteren Verarbeitung (Achtung kann sicherheitskritische Daten enthalten!)
+Kennwort wiederholen
+Bot wird neu gestartet.
+Servereinstellungen
+Setze Zertifikate oder lade die erst unter System/Einstellungen (oben rechts).
+Bot gestartet.
+Alle Anfragen werden an diese text2Command-Instanz weitergeleitet
+Texte
+URL darf nicht leer sein!
+Let's Encrypt Zertifikate benutzen
+Diese Instanz für automatische Updates benutzen
+IP
+Kennwort
+Kennwortwiederholung
+Polling
+Aktuell unterstützt: 443, 80, 88, 8443
+Start
+Dieser Text wird nach dem Start an die Clients gesendet
+Neustart
+Dieser Text wird beim Neustarten an die Clients gesendet
+Server
+Adapter-Einstellungen
+text2Command-Instanz
+Token
+Typ
+URL
+wie "https://mydomain.noip.com:8443"

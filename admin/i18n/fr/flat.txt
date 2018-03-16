@@ -1,0 +1,39 @@
+Certificat chaîné
+Laissez-le vide si aucun mot de passe n'est souhaité
+Cryptons les paramètres
+Écoutez sur toutes les adresses IP
+Réglages principaux
+messages
+Port
+Port pour vérifier le domaine
+Certificat privé
+Certificat public
+Lisez README.md comment obtenir un jeton
+Se souvenir des utilisateurs authentifiés
+Enregistrer la demande d'origine pour un traitement ultérieur (la mise en garde peut contenir des données critiques pour la sécurité!)
+Répéter le mot de passe
+Redémarrer ...
+Paramètres du serveur
+Définissez des certificats ou chargez-les d'abord dans les paramètres du système (en haut à droite).
+Commencé!
+Toutes les demandes seront envoyées à cette instance de text2Command
+Des textes
+L'URL peut ne pas être vide
+Utilisez les certificats Let's Encrypt
+Utilisez cette instance pour la mise à jour automatique
+IP
+Mot de passe
+Mot de passe répété
+vote
+Actuellement pris en charge: 443, 80, 88, 8443
+Commencé
+Ce texte sera envoyé aux clients au nouveau départ du bot
+Redémarrage
+Ce texte sera envoyé aux clients en arrêtant le bot
+serveur
+paramètres de l'adaptateur de télégramme
+Instance Text2Command
+Token
+Type
+URL
+comme "https://mydomain.noip.com:8443"

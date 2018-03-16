@@ -1,0 +1,39 @@
+Certificado acorrentado
+Deixe-o em branco se nenhuma senha desejada
+Vamos criptografar configurações
+Ouça todos os IPs
+Configurações principais
+Mensagens
+Port
+Porta para verificar o domínio
+Certificado privado
+Certificado público
+Leia README.md como obter token
+Lembre-se de usuários autenticados
+Salvar solicitação original para processamento posterior (Cuidado pode conter dados críticos de segurança!)
+Repita a senha
+Reiniciar ...
+Configurações do servidor
+Defina certificados ou carregue primeiro nas configurações do sistema (parte superior direita).
+Começado!
+Todos os pedidos serão enviados para este exemplo de texto2Command
+Textos
+O URL pode não estar vazio
+Use Vamos criptografar certificados
+Use esta instância para atualização automática
+IP
+Senha
+Repetição de senha
+polling
+Atualmente com suporte: 443, 80, 88, 8443
+Começado
+Este texto será enviado aos clientes no início do bot
+Reiniciar
+Este texto será enviado aos clientes, parando o bot
+servidor
+configurações do adaptador de telegrama
+Exemplo de Text2Command:
+Símbolo
+Tipo
+URL
+como "https://mydomain.noip.com:8443"
