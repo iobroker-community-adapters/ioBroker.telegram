@@ -1,0 +1,39 @@
+Certificado encadenado
+Déjelo en blanco si no desea una contraseña
+Vamos a cifrar la configuración
+Escuchar en todas las direcciones IP
+Ajustes principales
+Mensajes
+Port
+Puerto para verificar el dominio
+Certificado privado
+Certificado público
+Lea README.md cómo obtener token
+Recuerde usuarios autenticados
+Guarde la solicitud original para un procesamiento posterior (¡la precaución puede contener datos críticos para la seguridad!)
+repite la contraseña
+Reiniciando ...
+Configuración del servidor
+Establezca certificados o cárguelos primero en la configuración del sistema (arriba a la derecha).
+¡Empezado!
+Todas las solicitudes se enviarán a esta instancia de text2Command
+Textos
+La URL no puede estar vacía
+Utilice los certificados Let's Encrypt
+Use esta instancia para la actualización automática
+IP
+Contraseña
+Repite la contraseña
+votación
+Actualmente compatible: 443, 80, 88, 8443
+Empezado
+Este texto se enviará a los clientes al nuevo inicio de bot
+Reiniciar
+Este texto se enviará a los clientes deteniendo bot
+servidor
+configuración del adaptador de telegrama
+Instancia Text2Command
+Token
+Tipo
+URL
+como "https://mydomain.noip.com:8443"

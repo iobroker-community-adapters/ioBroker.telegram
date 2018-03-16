@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.1.1",
+        "version": "1.1.2",
         "news": {
+            "1.1.2": {
+                "en": "Reworked configuration and translation",
+                "de": "Überarbeitung der Konfiguration und Übersetzung",
+                "ru": "Переработанная конфигурация и перевод",
+                "pt": "Configuração e tradução reformuladas",
+                "nl": "Herwerkte configuratie en vertaling",
+                "fr": "Configuration et traduction retravaillées",
+                "it": "Rielaborazione della configurazione e traduzione",
+                "es": "Configuración y traducción retrabajada",
+                "pl": "Przerobiona konfiguracja i tłumaczenie"
+            },
             "1.1.1": {
                 "en": "New objects",
                 "de": "Neue Objekte",
