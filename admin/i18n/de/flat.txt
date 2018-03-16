@@ -1,5 +1,5 @@
 Kettenzertifikat
-Leer lassen, falls Kennwort nicht gewünscht
+Leer lassen, sofern kein Kennwort gewünscht wird
 Einstellungen Let's Encrypt
 Alle IPs zulassen
 Haupteinstellungen
@@ -10,7 +10,7 @@ Privatzertifikat
 Publikzertifikat
 Lese README.md um Token zu holen
 Speichere Anwender-IDs zur Vermeidung einer erneuten Kennwortabfrage
-Speichere Original-Request zur weiteren Verarbeitung (Achtung kann sicherheitskritische Daten enthalten!)
+Speichere Original-Requests zur weiteren Verarbeitung (Achtung: kann sicherheitskritische Daten enthalten!)
 Kennwort wiederholen
 Bot wird neu gestartet.
 Servereinstellungen
