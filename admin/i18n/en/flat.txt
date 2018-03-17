@@ -12,7 +12,7 @@ Read README.md how to get token
 Save authenticated users to prevent recurring password prompts
 Save original requests for further processing (Caution: requests may contain safety-critical data!)
 Repeat password
-Restarting...
+Stopped!
 Server settings
 Set certificates or load it first in the system settings (right top).
 Started!
@@ -27,9 +27,9 @@ Password repeat
 polling
 Currently supported: 443, 80, 88, 8443
 Started
-This text will be sent to clients at new start of bot
-Restarting
-This text will be sent to clients by stopping of bot
+This text will be sent to clients after the bot started
+Stopping
+This text will be sent to clients if bot will be stopped
 server
 telegram adapter settings
 Text2Command instance
