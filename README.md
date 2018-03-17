@@ -322,6 +322,10 @@ TODO:
 - dialogs
 
 ## Changelog
+
+### 1.1.3 (2018-03-17)
+* (BasGo) Fixed issue preventing adapter to terminate correctly
+
 ### 1.1.2 (2018-03-16)
 * (BasGo) Reworked configuration and translation
 

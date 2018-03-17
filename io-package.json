@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.1.2",
+        "version": "1.1.3",
         "news": {
+            "1.1.3": {
+                "en": "Fixed issue preventing adapter to terminate correctly",
+                "de": "Problem behoben, das verhinderte, dass der Adapter korrekt beendet wurde",
+                "ru": "Исправлена git fetch upstreamошибка, при которой адаптер прерывания",
+                "pt": "Problema corrigido impedindo o adaptador de terminar corretamente",
+                "nl": "Er is een probleem opgetreden waardoor de adapter niet correct kon worden beëindigd",
+                "fr": "Problème résolu empêchant l'adaptateur de se terminer correctement",
+                "it": "Risolto il problema che impediva alla scheda di terminare correttamente",
+                "es": "Se solucionó el problema que impedía que el adaptador finalizara correctamente",
+                "pl": "Naprawiono błąd uniemożliwiający prawidłowe zakończenie adaptera"
+            },
             "1.1.2": {
                 "en": "Reworked configuration and translation",
                 "de": "Überarbeitung der Konfiguration und Übersetzung",
