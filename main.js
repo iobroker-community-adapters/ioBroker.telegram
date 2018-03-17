@@ -177,9 +177,11 @@ function saveSendRequest(msg) {
 
 function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
-	if (options.chatId !== undefined && options.user === undefined) {
-		options.user = users[options.chatId];
-	}	
+
+    if (options && options.chatId !== undefined && options.user === undefined) {
+        options.user = users[options.chatId];
+    }
+
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
