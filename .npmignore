@@ -1,11 +1,9 @@
 gulpfile.js
 tasks
-node_modules
-.idea
-.git
-/node_modules
+tmp
 test
 .travis.yml
 appveyor.yml
-gulpfile.js
 admin/i18n
+iob_npm.done
+package-lock.json
