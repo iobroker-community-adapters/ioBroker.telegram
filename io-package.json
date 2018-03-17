@@ -9,7 +9,7 @@
             "1.1.3": {
                 "en": "Fixed issue preventing adapter to terminate correctly",
                 "de": "Problem behoben, das verhinderte, dass der Adapter korrekt beendet wurde",
-                "ru": "Исправлена ошибка, при которой адаптер прерывания",
+                "ru": "Исправлена git fetch upstreamошибка, при которой адаптер прерывания",
                 "pt": "Problema corrigido impedindo o adaptador de terminar corretamente",
                 "nl": "Er is een probleem opgetreden waardoor de adapter niet correct kon worden beëindigd",
                 "fr": "Problème résolu empêchant l'adaptateur de se terminer correctement",
