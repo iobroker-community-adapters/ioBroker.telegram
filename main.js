@@ -167,12 +167,18 @@ function handleWebHook(req, res) {
 
 function saveSendRequest(msg) {
     adapter.log.debug('Request: ' + JSON.stringify(msg));
-    adapter.setState('communicate.botSendMessageId', msg.message_id, function (err) {
-        if (err) adapter.log.error(err);
-    });
-    adapter.setState('communicate.botSendChatId', msg.chat.id, function (err) {
-        if (err) adapter.log.error(err);
-    });
+
+    if (msg && msg.message_id) {
+        adapter.setState('communicate.botSendMessageId', msg.message_id, function (err) {
+            if (err) adapter.log.error(err);
+        });
+    }
+
+    if (msg && msg.chat && msg.chat.id) {
+        adapter.setState('communicate.botSendChatId', msg.chat.id, function (err) {
+            if (err) adapter.log.error(err);
+        });
+    }
 }
 
 function _sendMessageHelper(dest, name, text, options) {
@@ -355,10 +361,7 @@ function _sendMessageHelper(dest, name, text, options) {
             options.answerCallbackQuery.showAlert = false;
         }
         if (bot) {
-            bot.answerCallbackQuery(callbackQueryId[options.user],options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert)
-            .then(function (response) {
-                saveSendRequest(response);
-            })
+            bot.answerCallbackQuery(callbackQueryId[options.chatId],options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert)
             .then(function () {
                 options = null;
                 count++;
@@ -487,6 +490,7 @@ function sendMessage(text, user, chatId, options) {
     if (user) {
         for (u in users) {
             if (users[u] === user) {
+                options.chatId = u;
                 count += _sendMessageHelper(u, user, text, options);
                 break;
             }
@@ -500,6 +504,7 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
+                options.chatId = u;
                 count += _sendMessageHelper(u, m[1], text, options);
                 break;
             }
@@ -507,6 +512,7 @@ function sendMessage(text, user, chatId, options) {
     } else {
         // Send to all users
         for (u in users) {
+            options.chatId = u;
             count += _sendMessageHelper(u, users[u], text, options);
         }
     }
