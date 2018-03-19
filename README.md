@@ -323,8 +323,9 @@ TODO:
 
 ## Changelog
 
-### 1.1.3 (2018-03-17)
+### 1.1.3 (2018-03-19)
 * (BasGo) Fixed issue preventing adapter to terminate correctly
+* (BasGo) Fixed issue with wrong callback query id
 
 ### 1.1.2 (2018-03-16)
 * (BasGo) Reworked configuration and translation

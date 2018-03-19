@@ -7,15 +7,15 @@
         "version": "1.1.3",
         "news": {
             "1.1.3": {
-                "en": "Fixed issue preventing adapter to terminate correctly",
-                "de": "Problem behoben, das verhinderte, dass der Adapter korrekt beendet wurde",
-                "ru": "Исправлена git fetch upstreamошибка, при которой адаптер прерывания",
-                "pt": "Problema corrigido impedindo o adaptador de terminar corretamente",
-                "nl": "Er is een probleem opgetreden waardoor de adapter niet correct kon worden beëindigd",
-                "fr": "Problème résolu empêchant l'adaptateur de se terminer correctement",
-                "it": "Risolto il problema che impediva alla scheda di terminare correttamente",
-                "es": "Se solucionó el problema que impedía que el adaptador finalizara correctamente",
-                "pl": "Naprawiono błąd uniemożliwiający prawidłowe zakończenie adaptera"
+                "en": "Fixed some issues to increase stability",
+                "de": "Einige Probleme wurden behoben, um die Stabilität zu erhöhen",
+                "ru": "Исправлены некоторые проблемы для повышения стабильности",
+                "pt": "Corrigido alguns problemas para aumentar a estabilidade",
+                "nl": "Enkele problemen opgelost om de stabiliteit te vergroten",
+                "fr": "Correction de quelques problèmes pour augmenter la stabilité",
+                "it": "Risolti alcuni problemi per aumentare la stabilità",
+                "es": "Se corrigieron algunos problemas para aumentar la estabilidad",
+                "pl": "Naprawiono pewne problemy w celu zwiększenia stabilności"
             },
             "1.1.2": {
                 "en": "Reworked configuration and translation",
@@ -159,6 +159,7 @@
         "restartSchedule": "4 5 * * *",
         "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
         "type": "messaging",
+        "stopBeforeUpdate": true,
         "blockly": true,
         "config": {
             "minWidth": 800,
