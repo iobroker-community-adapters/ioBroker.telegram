@@ -323,6 +323,9 @@ TODO:
 
 ## Changelog
 
+### 1.1.4 (2018-03-20)
+* (BasGo) Added checks before accessing non-existing options 
+
 ### 1.1.3 (2018-03-19)
 * (BasGo) Fixed issue preventing adapter to terminate correctly
 * (BasGo) Fixed issue with wrong callback query id
