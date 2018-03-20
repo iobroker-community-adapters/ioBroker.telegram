@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.1.3",
+        "version": "1.1.4",
         "news": {
+            "1.1.4": {
+                "en": "Added checks before accessing non-existing options",
+                "de": "Prüfungen hinzugefügt, bevor auf nicht vorhandene Optionen zugegriffen wird",
+                "ru": "Добавлены проверки перед доступом к несуществующим опциям",
+                "pt": "Verificações adicionadas antes de acessar opções não-existentes",
+                "nl": "Controles toegevoegd voor toegang tot niet-bestaande opties",
+                "fr": "Ajout de vérifications avant d'accéder à des options non existantes",
+                "it": "Aggiunti controlli prima di accedere a opzioni non esistenti",
+                "es": "Cheques agregados antes de acceder a opciones no existentes",
+                "pl": "Dodano sprawdzenia przed dostępem do nieistniejących opcji"
+            },
             "1.1.3": {
                 "en": "Fixed some issues to increase stability",
                 "de": "Einige Probleme wurden behoben, um die Stabilität zu erhöhen",
