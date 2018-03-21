@@ -1,5 +1,5 @@
 <html>
-
+<head>
 <!-- these 4 files always have to be included -->
 <link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
 <script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
@@ -10,6 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
 <script type="text/javascript" src="../../js/translate.js"></script>
 <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<script type="text/javascript" src="words.js"></script>
 
 <style>
     .help {
@@ -21,118 +22,6 @@
 </style>
 <!-- you have to define 2 functions in the global scope: -->
 <script type="text/javascript">
-    var isStarted =   null;
-
-    systemDictionary = {
-        "telegram adapter settings":    {"en": "telegram adapter settings", "de": "telegram Adapter-Einstellungen", "ru": "Настройки драйвера telegram"},
-        "Restarting...":                {"en": "Restarting...",             "de": "Bot wird neu gestartet.",        "ru": "Перезапуск бота."},
-        "Started!":                     {"en": "Started!",                  "de": "Gestartet.",                     "ru": "Бот запущен."},
-        "Token:":                       {"en": "Token:",                    "de": "Token:",                         "ru": "Токен:"},
-        "Main settings":                {"en": "Main settings",             "de": "Haupteinstellungen",             "ru": "Main settings"},
-        "Texts":                        {"en": "Texts",                     "de": "Texte",                          "ru": "Тексты"},
-        "IP:":                    {"en": "IP:",                     "de": "IP:",                     "ru": "IP:"},
-        "Port:":                  {"en": "Port:",                   "de": "Port:",                   "ru": "Порт:"},
-        "Public certificate:":    {"en": "Public certificate:",     "de": "Publikzertifikat:",       "ru": "'Public' сертификат:"},
-        "Private certificate:":   {"en": "Private certificate:",    "de": "Privatzertifikat:",       "ru": "'Private' сертификат:"},
-        "Chained certificate:":   {"en": "Chained certificate:",    "de": "Kettenzertifikat:",       "ru": "'Chained' сертификат:"},
-        "Listen on all IPs":      {"en": "Listen on all IPs",       "de": "Alle IPs zulassen",       "ru": "Открыть для всех IP адресов"},
-        "Type:":                  {"en": "Type:",                   "de": "Typ:",                    "ru": "Тип:"},
-        "polling":                {"en": "polling",                 "de": "ständig Abfragen",        "ru": "опрос"},
-        "server":                 {"en": "server",                  "de": "Server",                  "ru": "сервер"},
-        "Server settings":        {"en": "Server settings",         "de": "Servereinstellungen",     "ru": "Настройки сервера"},
-        "URL:":                   {"en": "URL:",                    "de": "URL:",                    "ru": "URL:"},
-        "URL may not be empty":   {"en": "URL may not be empty!",   "de": "URL darf nicht lehr sein!", "ru": "Нужен URL сервера"},
-        "url_help":               {
-            "en": "like \"https://mydomain.noip.com:8443\"",
-            "de": "wie \"https://mydomain.noip.com:8443\"",
-            "ru": "пример: \"https://mydomain.noip.com:8443\""
-        },
-        "port_help":               {
-            "en": "Currently supported: 443, 80, 88, 8443",
-            "de": "Aktuell unterstüzt: 443, 80, 88, 8443",
-            "ru": "Поддерживаются 443, 80, 88, 8443"
-        },
-        "Let's Encrypt settings": {
-            "en": "Let's Encrypt settings",
-            "de": "Einstellungen Let's Encrypt",
-            "ru": "Настройкт Let's Encrypt"
-        },
-        "Use Lets Encrypt certificates:": {
-            "en": "Use Let's Encrypt certificates:",
-            "de": "Benutzen Let's Encrypt Zertifikate:",
-            "ru": "Использовать сертификаты Let's Encrypt:"
-        },
-        "Use this instance for automatic update:": {
-            "en": "Use this instance for automatic update:",
-            "de": "Benutze diese Instanz für automatische Updates:",
-            "ru": "Обновлять сертификаты в этом драйвере:"
-        },
-        "Port to check the domain:": {
-            "en": "Port to check the domain:",
-            "de": "Port um die Domain zu prüfen:",
-            "ru": "Порт для проверки доменного имени:"
-        },
-        "Set certificates or load it first in the system settings (right top).":    {
-            "en": "Set certificates or load it first in the system settings (right top).",
-            "de": "Setze Zertificate oder lade die erst unter System/Einstellungen (oben rechts).",
-            "ru": "Нужно выбрать сертификаты или сначала загрузить их в системных настройках (вверху справа)."
-        },
-        "Read README.md how to get token": {
-            "en": "Read README.md how to get token",
-            "de": "Lese README.md um Token zu holen",
-            "ru": "В README.md можно найти, как получить токен"
-        },
-        "Password:":                    {"en": "Password:",                 "de": "Kennwort:",                      "ru": "Пароль:"},
-        "Leave it blank if no password desired": {
-            "en": "Leave it blank if no password desired",
-            "de": "Lehr lassen, falls Kennwort nicht erwünscht",
-            "ru": "Оставить пустым, если опрос пароля не нужен"
-        },
-        "Password repeat:":             {"en": "Password repeat:",          "de": "Kennwortwiederholung:",          "ru": "Повтор пароля:"},
-        "Repeat password":              {"en": "Repeat password",           "de": "Kennwort Wiederholen",           "ru": "Повторите пароль"},
-        "Text2Command Instance:":       {"en": "Text2Command Instance:",    "de": "Text2Command Instance:",         "ru": "Text2Command:"},
-        "All requests will be sent to this text2Command instance": {
-            "en": "All requests will be sent to this text2Command instance",
-            "de": "Alle Anfragen werden an diese text2Command Instanz weitergeleitet",
-            "ru": "Все сообщения от клиентов будут пересылаться на етот text2Command драйвер"
-        },
-        "Store user's IDs:":            {"en": "Store user's IDs:",         "de": "Anwender-IDs speichern:",        "ru": "Сохранять ID клиентов:"},
-        "Remember authenticated users": {
-            "en": "Remember authenticated users",
-            "de": "Speichere authentifizierte Anwender um kein Kennwort mehr zu fragen",
-            "ru": "Запоминпать ID клиентов, которые ввели пароль, что бы не спрашивать больше"
-        },
-        "Store raw request:":            {"en": "Store raw request. ",         "de": "Original request speichern. ",        "ru": "Сохранять необработанный запрос. "},
-        "Remember raw request data": {
-            "en": "Save original request for further processing (Caution can contain safety-critical data!)",
-            "de": "Speichere original request zur weiteren Verarbeitung (Achtung kann sicherheitskritische Daten enthalten!)",
-            "ru": "Сохраните исходный запрос для дальнейшей обработки (Внимание может содержать важные для безопасности данные!)",
-        },        
-        '"Started" text:':              {"en": 'Started:',                  "de": 'Gestartet:',                     "ru": 'Запущен:'},
-        "restarted_help":               {
-            "en": "This text will be sent to clients at new start of bot",
-            "de": "Dieser Text wird bei Neustart an die Clients gesendet",
-            "ru": "Этот текст будет послан всем клиентам при старте бота"
-        },
-        '"Restarting" text:':           {"en": 'Restarting:',               "de": 'Neustart:',                      "ru": 'Остановка:'},
-        "restarting_help":              {
-            "en": "This text will be sent to clients by stopping of bot",
-            "de": "Dieser Text wird beim Anhalten vom Bot an die Clients gesendet",
-            "ru": "Этот текст будет послан всем клиентам при остановке бота"
-        },
-        "Save media files:":            {"en": "Save media files:",         "de": "Mediendateien speichern:",        "ru": "Сохранить медиа файлы:"},
-        "Save media files": {
-            "en": "Save all received files to the file system",
-            "de": "Speichern Sie alle empfangenen Dateien im Dateisystem",
-            "ru": "Сохранить все полученные файлы в файловую систему"
-        },
-        "Path:":            {"en": "Path:",         "de": "Pfad:",        "ru": "Путь:"},
-        "The path where files will be stored": {
-            "en": "The path where files will be stored",
-            "de": "Der Pfad, in dem Dateien gespeichert werden",
-            "ru": "Путь где будут храниться файлы"
-        }
-    };
 
     function encrypt(key, value) {
         var result="";
@@ -153,6 +42,7 @@
     function showHideSettings() {
         if ($('#server').val() === 'true') {
             $('#tabs').tabs('option', 'disabled', []);
+			$('#pollingInterval').hide();
             $('.le-settings').show();
 
             if ($('#leEnabled').prop('checked')) {
@@ -167,6 +57,7 @@
             }
         } else {
             $('#tabs').tabs('option', 'disabled', [1]);
+			$('#pollingInterval').show();
         }
     }
 
@@ -177,6 +68,7 @@
 
         if (!settings.lePort) settings.lePort = 80;
         if (!settings.server) settings.server = 'false';
+		if (!settings.pollingInterval) settings.pollingInterval = 300;
 
         getIPs(function(ips) {
             for (var i = 0; i < ips.length; i++) {
@@ -189,14 +81,16 @@
         if (settings.restarting === undefined || settings.restarting === '_') settings.restarting = _('Restarting...');
 
         for (var key in settings) {
-            if ($('#' + key + '.value').attr('type') === 'checkbox') {
-                $('#' + key + '.value').prop('checked', settings[key]).change(function () {
+            if (!settings.hasOwnProperty(key)) continue;
+            var $value = $('#' + key + '.value');
+            if ($value.attr('type') === 'checkbox') {
+                $value.prop('checked', settings[key]).change(function () {
                     var id = $(this).attr('id');
                     if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
                     onChange();
                 });
             } else {
-                $('#' + key + '.value').val(settings[key]).change(function () {
+                $value.val(settings[key]).change(function () {
                     var id = $(this).attr('id');
                     if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
                     onChange();
@@ -213,7 +107,7 @@
         getAdapterInstances('text2command', function (list) {
             var text =  '<option value="">' + _('none') + '</option>';
             for (var l = 0; l < list.length; l++) {
-                text += '<option value="' + list[l]._id +'" ' + (settings.text2command == list[l]._id ? 'selected' : '') + '>' + list[l]._id.replace('system.adapter.', '') + '</option>';
+                text += '<option value="' + list[l]._id +'" ' + (settings.text2command === list[l]._id ? 'selected' : '') + '>' + list[l]._id.replace('system.adapter.', '') + '</option>';
             }
             $('#text2command').html(text);
         });
@@ -256,10 +150,10 @@
         callback(obj);
     }
 </script>
-
+</head>
+<body>
 <!-- you have to put your config page in a div with id adapter-container -->
 <div id="adapter-container">
-
     <table><tr>
         <td><img src="telegram.png" width="100px"></td>
         <td style="padding-top: 20px;padding-left: 10px"><h3 class="translate">telegram adapter settings</h3></td>
@@ -276,7 +170,7 @@
                     <td colspan='3'><h4 class="translate" style="width: 90%">Main settings</h4></td>
                 </tr>
                 <tr>
-                    <td><label class="translate" for="server">Type:</label></td>
+                    <td><label class="translate" for="server">Type</label></td>
                     <td>
                         <select id="server" class="value inputStyle" >
                             <option value="false" class="translate">polling</option>
@@ -285,43 +179,48 @@
                     </td>
                     <td></td>
                 </tr>
+				<tr class="server">
+                    <td class="translate">Polling interval (ms)</td>
+                    <td><input id="pollingInterval" class="value inputStyle" /></td>
+					<td></td>
+                </tr>
                 <tr>
-                    <td class="translate">Token:</td>
+                    <td class="translate">Token</td>
                     <td><input id="token" class="value inputStyle" /></td>
                     <td><a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a></td>
                 </tr>
                 <tr>
-                    <td class="translate">Password:</td>
+                    <td class="translate">Password</td>
                     <td><input id="password" class="value inputStyle" type="password"/></td>
                     <td class="translate help">Leave it blank if no password desired</td>
                 </tr>
                 <tr>
-                    <td class="translate">Password repeat:</td>
+                    <td class="translate">Password repeat</td>
                     <td><input id="passwordRepeat" class="inputStyle" type="password"/></td>
                     <td class="translate help">Repeat password</td>
                 </tr>
                 <tr>
-                    <td class="translate">Text2Command Instance:</td>
+                    <td class="translate">Text2Command Instance</td>
                     <td><select id="text2command" class="value inputStyle"></select></td>
                     <td class="translate help">All requests will be sent to this text2Command instance</td>
                 </tr>
                 <tr>
-                    <td class="translate">Store user's IDs:</td>
+                    <td class="translate">Store user's IDs</td>
                     <td><input id="rememberUsers" class="value" type="checkbox"/></td>
                     <td class="translate help">Remember authenticated users</td>
                 </tr>
                 <tr>
-                    <td class="translate">Store raw request:</td>
+                    <td class="translate">Store raw request</td>
                     <td><input id="storeRawRequest" class="value" type="checkbox"/></td>
                     <td class="translate help">Remember raw request data</td>
                 </tr>
                 <tr>
-                    <td class="translate">Save media files:</td>
+                    <td class="translate">Save media files</td>
                     <td><input id="saveFiles" class="value" type="checkbox"/></td>
                     <td class="translate help">Save media files</td>
                 </tr>
                 <tr>
-                    <td class="translate">Path:</td>
+                    <td class="translate">Path</td>
                     <td><input id="path" class="value inputStyle" /></td>
                     <td class="translate help">The path where files will be stored</td>
                 </tr>
@@ -329,12 +228,12 @@
                     <td colspan='3'><h4 class="translate" style="width: 90%">Texts</h4></td>
                 </tr>
                 <tr>
-                    <td class="translate">"Started" text:</td>
+                    <td class="translate">"Started" text</td>
                     <td><input id="restarted" class="value inputStyle"/></td>
                     <td class="translate help">restarted_help</td>
                 </tr>
                 <tr>
-                    <td class="translate">"Restarting" text:</td>
+                    <td class="translate">"Restarting" text</td>
                     <td><input id="restarting" class="value inputStyle"/></td>
                     <td class="translate help">restarting_help</td>
                 </tr>
@@ -343,42 +242,44 @@
         <div id="tabs-2">
             <table style="width: 100%">
                 <tr class="server">
-                    <td ><label class="translate" for="url">URL:</label></td>
+                    <td ><label class="translate" for="url">URL</label></td>
                     <td><input class="value inputStyle" id="url"/></td>
                     <td class="translate help">url_help</td>
                 </tr>
                 <tr class="server">
-                    <td ><label class="translate" for="bind">IP:</label></td>
+                    <td ><label class="translate" for="bind">IP</label></td>
                     <td colspan="2"><select class="value inputStyle" id="bind"></select></td>
                     <td></td>
                 </tr>
                 <tr class="server">
-                    <td><label class="translate" for="port">Port:</label></td>
+                    <td><label class="translate" for="port">Port</label></td>
                     <td><input class="value" id="port" size="5" maxlength="5" type="number"/></td>
                     <td class="translate help">port_help</td>
                 </tr>
                 <tr class="server">
-                    <td><label class="translate" for="certPublic">Public certificate:</label></td>
+                    <td><label class="translate" for="certPublic">Public certificate</label></td>
                     <td><select id="certPublic" class="value" style="width: 200px"></select></td>
                     <td></td>
                 </tr>
                 <tr class="server">
-                    <td><label class="translate" for="certPrivate">Private certificate:</label></td>
+                    <td><label class="translate" for="certPrivate">Private certificate</label></td>
                     <td><select id="certPrivate" class="value" style="width: 200px"></select></td>
                     <td></td>
                 </tr>
                 <tr class="server">
-                    <td><label class="translate" for="certChained">Chained certificate:</label></td>
+                    <td><label class="translate" for="certChained">Chained certificate</label></td>
                     <td><select id="certChained" class="value" style="width: 200px"></select></td>
                     <td></td>
                 </tr>
                 <tr class="server">
                     <td colspan='3'><h4 class="translate" style="width: 90%">Let's Encrypt settings</h4></td>
                 </tr>
-                <tr class="server le-settings"><td><label for="leEnabled" class="translate">Use Lets Encrypt certificates:</label></td><td><input  class="value" id="leEnabled"   type="checkbox" /></td><td></td></tr>
-                <tr class="server le-settings le-sub-settings"><td><label for="leUpdate" class="translate">Use this instance for automatic update:</label></td><td><input  class="value" id="leUpdate" type="checkbox" /></td><td></td></tr>
-                <tr class="server le-settings le-sub-settings le-sub-settings-update"><td><label for="lePort" class="translate">Port to check the domain:</label></td><td><input class="value number" id="lePort" type="number" size="5" maxlength="5" /></td><td></td></tr>
+                <tr class="server le-settings"><td><label for="leEnabled" class="translate">Use Lets Encrypt certificates</label></td><td><input  class="value" id="leEnabled"   type="checkbox" /></td><td></td></tr>
+                <tr class="server le-settings le-sub-settings"><td><label for="leUpdate" class="translate">Use this instance for automatic update</label></td><td><input  class="value" id="leUpdate" type="checkbox" /></td><td></td></tr>
+                <tr class="server le-settings le-sub-settings le-sub-settings-update"><td><label for="lePort" class="translate">Port to check the domain</label></td><td><input class="value number" id="lePort" type="number" size="5" maxlength="5" /></td><td></td></tr>
             </table>
         </div>
+    </div>
 </div>
+</body>
 </html>

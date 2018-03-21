@@ -33,6 +33,7 @@
     
     function showHideSettings() {
         if ($('#server').val() === 'true') {
+            $('.polling-settings').hide();
             $('.server-settings').removeClass('disabled');
             $('.le-settings').removeClass('disabled');
 
@@ -47,6 +48,7 @@
                 $('.le-sub-settings').hide();
             }
         } else {
+            $('.polling-settings').show();
             $('.server-settings').addClass('disabled');
             $('.le-settings').addClass('disabled');
         }
@@ -59,6 +61,7 @@
 
         if (!settings.lePort) settings.lePort = 80;
         if (settings.server === undefined) settings.server = 'false';
+		if (!settings.pollingInterval) settings.pollingInterval = 300;
 
         getIPs(function(ips) {
             for (var i = 0; i < ips.length; i++) {
@@ -167,13 +170,20 @@
                 <div class="row">
                     <div class="input-field col s12 m4 l2">
                         <select class="value" id="server">
-                        <option value="false" class="translate">polling</option>
-                        <option value="true"  class="translate">server</option>
-                    </select>
+							<option value="false" class="translate">polling</option>
+							<option value="true"  class="translate">server</option>
+						</select>
                         <label class="translate" for="server">type</label>
                     </div>
+					<div class="input-field col s12 m8 l8 polling-settings">
+                        <input id="pollingInterval" type="text" class="value" />
+                        <label class="translate" for="pollingInterval">Polling interval (ms)</label>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="input-field col s12 m8 l8">
-                        <input id="token" type="text"class="value" />
+                        <input id="token" type="text" class="value" />
                         <label class="translate" for="token">token</label>
                         <span><a href="https://github.com/ioBroker/ioBroker.telegram#iobroker-telegram-adapter" target="_blank" class="translate help">Read README.md how to get token</a></span>
                     </div>

@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.1.4",
+        "version": "1.2.0",
         "news": {
+            "1.2.0": {
+                "en": "Possibility to define polling interval in configuration wizard. Default is 300ms.",
+                "de": "Möglichkeit, das Polling Intervall in den Adapter-Einstellungen einzugeben. Standard ist 300ms.",
+                "ru": "Возможность определить интервал опроса в мастере настройки. Значение по умолчанию - 300 мс.",
+                "pt": "Possibilidade de definir o intervalo de pesquisa no assistente de configuração. O padrão é 300 ms.",
+                "nl": "Mogelijkheid om polling-interval in de configuratiewizard te definiëren. Standaard is 300ms.",
+                "fr": "Possibilité de définir un intervalle d'interrogation dans l'assistant de configuration. La valeur par défaut est 300ms.",
+                "it": "Possibilità di definire l'intervallo di polling nella configurazione guidata. Il valore predefinito è 300ms.",
+                "es": "Posibilidad de definir intervalo de sondeo en el asistente de configuración. El valor predeterminado es 300ms.",
+                "pl": "Możliwość zdefiniowania interwału odpytywania w kreatorze konfiguracji. Domyślna wartość to 300ms."
+            },
             "1.1.4": {
                 "en": "Added checks before accessing non-existing options",
                 "de": "Prüfungen hinzugefügt, bevor auf nicht vorhandene Optionen zugegriffen wird",

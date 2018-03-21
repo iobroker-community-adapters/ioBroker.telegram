@@ -301,7 +301,7 @@ You can set the value of state if you now the ID:
 ```
 
 ## Polling or Server mode
-If polling mode is used, the adapter polls every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to 300 ms.
+If polling mode is used, the adapter polls by default every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to the polling interval. The polling interval can be defined in adpater configuration.
 
 To use server mode you ioBroker instance must be reachable from internet (e.g. with noip.com dynamic DNS service).
 
@@ -322,6 +322,8 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.0 (2018-03-21)
+* (AlGu) Possibility to define polling interval in configuration wizard. Default is 300ms.
 
 ### 1.1.4 (2018-03-20)
 * (BasGo) Added checks before accessing non-existing options 
