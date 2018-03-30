@@ -42,7 +42,7 @@
     function showHideSettings() {
         if ($('#server').val() === 'true') {
             $('#tabs').tabs('option', 'disabled', []);
-			$('#pollingInterval').hide();
+            $('.pollingIntervalSub').hide();
             $('.le-settings').show();
 
             if ($('#leEnabled').prop('checked')) {
@@ -57,7 +57,12 @@
             }
         } else {
             $('#tabs').tabs('option', 'disabled', [1]);
-			$('#pollingInterval').show();
+            $('.pollingIntervalSub').show();
+	    if($('#rememberUsers').prop('checked')) {
+                $('.useUsernameSub').show();
+            } else {
+                $('.useUsernameSub').hide();
+            }
         }
     }
 
@@ -86,13 +91,13 @@
             if ($value.attr('type') === 'checkbox') {
                 $value.prop('checked', settings[key]).change(function () {
                     var id = $(this).attr('id');
-                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
+                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate' || id === 'rememberUsers') showHideSettings();
                     onChange();
                 });
             } else {
                 $value.val(settings[key]).change(function () {
                     var id = $(this).attr('id');
-                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate') showHideSettings();
+                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate' || id === 'rememberUsers') showHideSettings();
                     onChange();
                 }).keyup(function () {
                     $(this).trigger('change');
@@ -179,10 +184,10 @@
                     </td>
                     <td></td>
                 </tr>
-				<tr class="server">
+                <tr class="server pollingIntervalSub">
                     <td class="translate">Polling interval (ms)</td>
                     <td><input id="pollingInterval" class="value inputStyle" /></td>
-					<td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td class="translate">Token</td>
@@ -208,6 +213,11 @@
                     <td class="translate">Store user's IDs</td>
                     <td><input id="rememberUsers" class="value" type="checkbox"/></td>
                     <td class="translate help">Remember authenticated users</td>
+                </tr>
+		<tr class="useUsernameSub">
+                    <td class="translate">Store username not firstname</td>
+                    <td><input id="useUsername" class="value" type="checkbox"/></td>
+                    <td class="translate help">Store username instead of firstname of remembered users.</td>
                 </tr>
                 <tr>
                     <td class="translate">Store raw request</td>
