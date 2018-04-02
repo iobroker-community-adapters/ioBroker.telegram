@@ -724,11 +724,12 @@ function processTelegramText(msg) {
 
         if (m) {
             if (adapter.config.password === m[1]) {
-                storeUser(msg.from.id, msg.from.first_name);
-                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
+                storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
+                if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
                 return;
             } else {
-                adapter.log.warn('Got invalid password from ' + msg.from.first_name + ': ' + m[1]);
+                adapter.log.warn('Got invalid password from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + m[1]);
                 bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
                 if (users[msg.from.id]) delete users[msg.from.id];
             }
@@ -741,7 +742,8 @@ function processTelegramText(msg) {
         return;
     }
 
-    storeUser(msg.from.id, msg.from.first_name);
+    storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
+    if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
 
     // Check set state
     m = msg.text.match(/^\/state (.+) (.+)$/);
@@ -809,14 +811,14 @@ function processTelegramText(msg) {
         return;
     }
 
-    adapter.log.debug('Got message from ' + msg.from.first_name + ': ' + msg.text);
+    adapter.log.debug('Got message from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + msg.text);
 
     // Send to text2command
     if (adapter.config.text2command) {
         adapter.sendTo(adapter.config.text2command, 'send', {
             text: msg.text.replace(/\//g, '#').replace(/_/g, ' '),
             id: msg.chat.id,
-            user: msg.from.first_name
+            user: (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username)
         }, function (response) {
             if (response && response.response) {
                 adapter.log.debug('Send response: ' + response.response);
@@ -833,7 +835,7 @@ function processTelegramText(msg) {
     adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', function (err) {
         if (err) adapter.log.error(err);
     });
-    adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
+    adapter.setState('communicate.request', '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.text, function (err) {
         if (err) adapter.log.error(err);
     });
 }
@@ -922,7 +924,7 @@ function connect() {
             adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
                 if (err) adapter.log.error(err);
             });
-            adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
+            adapter.setState('communicate.request', '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
             });
         });
