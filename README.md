@@ -27,6 +27,7 @@ To add nice avatar picture enter ```/setuserpic``` and upload him desired pictur
 You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')```
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
+
 You can specify user in that way too:
 
 ```
@@ -34,6 +35,8 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
     console.log('Sent to ' + res + ' users');
 });
 ```
+If you use the example above be aware of that you have to replace 'UserName' with either the firstname or the Public-Telegram-Username of the User you want to send the message to. (Depends on if the 'Store username not firstname' setting in the Adaptersettings is enabled or not)
+If the option is set and the user did not specify a public username in his telegram account, then the adapter will continue to use the firstname of the user. Keep in mind that if the user sets a public username later (after authenticating to your bot) the saved firstname will be replaced by the username the next time the user sends a message to the bot.
 
 You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"*.
 
