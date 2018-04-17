@@ -20,6 +20,7 @@ var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 var https = require('https');
+var Agent = require('socks5-https-client/lib/Agent');
 
 var bot;
 var users = {};
@@ -841,6 +842,11 @@ function processTelegramText(msg) {
 }
 
 function connect() {
+    var proxy = false;
+    if (adapter.config && adapter.config.proxy !== undefined) {
+        proxy = adapter.config.proxy;
+    }
+	
     if (bot) {
         if (!adapter.config.server) {
             try {
@@ -880,13 +886,48 @@ function connect() {
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-			var pollingOptions = {
+	    var pollingOptions = {
                 polling: {
                     interval: parseInt(adapter.config.pollingInterval, 10) || 300
                 },
                 filepath: true
             };
-			adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
+		
+	    if (proxy === true) {
+          	adapter.log.debug('proxy enabled');
+          	var proxyHost = '';
+          	if (adapter.config && adapter.config.proxyHost !== undefined) {
+              	    proxyHost = adapter.config.proxyHost;
+              	    adapter.log.debug('proxyHost: ' + proxyHost);
+          	}
+          	var proxyPort = 1080;
+          	if (adapter.config && adapter.config.proxyPort !== undefined) {
+              	    proxyPort = parseInt(adapter.config.proxyPort, 10) || 0;
+              	    adapter.log.debug('proxyPort: ' + proxyPort);
+          	}
+          	var proxyLogin = '';
+          	if (adapter.config && adapter.config.proxyLogin !== undefined) {
+                    proxyLogin = adapter.config.proxyLogin;
+              	    adapter.log.debug('proxyLogin: ' + proxyLogin);
+          	}
+          	var proxyPassword = '';
+          	if (adapter.config && adapter.config.proxyPassword !== undefined) {
+              	    proxyPassword = adapter.config.proxyPassword;
+              	    adapter.log.debug('proxyPassword: ' + proxyPassword);
+          	}
+          
+          	pollingOptions.request = {
+                                  agentClass: Agent,
+                                  agentOptions: {
+                                      socksHost: proxyHost,
+                                      socksPort: proxyPort,
+                                      socksUsername : proxyLogin,
+                                      socksPassword : proxyPassword
+                                  }
+                              }
+      	    }
+		
+	    adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
             bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('');
         }
