@@ -52,6 +52,17 @@
             $('.server-settings').addClass('disabled');
             $('.le-settings').addClass('disabled');
         }
+        if ($('#proxy').prop('checked')) {
+            $('.col-proxyHost').show();
+            $('.col-proxyPort').show();
+            $('.col-proxyLogin').show();
+            $('.col-proxyPassword').show();
+        } else {
+            $('.col-proxyHost').hide();
+            $('.col-proxyPort').hide();
+            $('.col-proxyLogin').hide();
+            $('.col-proxyPassword').hide();
+        }	    
     }
 
     function load(settings, onChange) {
@@ -210,6 +221,36 @@
                     <div class="input-field col s12 m12 l12">
                         <input id="useUsername" class="value" type="checkbox" />
                         <label class="translate" for="useUsername">Store username instead of firstname of remembered users</label>
+                    </div>
+                </div>
+		<div class="row">
+                    <div class="input-field col s12 m12 l12">
+                        <input id="proxy" class="value" type="checkbox" />
+                        <label class="translate" for="proxy">Proxy Socks5 enable</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6 l5 col-proxyHost">
+                        <input id="proxyHost" class="value" type="text" />
+                        <label class="translate" for="proxyHost">proxy Host</label>
+                        <span class="translate help">proxyHost</span>
+                    </div>
+                    <div class="input-field col s12 m6 l5 col-proxyPort">
+                        <input class="value number" id="proxyPort" size="5" maxlength="5" type="number"/>
+                        <label class="translate" for="proxyPort">proxy Port</label>
+                        <span class="translate help">proxy Port</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6 l5 col-proxyLogin">
+                        <input id="proxyLogin" class="value" type="text" />
+                        <label class="translate" for="proxyLogin">proxy Login</label>
+                        <span class="translate help">proxy Login</span>
+                    </div>
+                    <div class="input-field col s12 m6 l5 col-proxyPassword">
+                        <input id="proxyPassword" class="value" type="password" />
+                        <label class="translate" for="proxyPassword">proxy Password</label>
+                        <span class="translate help">proxy Password</span>
                     </div>
                 </div>
             </div>
