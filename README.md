@@ -27,6 +27,7 @@ To add nice avatar picture enter ```/setuserpic``` and upload him desired pictur
 You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')```
 or to specific user ```sendTo('telegram', '@userName Test message')```.
 User must be authenticated before.
+
 You can specify user in that way too:
 
 ```
@@ -34,6 +35,8 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
     console.log('Sent to ' + res + ' users');
 });
 ```
+If you use the example above be aware of that you have to replace 'UserName' with either the firstname or the Public-Telegram-Username of the User you want to send the message to. (Depends on if the 'Store username not firstname' setting in the Adaptersettings is enabled or not)
+If the option is set and the user did not specify a public username in his telegram account, then the adapter will continue to use the firstname of the user. Keep in mind that if the user sets a public username later (after authenticating to your bot) the saved firstname will be replaced by the username the next time the user sends a message to the bot.
 
 You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"*.
 
@@ -301,7 +304,7 @@ You can set the value of state if you now the ID:
 ```
 
 ## Polling or Server mode
-If polling mode is used, the adapter polls every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to 300 ms.
+If polling mode is used, the adapter polls by default every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to the polling interval. The polling interval can be defined in adapter configuration.
 
 To use server mode you ioBroker instance must be reachable from internet (e.g. with noip.com dynamic DNS service).
 
@@ -322,6 +325,19 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.0 (2018-03-21)
+* (AlGu) Possibility to define polling interval in configuration wizard. Default is 300ms.
+
+### 1.1.4 (2018-03-20)
+* (BasGo) Added checks before accessing non-existing options 
+
+### 1.1.3 (2018-03-19)
+* (BasGo) Fixed issue preventing adapter to terminate correctly
+* (BasGo) Fixed issue with wrong callback query id
+
+### 1.1.2 (2018-03-16)
+* (BasGo) Reworked configuration and translation
+
 ### 1.1.1 (2018-01-26)
 * (Haba) New objects: botSendChatId, botSendMessageId
 

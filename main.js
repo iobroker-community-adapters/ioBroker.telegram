@@ -7,8 +7,10 @@
  *      MIT License
  *
  */
-/* jshint -W097 */ // jshint strict:false
-/*jslint node: true */
+
+/* jshint -W097 */
+/* jshint strict: false */
+/* jslint node: true */
 'use strict';
 
 var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
@@ -18,7 +20,6 @@ var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 var https = require('https');
-var path = require('path');
 
 var bot;
 var users = {};
@@ -26,7 +27,7 @@ var systemLang = 'en';
 var reconnectTimer = null;
 var lastMessageTime = 0;
 var lastMessageText = '';
-var callbackQueryId = 0;
+var callbackQueryId = {};
 var tools = require(utils.controllerDir + '/lib/tools');
 var configFile = tools.getConfigFileName();
 var tmp = configFile.split(/[\\\/]+/);
@@ -167,16 +168,27 @@ function handleWebHook(req, res) {
 
 function saveSendRequest(msg) {
     adapter.log.debug('Request: ' + JSON.stringify(msg));
-    adapter.setState('communicate.botSendMessageId', msg.message_id, function (err) {
-        if (err) adapter.log.error(err);
-    });
-    adapter.setState('communicate.botSendChatId', msg.chat.id, function (err) {
-        if (err) adapter.log.error(err);
-    });
+
+    if (msg && msg.message_id) {
+        adapter.setState('communicate.botSendMessageId', msg.message_id, function (err) {
+            if (err) adapter.log.error(err);
+        });
+    }
+
+    if (msg && msg.chat && msg.chat.id) {
+        adapter.setState('communicate.botSendChatId', msg.chat.id, function (err) {
+            if (err) adapter.log.error(err);
+        });
+    }
 }
 
 function _sendMessageHelper(dest, name, text, options) {
     var count = 0;
+
+    if (options && options.chatId !== undefined && options.user === undefined) {
+        options.user = users[options.chatId];
+    }
+
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
@@ -350,10 +362,7 @@ function _sendMessageHelper(dest, name, text, options) {
             options.answerCallbackQuery.showAlert = false;
         }
         if (bot) {
-            bot.answerCallbackQuery(callbackQueryId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
-            .then(function (response) {
-                saveSendRequest(response);
-            })
+            bot.answerCallbackQuery(callbackQueryId[options.chatId],options.answerCallbackQuery.text,options.answerCallbackQuery.showAlert)
             .then(function () {
                 options = null;
                 count++;
@@ -482,6 +491,9 @@ function sendMessage(text, user, chatId, options) {
     if (user) {
         for (u in users) {
             if (users[u] === user) {
+                if (options) {
+                    options.chatId = u;
+                }
                 count += _sendMessageHelper(u, user, text, options);
                 break;
             }
@@ -495,6 +507,9 @@ function sendMessage(text, user, chatId, options) {
         for (u in users) {
             var re = new RegExp(m[1], 'i');
             if (users[u].match(re)) {
+                if (options) {
+                    options.chatId = u;
+                }
                 count += _sendMessageHelper(u, m[1], text, options);
                 break;
             }
@@ -502,6 +517,9 @@ function sendMessage(text, user, chatId, options) {
     } else {
         // Send to all users
         for (u in users) {
+            if (options) {
+                options.chatId = u;
+            }
             count += _sendMessageHelper(u, users[u], text, options);
         }
     }
@@ -545,7 +563,7 @@ function saveFile(file_id, fileName, callback) {
 }
 
 function getMessage(msg) {
-    var date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-')
+    var date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
     adapter.log.debug('Received message: ' + JSON.stringify(msg));
 
     if (!fs.existsSync(tmpDirName)) fs.mkdirSync(tmpDirName);
@@ -678,10 +696,14 @@ function storeUser(id, name) {
 
 function processTelegramText(msg) {
     var now = new Date().getTime();
-
-    // ignore all messages older than 30 seconds
-    if (now - msg.date * 1000 > 30000) {
-        adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: ' + msg.text);
+	var pollingInterval = 0;
+	if (adapter.config && adapter.config.pollingInterval !== undefined) {
+		pollingInterval = parseInt(adapter.config.pollingInterval, 10) || 0;
+	}
+		
+    // ignore all messages older than 30 seconds + polling interval
+    if (now - msg.date * 1000 > pollingInterval + 30000) {
+        adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: (' + (pollingInterval + 30000) + ') ' + msg.text);
         bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
         return;
     }
@@ -702,11 +724,12 @@ function processTelegramText(msg) {
 
         if (m) {
             if (adapter.config.password === m[1]) {
-                storeUser(msg.from.id, msg.from.first_name);
-                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + msg.from.first_name);
+                storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
+                if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
                 return;
             } else {
-                adapter.log.warn('Got invalid password from ' + msg.from.first_name + ': ' + m[1]);
+                adapter.log.warn('Got invalid password from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + m[1]);
                 bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
                 if (users[msg.from.id]) delete users[msg.from.id];
             }
@@ -719,7 +742,8 @@ function processTelegramText(msg) {
         return;
     }
 
-    storeUser(msg.from.id, msg.from.first_name);
+    storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
+    if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
 
     // Check set state
     m = msg.text.match(/^\/state (.+) (.+)$/);
@@ -787,14 +811,14 @@ function processTelegramText(msg) {
         return;
     }
 
-    adapter.log.debug('Got message from ' + msg.from.first_name + ': ' + msg.text);
+    adapter.log.debug('Got message from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + msg.text);
 
     // Send to text2command
     if (adapter.config.text2command) {
         adapter.sendTo(adapter.config.text2command, 'send', {
             text: msg.text.replace(/\//g, '#').replace(/_/g, ' '),
             id: msg.chat.id,
-            user: msg.from.first_name
+            user: (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username)
         }, function (response) {
             if (response && response.response) {
                 adapter.log.debug('Send response: ' + response.response);
@@ -811,7 +835,7 @@ function processTelegramText(msg) {
     adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', function (err) {
         if (err) adapter.log.error(err);
     });
-    adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.text, function (err) {
+    adapter.setState('communicate.request', '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.text, function (err) {
         if (err) adapter.log.error(err);
     });
 }
@@ -856,10 +880,14 @@ function connect() {
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-            bot = new TelegramBot(adapter.config.token, {
-                polling: true,
+			var pollingOptions = {
+                polling: {
+                    interval: parseInt(adapter.config.pollingInterval, 10) || 300
+                },
                 filepath: true
-            });
+            };
+			adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
+            bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('');
         }
 
@@ -880,16 +908,23 @@ function connect() {
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
-        bot.on('message', getMessage);
+        bot.on('message', function (msg) {
+            if (adapter.config.storeRawRequest) {
+                    adapter.setState('communicate.requestRaw', JSON.stringify(msg), function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            }
+            getMessage(msg);
+        });
         // callback InlineKeyboardButton
         bot.on('callback_query', function (msg) {
             // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(msg));
-            callbackQueryId = msg.id;
+            callbackQueryId[msg.from.id] = msg.id;
             adapter.setState('communicate.requestMessageId', msg.message.message_id, function (err) {
                 if (err) adapter.log.error(err);
             });
-            adapter.setState('communicate.request', '[' + msg.from.first_name + ']' + msg.data, function (err) {
+            adapter.setState('communicate.request', '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.data, function (err) {
                 if (err) adapter.log.error(err);
             });
         });
