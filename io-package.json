@@ -4,12 +4,23 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.0",
+        "version": "1.2.1",
         "news": {
+            "1.2.1": {
+                "en": "Added support for Proxy Socks5",
+                "de": "Zusätzliche Unterstützung für Proxy Socks5",
+                "ru": "Добавлена поддержка Proxy Socks5",
+                "pt": "Adicionado suporte para Proxy Socks5",
+                "nl": "Ondersteuning voor Proxy Socks5 toegevoegd",
+                "fr": "Ajout du support pour Proxy Socks5",
+                "it": "Aggiunto supporto per Proxy Socks5",
+                "es": "Se agregó soporte para Proxy Socks5",
+                "pl": "Dodano obsługę Proxy Socks5"
+            },
             "1.2.0": {
                 "en": "Possibility to define polling interval in configuration wizard. Default is 300ms.",
                 "de": "Möglichkeit, das Polling Intervall in den Adapter-Einstellungen einzugeben. Standard ist 300ms.",
-                "ru": "Возможность определить интервал опроса в мастере настройки. Значение по умолчанию - 300 мс.",
+                "ru": "Возможность задать интервал опроса в настройках. Значение по умолчанию - 300 мс.",
                 "pt": "Possibilidade de definir o intervalo de pesquisa no assistente de configuração. O padrão é 300 ms.",
                 "nl": "Mogelijkheid om polling-interval in de configuratiewizard te definiëren. Standaard is 300ms.",
                 "fr": "Possibilité de définir un intervalle d'interrogation dans l'assistant de configuration. La valeur par défaut est 300ms.",
