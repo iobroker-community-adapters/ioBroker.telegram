@@ -900,8 +900,13 @@ function connect() {
             var socksConfig = {
                 proxyHost: proxyHost,
                 proxyPort: proxyPort,
-                auths: [ socks.auth.UserPassword(proxyLogin, proxyPassword) ]
+                auths: []
             };
+            if (proxyLogin) {
+                socksConfig.auths.push(socks.auth.UserPassword(proxyLogin, proxyPassword));
+            } else {
+                socksConfig.auths.push(socks.auth.None());
+            }
             agent = new socks.HttpsAgent(socksConfig);
         }
         if (adapter.config.server) {
