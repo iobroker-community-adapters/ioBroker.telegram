@@ -7,15 +7,15 @@
         "version": "1.2.2",
         "news": {
             "1.2.2": {
-                "en": "Change lib for for Proxy Socks5",
-                "de": "Zusätzliche Unterstützung für Proxy Socks5",
+                "en": "Changed library for Proxy Socks5",
+                "de": "Changed library for Proxy Socks5",
                 "ru": "Изменена библиотека для Proxy Socks5",
-                "pt": "Adicionado suporte para Proxy Socks5",
-                "nl": "Ondersteuning voor Proxy Socks5 toegevoegd",
-                "fr": "Ajout du support pour Proxy Socks5",
-                "it": "Aggiunto supporto per Proxy Socks5",
-                "es": "Se agregó soporte para Proxy Socks5",
-                "pl": "Dodano obsługę Proxy Socks5"
+                "pt": "Changed library for Proxy Socks5",
+                "nl": "Changed library for Proxy Socks5",
+                "fr": "Changed library for Proxy Socks5",
+                "it": "Changed library for Proxy Socks5",
+                "es": "Changed library for Proxy Socks5",
+                "pl": "Changed library for Proxy Socks5"
             },
             "1.2.1": {
                 "en": "Added support for Proxy Socks5",
