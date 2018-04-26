@@ -20,6 +20,7 @@ var TelegramBot = require('node-telegram-bot-api');
 var fs = require('fs');
 var LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 var https = require('https');
+var socks = require('socksv5');
 
 var bot;
 var users = {};
@@ -841,6 +842,11 @@ function processTelegramText(msg) {
 }
 
 function connect() {
+    var proxy = false;
+    if (adapter.config && adapter.config.proxy !== undefined) {
+        proxy = adapter.config.proxy;
+    }
+	
     if (bot) {
         if (!adapter.config.server) {
             try {
@@ -868,25 +874,67 @@ function connect() {
             adapter.setState('info.connection', true, true);
         });
     } else {
+        var agent;
+        if (proxy === true) {
+            adapter.log.debug('proxy enabled');
+            var proxyHost = '';
+            if (adapter.config && adapter.config.proxyHost !== undefined) {
+                    proxyHost = adapter.config.proxyHost;
+                    adapter.log.debug('proxyHost: ' + proxyHost);
+            }
+            var proxyPort = 1080;
+            if (adapter.config && adapter.config.proxyPort !== undefined) {
+                    proxyPort = parseInt(adapter.config.proxyPort, 10) || 0;
+                    adapter.log.debug('proxyPort: ' + proxyPort);
+            }
+            var proxyLogin = '';
+            if (adapter.config && adapter.config.proxyLogin !== undefined) {
+                  proxyLogin = adapter.config.proxyLogin;
+                    adapter.log.debug('proxyLogin: ' + proxyLogin);
+            }
+            var proxyPassword = '';
+            if (adapter.config && adapter.config.proxyPassword !== undefined) {
+                    proxyPassword = adapter.config.proxyPassword;
+                    adapter.log.debug('proxyPassword: ' + proxyPassword);
+            }
+            var socksConfig = {
+                proxyHost: proxyHost,
+                proxyPort: proxyPort,
+                auths: []
+            };
+            if (proxyLogin) {
+                socksConfig.auths.push(socks.auth.UserPassword(proxyLogin, proxyPassword));
+            } else {
+                socksConfig.auths.push(socks.auth.None());
+            }
+            agent = new socks.HttpsAgent(socksConfig);
+        }
         if (adapter.config.server) {
             // Setup server way
-            bot = new TelegramBot(adapter.config.token, {
+            var serverOptions = {
                 polling: false,
                 filepath: true
-            });
+            };
+            if (agent) {
+                serverOptions.request = {agent: agent};
+            }
+            bot = new TelegramBot(adapter.config.token, serverOptions);
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
             }
             bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
         } else {
             // Setup polling way
-			var pollingOptions = {
+	        var pollingOptions = {
                 polling: {
                     interval: parseInt(adapter.config.pollingInterval, 10) || 300
                 },
                 filepath: true
             };
-			adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
+            if (agent) {
+                pollingOptions.request = {agent: agent};
+            }
+	        adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
             bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('');
         }

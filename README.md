@@ -325,6 +325,12 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.2 (2018-04-25)
+* (kirovilya) Changed library for Proxy Socks5
+
+### 1.2.1 (2018-04-17)
+* (Haba) Added support for Proxy Socks5.
+
 ### 1.2.0 (2018-03-21)
 * (AlGu) Possibility to define polling interval in configuration wizard. Default is 300ms.
 
