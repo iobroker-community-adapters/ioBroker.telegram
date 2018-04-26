@@ -325,6 +325,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.3 (2018-04-26)
+* (Osrx) Added Socks5 settings to config dialog on machines running admin 2.
+
 ### 1.2.2 (2018-04-25)
 * (kirovilya) Changed library for Proxy Socks5
 

@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.2",
+        "version": "1.2.3",
         "news": {
+            "1.2.3": {
+                "en": "Socks5 settings added to config dialog for admin 2 users.",
+                "de": "Socks5-Einstellungen wurden dem Konfigurationsdialog für Benutzer von admin 2 hinzugefügt.",
+                "ru": "Настройки Socks5 добавлены в диалог конфигурации для пользователей admin 2.",
+                "pt": "Socks5 configurações adicionadas ao diálogo de configuração para usuários admin 2.",
+                "nl": "Socks5-instellingen toegevoegd aan configuratie-dialoogvenster voor beheerders 2 gebruikers.",
+                "fr": "Socks5 paramètres ajoutés à la boîte de dialogue de configuration pour les utilisateurs admin 2.",
+                "it": "Le impostazioni di Socks5 sono state aggiunte alla finestra di configurazione per gli utenti di admin 2.",
+                "es": "Configuración de Socks5 agregada al diálogo de configuración para usuarios de administrador 2.",
+                "pl": "Ustawienia Socks5 zostały dodane do okna dialogowego konfiguracji dla użytkowników admin 2."
+            },
             "1.2.2": {
                 "en": "Changed library for Proxy Socks5",
                 "de": "Changed library for Proxy Socks5",
