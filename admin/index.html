@@ -63,7 +63,20 @@
             } else {
                 $('.useUsernameSub').hide();
             }
+            if ($('#proxy').prop('checked')) {
+                $('.col-proxyHost').show();
+                $('.col-proxyPort').show();
+                $('.col-proxyLogin').show();
+                $('.col-proxyPassword').show();
+            } else {
+                $('.col-proxyHost').hide();
+                $('.col-proxyPort').hide();
+                $('.col-proxyLogin').hide();
+                $('.col-proxyPassword').hide();
+            }   
+
         }
+
     }
 
     // the function loadSettings has to exist ...
@@ -91,13 +104,13 @@
             if ($value.attr('type') === 'checkbox') {
                 $value.prop('checked', settings[key]).change(function () {
                     var id = $(this).attr('id');
-                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate' || id === 'rememberUsers') showHideSettings();
+                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate' || id === 'rememberUsers' || id === 'proxy') showHideSettings();
                     onChange();
                 });
             } else {
                 $value.val(settings[key]).change(function () {
                     var id = $(this).attr('id');
-                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate' || id === 'rememberUsers') showHideSettings();
+                    if (id === 'server' || id === 'leEnabled' || id === 'leUpdate' || id === 'rememberUsers' || id === 'proxy') showHideSettings();
                     onChange();
                 }).keyup(function () {
                     $(this).trigger('change');
@@ -219,6 +232,33 @@
                     <td><input id="useUsername" class="value" type="checkbox"/></td>
                     <td class="translate help">Store username instead of firstname of remembered users</td>
                 </tr>
+
+                <tr>
+                        <td class="translate">Proxy Socks5 enable</td>
+                        <td><input id="proxy" class="value" type="checkbox" /></td>
+                </tr>
+                    <tr class="col-proxyHost">
+                        <td class="translate" for="proxyHost">proxy Host</td>
+                        <td><input id="proxyHost" class="value" type="text" /></td>
+                        <td class="translate help">proxy Host</td>
+                    </tr>
+
+                    <tr class="col-proxyPort">
+                        <td class="translate" for="proxyPort">port</td>
+                        <td><input class="value number" id="proxyPort" size="5" maxlength="5" type="number"/></td>
+                        <td class="translate help">port</td>
+                    </tr>
+                    <tr class="col-proxyLogin">
+                        <td class="translate" for="proxyLogin">Login</td>
+                        <td><input id="proxyLogin" class="value" type="text" /></td>
+                        <td class="translate help">Login</td>
+                    </tr>
+                    <tr class="col-proxyPassword">
+                        <td class="translate" for="proxyPassword">password</td>
+                        <td><input id="proxyPassword" class="value" type="password" /></td>
+                        <std class="translate help">password</td>
+                    </tr>
+
                 <tr>
                     <td class="translate">Store raw request</td>
                     <td><input id="storeRawRequest" class="value" type="checkbox"/></td>
