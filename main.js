@@ -977,10 +977,10 @@ function connect() {
             });
         });
         bot.on('polling_error', function (error) {
-            adapter.log.error('polling_error:' + error.code + ', ' + error.message); // => 'EFATAL'
+            adapter.log.error('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
         });
         bot.on('webhook_error', function (error) {
-            adapter.log.error('webhook_error:' + error.code + ', ' + error.message); // => 'EPARSE'
+            adapter.log.error('webhook_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EPARSE'
             adapter.log.debug('bot restarting...');
             bot.stopPolling().then(
                 function (response) {
