@@ -275,7 +275,7 @@ if (command ==="delete") {
         user: user,
         deleteMessage: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                chat_id: getState("telegram.0.communicate.requestChatId").val,
                 message_id: getState("telegram.0.communicate.requestMessageId").val
             }
         }
@@ -325,6 +325,10 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.4 (2018-06-02)
+* (BuZZy1337) remove HTML Tags from Logerror-Messages
+* (Apollon77) fix misleading error when setting a value for a state
+
 ### 1.2.3 (2018-04-26)
 * (Osrx) Added Socks5 settings to config dialog on machines running admin 2.
 
@@ -338,7 +342,7 @@ TODO:
 * (AlGu) Possibility to define polling interval in configuration wizard. Default is 300ms.
 
 ### 1.1.4 (2018-03-20)
-* (BasGo) Added checks before accessing non-existing options 
+* (BasGo) Added checks before accessing non-existing options
 
 ### 1.1.3 (2018-03-19)
 * (BasGo) Fixed issue preventing adapter to terminate correctly

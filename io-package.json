@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.3",
+        "version": "1.2.4",
         "news": {
+            "1.2.4": {
+                "en": "remove HTML Tags from Logerror-Messages; fix misleading error when setting a value for a state",
+                "de": "entferne HTML-Tags von Logerror-Nachrichten; einen irreführenden Fehler beim Festlegen eines Werts für einen Status beheben",
+                "ru": "удалить HTML-теги из Logerror-Messages; исправить ошибочную ошибку при установке значения для состояния",
+                "pt": "remover tags HTML de mensagens de logerror; corrigir erro enganoso ao definir um valor para um estado",
+                "nl": "verwijder HTML-tags uit Logerror-berichten; verhelpen misleidende fout bij het instellen van een waarde voor een staat",
+                "fr": "supprimer les balises HTML des messages Logerror; Correction d'une erreur trompeuse lors de la définition d'une valeur pour un état",
+                "it": "rimuovere i tag HTML da Logerror-Messages; correggere errori fuorvianti quando si imposta un valore per uno stato",
+                "es": "eliminar etiquetas HTML de Logerror-Messages; corrige el error engañoso al establecer un valor para un estado",
+                "pl": "usuń znaczniki HTML z Logerror-Messages; napraw błąd wprowadzający w błąd przy ustawianiu wartości dla stanu"
+            },
             "1.2.3": {
                 "en": "Socks5 settings added to config dialog for admin 2 users.",
                 "de": "Socks5-Einstellungen wurden dem Konfigurationsdialog für Benutzer von admin 2 hinzugefügt.",
@@ -287,7 +298,7 @@
                 "write": false
             },
             "native": {}
-        },        
+        },
         {
             "_id": "communicate.requestChatId",
             "type": "state",
