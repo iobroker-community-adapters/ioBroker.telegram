@@ -701,7 +701,7 @@ function processTelegramText(msg) {
 	if (adapter.config && adapter.config.pollingInterval !== undefined) {
 		pollingInterval = parseInt(adapter.config.pollingInterval, 10) || 0;
 	}
-		
+
     // ignore all messages older than 30 seconds + polling interval
     if (now - msg.date * 1000 > pollingInterval + 30000) {
         adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: (' + (pollingInterval + 30000) + ') ' + msg.text);
@@ -782,6 +782,7 @@ function processTelegramText(msg) {
                 }
             }
         });
+        return;
     }
 
     // Check get state
@@ -805,7 +806,7 @@ function processTelegramText(msg) {
                 if (state) {
                     bot.sendMessage(msg.from.id, state.val.toString());
                 } else {
-                    bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                    bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2));
                 }
             }
         });
@@ -846,7 +847,7 @@ function connect() {
     if (adapter.config && adapter.config.proxy !== undefined) {
         proxy = adapter.config.proxy;
     }
-	
+
     if (bot) {
         if (!adapter.config.server) {
             try {
