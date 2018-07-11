@@ -490,27 +490,18 @@ function sendMessage(text, user, chatId, options) {
     var u;
 
     if (user) {
-        if (user.indexOf(',') !== -1) {
-            var multiuser = user.split(',');
-            multiuser.forEach(function (value) {
-                for (u in users) {
-                    if (users[u] === value) {
-                        count += _sendMessageHelper(u, value, text, options);
-                        break;
-                    }
-                }
-            });
-        } else {
+        var userarray = user.split(',');
+        userarray.forEach(function (value) {
             for (u in users) {
-                if (users[u] === user) {
+                if (users[u] === value) {
                     if (options) {
                         options.chatId = u;
                     }
-                    count += _sendMessageHelper(u, user, text, options);
+                    count += _sendMessageHelper(u, value, text, options);
                     break;
                 }
             }
-        }
+        });
         return count;
     }
 
