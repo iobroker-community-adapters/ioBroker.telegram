@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.4",
+        "version": "1.2.5",
         "news": {
+            "1.2.5": {
+                "en": "Added possibility to specify more than one recipient. (separated by comma)",
+                "de": "Möglichkeit, mehr als einen Empfänger anzugeben. (getrennt durch Komma)",
+                "ru": "Добавлена ​​возможность указать более одного получателя. (разделенные запятой)",
+                "pt": "Adicionada possibilidade de especificar mais de um destinatário. (separado por vírgula)",
+                "nl": "Mogelijkheid toegevoegd om meer dan één ontvanger te specificeren. (gescheiden door een komma)",
+                "fr": "Possibilité supplémentaire de spécifier plus d'un destinataire. (séparé par une virgule)",
+                "it": "Aggiunta la possibilità di specificare più di un destinatario. (separato da virgola)",
+                "es": "Se agregó la posibilidad de especificar más de un destinatario. (separados por coma)",
+                "pl": "Dodano możliwość określenia więcej niż jednego odbiorcy. (oddzielone przecinkiem)"
+            },
             "1.2.4": {
                 "en": "remove HTML Tags from Logerror-Messages; fix misleading error when setting a value for a state",
                 "de": "entferne HTML-Tags von Logerror-Nachrichten; einen irreführenden Fehler beim Festlegen eines Werts für einen Status beheben",

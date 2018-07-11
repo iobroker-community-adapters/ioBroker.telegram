@@ -38,6 +38,9 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
 If you use the example above be aware of that you have to replace 'UserName' with either the firstname or the Public-Telegram-Username of the User you want to send the message to. (Depends on if the 'Store username not firstname' setting in the Adaptersettings is enabled or not)
 If the option is set and the user did not specify a public username in his telegram account, then the adapter will continue to use the firstname of the user. Keep in mind that if the user sets a public username later (after authenticating to your bot) the saved firstname will be replaced by the username the next time the user sends a message to the bot.
 
+It is possible to specify more than one recipient (just separate the Usernames by comma).
+For example: Recipient: "User1,User4,User5"
+
 You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"*.
 
 ## Usage
@@ -325,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.5 (2018-07-11)
+* (BuZZy1337) Added possibility to specify more than one recipient. (separated by comma)
+
 ### 1.2.4 (2018-06-02)
 * (BuZZy1337) remove HTML Tags from Logerror-Messages
 * (Apollon77) fix misleading error when setting a value for a state
