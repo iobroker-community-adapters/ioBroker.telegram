@@ -490,18 +490,21 @@ function sendMessage(text, user, chatId, options) {
     var u;
 
     if (user) {
-        var userarray = user.split(',');
+        var userarray = user.replace(/\s/g,'').split(',');
+        var matches = 0;
         userarray.forEach(function (value) {
             for (u in users) {
                 if (users[u] === value) {
                     if (options) {
                         options.chatId = u;
                     }
+                    matches++;
                     count += _sendMessageHelper(u, value, text, options);
                     break;
                 }
             }
         });
+        if (userarray.length != matches) adapter.log.warn(userarray.length - matches + ' of ' + userarray.length + ' recipients are unknown!');
         return count;
     }
 
