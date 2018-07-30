@@ -97,6 +97,6 @@ Blockly.JavaScript['telegram'] = function(block) {
     }
 
     return 'sendTo("telegram' + dropdown_instance + '", "send", {\n    text: ' +
-        value_message + (value_username ? ', \n    user: ' + value_username : '') + '\n});\n' +
+        value_message + (value_username ? ', \n    ' + (value_username.startsWith('-',1) ? 'chatId: ' : 'user: ') + value_username : '') + '\n});\n' +
         logText;
 };
