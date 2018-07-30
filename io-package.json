@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.5",
+        "version": "1.2.6",
         "news": {
+            "1.2.6": {
+                "en": "Added support for sending Messages to Group-Chats via Blockly.",
+                "de": "Zusätzliche Unterstützung für das Senden von Nachrichten an Gruppen-Chats über Blockly.",
+                "ru": "Добавлена ​​поддержка отправки сообщений в групповые чаты через блокировку.",
+                "pt": "Adicionado suporte para o envio de mensagens para conversas em grupo via Blockly.",
+                "nl": "Ondersteuning toegevoegd voor het via Blockly verzenden van berichten naar groep-chats.",
+                "fr": "Ajout du support pour l'envoi de messages à Group-Chats via Blockly.",
+                "it": "Aggiunto supporto per l'invio di messaggi alle chat di gruppo tramite Blockly.",
+                "es": "Se agregó soporte para enviar mensajes a grupos de chat a través de Blockly.",
+                "pl": "Dodano obsługę wysyłania wiadomości do czatów grupowych za pośrednictwem opcji Blokuj."
+            },
             "1.2.5": {
                 "en": "Added possibility to specify more than one recipient. (separated by comma)",
                 "de": "Möglichkeit, mehr als einen Empfänger anzugeben. (getrennt durch Komma)",

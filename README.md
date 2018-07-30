@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.6 (2018-07-30)
+* (BuZZy1337) Added support for sending Messages to Group-Chats via Blockly.
+
 ### 1.2.5 (2018-07-11)
 * (BuZZy1337) Added possibility to specify more than one recipient. (separated by comma)
 
