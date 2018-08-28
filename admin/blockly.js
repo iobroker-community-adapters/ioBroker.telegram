@@ -34,6 +34,8 @@ Blockly.Sendto.blocks['telegram'] =
     + '     </value>'
     + '     <value name="SILENT">'
     + '     </value>'
+    + '     <value name="PARSEMODE">'
+    + '     </value>'
     + '</block>';
 
 Blockly.Blocks['telegram'] = {
@@ -78,6 +80,10 @@ Blockly.Blocks['telegram'] = {
             .appendField(Blockly.Words['telegram_silent'][systemLang])
             .appendField(new Blockly.FieldCheckbox("FALSE"), "SILENT");
 
+        this.appendDummyInput('PARSEMODE')
+            .appendField("Parsemode")
+            .appendField(new Blockly.FieldDropdown([["default","default"], ["HTML","HTML"], ["Markdown","Markdown"]]), "PARSEMODE");    
+
         if (input.connection) input.connection._optional = true;
 
         this.setInputsInline(false);
@@ -96,6 +102,7 @@ Blockly.JavaScript['telegram'] = function(block) {
     var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
     var silent = block.getFieldValue('SILENT');
+    var parsemode = block.getFieldValue('PARSEMODE');
 
     var logText;
     if (logLevel) {
@@ -106,6 +113,8 @@ Blockly.JavaScript['telegram'] = function(block) {
 
     return 'sendTo("telegram' + dropdown_instance + '", "send", {\n    text: ' +
         value_message + (value_username ? ', \n    ' + (value_username.startsWith('-',1) ? 'chatId: ' : 'user: ') + value_username : '') +
-        (silent === 'TRUE' ? ', \n    disable_notification: true' : '') + '\n});\n' +
+        (silent === 'TRUE' ? ', \n    disable_notification: true' : '') +
+        (parsemode !== 'default' ? ', \n    parse_mode: "' + parsemode + '"': '') +
+        '\n});\n' +
         logText;
 };
