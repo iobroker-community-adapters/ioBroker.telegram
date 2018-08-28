@@ -17,6 +17,7 @@ Blockly.Words['telegram_log_debug']     = {'en': 'debug',                       
 Blockly.Words['telegram_log_warn']      = {'en': 'warning',                     'pt': 'Atenção',                        'pl': 'ostrzeżenie',                        'nl': 'waarschuwing',                   'it': 'avvertimento',                   'es': 'advertencia',                    'fr': 'Attention',                          'de': 'warning',                            'ru': 'warning'};
 Blockly.Words['telegram_log_error']     = {'en': 'error',                       'pt': 'erro',                           'pl': 'błąd',                               'nl': 'fout',                           'it': 'errore',                         'es': 'error',                          'fr': 'Erreur',                             'de': 'error',                              'ru': 'ошибка'};
 Blockly.Words['telegram_help']          = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md'};
+Blockly.Words['telegram_silent']        = {'en': 'without notification',        'de': 'ohne Benachrichtigung',          'ru': 'без уведомления',                    'pt': 'sem notificação',                'nl': 'zonder kennisgeving',            'fr': 'sans notification',              'it': 'senza notifica',                     'es': 'sin notificación',                   'pl': 'bez powiadomienia'};
 
 Blockly.Sendto.blocks['telegram'] =
     '<block type="telegram">'
@@ -30,6 +31,8 @@ Blockly.Sendto.blocks['telegram'] =
     + '     <value name="USERNAME">'
     + '     </value>'
     + '     <value name="LOG">'
+    + '     </value>'
+    + '     <value name="SILENT">'
     + '     </value>'
     + '</block>';
 
@@ -71,6 +74,10 @@ Blockly.Blocks['telegram'] = {
                 [Blockly.Words['telegram_log_error'][systemLang], 'error']
             ]), 'LOG');
 
+        this.appendDummyInput('SILENT')
+            .appendField(Blockly.Words['telegram_silent'][systemLang])
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "SILENT");
+
         if (input.connection) input.connection._optional = true;
 
         this.setInputsInline(false);
@@ -88,6 +95,7 @@ Blockly.JavaScript['telegram'] = function(block) {
     var logLevel = block.getFieldValue('LOG');
     var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
+    var silent = block.getFieldValue('SILENT');
 
     var logText;
     if (logLevel) {
@@ -97,6 +105,7 @@ Blockly.JavaScript['telegram'] = function(block) {
     }
 
     return 'sendTo("telegram' + dropdown_instance + '", "send", {\n    text: ' +
-        value_message + (value_username ? ', \n    ' + (value_username.startsWith('-',1) ? 'chatId: ' : 'user: ') + value_username : '') + '\n});\n' +
+        value_message + (value_username ? ', \n    ' + (value_username.startsWith('-',1) ? 'chatId: ' : 'user: ') + value_username : '') +
+        (silent === 'TRUE' ? ', \n    disable_notification: true' : '') + '\n});\n' +
         logText;
 };
