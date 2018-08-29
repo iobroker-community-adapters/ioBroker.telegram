@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.2.6",
+        "version": "1.2.7",
         "news": {
+            "1.2.7": {
+                "en": "Added send silent and parsemode selector to blockly",
+                "de": "Send silent und parsemode selector zu blocky hinzugefügt",
+                "ru": "Добавлен переключатель send silent и parsemode для блокировки",
+                "pt": "Adicionado o seletor de envio silencioso e parsemode a blockly",
+                "nl": "Sturende en parsemode-kiezer verzonden naar blockly",
+                "fr": "Ajout du sélecteur send silent et parsemode à bloc",
+                "it": "Aggiunto il selettore silenzioso e parsemode a blockly",
+                "es": "Se agregó el selector de envío silencioso y parsemode a blockly",
+                "pl": "Dodano opcję wysyłania selektora ciszy i parsemodu do bloku"
+            },
             "1.2.6": {
                 "en": "Added support for sending Messages to Group-Chats via Blockly.",
                 "de": "Zusätzliche Unterstützung für das Senden von Nachrichten an Gruppen-Chats über Blockly.",

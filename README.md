@@ -328,6 +328,10 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.2.7 (2018-08-29)
+* (BuZZy1337) Added "disable notification" checkbox to blockly block.
+* (BuZZy1337) Added "parse_mode" selector to blockly block.
+
 ### 1.2.6 (2018-07-30)
 * (BuZZy1337) Added support for sending Messages to Group-Chats via Blockly.
 
