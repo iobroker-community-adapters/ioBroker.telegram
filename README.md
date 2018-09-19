@@ -328,6 +328,10 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.3.0 (2019-09-19)
+* (BuZZy1337) Added possibility to delete authenticated users in the Adapter-Config screen (via Messages tab)
+* (BuZZy1337) fixed a problem "building" the Blockly sendto block when no adapter instance exists.
+
 ### 1.2.7 (2018-08-29)
 * (BuZZy1337) Added "disable notification" checkbox to blockly block.
 * (BuZZy1337) Added "parse_mode" selector to blockly block.

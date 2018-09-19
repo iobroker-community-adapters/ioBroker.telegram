@@ -44,7 +44,49 @@ var server = {
 };
 
 adapter.on('message', function (obj) {
-    if (obj) processMessage(obj);
+    if (obj) {
+        if (obj.command === 'adminuser') {
+            var adminuserData;
+            adapter.getState('communicate.users', function (err, state) {
+                if (err) adapter.log.error(err);
+                if (state && state.val) {
+                    try {
+                        adminuserData = JSON.parse(state.val);
+                        adapter.sendTo(obj.from, obj.command, adminuserData, obj.callback);
+                    } catch (err) {
+                        if (err) adapter.log.error(err);
+                        adapter.log.error('Cannot parse stored user IDs!');
+                    }
+                }
+            });
+            return;
+        } else if (obj.command.indexOf('delUser') != -1) {
+            var userID = obj.command.split(' ')[1];
+            var userObj = {};
+            adapter.getState('communicate.users', function (err, state) {
+                if (err) adapter.log.error(err);
+                if (state && state.val) {
+                    try {
+                        userObj = JSON.parse(state.val);
+                        delete userObj[userID];
+                        adapter.setState('communicate.users', JSON.stringify(userObj), function (err) {
+                            if (!err) {
+                                adapter.sendTo(obj.from, obj.command, userID, obj.callback);
+                                updateUsers();
+                                adapter.log.warn('User ' + userID + ' has been deleted!!');
+                            }
+                        });
+                    } catch (err) {
+                        if (err) adapter.log.error(err);
+                        adapter.log.error('Cannot delete user ' + userID + '!');
+                    }
+                }
+            });
+            return;
+        } else {
+            processMessage(obj);
+        }
+    }
     processMessages();
 });
 
@@ -490,7 +532,7 @@ function sendMessage(text, user, chatId, options) {
     var u;
 
     if (user) {
-        var userarray = user.replace(/\s/g,'').split(',');
+        var userarray = user.replace(/\s/g, '').split(',');
         var matches = 0;
         userarray.forEach(function (value) {
             for (u in users) {
@@ -1002,6 +1044,22 @@ function connect() {
     }
 }
 
+function updateUsers() {
+    if (adapter.config.rememberUsers) {
+        adapter.getState('communicate.users', function (err, state) {
+            if (err) adapter.log.error(err);
+            if (state && state.val) {
+                try {
+                    users = JSON.parse(state.val);
+                } catch (err) {
+                    if (err) adapter.log.error(err);
+                    adapter.log.error('Cannot parse stored user IDs!');
+                }
+            }
+        });
+    }
+}
+
 function main() {
     if (!adapter.config.token) {
         adapter.log.error('Token is not set!');
@@ -1018,19 +1076,7 @@ function main() {
 
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
 
-    if (adapter.config.rememberUsers) {
-        adapter.getState('communicate.users', function (err, state) {
-            if (err) adapter.log.error(err);
-            if (state && state.val) {
-                try {
-                    users = JSON.parse(state.val);
-                } catch (err) {
-                    if (err) adapter.log.error(err);
-                    adapter.log.error('Cannot parse stored user IDs!');
-                }
-            }
-        });
-    }
+    updateUsers();
 
     adapter.config.users = adapter.config.users || '';
     adapter.config.users = adapter.config.users.split(',');
