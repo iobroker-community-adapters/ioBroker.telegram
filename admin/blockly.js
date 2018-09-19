@@ -49,6 +49,11 @@ Blockly.Blocks['telegram'] = {
                     options.push(['telegram.' + k, '.' + k]);
                 }
             }
+            if (options.length === 0) {
+                for (var u = 0; u <= 4; u++) {
+                    options.push(['telegram.' + u, '.' + u]);
+                }
+            }
         } else {
             for (var n = 0; n <= 4; n++) {
                 options.push(['telegram.' + n, '.' + n]);
