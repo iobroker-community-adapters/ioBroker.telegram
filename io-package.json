@@ -6,6 +6,17 @@
         },
         "version": "1.3.0",
         "news": {
+            "1.3.1": {
+                "en": "The ability of enable/disable of states controlling was added",
+                "de": "Die Fähigkeit der Aktivierung / Deaktivierung von Zuständen wurde hinzugefügt",
+                "ru": "Добавлена ​​возможность включения / отключения контроля состояний",
+                "pt": "A capacidade de ativar / desativar estados controlando foi adicionada",
+                "nl": "Het vermogen om de statuscontrole in / uit te schakelen is toegevoegd",
+                "fr": "La possibilité d'activer / désactiver le contrôle des états a été ajoutée",
+                "it": "È stata aggiunta la possibilità di abilitare / disabilitare gli stati che controllano",
+                "es": "Se agregó la capacidad de habilitar / deshabilitar el control de estados.",
+                "pl": "Dodano możliwość włączania / wyłączania sterowania stanami"
+            },
             "1.3.0": {
                 "en": "Added possibility to delete authenticated users",
                 "de": "Möglichkeit hinzugefügt, authentifizierte Benutzer zu löschen",
@@ -115,127 +126,6 @@
                 "it": "Aggiunti controlli prima di accedere a opzioni non esistenti",
                 "es": "Cheques agregados antes de acceder a opciones no existentes",
                 "pl": "Dodano sprawdzenia przed dostępem do nieistniejących opcji"
-            },
-            "1.1.3": {
-                "en": "Fixed some issues to increase stability",
-                "de": "Einige Probleme wurden behoben, um die Stabilität zu erhöhen",
-                "ru": "Исправлены некоторые проблемы для повышения стабильности",
-                "pt": "Corrigido alguns problemas para aumentar a estabilidade",
-                "nl": "Enkele problemen opgelost om de stabiliteit te vergroten",
-                "fr": "Correction de quelques problèmes pour augmenter la stabilité",
-                "it": "Risolti alcuni problemi per aumentare la stabilità",
-                "es": "Se corrigieron algunos problemas para aumentar la estabilidad",
-                "pl": "Naprawiono pewne problemy w celu zwiększenia stabilności"
-            },
-            "1.1.2": {
-                "en": "Reworked configuration and translation",
-                "de": "Überarbeitung der Konfiguration und Übersetzung",
-                "ru": "Переработанная конфигурация и перевод",
-                "pt": "Configuração e tradução reformuladas",
-                "nl": "Herwerkte configuratie en vertaling",
-                "fr": "Configuration et traduction retravaillées",
-                "it": "Rielaborazione della configurazione e traduzione",
-                "es": "Configuración y traducción retrabajada",
-                "pl": "Przerobiona konfiguracja i tłumaczenie"
-            },
-            "1.1.1": {
-                "en": "New objects",
-                "de": "Neue Objekte",
-                "ru": "Новые объекты",
-                "pt": "Novos objetos",
-                "nl": "Nieuwe objecten",
-                "fr": "Nouveaux objets",
-                "it": "Nuovi oggetti",
-                "es": "Objetos nuevos",
-                "pl": "Nowe obiekty"
-            },
-            "1.1.0": {
-                "en": "Possibility to send photo, video, document, audio as buffer.",
-                "de": "Möglichkeit, Foto, Video, Dokument, Audio als buffer zu senden.",
-                "ru": "Возможность отправки фото, видео, документа, аудио в качестве buffer.",
-                "pt": "Possibilidade de enviar foto, vídeo, documento, áudio como buffer.",
-                "nl": "Mogelijkheid om foto, video, document, audio als buffer te verzenden.",
-                "fr": "Possibilité d'envoyer photo, vidéo, document, audio en buffer.",
-                "it": "Possibilità di inviare foto, video, documenti, audio come buffer.",
-                "es": "Posibilidad de enviar foto, video, documento, audio como buffer.",
-                "pl": "Możliwość wysyłania zdjęć, wideo, dokumentów, audio jako buffer."
-            },
-            "1.0.11": {
-                "en": "Sending an image without intermediate disk caching",
-                "de": "Senden eines Images ohne Zwischenspeicherung von Datenträgercaches",
-                "ru": "Отправка изображения без промежуточного кэширования на диске",
-                "pt": "Enviar uma imagem sem armazenamento em disco intermediário",
-                "nl": "Een afbeelding verzenden zonder tussentijdse schijfcache",
-                "fr": "Envoi d'une image sans mise en cache de disque intermédiaire",
-                "it": "Invio di un'immagine senza cache intermedia del disco",
-                "es": "Envío de una imagen sin memoria intermedia del disco",
-                "pl": "Wysyłanie obrazu bez pośredniego buforowania dysku"
-            },
-            "1.0.10": {
-                "en": "updating for Admin3",
-                "de": "Aktualisierung für Admin3",
-                "ru": "обновление для Admin3",
-                "pt": "atualizando o Admin3",
-                "nl": "updaten voor Admin3",
-                "fr": "mise à jour pour Admin3",
-                "it": "aggiornamento per Admin3",
-                "es": "actualización para Admin3",
-                "pl": "aktualizacja dla Admin3"
-            },
-            "1.0.9": {
-                "en": "Allow send gif",
-                "de": "GIF zulassen",
-                "ru": "Разрешить отправку gif",
-                "pt": "Permitir enviar gif",
-                "nl": "Sta send gif toe",
-                "fr": "Autoriser l'envoi gif",
-                "it": "Consenti invio GIF",
-                "es": "Permitir enviar gif",
-                "pl": "Zezwalaj na wysyłanie gif"
-            },
-            "1.0.8": {
-                "en": "Removed deprecated function\nCatch webhook errors",
-                "de": "Entfernen der veralteten Funktion\nFangen Webhook-Fehler ab",
-                "ru": "Удалена устаревшая функция\nПроверка ошибок webhook",
-                "pt": "Função desativada removida\nCatch webhook errors",
-                "nl": "Gedeprecieerde functie verwijderd\nControleer webhook-fouten",
-                "fr": "Suppression de la fonction obsolète\nContrôle des erreurs de webhook",
-                "it": "Rimossa funzione deprecata\nCatch errori di webhook",
-                "es": "Se eliminó la función en desuso\nCatch webhook errors",
-                "pl": "Usunięto przestarzałą funkcję\nZaprojektuj błędy webhook"
-            },
-            "1.0.7": {
-                "en": "Added functions: deleteMessage",
-                "de": "Funktionen hinzugefügt: deleteMessage",
-                "ru": "Добавлены функции: deleteMessage",
-                "pt": "Funções adicionadas: deleteMessage",
-                "nl": "Toegevoegde functies: deleteMessage",
-                "fr": "Fonctions ajoutées: deleteMessage",
-                "it": "Funzioni aggiunte: deleteMessage",
-                "es": "Funciones añadidas: deleteMessage",
-                "pl": "Dodano funkcje: deleteMessage"
-            },
-            "1.0.6": {
-                "en": "Fix an incorrect order of writing variables",
-                "de": "Korrigiert eine falsche Reihenfolge beim Schreiben von Variablen",
-                "ru": "Исправлена очередность записи переменных",
-                "pt": "Corrigir uma ordem incorreta de escrever variáveis",
-                "nl": "Een onjuiste volgorde van schrijfvariabelen corrigeren",
-                "fr": "Correction d'un ordre incorrect de variables d'écriture",
-                "it": "Correggere un ordine errato di variabili di scrittura",
-                "es": "Repara un orden incorrecto de variables de escritura",
-                "pl": "Napraw nieprawidłową kolejność zapisywania zmiennych"
-            },
-            "1.0.5": {
-                "en": "Added support for inline keyboard, added functions: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "de": "Zusätzliche Unterstützung für inline keyboard, zusätzlichen Feature: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "ru": "Добавлена поддержка inline keyboard, добавлены функции: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "pt": "Adicionado suporte para teclado inline, funções adicionadas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "nl": "Ondersteuning toegevoegd voor inline-toetsenbord, toegevoegde functies: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "fr": "Ajout du support pour le clavier en ligne, des fonctions ajoutées: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "it": "Aggiunto supporto per tastiera integrata, funzioni aggiunte: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "es": "Se agregó soporte para teclado en línea, funciones añadidas: editMessageReplyMarkup, answerCallbackQuery, editMessageText",
-                "pl": "Dodano obsługę wbudowanej klawiatury, dodano funkcje: editMessageReplyMarkup, answerCallbackQuery, editMessageText"
             }
         },
         "title": "Telegram",
@@ -285,13 +175,16 @@
         "password": "",
         "text2command": "",
         "rememberUsers": true,
+        "allowStates": true,
         "storeRawRequest": false,
         "restarting": "_",
         "restarted": "_",
         "url": "",
+
         "certPublic": "",
         "certPrivate": "",
         "certChained": "",
+
         "leEnabled": false,
         "leUpdate": false,
         "leCheckPort": 80

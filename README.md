@@ -328,7 +328,10 @@ TODO:
 - dialogs
 
 ## Changelog
-### 1.3.0 (2019-09-19)
+### 1.3.1 (2018-10-08)
+* (bluefox) The ability of enable/disable of states controlling was added
+
+### 1.3.0 (2018-09-19)
 * (BuZZy1337) Added possibility to delete authenticated users in the Adapter-Config screen (via Messages tab)
 * (BuZZy1337) fixed a problem "building" the Blockly sendto block when no adapter instance exists.
 

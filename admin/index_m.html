@@ -70,6 +70,9 @@
             if (!settings) return;
             //$('#tabs').tabs();
             settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
+            if (settings.allowStates === undefined) {
+                settings.allowStates = true;
+            }
 
             if (!settings.lePort) settings.lePort = 80;
             if (settings.server === undefined) settings.server = 'false';
@@ -254,9 +257,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 m12 l12">
+                    <div class="input-field col s12 m6 l6">
                         <input id="proxy" class="value" type="checkbox" />
                         <label class="translate" for="proxy">Proxy Socks5 enable</label>
+                    </div>
+                    <div class="input-field col s12 m6 l6">
+                        <input id="allowStates" class="value" type="checkbox" />
+                        <label class="translate" for="allowStates">Allow state control</label>
                     </div>
                 </div>
                 <div class="row">
