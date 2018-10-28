@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.3.2 (2018-10-28)
+* (BuZZy1337) Just minor cosmetic fixes/changes
+
 ### 1.3.1 (2018-10-08)
 * (bluefox) The ability of enable/disable of states controlling was added
 

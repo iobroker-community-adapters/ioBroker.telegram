@@ -77,7 +77,7 @@
             if (!settings.lePort) settings.lePort = 80;
             if (settings.server === undefined) settings.server = 'false';
             if (!settings.pollingInterval) settings.pollingInterval = 300;
-            
+
             getIPs(function (ips) {
                 for (var i = 0; i < ips.length; i++) {
                     $('#bind').append('<option value="' + ips[i].address + '">' + ips[i].name + '</option>');
@@ -135,15 +135,17 @@
             });
 
             $('#messages').click(function () {
-                sendTo(null, 'adminuser', null, function (obj) {
-                    var text;
-                    for (var key in obj) {
-                        if (obj.hasOwnProperty(key)) {
-                            text += '<tr id="' + key + '"><td>' + key + '</td><td>' + obj[key] + '</td><td><a id="delete" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td></tr>'
+                if ($('#userTable').children().length === 0) {
+                    sendTo(null, 'adminuser', null, function (obj) {
+                        var text;
+                        for (var key in obj) {
+                            if (obj.hasOwnProperty(key)) {
+                                text += '<tr id="' + key + '"><td>' + key + '</td><td>' + obj[key] + '</td><td><a id="delete" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td></tr>'
+                            }
                         }
-                    }
-                    $('#userTable').append(text);
-                });
+                        $('#userTable').append(text);
+                    });
+                }
             });
         }
 

@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.3.1",
+        "version": "1.3.2",
         "news": {
+            "1.3.2": {
+                "en": "Cosmetic fixes",
+                "de": "Kosmetische Korrekturen",
+                "ru": "Косметические исправления",
+                "pt": "Correções cosméticas",
+                "nl": "Cosmetische fixes",
+                "fr": "Correctifs cosmétiques",
+                "it": "Correzioni cosmetiche",
+                "es": "Correcciones cosméticas",
+                "pl": "Poprawki kosmetyczne"
+            },
             "1.3.1": {
                 "en": "The ability of enable/disable of states controlling was added",
                 "de": "Die Fähigkeit der Aktivierung / Deaktivierung von Zuständen wurde hinzugefügt",
