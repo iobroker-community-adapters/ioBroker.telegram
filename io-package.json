@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.3.2",
+        "version": "1.3.3",
         "news": {
+            "1.3.3": {
+                "en": "Added warning if trying to save settings without password.",
+                "de": "Warnung hinzugefügt, wenn versucht wird, Einstellungen ohne Kennwort zu speichern.",
+                "ru": "Добавлено предупреждение при попытке сохранить настройки без пароля.",
+                "pt": "Adicionado aviso se tentar salvar configurações sem senha.",
+                "nl": "Waarschuwing toegevoegd als u probeert instellingen zonder wachtwoord op te slaan.",
+                "fr": "Avertissement ajouté si vous essayez de sauvegarder les paramètres sans mot de passe.",
+                "it": "Aggiunto avviso se si tenta di salvare le impostazioni senza password.",
+                "es": "Se agregó una advertencia si se intenta guardar la configuración sin contraseña.",
+                "pl": "Dodano ostrzeżenie, jeśli próbujesz zapisać ustawienia bez hasła."
+            },
             "1.3.2": {
                 "en": "Cosmetic fixes",
                 "de": "Kosmetische Korrekturen",

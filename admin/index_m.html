@@ -148,8 +148,7 @@
                 }
             });
         }
-
-        function save(callback) {
+        function save2(callback) {
             var obj = {};
             $('.value').each(function () {
                 var $this = $(this);
@@ -178,6 +177,21 @@
 
             callback(obj);
         }
+
+        function save(callback) {
+            if (!$('#password').val()) {
+                confirmMessage(_('No_Password'), _('Warning!'), null, [_('Ignore warning'), _('Set Password')], function (result) {
+                    if (result === 1) {
+                        return;
+                    } else {
+                        save2(callback);
+                    }
+                });
+            } else {
+                save2(callback);
+            }
+        }
+
     </script>
     <style>
         .marg {

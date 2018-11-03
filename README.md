@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.3.3 (2018-11-03)
+* (BuZZy1337) Show warning if no password is set.
+
 ### 1.3.2 (2018-10-28)
 * (BuZZy1337) Just minor cosmetic fixes/changes
 

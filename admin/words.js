@@ -48,5 +48,49 @@ systemDictionary = {
     "Proxy Socks5 enable": {                         "en": "Proxy Socks5 enable",                             "de": "Proxy Socks5 aktivieren",                         "ru": "Включить proxy Socks5",                           "pt": "Proxy Socks5 ativar",                             "nl": "Proxy Socks5 inschakelen",                         "fr": "Proxy Socks5 activer",                           "it": "Abilita Proxy Socks5",                            "es": "Proxy Socks5 habilita",                            "pl": "Włącz Proxy Socks5"},
     "proxy Host": {                                  "en": "Proxy Host",                                      "de": "Proxy-Host",                                      "ru": "прокси-сервер",                                   "pt": "host proxy",                                      "nl": "Proxy host",                                       "fr": "Hôte proxy",                                     "it": "host proxy",                                      "es": "host proxy",                                       "pl": "Host proxy"},
     "Login": {                                       "en": "Proxy Username",                                  "de": "Proxy Benutzername",                              "ru": "Логин",                                           "pt": "Entrar",                                          "nl": "Log in",                                           "fr": "S'identifier",                                   "it": "Accesso",                                         "es": "Iniciar sesión",                                   "pl": "Zaloguj Się"},
-    "Authenticated Users": {                         "en": "Authenticated Users",                             "de": "Gespeicherte Benutzer",                           "ru": "Аутентифицированные пользователи",                "pt": "Usuários autenticados",                           "nl": "Geverifieerde gebruikers",                         "fr": "Utilisateurs authentifiés",                      "it": "Utenti autenticati",                              "es": "Usuarios autenticados",                            "pl": "Użytkownicy uwierzytelnieni"}
+    "Authenticated Users": {                         "en": "Authenticated Users",                             "de": "Gespeicherte Benutzer",                           "ru": "Аутентифицированные пользователи",                "pt": "Usuários autenticados",                           "nl": "Geverifieerde gebruikers",                         "fr": "Utilisateurs authentifiés",                      "it": "Utenti autenticati",                              "es": "Usuarios autenticados",                            "pl": "Użytkownicy uwierzytelnieni"},
+    "No_Password": {
+        "en": "You did not choose a password.. If you dont set a password for your bot every stranger will be able to communicate with your bot! It is highly recommended to set a password!",
+        "de": "Sie haben kein Passwort gewählt. Wenn Sie für Ihren Bot kein Passwort festlegen, kann jeder Fremde mit Ihrem Bot kommunizieren! Es wird dringend empfohlen, ein Passwort festzulegen!",
+        "ru": "Вы не выбрали пароль. Если вы не установите пароль для своего бота, каждый незнакомец сможет общаться с вашим ботом! Настоятельно рекомендуется установить пароль!",
+        "pt": "Você não escolheu uma senha .. Se você não definir uma senha para o seu bot todo estranho será capaz de se comunicar com seu bot! É altamente recomendável definir uma senha!",
+        "nl": "Je hebt geen wachtwoord gekozen. Als je geen wachtwoord instelt voor je bot, kan elke vreemdeling communiceren met je bot! Het wordt ten zeerste aanbevolen om een ​​wachtwoord in te stellen!",
+        "fr": "Vous n'avez pas choisi de mot de passe. Si vous ne définissez pas de mot de passe pour votre bot, tout étranger sera en mesure de communiquer avec votre bot! Il est fortement recommandé de définir un mot de passe!",
+        "it": "Non hai scelto una password .. Se non hai impostato una password per il tuo bot, ogni sconosciuto sarà in grado di comunicare con il tuo bot! Si consiglia vivamente di impostare una password!",
+        "es": "No seleccionó una contraseña ... ¡Si no configura una contraseña para su bot, todos los extraños podrán comunicarse con su bot! Es muy recomendable establecer una contraseña!",
+        "pl": "Nie wybrałeś hasła. Jeśli nie ustawisz hasła dla swojego bota, każdy nieznajomy będzie mógł komunikować się z twoim botem! Zdecydowanie zaleca się ustawienie hasła!"
+    },
+    "Ignore warning": {
+        "en": "Ignore warning",
+        "de": "Warnung ignorieren",
+        "ru": "Игнорировать предупреждение",
+        "pt": "Ignorar aviso",
+        "nl": "Negeer waarschuwing",
+        "fr": "Ignorer l'avertissement",
+        "it": "Ignora l'avviso",
+        "es": "Ignorar la advertencia",
+        "pl": "Zignoruj ​​ostrzeżenie"
+    },
+    "Set Password": {
+        "en": "Set Password",
+        "de": "Passwort festlegen",
+        "ru": "Установка пароля",
+        "pt": "Configurar senha",
+        "nl": "Stel een wachtwoord in",
+        "fr": "Définir le mot de passe",
+        "it": "Impostare la password",
+        "es": "Configurar la clave",
+        "pl": "Ustaw hasło"
+    },
+    "Warning!": {
+        "en": "Warning!",
+        "de": "Warnung!",
+        "ru": "Предупреждение!",
+        "pt": "Aviso!",
+        "nl": "Waarschuwing!",
+        "fr": "Attention!",
+        "it": "Avvertimento!",
+        "es": "¡Advertencia!",
+        "pl": "Ostrzeżenie!"
+    }
 };
