@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.3.5 (2018-11-04)
+* (BuZZy1337) Fix a small error caused by previous commit
+
 ### 1.3.4 (2018-11-04)
 * (BuZZy1337) Ask if saved users should be wiped when password is changed.
 
