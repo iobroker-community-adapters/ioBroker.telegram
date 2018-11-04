@@ -15,6 +15,7 @@
     <script type="text/javascript" src="words.js"></script>
     <script type="text/javascript">
         //var isStarted =   null;
+        let oldPw;
 
         function encrypt(key, value) {
             var result = "";
@@ -70,6 +71,7 @@
             if (!settings) return;
             //$('#tabs').tabs();
             settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
+            oldPw = settings.password;
             if (settings.allowStates === undefined) {
                 settings.allowStates = true;
             }
@@ -187,8 +189,17 @@
                         save2(callback);
                     }
                 });
-            } else {
-                save2(callback);
+            } else if (oldPw && oldPw !== $('#password').val()) {
+                confirmMessage(_('Changed_Password'), _('Reauthenticate Users?'), null, [_('Auth_Yes'), _('Auth_No')], function (result) {
+                    if (result === 1) {
+                        save2(callback);
+                        return;
+                    } else {
+                        sendTo(null, 'delAllUser', null, function (obj) {
+                            save2(callback);
+                        });
+                    }
+                });
             }
         }
 

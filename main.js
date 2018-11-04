@@ -83,6 +83,20 @@ adapter.on('message', obj => {
                 }
             });
             return;
+        } else if (obj.command === 'delAllUser') {
+            try {
+                adapter.setState('communicate.users', '', err => {
+                    if (!err) {
+                        adapter.sendTo(obj.from, obj.command, true, obj.callback);
+                        updateUsers();
+                        adapter.log.warn('List of saved users has been wiped. Every User has to reauthenticate with the new password!');
+                    }
+                });
+            } catch (err) {
+                err && adapter.log.error(err);
+                adapter.log.error('Cannot wipe list of saved users!');
+            }
+            return;
         } else {
             processMessage(obj);
         }
@@ -568,7 +582,6 @@ function sendMessage(text, user, chatId, options) {
 function saveFile(file_id, fileName, callback) {
     bot.getFileLink(file_id).then(url => {
         adapter.log.debug('Received message: ' + url);
-        
         https.get(url, res => {
             if (res.statusCode === 200) {
                 const buf = [];
