@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.3.6 (2018-12-01)
+* (Apollon77) fix #78
+
 ### 1.3.5 (2018-11-04)
 * (BuZZy1337) Fix a small error caused by previous commit
 

@@ -206,8 +206,9 @@ function handleWebHook(req, res) {
             }
         });
         req.on('end', () => {
+            let msg;
             try {
-                const msg = JSON.parse(body);
+                msg = JSON.parse(body);
             } catch (e) {
                 adapter.log.error('Cannot parse webhook response!: ' + e);
                 return;
