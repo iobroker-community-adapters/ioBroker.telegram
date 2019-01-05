@@ -1,0 +1,277 @@
+<script type="text/x-iobroker" data-template-name="telegram">
+    <div class="row">
+        <div class="input-field col s4">
+            <input type="checkbox" data-field="enabled" data-default="false"/>
+            <!-- this field is mandatory, just to find out if to include this settings or not</span-->
+            <span class="translate">enabled</span>
+        </div>
+        <div class="input-field col s8">
+            <input type="text" data-field="alias"/>
+            <label for="logName" class="translate">Alias</label>
+            <p class="translate">Leave empty to use object's name</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s4">
+        </div>
+        <div class="input-field col s4">
+            <input data-field="readOnly" type="checkbox" data-default="false" />
+            <span class="translate">Read only</span>
+            <p class="translate">Only delivers the changes</p>
+        </div>
+        <div class="input-field col s4">
+            <input data-field="report" type="checkbox" data-default="true" />
+            <span class="translate">Report changes</span>
+            <p class="translate">If the changes must de sent to telegram</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s4">
+        </div>
+        <div class="input-field col s4">
+            <input data-field="buttons" type="number" min="1" data-default="3" />
+            <label for="buttons" class="translate">Buttons in line</label>
+        </div>
+    </div>
+    <div class="row telegram-on-off">
+        <div class="col s4">
+        </div>
+        <div class="input-field col s4 telegram-off">
+            <input type="text" data-field="offCommand"/>
+            <label for="offCommand" class="translate">OFF command</label>
+            <p class="translate">Default - 'OFF'</p>
+        </div>
+        <div class="input-field col s4">
+            <input type="text" data-field="onCommand"/>
+            <label for="onCommand" class="translate">ON command</label>
+            <p class="translate">Default - 'ON'</p>
+        </div>
+        <div class="col s4">
+        </div>
+        <div class="input-field col s4 telegram-off">
+            <input type="text" data-field="offStatus"/>
+            <label for="offStatus" class="translate">OFF status</label>
+            <p class="translate">Default - 'OFF'</p>
+        </div>
+        <div class="input-field col s4">
+            <input type="text" data-field="onStatus"/>
+            <label for="onStatus" class="translate">ON status</label>
+            <p class="translate">Default - 'ON'</p>
+        </div>
+        <div class="col s8">
+        </div>
+        <div class="input-field col s4">
+            <input data-field="onlyTrue" type="checkbox" data-default="false" id="telegramOnlyTrue"/>
+            <span class="translate">Only true</span>
+            <p class="translate">Do not show OFF</p>
+        </div>
+    </div>
+</script>
+
+<!-- translations -->
+<script type="text/javascript">
+    systemDictionary = $.extend(systemDictionary, {
+        "Alias": {
+            "en": "Alias",
+            "de": "Alias",
+            "ru": "Имя",
+            "pt": "Alias",
+            "nl": "Alias",
+            "fr": "Alias",
+            "it": "Alias",
+            "es": "Alias",
+            "pl": "Alias"
+        },
+        "Leave empty to use object's name": {
+            "en": "Leave empty to use object's name",
+            "de": "Leer lassen, um den Namen des Objekts zu verwenden",
+            "ru": "Оставьте пустым, чтобы использовать имя объекта",
+            "pt": "Deixe em branco para usar o nome do objeto",
+            "nl": "Laat leeg om de naam van het object te gebruiken",
+            "fr": "Laisser vide pour utiliser le nom de l'objet",
+            "it": "Lascia vuoto per usare il nome dell'oggetto",
+            "es": "Deje vacío para usar el nombre del objeto",
+            "pl": "Pozostaw puste, aby użyć nazwy obiektu"
+        },
+        "Read only": {
+            "en": "Read only",
+            "de": "Schreibgeschützt",
+            "ru": "Только для чтения",
+            "pt": "Somente leitura",
+            "nl": "Alleen lezen",
+            "fr": "Lecture seulement",
+            "it": "Sola lettura",
+            "es": "Solo lectura",
+            "pl": "Tylko czytać"
+        },
+        "Only delivers the changes": {
+            "en": "Only delivers the changes",
+            "de": "Liefert nur die Änderungen",
+            "ru": "Только оповещает об изменениях",
+            "pt": "Apenas entrega as alterações",
+            "nl": "Levert alleen de wijzigingen",
+            "fr": "Ne livre que les changements",
+            "it": "Fornisce solo le modifiche",
+            "es": "Solo entrega los cambios.",
+            "pl": "Dostarcza tylko zmiany"
+        },
+        "Report changes": {
+            "en": "Report changes",
+            "de": "Änderungen melden",
+            "ru": "Отчет об изменениях",
+            "pt": "Comunicar alterações",
+            "nl": "Wijzigingen doorgeven",
+            "fr": "Signaler les modifications",
+            "it": "Segnala cambiamenti",
+            "es": "Informe de cambios",
+            "pl": "Zgłoś zmiany"
+        },
+        "If the changes must de sent to telegram": {
+            "en": "If the changes must de sent to telegram",
+            "de": "Wenn die Änderungen an Telegramm gesendet werden müssen",
+            "ru": "Должны ли быть изменения отправлены в Telegram",
+            "pt": "Se as alterações devem ser enviadas para telegrama",
+            "nl": "Als de wijzigingen verzonden moeten worden naar telegram",
+            "fr": "Si les modifications doivent être envoyées au télégramme",
+            "it": "Se le modifiche devono essere inviate al telegramma",
+            "es": "Si los cambios deben enviarse a telegrama.",
+            "pl": "Jeśli zmiany muszą zostać wysłane do telegramu"
+        },
+        "OFF status": {
+            "en": "Off text",
+            "de": "Aus Text",
+            "ru": "Текст Выкл.",
+            "pt": "Fora do texto",
+            "nl": "Uit tekst",
+            "fr": "Hors texte",
+            "it": "Off testo",
+            "es": "Fuera de texto",
+            "pl": "Wyłącz tekst"
+        },
+        "Default - 'OFF'": {
+            "en": "Default - 'OFF'",
+            "de": "Standardeinstellung - 'AUS'",
+            "ru": "По умолчанию - 'Выкл'",
+            "pt": "Padrão - 'OFF'",
+            "nl": "Standaard - 'UIT'",
+            "fr": "Par défaut - 'OFF'",
+            "it": "Predefinito - 'OFF'",
+            "es": "Predeterminado - 'OFF'",
+            "pl": "Domyślnie - 'OFF'"
+        },
+        "ON status": {
+            "en": "ON text",
+            "de": "EIN text",
+            "ru": "Текст Вкл.",
+            "pt": "No texto",
+            "nl": "Op tekst",
+            "fr": "Sur le texte",
+            "it": "Sul testo",
+            "es": "En el texto",
+            "pl": "Na tekst"
+        },
+        "Default - 'ON'": {
+            "en": "Default - 'ON'",
+            "de": "Standard 'EIN'",
+            "ru": "По умолчанию - 'ВКЛ'",
+            "pt": "Padrão - 'ON'",
+            "nl": "Standaard - 'AAN'",
+            "fr": "Par défaut - 'ON'",
+            "it": "Predefinito - 'ON'",
+            "es": "Predeterminado - 'ON'",
+            "pl": "Domyślne - 'WŁ'"
+        },
+        "OFF command": {
+            "en": "OFF command",
+            "de": "AUS-Befehl",
+            "ru": "Команда выключения",
+            "pt": "Comando OFF",
+            "nl": "UIT commando",
+            "fr": "Commande OFF",
+            "it": "Comando OFF",
+            "es": "Comando OFF",
+            "pl": "WYŁ Polecenie"
+        },
+        "ON command": {
+            "en": "ON command",
+            "de": "AN-Befehl",
+            "ru": "Команда включения",
+            "pt": "No comando",
+            "nl": "Op commando",
+            "fr": "Sur commande",
+            "it": "A comando",
+            "es": "Comando ON",
+            "pl": "Na komendę"
+        },
+        "Only true": {
+            "en": "Only true",
+            "de": "Nur wahr",
+            "ru": "Только вкл.",
+            "pt": "Só é verdade",
+            "nl": "Alleen waar",
+            "fr": "Seulement vrai",
+            "it": "Solo vero",
+            "es": "Solo cierto",
+            "pl": "Tylko prawda"
+        },
+        "Do not show OFF": {
+            "en": "Do not show OFF",
+            "de": "Gib nicht an",
+            "ru": "Не показывать Выкл.",
+            "pt": "Não se exiba",
+            "nl": "Niet tonen UIT",
+            "fr": "Ne pas montrer",
+            "it": "Non mostrare OFF",
+            "es": "No mostrar",
+            "pl": "Nie popisuj się"
+        }
+    });
+
+    // There are two ways how to predefine default settings:
+    // - with attribute "data-default" (content independent)
+    // - with function in global variable "defaults". Function name is equal with adapter name.
+    //   as input function receives object with all information concerning it
+    if (typeof defaults !== 'undefined') {
+        console.log('A');
+        defaults.telegram = function (obj, instanceObj) {
+            if (obj && obj.common && obj.common.type === 'boolean') {
+                return {
+                    enabled:     false,
+                    readOnly:    obj.common.write === false,
+                    report:      obj.common.read !== false,
+                    alias:       '',
+                    onStatus:    '',
+                    offStatus:   '',
+                    onCommand:   '',
+                    offCommand:  '',
+                    onlyTrue:    !!obj.common.role.match(/^button/),
+                    buttons:     3
+                };
+            }
+            return {
+                enabled:     false,
+                report:      obj.common.read !== false,
+                readOnly:    obj.common.write === false,
+                alias:       '',
+                buttons:     3
+            };
+        }
+    }
+
+    // init select
+    if (typeof customPostInits !== 'undefined') {
+        customPostInits.telegram = function ($div, values, instanceObj, type, role) {
+            if (type !== 'boolean') {
+                $div.find('.telegram-on-off').hide();
+            }
+            $div.find('#telegramOnlyTrue').on('change', function () {
+                if ($(this).prop('checked')) {
+                    $div.find('.telegram-off').hide();
+                } else {
+                    $div.find('.telegram-off').show();
+                }
+            });
+            values.onlyTrue && $div.find('.telegram-off').hide();
+        }
+    }
+</script>

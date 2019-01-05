@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.3.6",
+        "version": "1.4.0",
         "news": {
+            "1.4.0": {
+                "en": "Custom settings for states were added",
+                "de": "Benutzerdefinierte Einstellungen für Status wurden hinzugefügt",
+                "ru": "Добавлены пользовательские настройки для состояний",
+                "pt": "Configurações personalizadas para estados foram adicionadas",
+                "nl": "Aangepaste instellingen voor toestanden zijn toegevoegd",
+                "fr": "Les paramètres personnalisés pour les états ont été ajoutés",
+                "it": "Sono state aggiunte le impostazioni personalizzate per gli stati",
+                "es": "Se agregaron configuraciones personalizadas para estados",
+                "pl": "Dodano ustawienia niestandardowe dla stanów"
+            },
             "1.3.6": {
                 "en": "bug fixed",
                 "de": "Fehler behoben",
@@ -206,6 +217,7 @@
         "loglevel": "info",
         "icon": "telegram.png",
         "materialize": true,
+        "supportCustoms": true,
         "keywords": [
             "notification",
             "telegram",
@@ -235,6 +247,7 @@
         "restarting": "_",
         "restarted": "_",
         "url": "",
+        "keyboard": "/cmds",
 
         "certPublic": "",
         "certPrivate": "",
@@ -244,7 +257,17 @@
         "leUpdate": false,
         "leCheckPort": 80
     },
-    "objects": [],
+    "objects": [
+        {
+            "_id": "_design/custom",
+            "language": "javascript",
+            "views": {
+                "state": {
+                    "map": "function(doc) { if (doc.type === 'state' && (doc.common.custom || doc.common.history)) emit(doc._id, doc.common.custom || doc.common.history) }"
+                }
+            }
+        }
+    ],
     "instanceObjects": [
         {
             "_id": "info",

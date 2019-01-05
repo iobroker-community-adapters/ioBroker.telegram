@@ -2,7 +2,7 @@
  *
  *      ioBroker telegram Adapter
  *
- *      (c) 2016-2018 bluefox <dogafox@gmail.com>
+ *      Copyright (c) 2016-2019 bluefox <dogafox@gmail.com>
  *
  *      MIT License
  *
@@ -13,14 +13,15 @@
 /* jslint node: true */
 'use strict';
 
+const TelegramBot = require('node-telegram-bot-api');
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
 const adapter = utils.Adapter('telegram');
 const _ = require(__dirname + '/lib/words.js');
-const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 const https = require('https');
 const socks = require('socksv5');
+
 
 let bot;
 let users = {};
@@ -28,6 +29,8 @@ let systemLang = 'en';
 let reconnectTimer = null;
 let lastMessageTime = 0;
 let lastMessageText = '';
+
+const commands = {};
 const callbackQueryId = {};
 const tools = require(utils.controllerDir + '/lib/tools');
 const configFile = tools.getConfigFileName();
@@ -166,7 +169,61 @@ adapter.on('stateChange', (id, state) => {
         // Send to someone this message
         sendMessage(state.val);
     }
+    if (state && state.ack && commands[id] && commands[id].report) {
+        sendMessage(getStatus(id, state));
+    }
 });
+
+adapter.on('objectChange', (id, obj) => {
+    if (obj && obj.common && obj.common.custom &&
+        obj.common.custom[adapter.namespace] && obj.common.custom[adapter.namespace].enabled
+    ) {
+        const alias = getName(obj);
+        if (!commands[id]) {
+            adapter.log.info('enabled logging of ' + id + ', Alias=' + alias);
+            setImmediate(() => adapter.subscribeForeignStates(id));
+        }
+        commands[id]        = obj.common.custom[adapter.namespace];
+        commands[id].type   = obj.common.type;
+        commands[id].states = parseStates(obj.common.states);
+        commands[id].unit   = obj.common && obj.common.unit;
+        commands[id].min    = obj.common && obj.common.min;
+        commands[id].max    = obj.common && obj.common.max;
+        commands[id].alias  = alias;
+    } else if (commands[id]) {
+        adapter.log.debug('Removed command: ' + id);
+        delete commands[id];
+        setImmediate(() => adapter.unsubscribeForeignStates(id));
+    }
+});
+
+function getStatus(id, state) {
+    if (commands[id].type === 'boolean') {
+        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].off || _('OFF-Status')}`;
+    } else {
+        if (commands[id].states && commands[id].states[state.val] !== undefined) {
+            state.val = commands[id].states[state.val];
+        }
+        return `${commands[id].alias} => ${state.val}`;
+    }
+}
+
+function parseStates(states) {
+    // todo
+    return states;
+}
+
+function getName(obj) {
+    if (obj.common.custom[adapter.namespace].alias) {
+        return obj.common.custom[adapter.namespace].alias;
+    } else {
+        let name = obj.common.name;
+        if (typeof name === 'object') {
+            name = name[systemLang] || name.en;
+        }
+        return name || obj._id;
+    }
+}
 
 const actions = [
     'typing', 'upload_photo', 'upload_video', 'record_video', 'record_audio', 'upload_document', 'find_location'
@@ -495,10 +552,10 @@ function _sendMessageHelper(dest, name, text, options) {
                     count++;
                 })
                 .catch(error => {
-                    if (options.chatId) {
+                    if (options && options.chatId) {
                         adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
                     } else {
-                        adapter.log.error('Cannot send message [user - ' + options.user + ']: ' + error);
+                        adapter.log.error('Cannot send message [user - ' + (options && options.user) + ']: ' + error);
                     }
                     options = null;
                 });
@@ -738,7 +795,112 @@ function storeUser(id, name) {
     }
 }
 
+function getListOfCommands() {
+    const ids = Object.keys(commands).sort((a, b) => commands[b].alias - commands[a].alias);
+    const lines = [];
+
+    ids.forEach(id => {
+        if (!commands[id].readOnly) {
+            if (commands[id].type === 'boolean') {
+                lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+            } else {
+                lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
+            }
+        }
+    });
+    return lines.join('\n');
+}
+
+function getCommandsKeyboard(chatId) {
+    const ids = Object.keys(commands).sort((a, b) => commands[b].alias - commands[a].alias);
+    const keyboard = [];
+
+    ids.forEach(id => {
+        if (!commands[id].readOnly) {
+            if (commands[id].type === 'boolean') {
+                if (commands[id].onlyTrue) {
+                    if (commands[id].buttons === 1) {
+                        keyboard.push([`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`]);
+                        keyboard.push([`${commands[id].alias} ?`]);
+                    } else {
+                        keyboard.push([
+                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
+                            `${commands[id].alias} ?`
+                        ]);
+                    }
+                } else {
+                    if (commands[id].buttons === 1) {
+                        keyboard.push([
+                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
+                        ]);
+                        keyboard.push([
+                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
+                        ]);
+                        keyboard.push([
+                            `${commands[id].alias} ?`
+                        ]);
+                    } else if (commands[id].buttons === 2) {
+                        keyboard.push([
+                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
+                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
+                        ]);
+                        keyboard.push([`${commands[id].alias} ?`]);
+                    } else {
+                        keyboard.push([
+                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
+                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
+                            `${commands[id].alias} ?`
+                        ]);
+                    }
+                }
+            } else if (commands[id].states) {
+                let s = [];
+                const stat = Object.keys(commands[id].states);
+                for (let i = 0; i <= stat.length; i++) {
+                    s.push(`${commands[id].alias} ${commands[id].states[stat[i]]}`);
+                    if (s.length >= (commands[id].buttons || 3)) {
+                        keyboard.push(s);
+                        s = [];
+                    }
+                }
+                s.push(`${commands[id].alias} ?`);
+                keyboard.push(s);
+            } else if (commands[id].type === 'number' && commands[id].unit === '%') {
+                let s = [];
+                const step = ((commands[id].max || 100) - (commands[id].min || 0)) / 4;
+                for (let i = commands[id].min || 0; i <= (commands[id].max || 100); i += step) {
+                    s.push(`${commands[id].alias} ${i}%`);
+                    if (s.length >= (commands[id].buttons || 3)) {
+                        keyboard.push(s);
+                        s = [];
+                    }
+                }
+                s.push(`${commands[id].alias} ?`);
+                keyboard.push(s);
+            }  else {
+                keyboard.push([`${commands[id].alias} ?`]);
+            }
+        }
+    });
+
+    bot.sendMessage(chatId, _('Select option'), {
+        reply_markup: {
+            keyboard,
+            resize_keyboard: true,
+            one_time_keyboard: true
+        },
+        chatId
+    })
+        .then(response => {
+            adapter.log.debug('Message sent');
+        })
+        .catch(error => {
+            adapter.log.error(error);
+        });
+}
+
 function processTelegramText(msg) {
+    adapter.log.info(JSON.stringify(msg));
     const now = new Date().getTime();
     let pollingInterval = 0;
     if (adapter.config && adapter.config.pollingInterval !== undefined) {
@@ -751,13 +913,68 @@ function processTelegramText(msg) {
         bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
         return;
     }
-
+    msg.text = (msg.text ||'').trim();
     // sometimes telegram sends messages like "message@user_name"
     const pos = msg.text.lastIndexOf('@');
-    if (pos !== -1) msg.text = msg.text.substring(0, pos);
+    if (pos !== -1) {
+        msg.text = msg.text.substring(0, pos);
+    }
 
     if (msg.text === '/password') {
         bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+        return;
+    }
+
+    if (msg.text === '/help') {
+        bot.sendMessage(msg.from.id, getListOfCommands());
+        return;
+    }
+
+    if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
+        adapter.log.info('Response keyboard');
+        getCommandsKeyboard(msg.from.id);
+        return;
+    }
+
+    let found = false;
+    for (const id in commands) {
+        if (commands.hasOwnProperty(id)) {
+            if (msg.text.startsWith(commands[id].alias + ' ')) {
+                let sValue = msg.text.substring(commands[id].alias.length + 1);
+                found = true;
+                if (sValue === '?') {
+                    adapter.getForeignState(id, (err, state) => {
+                        bot.sendMessage(msg.from.id, getStatus(id, state));
+                    });
+                } else {
+                    let value;
+                    if (commands[id].states) {
+                        const sState = Object.keys(commands[id].states).find(val => commands[id].states[val] === sValue);
+                        if (sState !== null && sState !== undefined) {
+                            sValue = sState;
+                        }
+                    }
+
+                    if (commands[id].type === 'boolean') {
+                        value = commands[id].onCommand ? sValue === commands[id].onCommand : sValue === _('ON') || sValue === 'true'  || sValue === '1';
+                    } else if (commands[id].type === 'number') {
+                        sValue = sValue.replace('%', '').trim();
+                        value = parseFloat(sValue);
+                        if (sValue !== value.toString()) {
+                            bot.sendMessage(msg.from.id, _('Invalid number %s', sValue));
+                            continue;
+                        }
+                    } else {
+                        value = sValue
+                    }
+
+                    adapter.setForeignState(id, value, err =>
+                        bot.sendMessage(msg.from.id, _('Done')));
+                }
+            }
+        }
+    }
+    if (found) {
         return;
     }
 
@@ -1004,6 +1221,7 @@ function connect() {
             }
             getMessage(msg);
         });
+
         // callback InlineKeyboardButton
         bot.on('callback_query', msg => {
             // write received answer into constiable
@@ -1051,6 +1269,53 @@ function updateUsers() {
     }
 }
 
+// Read all Object names sequentially, that do not have aliases
+function readAllNames(ids, cb) {
+    if (!ids || !ids.length) {
+        cb && cb();
+    } else {
+        const id = ids.shift();
+        adapter.getForeignObject(id, (err, obj) => {
+            if (obj) {
+                commands[id].alias  = getName(obj);
+                commands[id].type   = obj.common && obj.common.type;
+                commands[id].states = obj.common && parseStates(obj.common.states || undefined);
+                commands[id].unit   = obj.common && obj.common.unit;
+                commands[id].min    = obj.common && obj.common.min;
+                commands[id].max    = obj.common && obj.common.max;
+                console.log('Subscribe ' + id);
+                adapter.subscribeForeignStates(id, () =>
+                    setImmediate(readAllNames, ids, cb));
+            } else {
+                setImmediate(readAllNames, ids, cb);
+            }
+        });
+    }
+}
+
+function readStatesCommands() {
+    return new Promise((resolve, reject) => {
+        adapter.objects.getObjectView('custom', 'state', {}, (err, doc) => {
+            const readNames = [];
+            if (doc && doc.rows) {
+                for (let i = 0, l = doc.rows.length; i < l; i++) {
+                    if (doc.rows[i].value) {
+                        let id = doc.rows[i].id;
+                        let obj = doc.rows[i].value;
+                        if (obj[adapter.namespace] && obj[adapter.namespace].enabled) {
+                            commands[id] = obj[adapter.namespace];
+                            readNames.push(id)
+                        }
+                    }
+                }
+            }
+
+            readAllNames(JSON.parse(JSON.stringify(readNames)), () =>
+                resolve());
+        });
+    });
+}
+
 function main() {
     if (!adapter.config.token) {
         adapter.log.error('Token is not set!');
@@ -1066,6 +1331,7 @@ function main() {
     adapter.setState('communicate.pathFile', '', true);
 
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
+    adapter.config.keyboard = adapter.config.keyboard || '/cmds';
 
     updateUsers();
 
@@ -1088,9 +1354,13 @@ function main() {
         if (obj) {
             systemLang = obj.common.language || 'en';
         }
-    });
 
-    // init polling every hour
-    reconnectTimer = setInterval(connect, 3600000);
-    connect();
+        readStatesCommands()
+            .then(() => {
+                // init polling every hour
+                reconnectTimer = setInterval(connect, 3600000);
+                connect();
+                adapter.subscribeForeignObjects('*');
+            });
+    });
 }

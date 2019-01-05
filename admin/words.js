@@ -136,5 +136,38 @@ systemDictionary = {
         "it": "No, mantieni gli utenti salvati!",
         "es": "No, mantén a los usuarios guardados!",
         "pl": "Nie, zachowaj ocalonych użytkowników!"
+    },
+    "Keyboard command": {
+        "en": "Keyboard command",
+        "de": "Tastaturbefehl",
+        "ru": "Вызвыть клавиатуру",
+        "pt": "Comando do teclado",
+        "nl": "Toetsenbordopdracht",
+        "fr": "Commande clavier",
+        "it": "Comando da tastiera",
+        "es": "Comando del teclado",
+        "pl": "Polecenie klawiatury"
+    },
+    "Command to show the keyboard": {
+        "en": "Command to show the keyboard",
+        "de": "Befehl zum Anzeigen der Tastatur",
+        "ru": "Команда показать клавиатуру",
+        "pt": "Comando para mostrar o teclado",
+        "nl": "Commando om het toetsenbord te tonen",
+        "fr": "Commande pour afficher le clavier",
+        "it": "Comando per mostrare la tastiera",
+        "es": "Comando para mostrar el teclado",
+        "pl": "Polecenie, aby wyświetlić klawiaturę"
+    },
+    "Buttons in line": {
+        "en": "Buttons in line",
+        "de": "Schaltflächen in Linie",
+        "ru": "Кнопок в строке",
+        "pt": "Botões em linha",
+        "nl": "Knoppen in de rij",
+        "fr": "Boutons en ligne",
+        "it": "Pulsanti in linea",
+        "es": "Botones en linea",
+        "pl": "Przyciski w linii"
     }
 };
