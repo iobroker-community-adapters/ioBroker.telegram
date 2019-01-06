@@ -224,6 +224,17 @@
             "it": "Non mostrare OFF",
             "es": "No mostrar",
             "pl": "Nie popisuj się"
+        },
+        "Buttons in line": {
+            "en": "Buttons in line",
+            "de": "Schaltflächen in Linie",
+            "ru": "Кнопок в строке",
+            "pt": "Botões em linha",
+            "nl": "Knoppen in de rij",
+            "fr": "Boutons en ligne",
+            "it": "Pulsanti in linea",
+            "es": "Botones en linea",
+            "pl": "Przyciski w linii"
         }
     });
 
@@ -244,7 +255,7 @@
                     offStatus:   '',
                     onCommand:   '',
                     offCommand:  '',
-                    onlyTrue:    !!obj.common.role.match(/^button/),
+                    onlyTrue:    !!(obj.common.role || '').match(/^button/),
                     buttons:     3
                 };
             }
