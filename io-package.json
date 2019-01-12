@@ -4,8 +4,19 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.0",
+        "version": "1.4.1",
         "news": {
+            "1.4.1": {
+                "en": "Support for Compact mode",
+                "de": "Unterstützung für den Kompaktmodus",
+                "ru": "Поддержка компактного режима",
+                "pt": "Suporte para o modo compacto",
+                "nl": "Ondersteuning voor de Compact-modus",
+                "fr": "Prise en charge du mode compact",
+                "it": "Supporto per la modalità compatta",
+                "es": "Soporte para el modo compacto",
+                "pl": "Obsługa trybu Compact"
+            },
             "1.4.0": {
                 "en": "Custom settings for states were added",
                 "de": "Benutzerdefinierte Einstellungen für Status wurden hinzugefügt",
@@ -212,6 +223,7 @@
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "mode": "daemon",
+        "compact": true,
         "messagebox": true,
         "readme": "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
         "loglevel": "info",

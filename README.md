@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.4.1 (2019-01-12)
+* (simatec) Support for Compact mode
+
 ### 1.4.0 (2019-01-06)
 * (bluefox) Custom settings for states were added
 
