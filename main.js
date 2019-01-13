@@ -44,16 +44,17 @@ const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
 
 const tmpDirName = tmpDir + '/' + adapterName.replace('.', '_');
 
-const server = {
-    app: null,
-    server: null,
-    settings: adapter.config
-};
-function startAdapter(options, server) {
+function startAdapter(options) {
     options = options || {};
     Object.assign(options, {name: adapterName});
 
     adapter = new utils.Adapter(options);
+    
+    const server = {
+        app: null,
+        server: null,
+        settings: adapter.config
+    };
 
     adapter.on('message', obj => {
         if (obj) {
