@@ -49,7 +49,7 @@ const server = {
     server: null,
     settings: adapter.config
 };
-function startAdapter(options) {
+function startAdapter(options, server) {
     options = options || {};
     Object.assign(options, {name: adapterName});
 
