@@ -39,7 +39,9 @@ const tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
 tmp.pop();
 const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
+
 //const tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
+
 const tmpDirName = tmpDir + '/' + adapterName.replace('.', '_');
 
 const server = {
