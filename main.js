@@ -15,12 +15,12 @@
 
 const TelegramBot = require('node-telegram-bot-api');
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
-const adapter = utils.Adapter('telegram');
 const _ = require(__dirname + '/lib/words.js');
 const fs = require('fs');
 const LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 const https = require('https');
 const socks = require('socksv5');
+const adapterName = require('./package.json').name.split('.').pop();
 
 
 let bot;
@@ -29,6 +29,7 @@ let systemLang = 'en';
 let reconnectTimer = null;
 let lastMessageTime = 0;
 let lastMessageText = '';
+const enums = {};
 
 const commands = {};
 const callbackQueryId = {};
@@ -38,164 +39,188 @@ const tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
 tmp.pop();
 const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
-const tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
+let tmpDirName;
 
 const server = {
     app: null,
     server: null,
-    settings: adapter.config
+    settings: null
 };
 
-adapter.on('message', obj => {
-    if (obj) {
-        if (obj.command === 'adminuser') {
-            let adminuserData;
-            adapter.getState('communicate.users', (err, state) => {
-                err && adapter.log.error(err);
-                if (state && state.val) {
-                    try {
-                        adminuserData = JSON.parse(state.val);
-                        adapter.sendTo(obj.from, obj.command, adminuserData, obj.callback);
-                    } catch (err) {
-                        err && adapter.log.error(err);
-                        adapter.log.error('Cannot parse stored user IDs!');
-                    }
-                }
-            });
-            return;
-        } else if (obj.command.indexOf('delUser') !== -1) {
-            const userID = obj.command.split(' ')[1];
-            let userObj = {};
-            adapter.getState('communicate.users', (err, state) => {
-                err && adapter.log.error(err);
-                if (state && state.val) {
-                    try {
-                        userObj = JSON.parse(state.val);
-                        delete userObj[userID];
-                        adapter.setState('communicate.users', JSON.stringify(userObj), err => {
-                            if (!err) {
-                                adapter.sendTo(obj.from, obj.command, userID, obj.callback);
-                                updateUsers();
-                                adapter.log.warn('User ' + userID + ' has been deleted!!');
-                            }
-                        });
-                    } catch (err) {
-                        err && adapter.log.error(err);
-                        adapter.log.error('Cannot delete user ' + userID + '!');
-                    }
-                }
-            });
-            return;
-        } else if (obj.command === 'delAllUser') {
-            try {
-                adapter.setState('communicate.users', '', err => {
-                    if (!err) {
-                        adapter.sendTo(obj.from, obj.command, true, obj.callback);
-                        updateUsers();
-                        adapter.log.warn('List of saved users has been wiped. Every User has to reauthenticate with the new password!');
+let adapter;
+
+function startAdapter(options) {
+    options = options || {};
+
+    Object.assign(options, {
+        name: adapterName
+    });
+
+    adapter = new utils.Adapter(options);
+
+    adapter.on('message', obj => {
+        if (obj) {
+            if (obj.command === 'adminuser') {
+                let adminuserData;
+                adapter.getState('communicate.users', (err, state) => {
+                    err && adapter.log.error(err);
+                    if (state && state.val) {
+                        try {
+                            adminuserData = JSON.parse(state.val);
+                            adapter.sendTo(obj.from, obj.command, adminuserData, obj.callback);
+                        } catch (err) {
+                            err && adapter.log.error(err);
+                            adapter.log.error('Cannot parse stored user IDs!');
+                        }
                     }
                 });
-            } catch (err) {
-                err && adapter.log.error(err);
-                adapter.log.error('Cannot wipe list of saved users!');
-            }
-            return;
-        } else {
-            processMessage(obj);
-        }
-    }
-    processMessages();
-});
-
-adapter.on('ready', () => {
-    adapter.config.server = adapter.config.server === 'true';
-
-    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
-
-    if (adapter.config.server) {
-        adapter.config.port = parseInt(adapter.config.port, 10);
-
-        // Load certificates
-        adapter.getCertificates((err, certificates, leConfig) => {
-            adapter.config.certificates = certificates;
-            adapter.config.leConfig = leConfig;
-            adapter.config.secure = true;
-
-            server.server = LE.createServer(handleWebHook, adapter.config, adapter.config.certificates, adapter.config.leConfig, adapter.log);
-            if (server.server) {
-                server.server.__server = server;
-                adapter.getPort(adapter.config.port, port => {
-                    if (parseInt(port, 10) !== adapter.config.port && !adapter.config.findNextPort) {
-                        adapter.log.error('port ' + adapter.config.port + ' already in use');
-                        process.exit(1);
+                return;
+            } else if (obj.command.indexOf('delUser') !== -1) {
+                const userID = obj.command.split(' ')[1];
+                let userObj = {};
+                adapter.getState('communicate.users', (err, state) => {
+                    err && adapter.log.error(err);
+                    if (state && state.val) {
+                        try {
+                            userObj = JSON.parse(state.val);
+                            delete userObj[userID];
+                            adapter.setState('communicate.users', JSON.stringify(userObj), err => {
+                                if (!err) {
+                                    adapter.sendTo(obj.from, obj.command, userID, obj.callback);
+                                    updateUsers();
+                                    adapter.log.warn('User ' + userID + ' has been deleted!!');
+                                }
+                            });
+                        } catch (err) {
+                            err && adapter.log.error(err);
+                            adapter.log.error('Cannot delete user ' + userID + '!');
+                        }
                     }
-                    server.server.listen(port, (!adapter.config.bind || adapter.config.bind === '0.0.0.0') ? undefined : adapter.config.bind || undefined);
-                    adapter.log.info('https server listening on port ' + port);
-                    main();
                 });
-            }
-        });
-    } else {
-        main();
-    }
-});
-
-adapter.on('unload', () => {
-    if (reconnectTimer) clearInterval(reconnectTimer);
-
-    if (adapter && adapter.config) {
-        if (adapter.config.restarting !== '') {
-            // default text
-            if (adapter.config.restarting === '_' || adapter.config.restarting === null || adapter.config.restarting === undefined) {
-                sendMessage(adapter.config.rememberUsers ? _('Restarting...') : _('Restarting... Reauthenticate!'));
+                return;
+            } else if (obj.command === 'delAllUser') {
+                try {
+                    adapter.setState('communicate.users', '', err => {
+                        if (!err) {
+                            adapter.sendTo(obj.from, obj.command, true, obj.callback);
+                            updateUsers();
+                            adapter.log.warn('List of saved users has been wiped. Every User has to reauthenticate with the new password!');
+                        }
+                    });
+                } catch (err) {
+                    err && adapter.log.error(err);
+                    adapter.log.error('Cannot wipe list of saved users!');
+                }
+                return;
             } else {
-                sendMessage(adapter.config.restarting);
+                processMessage(obj);
             }
         }
-        try {
-            if (server.server) {
-                server.server.close();
+        processMessages();
+    });
+
+    adapter.on('ready', () => {
+        adapter.config.server = adapter.config.server === 'true';
+
+        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+
+        if (adapter.config.server) {
+            adapter.config.port = parseInt(adapter.config.port, 10);
+
+            // Load certificates
+            adapter.getCertificates((err, certificates, leConfig) => {
+                adapter.config.certificates = certificates;
+                adapter.config.leConfig = leConfig;
+                adapter.config.secure = true;
+
+                server.server = LE.createServer(handleWebHook, adapter.config, adapter.config.certificates, adapter.config.leConfig, adapter.log);
+                if (server.server) {
+                    server.server.__server = server;
+                    adapter.getPort(adapter.config.port, port => {
+                        if (parseInt(port, 10) !== adapter.config.port && !adapter.config.findNextPort) {
+                            adapter.log.error('port ' + adapter.config.port + ' already in use');
+                            process.exit(1);
+                        }
+                        server.server.listen(port, (!adapter.config.bind || adapter.config.bind === '0.0.0.0') ? undefined : adapter.config.bind || undefined);
+                        adapter.log.info('https server listening on port ' + port);
+                        main();
+                    });
+                }
+            });
+        } else {
+            main();
+        }
+    });
+
+    adapter.on('unload', () => {
+        if (reconnectTimer) clearInterval(reconnectTimer);
+
+        if (adapter && adapter.config) {
+            if (adapter.config.restarting !== '') {
+                // default text
+                if (adapter.config.restarting === '_' || adapter.config.restarting === null || adapter.config.restarting === undefined) {
+                    sendMessage(adapter.config.rememberUsers ? _('Restarting...') : _('Restarting... Reauthenticate!'));
+                } else {
+                    sendMessage(adapter.config.restarting);
+                }
             }
-        } catch (e) {
-            console.error('Cannot close server: ' + e);
+            try {
+                if (server.server) {
+                    server.server.close();
+                }
+            } catch (e) {
+                console.error('Cannot close server: ' + e);
+            }
         }
-    }
-    if (adapter && adapter.setState) adapter.setState('info.connection', false, true);
-});
+        if (adapter && adapter.setState) adapter.setState('info.connection', false, true);
+    });
 
-// is called if a subscribed state changes
-adapter.on('stateChange', (id, state) => {
-    if (state && !state.ack && id.indexOf('communicate.response') !== -1) {
-        // Send to someone this message
-        sendMessage(state.val);
-    }
-    if (state && state.ack && commands[id] && commands[id].report) {
-        sendMessage(getStatus(id, state));
-    }
-});
-
-adapter.on('objectChange', (id, obj) => {
-    if (obj && obj.common && obj.common.custom &&
-        obj.common.custom[adapter.namespace] && obj.common.custom[adapter.namespace].enabled
-    ) {
-        const alias = getName(obj);
-        if (!commands[id]) {
-            adapter.log.info('enabled logging of ' + id + ', Alias=' + alias);
-            setImmediate(() => adapter.subscribeForeignStates(id));
+    // is called if a subscribed state changes
+    adapter.on('stateChange', (id, state) => {
+        if (state && !state.ack && id.indexOf('communicate.response') !== -1) {
+            // Send to someone this message
+            sendMessage(state.val);
         }
-        commands[id]        = obj.common.custom[adapter.namespace];
-        commands[id].type   = obj.common.type;
-        commands[id].states = parseStates(obj.common.states);
-        commands[id].unit   = obj.common && obj.common.unit;
-        commands[id].min    = obj.common && obj.common.min;
-        commands[id].max    = obj.common && obj.common.max;
-        commands[id].alias  = alias;
-    } else if (commands[id]) {
-        adapter.log.debug('Removed command: ' + id);
-        delete commands[id];
-        setImmediate(() => adapter.unsubscribeForeignStates(id));
-    }
-});
+        if (state && state.ack && commands[id] && commands[id].report) {
+            sendMessage(getStatus(id, state));
+        }
+    });
+
+    adapter.on('objectChange', (id, obj) => {
+        if (obj && obj.common && obj.common.custom &&
+            obj.common.custom[adapter.namespace] && obj.common.custom[adapter.namespace].enabled
+        ) {
+            const alias = getName(obj);
+            if (!commands[id]) {
+                adapter.log.info('enabled logging of ' + id + ', Alias=' + alias);
+                setImmediate(() => adapter.subscribeForeignStates(id));
+            }
+            commands[id]        = obj.common.custom[adapter.namespace];
+            commands[id].type   = obj.common.type;
+            commands[id].states = parseStates(obj.common.states);
+            commands[id].unit   = obj.common && obj.common.unit;
+            commands[id].min    = obj.common && obj.common.min;
+            commands[id].max    = obj.common && obj.common.max;
+            commands[id].alias  = alias;
+        } else if (commands[id]) {
+            adapter.log.debug('Removed command: ' + id);
+            delete commands[id];
+            setImmediate(() => adapter.unsubscribeForeignStates(id));
+        } else if (id.startsWith('enum.rooms')) {
+            if (obj && obj.common && obj.common.members && obj.common.members.length) {
+                enums.rooms[id] = obj.common;
+            } else if (enums.rooms[id]) {
+                delete enums.rooms[id];
+            }
+        }
+    });
+
+    server.settings = adapter.config;
+
+    tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
+
+    return adapter;
+}
 
 function getStatus(id, state) {
     if (commands[id].type === 'boolean') {
@@ -1326,6 +1351,27 @@ function readStatesCommands() {
     });
 }
 
+function readEnums(name) {
+    return new Promise((resolve, reject) => {
+        name = name || 'rooms';
+        enums[name] = {};
+        adapter.objects.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
+            if (doc && doc.rows) {
+                for (let i = 0, l = doc.rows.length; i < l; i++) {
+                    if (doc.rows[i].value) {
+                        let id = doc.rows[i].id;
+                        let obj = doc.rows[i].value;
+                        if (obj && obj.common && obj.common.members && obj.common.members.length) {
+                            enums[name][id] = obj.common;
+                        }
+                    }
+                }
+            }
+            resolve(enums);
+        });
+    });
+}
+
 function main() {
     if (!adapter.config.token) {
         adapter.log.error('Token is not set!');
@@ -1367,10 +1413,26 @@ function main() {
 
         readStatesCommands()
             .then(() => {
+                if (adapter.config.rooms) {
+                    return readEnums();
+                } else {
+                    return Promise.resolve();
+                }
+            })
+            .then(() => {
                 // init polling every hour
                 reconnectTimer = setInterval(connect, 3600000);
                 connect();
                 adapter.subscribeForeignObjects('*');
             });
     });
+}
+
+
+// If started as allInOne/compact mode => return function to create instance
+if (module && module.parent) {
+    module.exports = startAdapter;
+} else {
+    // or start the instance directly
+    startAdapter();
 }
