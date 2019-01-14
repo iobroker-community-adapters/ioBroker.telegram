@@ -932,10 +932,19 @@ function processTelegramText(msg) {
 
     if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
         adapter.log.info('Response keyboard');
-        getCommandsKeyboard(msg.from.id);
+        if (adapter.config.rooms) {
+            getRoomsKeyboard(msg.chat.id)
+        } else {
+            getCommandsKeyboard(msg.chat.id);
+        }
         return;
     }
 
+    if (adapter.config.rooms) {
+        // detect if some room is selected
+    }
+
+    // Search all user's states and try to detect something like "device-alias on"
     let found = false;
     for (const id in commands) {
         if (commands.hasOwnProperty(id)) {
@@ -944,7 +953,7 @@ function processTelegramText(msg) {
                 found = true;
                 if (sValue === '?') {
                     adapter.getForeignState(id, (err, state) => {
-                        bot.sendMessage(msg.from.id, getStatus(id, state));
+                        bot.sendMessage(msg.chat.id, getStatus(id, state));
                     });
                 } else {
                     let value;
@@ -961,7 +970,7 @@ function processTelegramText(msg) {
                         sValue = sValue.replace('%', '').trim();
                         value = parseFloat(sValue);
                         if (sValue !== value.toString()) {
-                            bot.sendMessage(msg.from.id, _('Invalid number %s', sValue));
+                            bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue));
                             continue;
                         }
                     } else {
@@ -969,7 +978,7 @@ function processTelegramText(msg) {
                     }
 
                     adapter.setForeignState(id, value, err =>
-                        bot.sendMessage(msg.from.id, _('Done')));
+                        bot.sendMessage(msg.chat.id, _('Done')));
                 }
             }
         }

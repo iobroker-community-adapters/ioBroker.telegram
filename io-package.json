@@ -248,6 +248,7 @@
         "restarted": "_",
         "url": "",
         "keyboard": "/cmds",
+        "rooms": false,
 
         "certPublic": "",
         "certPrivate": "",
