@@ -933,7 +933,8 @@ function processTelegramText(msg) {
     if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
         adapter.log.info('Response keyboard');
         if (adapter.config.rooms) {
-            getRoomsKeyboard(msg.chat.id)
+            getCommandsKeyboard(msg.chat.id);
+            //getRoomsKeyboard(msg.chat.id)
         } else {
             getCommandsKeyboard(msg.chat.id);
         }
