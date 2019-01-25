@@ -15,12 +15,12 @@
 
 const TelegramBot = require('node-telegram-bot-api');
 const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
+const adapterName = require('./package.json').name.split('.').pop();
 const _ = require(__dirname + '/lib/words.js');
 const fs = require('fs');
 const LE = require(utils.controllerDir + '/lib/letsencrypt.js');
 const https = require('https');
 const socks = require('socksv5');
-const adapterName = require('./package.json').name.split('.').pop();
 
 
 let bot;
@@ -51,10 +51,7 @@ let adapter;
 
 function startAdapter(options) {
     options = options || {};
-
-    Object.assign(options, {
-        name: adapterName
-    });
+    Object.assign(options, {name: adapterName});
 
     adapter = new utils.Adapter(options);
 
@@ -139,7 +136,7 @@ function startAdapter(options) {
                     adapter.getPort(adapter.config.port, port => {
                         if (parseInt(port, 10) !== adapter.config.port && !adapter.config.findNextPort) {
                             adapter.log.error('port ' + adapter.config.port + ' already in use');
-                            process.exit(1);
+                            adapter.terminate ? adapter.terminate() : process.exit(1);
                         }
                         server.server.listen(port, (!adapter.config.bind || adapter.config.bind === '0.0.0.0') ? undefined : adapter.config.bind || undefined);
                         adapter.log.info('https server listening on port ' + port);
@@ -1427,7 +1424,6 @@ function main() {
             });
     });
 }
-
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
