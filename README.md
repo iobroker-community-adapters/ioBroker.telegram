@@ -328,6 +328,11 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.4.2 (2019-02-18)
+* (BuZZy1337) fix for recipients containing withespaces
+* (BuZZy1337) change loglevel of "getMe" info-messages to debug
+* (bluefox) fix scroll in firefox
+
 ### 1.4.1 (2019-01-12)
 * (simatec) Support for Compact mode
 
