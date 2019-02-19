@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.1",
+        "version": "1.4.2",
         "news": {
+            "1.4.2": {
+                "en": "fix for sending message to recipients which contains whitespace",
+                "de": "Fix für das Senden von Nachrichten an Empfänger, die Leerzeichen enthalten",
+                "ru": "исправлена ​​ошибка отправки сообщения получателям, содержащее пробелы",
+                "pt": "correção para envio de mensagem para destinatários que contém espaço em branco",
+                "nl": "oplossing voor het verzenden van berichten naar ontvangers die witruimte bevatten",
+                "fr": "correctif pour l'envoi aux destinataires d'un message contenant des espaces",
+                "it": "correzione per l'invio di messaggi a destinatari che contengono spazi bianchi",
+                "es": "Solución para enviar mensajes a destinatarios que contienen espacios en blanco.",
+                "pl": "poprawka do wysyłania wiadomości do odbiorców, która zawiera białe spacje",
+                "zh-cn": "修复了向包含空格的收件人发送邮件的问题"
+            },
             "1.4.1": {
                 "en": "Support for Compact mode",
                 "de": "Unterstützung für den Kompaktmodus",
@@ -223,7 +235,6 @@
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "mode": "daemon",
-        "compact": true,
         "messagebox": true,
         "readme": "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
         "loglevel": "info",
@@ -262,11 +273,9 @@
         "url": "",
         "keyboard": "/cmds",
         "rooms": false,
-
         "certPublic": "",
         "certPrivate": "",
         "certChained": "",
-
         "leEnabled": false,
         "leUpdate": false,
         "leCheckPort": 80

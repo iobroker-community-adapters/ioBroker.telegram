@@ -613,7 +613,7 @@ function sendMessage(text, user, chatId, options) {
     let count = 0;
 
     if (user) {
-        const userarray = user.replace(/\s/g, '').split(',');
+        const userarray = user.split(',').map(build => build.trim());
         let matches = 0;
         userarray.forEach(value => {
             for (const u in users) {
@@ -1159,7 +1159,7 @@ function connect() {
         }
         // Check connection
         bot.getMe().then(data => {
-            adapter.log.info('getMe (reconnect): ' + JSON.stringify(data));
+            adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
             adapter.setState('info.connection', true, true);
         });
     } else {
@@ -1230,7 +1230,7 @@ function connect() {
 
         // Check connection
         bot.getMe().then(data => {
-            adapter.log.info('getMe: ' + JSON.stringify(data));
+            adapter.log.debug('getMe: ' + JSON.stringify(data));
             adapter.setState('info.connection', true, true);
 
             if (adapter.config.restarted !== '') {
