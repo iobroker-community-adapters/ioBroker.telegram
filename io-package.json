@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.2",
+        "version": "1.4.3",
         "news": {
+            "1.4.3": {
+                "en": "Bugfix for not yet completely implemented feature",
+                "de": "Bugfix für noch nicht vollständig implementiertes Feature",
+                "ru": "Исправлена ​​ошибка для еще не полностью реализованной функции",
+                "pt": "Bugfix para o recurso ainda não completamente implementado",
+                "nl": "Bugfix voor nog niet volledig geïmplementeerde functie",
+                "fr": "Correction de bug pour la fonctionnalité pas encore complètement implémentée",
+                "it": "Bugfix per funzionalità non ancora completamente implementate",
+                "es": "Corrección de errores para la característica aún no implementada por completo",
+                "pl": "Bugfix dla jeszcze nie w pełni zaimplementowanej funkcji",
+                "zh-cn": "修正尚未完全实现的功能"
+            },
             "1.4.2": {
                 "en": "fix for sending message to recipients which contains whitespace",
                 "de": "Fix für das Senden von Nachrichten an Empfänger, die Leerzeichen enthalten",
