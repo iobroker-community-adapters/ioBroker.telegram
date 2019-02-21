@@ -203,7 +203,7 @@ function startAdapter(options) {
             adapter.log.debug('Removed command: ' + id);
             delete commands[id];
             setImmediate(() => adapter.unsubscribeForeignStates(id));
-        } else if (id.startsWith('enum.rooms')) {
+        } else if (id.startsWith('enum.rooms') && adapter.config.rooms) {
             if (obj && obj.common && obj.common.members && obj.common.members.length) {
                 enums.rooms[id] = obj.common;
             } else if (enums.rooms[id]) {
@@ -922,7 +922,7 @@ function getCommandsKeyboard(chatId) {
 }
 
 function processTelegramText(msg) {
-    adapter.log.info(JSON.stringify(msg));
+    adapter.log.debug(JSON.stringify(msg));
     const now = new Date().getTime();
     let pollingInterval = 0;
     if (adapter.config && adapter.config.pollingInterval !== undefined) {
@@ -953,7 +953,7 @@ function processTelegramText(msg) {
     }
 
     if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
-        adapter.log.info('Response keyboard');
+        adapter.log.debug('Response keyboard');
         if (adapter.config.rooms) {
             getCommandsKeyboard(msg.chat.id);
             //getRoomsKeyboard(msg.chat.id)

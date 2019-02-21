@@ -328,6 +328,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.4.3 (2019-02-21)
+* (BuZZy1337) Bugfix for not yet completely implemented feature
+
 ### 1.4.2 (2019-02-18)
 * (BuZZy1337) fix for recipients containing withespaces
 * (BuZZy1337) change loglevel of "getMe" info-messages to debug
