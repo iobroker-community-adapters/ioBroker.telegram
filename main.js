@@ -1202,7 +1202,8 @@ function connect() {
             // Setup server way
             const serverOptions = {
                 polling: false,
-                filepath: true
+                filepath: true,
+		baseApiUrl: adapter.config.baseapiurl
             };
             if (agent) {
                 serverOptions.request = { agent: agent };
@@ -1218,7 +1219,8 @@ function connect() {
                 polling: {
                     interval: parseInt(adapter.config.pollingInterval, 10) || 300
                 },
-                filepath: true
+                filepath: true,
+		baseApiUrl: adapter.config.baseapiurl
             };
             if (agent) {
                 pollingOptions.request = { agent: agent };
