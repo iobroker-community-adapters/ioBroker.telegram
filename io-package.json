@@ -275,7 +275,7 @@
         "port": 8443,
         "bind": "0.0.0.0",
         "token": "",
-	"baseapiurl": "https://api.telegram.org",
+	"baseApiUrl": "https://api.telegram.org",
         "password": "",
         "text2command": "",
         "rememberUsers": true,
