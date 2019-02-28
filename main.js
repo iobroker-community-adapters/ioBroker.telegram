@@ -1203,7 +1203,7 @@ function connect() {
             const serverOptions = {
                 polling: false,
                 filepath: true,
-		baseApiUrl: adapter.config.baseapiurl
+		baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
                 serverOptions.request = { agent: agent };
@@ -1220,7 +1220,7 @@ function connect() {
                     interval: parseInt(adapter.config.pollingInterval, 10) || 300
                 },
                 filepath: true,
-		baseApiUrl: adapter.config.baseapiurl
+		baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
                 pollingOptions.request = { agent: agent };
