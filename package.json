@@ -3,10 +3,10 @@
   "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
   "version": "1.4.3",
   "author": "bluefox <dogafox@gmail.com>",
-  "homepage": "https://github.com/ioBroker/ioBroker.telegram",
+  "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.telegram"
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
   },
   "licenses": [
     {
@@ -30,7 +30,7 @@
     "chai": "^4.2.0"
   },
   "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.telegram/issues"
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
   },
   "main": "main.js",
   "scripts": {
