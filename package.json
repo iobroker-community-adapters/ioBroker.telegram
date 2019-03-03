@@ -26,8 +26,9 @@
   },
   "devDependencies": {
     "gulp": "^4.0.0",
-    "mocha": "^5.2.0",
-    "chai": "^4.2.0"
+    "mocha": "^6.0.2",
+    "chai": "^4.2.0",
+    "@iobroker/adapter-core": "^1.0.3"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
