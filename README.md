@@ -1,6 +1,3 @@
-# Moved to https://github.com/iobroker-community-adapters/ioBroker.telegram
-
-
 ![Logo](admin/telegram.png)
 # ioBroker telegram Adapter
 ==============
