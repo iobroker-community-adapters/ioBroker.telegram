@@ -248,7 +248,7 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "messagebox": true,
-        "readme": "https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md",
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
         "loglevel": "info",
         "icon": "telegram.png",
         "materialize": true,
@@ -260,7 +260,7 @@
             "message"
         ],
         "restartSchedule": "4 5 * * *",
-        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.telegram/master/admin/telegram.png",
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.telegram/master/admin/telegram.png",
         "type": "messaging",
         "stopBeforeUpdate": true,
         "blockly": true,

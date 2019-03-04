@@ -14,7 +14,7 @@
 'use strict';
 
 const TelegramBot = require('node-telegram-bot-api');
-const utils = require(__dirname + '/lib/utils'); // Get common adapter utils
+const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const _ = require(__dirname + '/lib/words.js');
 const fs = require('fs');
