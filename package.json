@@ -22,13 +22,13 @@
   ],
   "dependencies": {
     "node-telegram-bot-api": "^0.30.0",
-    "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9"
+    "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9",
+    "@iobroker/adapter-core": "^1.0.3"
   },
   "devDependencies": {
     "gulp": "^4.0.0",
     "mocha": "^6.0.2",
-    "chai": "^4.2.0",
-    "@iobroker/adapter-core": "^1.0.3"
+    "chai": "^4.2.0"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
