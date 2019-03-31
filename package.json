@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
   },
-  "licenses": [
+  "license": [
     {
       "type": "MIT",
       "url": "https://github.com/ioBroker/ioBroker.telegram/blob/master/LICENSE"
