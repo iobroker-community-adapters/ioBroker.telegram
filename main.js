@@ -410,7 +410,7 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
+    } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send document to "' + name + '": ' + text);
         } else {
@@ -456,7 +456,7 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
+    } else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send photo to "' + name + '": ' + text);
         } else {
