@@ -221,7 +221,7 @@ function startAdapter(options) {
 
 function getStatus(id, state) {
     if (commands[id].type === 'boolean') {
-        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].off || _('OFF-Status')}`;
+        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].offStatus || _('OFF-Status')}`;
     } else {
         if (commands[id].states && commands[id].states[state.val] !== undefined) {
             state.val = commands[id].states[state.val];
@@ -824,7 +824,7 @@ function getListOfCommands() {
     ids.forEach(id => {
         if (!commands[id].readOnly) {
             if (commands[id].type === 'boolean') {
-                lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].offCommand || _('OFF-Command')}|?`);
             } else {
                 lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
             }
