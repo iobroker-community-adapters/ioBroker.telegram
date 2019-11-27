@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.3",
+        "version": "1.4.4",
         "news": {
+            "1.4.5": {
+                "en": "New sendTo message \"ask\" was added",
+                "de": "Neue sendTo-Nachricht \"ask\" wurde hinzugefügt",
+                "ru": "Добавлено новое сообщение sendTo \"Ask\"",
+                "pt": "Nova mensagem sendTo \"ask\" foi adicionada",
+                "nl": "Nieuw sendTo-bericht \"vragen\" is toegevoegd",
+                "fr": "Nouveau message sendTo \"ask\" a été ajouté",
+                "it": "Nuovo messaggio Al messaggio \"chiedi\" è stato aggiunto",
+                "es": "Nuevo mensaje de envío a \"preguntar\" fue agregado",
+                "pl": "Dodano nową wiadomość SendTo „ask”",
+                "zh-cn": "添加了新的sendTo消息“询问”"
+            },
             "1.4.3": {
                 "en": "Bugfix for not yet completely implemented feature",
                 "de": "Bugfix für noch nicht vollständig implementiertes Feature",

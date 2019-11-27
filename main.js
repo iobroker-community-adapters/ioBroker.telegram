@@ -13,15 +13,17 @@
 /* jslint node: true */
 'use strict';
 
+// https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird)
+process.env.NTBA_FIX_319 = 1;
+
 const TelegramBot = require('node-telegram-bot-api');
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
-const _ = require(__dirname + '/lib/words.js');
-const fs = require('fs');
-const LE = require(utils.controllerDir + '/lib/letsencrypt.js');
+const _     = require('./lib/words.js');
+const fs    = require('fs');
+const LE    = require(utils.controllerDir + '/lib/letsencrypt.js');
 const https = require('https');
 const socks = require('socksv5');
-
 
 let bot;
 let users = {};
@@ -697,11 +699,10 @@ function getMessage(msg) {
     const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
     adapter.log.debug('Received message: ' + JSON.stringify(msg));
 
-    if (!fs.existsSync(tmpDirName)) {
-        fs.mkdirSync(tmpDirName);
-    }
+    !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
+
     if (msg.voice) {
-        if (!fs.existsSync(tmpDirName + '/voice')) fs.mkdirSync(tmpDirName + '/voice');
+        !fs.existsSync(tmpDirName + '/voice') && fs.mkdirSync(tmpDirName + '/voice');
         saveFile(msg.voice.file_id, adapter.config.saveFiles ? '/voice/' + date + '.ogg' : '/voice/temp.ogg', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -711,7 +712,7 @@ function getMessage(msg) {
             }
         })
     } else if (adapter.config.saveFiles && msg.photo) {
-        if (!fs.existsSync(tmpDirName + '/photo')) fs.mkdirSync(tmpDirName + '/photo');
+        !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
         saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -719,10 +720,9 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
-
+        });
     } else if (adapter.config.saveFiles && msg.video) {
-        if (!fs.existsSync(tmpDirName + '/video')) fs.mkdirSync(tmpDirName + '/video');
+        !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
         saveFile(msg.video.file_id, '/video/' + date + '.mp4', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -730,9 +730,9 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
+        });
     } else if (adapter.config.saveFiles && msg.audio) {
-        if (!fs.existsSync(tmpDirName + '/audio')) fs.mkdirSync(tmpDirName + '/audio');
+        !fs.existsSync(tmpDirName + '/audio') && fs.mkdirSync(tmpDirName + '/audio');
         saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -740,9 +740,9 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
+        });
     } else if (adapter.config.saveFiles && msg.document) {
-        if (!fs.existsSync(tmpDirName + '/document')) fs.mkdirSync(tmpDirName + '/document');
+        !fs.existsSync(tmpDirName + '/document') && fs.mkdirSync(tmpDirName + '/document');
         saveFile(msg.document.file_id, '/document/' + msg.document.file_name, res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -750,7 +750,7 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
+        });
     }
 }
 
@@ -771,17 +771,44 @@ function processMessage(obj) {
 
     switch (obj.command) {
         case 'send':
-            {
-                if (obj.message) {
-                    let count;
-                    if (typeof obj.message === 'object') {
-                        count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
-                    } else {
-                        count = sendMessage(obj.message);
-                    }
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
+            if (obj.message) {
+                let count;
+                if (typeof obj.message === 'object') {
+                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                } else {
+                    count = sendMessage(obj.message);
+                }
+                obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback);
+            }
+            break;
+
+        case 'ask':
+            if (obj.message) {
+                let count;
+                const question = {
+                    cb:   obj.callback,
+                    from: obj.from,
+                    ts:   Date.now(),
+                };
+                if (typeof obj.message === 'object') {
+                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    question.chatId = obj.message.chatId;
+                    question.user = obj.message.user;
+                } else {
+                    count = sendMessage(obj.message);
+                }
+                if (obj.callback) {
+                    adapter._questions = adapter._questions || [];
+                    adapter._questions.push(question);
+                    adapter.sendTo(obj.from, obj.command, count, obj.callback);
+
+                    question.timeout = setTimeout(q => {
+                        q.timeout = null;
+                        adapter.sendTo(q.from, 'ask', '__timeout__', q.callback);
+                    }, adapter.config.answerTimeoutSec + 1000);
                 }
             }
+            break;
     }
 }
 
@@ -950,6 +977,26 @@ function processTelegramText(msg) {
     if (msg.text === '/help') {
         bot.sendMessage(msg.from.id, getListOfCommands());
         return;
+    }
+
+    if (adapter._questions && adapter._questions.length) {
+        const now = Date.now();
+        let question = adapter._questions.find(q => q.chatId === msg.chat.id && q.user === msg.from.id && now - q.ts < adapter.config.answerTimeoutSec);
+        question = question || adapter._questions.find(q => q.chatId === msg.chat.id && now - q.ts < adapter.config.answerTimeoutSec);
+        question = question || adapter._questions.find(q => now - q.ts < adapter.config.answerTimeoutSec);
+
+        // user have 60 seconds for answer
+        if (question && Date.now() - question.ts < adapter.config.answerTimeoutSec) {
+            if (question.timeout) {
+                clearTimeout(question.timeout);
+                question.timeout = null;
+                adapter.sendTo(obj.from, 'ask', msg, question.callback);
+            }
+            adapter._questions.splice(adapter._questions.indexOf(question), 1);
+        }
+
+        // remove old questions
+        adapter._questions = adapter._questions.filter(q => now - q.ts < adapter.config.answerTimeoutSec);
     }
 
     if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
@@ -1393,6 +1440,8 @@ function main() {
     if (adapter.config.allowStates !== undefined) {
         adapter.config.allowStates = true;
     }
+    adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
+    adapter.config.answerTimeoutSec *= 1000;
     adapter.config.users = adapter.config.users || '';
     adapter.config.users = adapter.config.users.split(',');
     adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
