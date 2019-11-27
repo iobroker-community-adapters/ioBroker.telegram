@@ -350,6 +350,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.4.4 (2019-11-27)
+* (bluefox) New sendTo message "ask" was added (see [Question](#question) )
+
 ### 1.4.3 (2019-02-21)
 * (BuZZy1337) Bugfix for not yet completely implemented feature
 
