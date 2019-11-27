@@ -34,7 +34,7 @@ let lastMessageText = '';
 const enums = {};
 
 const commands = {};
-const callbackQueryId = {}; // BF: Where is it used?
+const callbackQueryId = {};
 const tools = require(utils.controllerDir + '/lib/tools');
 const configFile = tools.getConfigFileName();
 const tmp = configFile.split(/[\\\/]+/);
@@ -121,7 +121,17 @@ function startAdapter(options) {
     adapter.on('ready', () => {
         adapter.config.server = adapter.config.server === 'true';
 
-        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+        !fs.existsSync(tmpDir) && fs.mkdirSync(tmpDir);
+
+        adapter._questions = [];
+        adapter.garbageCollectorinterval = setInterval(() => {
+            const now = Date.now();
+            Object.keys(callbackQueryId).forEach(id => {
+                if (now - callbackQueryId[id].ts > 120000) {
+                    delete callbackQueryId[id];
+                }
+            });
+        }, 10000);
 
         if (adapter.config.server) {
             adapter.config.port = parseInt(adapter.config.port, 10);
@@ -152,7 +162,11 @@ function startAdapter(options) {
     });
 
     adapter.on('unload', () => {
-        if (reconnectTimer) clearInterval(reconnectTimer);
+        reconnectTimer && clearInterval(reconnectTimer);
+        reconnectTimer = null;
+
+        adapter.garbageCollectorinterval && clearInterval(adapter.garbageCollectorinterval);
+        adapter.garbageCollectorinterval = null;
 
         if (adapter && adapter.config) {
             if (adapter.config.restarting !== '') {
@@ -488,8 +502,10 @@ function _sendMessageHelper(dest, name, text, options) {
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
         }
-        if (bot) {
-            bot.answerCallbackQuery(callbackQueryId[options.chatId], options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+        if (bot && callbackQueryId[options.chatId]) {
+            const originalChatId = callbackQueryId[options.chatId].id;
+            delete callbackQueryId[options.chatId];
+            bot.answerCallbackQuery(originalChatId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
                 .then(() => {
                     options = null;
                     count++;
@@ -668,31 +684,24 @@ function saveFile(file_id, fileName, callback) {
             if (res.statusCode === 200) {
                 const buf = [];
                 res.on('data', data => buf.push(data));
-                res.on('end', () => {
+                res.on('end', () =>
                     fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), err => {
-                        if (err) throw err;
+                        if (err) {
+                            throw err;
+                        }
                         callback({
                             info: 'It\'s saved! : ' + tmpDirName + fileName,
                             path: tmpDirName + fileName
-                        })
-                    });
-                });
-                res.on('error', err => {
-                    callback({
-                        error: 'Error : ' + err
-                    })
-                });
+                        });
+                    }));
+                
+                res.on('error', err =>
+                    callback({error: 'Error : ' + err}));
             } else {
-                callback({
-                    error: 'Error : statusCode !== 200'
-                });
+                callback({error: 'Error : statusCode !== 200'});
             }
         });
-    }, err => {
-        callback({
-            error: 'Error bot.getFileLink : ' + err
-        });
-    });
+    }, err => callback({error: 'Error bot.getFileLink : ' + err}));
 }
 
 function getMessage(msg) {
@@ -798,7 +807,6 @@ function processMessage(obj) {
                     count = sendMessage(obj.message);
                 }
                 if (obj.callback) {
-                    adapter._questions = adapter._questions || [];
                     adapter._questions.push(question);
 
                     question.timeout = setTimeout(q => {
@@ -807,7 +815,6 @@ function processMessage(obj) {
 
                         const pos = adapter._questions.indexOf(q);
                         pos !== -1 && adapter._questions.splice(pos);
-
                     }, adapter.config.answerTimeoutSec + 1000, question);
                 }
             }
@@ -1315,7 +1322,7 @@ function connect() {
         bot.on('callback_query', callbackQuery => {
             // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
-            callbackQueryId[callbackQuery.from.id] = callbackQuery.id;
+            callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
 
             adapter.setState('communicate.request', '[' + (
