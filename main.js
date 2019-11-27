@@ -34,7 +34,7 @@ let lastMessageText = '';
 const enums = {};
 
 const commands = {};
-const callbackQueryId = {};
+const callbackQueryId = {}; // BF: Where is it used?
 const tools = require(utils.controllerDir + '/lib/tools');
 const configFile = tools.getConfigFileName();
 const tmp = configFile.split(/[\\\/]+/);
@@ -800,12 +800,15 @@ function processMessage(obj) {
                 if (obj.callback) {
                     adapter._questions = adapter._questions || [];
                     adapter._questions.push(question);
-                    adapter.sendTo(obj.from, obj.command, count, obj.callback);
 
                     question.timeout = setTimeout(q => {
                         q.timeout = null;
                         adapter.sendTo(q.from, 'ask', '__timeout__', q.callback);
-                    }, adapter.config.answerTimeoutSec + 1000);
+
+                        const pos = adapter._questions.indexOf(q);
+                        pos !== -1 && adapter._questions.splice(pos);
+
+                    }, adapter.config.answerTimeoutSec + 1000, question);
                 }
             }
             break;
@@ -948,6 +951,29 @@ function getCommandsKeyboard(chatId) {
         });
 }
 
+function isAnswerForQuestion(adapter, msg) {
+    if (adapter._questions && adapter._questions.length) {
+        const now = Date.now();
+        const chatId = msg.chat && msg.chat.id;
+        let question = chatId && adapter._questions.find(q => q.chatId === chatId && q.user === msg.from.id && now - q.ts < adapter.config.answerTimeoutSec);
+        question = question || (chatId && adapter._questions.find(q => q.chatId === chatId && now - q.ts < adapter.config.answerTimeoutSec));
+        question = question || adapter._questions.find(q => now - q.ts < adapter.config.answerTimeoutSec);
+
+        // user have 60 seconds for answer
+        if (question && Date.now() - question.ts < adapter.config.answerTimeoutSec) {
+            if (question.timeout) {
+                clearTimeout(question.timeout);
+                question.timeout = null;
+                adapter.sendTo(question.from, 'ask', msg, question.cb);
+            }
+            adapter._questions.splice(adapter._questions.indexOf(question), 1);
+        }
+
+        // remove old questions
+        adapter._questions = adapter._questions.filter(q => now - q.ts < adapter.config.answerTimeoutSec);
+    }
+}
+
 function processTelegramText(msg) {
     adapter.log.debug(JSON.stringify(msg));
     const now = new Date().getTime();
@@ -979,25 +1005,7 @@ function processTelegramText(msg) {
         return;
     }
 
-    if (adapter._questions && adapter._questions.length) {
-        const now = Date.now();
-        let question = adapter._questions.find(q => q.chatId === msg.chat.id && q.user === msg.from.id && now - q.ts < adapter.config.answerTimeoutSec);
-        question = question || adapter._questions.find(q => q.chatId === msg.chat.id && now - q.ts < adapter.config.answerTimeoutSec);
-        question = question || adapter._questions.find(q => now - q.ts < adapter.config.answerTimeoutSec);
-
-        // user have 60 seconds for answer
-        if (question && Date.now() - question.ts < adapter.config.answerTimeoutSec) {
-            if (question.timeout) {
-                clearTimeout(question.timeout);
-                question.timeout = null;
-                adapter.sendTo(obj.from, 'ask', msg, question.callback);
-            }
-            adapter._questions.splice(adapter._questions.indexOf(question), 1);
-        }
-
-        // remove old questions
-        adapter._questions = adapter._questions.filter(q => now - q.ts < adapter.config.answerTimeoutSec);
-    }
+    isAnswerForQuestion(adapter, msg);
 
     if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
         adapter.log.debug('Response keyboard');
@@ -1304,16 +1312,28 @@ function connect() {
         });
 
         // callback InlineKeyboardButton
-        bot.on('callback_query', msg => {
-            // write received answer into constiable
-            adapter.log.debug('callback_query: ' + JSON.stringify(msg));
-            callbackQueryId[msg.from.id] = msg.id;
-            adapter.setState('communicate.requestMessageId', msg.message.message_id, err => {
-                err && adapter.log.error(err);
-            });
-            adapter.setState('communicate.request', '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.data, err => {
-                err && adapter.log.error(err);
-            });
+        bot.on('callback_query', callbackQuery => {
+            // write received answer into variable
+            adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
+            callbackQueryId[callbackQuery.from.id] = callbackQuery.id;
+            adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
+
+            adapter.setState('communicate.request', '[' + (
+                !adapter.config.useUsername ? callbackQuery.from.first_name :
+                    !callbackQuery.from.username ? callbackQuery.from.first_name :
+                        callbackQuery.from.username) + ']' + callbackQuery.data, err => err && adapter.log.error(err));
+
+            isAnswerForQuestion(adapter, callbackQuery);
+
+            //const action = callbackQuery.data;
+            const msg    = callbackQuery.message;
+            const opts = {
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
+            };
+            let text = 'Ok';// = 'You hit button ' + action;
+
+            bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
             adapter.log.error('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'

@@ -197,16 +197,19 @@ You can send to telegram the message and the next answer will be returned in cal
 Timeout can be set in configuration and by default is 60 seconds.
 
 ```
-sendTo('telegram', 'ask', {
+sendTo('telegram.0', 'ask', {
     user: user, // optional
     text: 'Aure you sure?',
     reply_markup: {
         inline_keyboard: [
-            [{ text: 'Yes!',  callback_data: '1' }],
-            [{ text: 'No...', callback_data: '0' }]
+            // two buttons could be on one line too, but here they are on different
+            [{ text: 'Yes!',  callback_data: '1' }], // first line
+            [{ text: 'No...', callback_data: '0' }]  // second line
         ]
     }
-}, msg => console.log('user says ' + msg.text);
+}, msg => {
+    console.log('user says ' + msg.data);
+});
 ``` 
 
 ## Chat ID
