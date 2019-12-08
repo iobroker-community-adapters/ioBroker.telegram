@@ -861,9 +861,17 @@ function getListOfCommands() {
     ids.forEach(id => {
         if (!commands[id].readOnly) {
             if (commands[id].type === 'boolean') {
-                lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                if (commands[id].writeOnly) {
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}`);
+                } else {
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                }
             } else {
-                lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
+                if (commands[id].writeOnly) {
+                    lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}`);
+                } else {
+                    lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
+                }
             }
         }
     });
@@ -880,36 +888,39 @@ function getCommandsKeyboard(chatId) {
                 if (commands[id].onlyTrue) {
                     if (commands[id].buttons === 1) {
                         keyboard.push([`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`]);
-                        keyboard.push([`${commands[id].alias} ?`]);
+                        !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
                     } else {
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
-                            `${commands[id].alias} ?`
-                        ]);
+                        commands[id].writeOnly ?
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`
+                            ]) :
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
+                                `${commands[id].alias} ?`
+                            ]);
                     }
                 } else {
                     if (commands[id].buttons === 1) {
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
-                        ]);
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
-                        ]);
-                        keyboard.push([
-                            `${commands[id].alias} ?`
-                        ]);
+                        keyboard.push([`${commands[id].alias} ${commands[id].onCommand  || _('ON-Command')}`,]);
+                        keyboard.push([`${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,]);
+                        !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
                     } else if (commands[id].buttons === 2) {
                         keyboard.push([
                             `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
                             `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
                         ]);
-                        keyboard.push([`${commands[id].alias} ?`]);
+                        !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
                     } else {
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
-                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
-                            `${commands[id].alias} ?`
-                        ]);
+                        commands[id].writeOnly ?
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand  || _('ON-Command')}`,
+                                `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`
+                            ]) :
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand  || _('ON-Command')}`,
+                                `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
+                                `${commands[id].alias} ?`
+                            ]);
                     }
                 }
             } else if (commands[id].states) {
@@ -922,7 +933,7 @@ function getCommandsKeyboard(chatId) {
                         s = [];
                     }
                 }
-                s.push(`${commands[id].alias} ?`);
+                !commands[id].writeOnly && s.push(`${commands[id].alias} ?`);
                 keyboard.push(s);
             } else if (commands[id].type === 'number' && commands[id].unit === '%') {
                 let s = [];
@@ -934,10 +945,10 @@ function getCommandsKeyboard(chatId) {
                         s = [];
                     }
                 }
-                s.push(`${commands[id].alias} ?`);
+                !commands[id].writeOnly && s.push(`${commands[id].alias} ?`);
                 keyboard.push(s);
             }  else {
-                keyboard.push([`${commands[id].alias} ?`]);
+                !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
             }
         }
     });

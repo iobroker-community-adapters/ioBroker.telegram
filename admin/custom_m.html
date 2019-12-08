@@ -249,6 +249,7 @@
                 return {
                     enabled:     false,
                     readOnly:    obj.common.write === false,
+                    writeOnly:   false,
                     report:      obj.common.read !== false,
                     alias:       '',
                     onStatus:    '',
@@ -263,6 +264,7 @@
                 enabled:     false,
                 report:      obj.common.read !== false,
                 readOnly:    obj.common.write === false,
+                writeOnly:   false,
                 alias:       '',
                 buttons:     3
             };

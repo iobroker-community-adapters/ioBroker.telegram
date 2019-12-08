@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.4",
+        "version": "1.4.5",
         "news": {
+            "1.4.5": {
+                "en": "Allowed writeOnly states in telegram",
+                "de": "Erlaubte WriteOnly-Zustände im Telegramm",
+                "ru": "Разрешено писать только состояния в телеграмме",
+                "pt": "Estados writeOnly permitidos no telegrama",
+                "nl": "Toegestaan schrijven Alleen staten in telegram",
+                "fr": "Etats d'écriture autorisés uniquement dans le télégramme",
+                "it": "Consentito writeSolo stati nel telegramma",
+                "es": "Estados de escritura solo permitidos en telegrama",
+                "pl": "Dozwolony zapis Tylko w telegramie",
+                "zh-cn": "电报中允许的writeOnly状态"
+            },
             "1.4.4": {
                 "en": "New sendTo message \"ask\" was added",
                 "de": "Neue sendTo-Nachricht \"ask\" wurde hinzugefügt",
