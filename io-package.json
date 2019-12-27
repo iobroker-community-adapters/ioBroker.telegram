@@ -41,7 +41,8 @@
                 "es": "Nuevo mensaje de envío a \"preguntar\" fue agregado",
                 "pl": "Dodano nową wiadomość SendTo „ask”",
                 "zh-cn": "添加了新的sendTo消息“询问”"
-            },"1.4.3": {
+            },
+            "1.4.3": {
                 "en": "Bugfix for not yet completely implemented feature",
                 "de": "Bugfix für noch nicht vollständig implementiertes Feature",
                 "ru": "Исправлена ​​ошибка для еще не полностью реализованной функции",

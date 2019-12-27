@@ -350,14 +350,17 @@ TODO:
 - dialogs
 
 ## Changelog
-### 1.4.7 (2019-02-21)
-* (BuZZy1337) Bugfix for not yet completely implemented feature
+### 1.4.7 (2019-12-27)
+* (Apollon77) Make compatible with js-controller 2.3
 
 ### 1.4.6 (2019-12-09)
 * (bluefox) Allowed writeOnly states in telegram
 
 ### 1.4.4 (2019-11-27)
 * (bluefox) New sendTo message "ask" was added (see [Question](#question) )
+
+### 1.4.3 (2019-02-21)
+* (BuZZy1337) Bugfix for not yet completely implemented feature
 
 ### 1.4.2 (2019-02-18)
 * (BuZZy1337) fix for recipients containing withespaces
