@@ -115,7 +115,6 @@ function startAdapter(options) {
                 processMessage(obj);
             }
         }
-        processMessages();
     });
 
     adapter.on('ready', () => {
@@ -820,15 +819,6 @@ function processMessage(obj) {
             }
             break;
     }
-}
-
-function processMessages() {
-    adapter.getMessage((err, obj) => {
-        if (obj) {
-            processMessage(obj.command, obj.message);
-            processMessages();
-        }
-    });
 }
 
 function decrypt(key, value) {
