@@ -1341,7 +1341,7 @@ function connect() {
             };
             let text = 'Ok';// = 'You hit button ' + action;
 
-            bot.editMessageText(text, opts);
+            //bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
             adapter.log.error('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
