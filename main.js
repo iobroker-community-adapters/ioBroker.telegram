@@ -1325,7 +1325,7 @@ function connect() {
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
-
+            adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, err => err && adapter.log.error(err));
             adapter.setState('communicate.request', '[' + (
                 !adapter.config.useUsername ? callbackQuery.from.first_name :
                     !callbackQuery.from.username ? callbackQuery.from.first_name :
