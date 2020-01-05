@@ -350,6 +350,9 @@ TODO:
 - dialogs
 
 ## Changelog
+### 1.5.0 (2020-01-05)
+* (foxriver76) removed usage of adapter.objects
+
 ### 1.4.7 (2019-12-27)
 * (Apollon77) Make compatible with js-controller 2.3
 

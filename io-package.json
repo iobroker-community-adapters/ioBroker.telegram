@@ -2,10 +2,22 @@
     "common": {
         "name": "telegram",
         "require": {
-            "js-controller": ">0.6.6"
+            "js-controller": ">2.0.0"
         },
-        "version": "1.4.7",
+        "version": "1.5.0",
         "news": {
+            "1.5.0": {
+                "en": "removed usage of adapter.objects",
+                "de": "Verwendung von adapter.objects entfernt",
+                "ru": "удалено использование файла adapter.objects",
+                "pt": "removido o uso de adapter.objects",
+                "nl": "gebruik van adapter.objects verwijderd",
+                "fr": "utilisation supprimée de adapter.objects",
+                "it": "rimosso l'utilizzo di adapter.objects",
+                "es": "uso eliminado de adaptador.objetos",
+                "pl": "usunięto użycie adapter.objects",
+                "zh-cn": "删除了adapter.objects的用法"
+            },
             "1.4.7": {
                 "en": "make compatible with js-controller 2.3",
                 "de": "kompatibel machen mit js-controller 2.3",
@@ -252,17 +264,6 @@
                 "it": "Possibilità di definire l'intervallo di polling nella configurazione guidata. Il valore predefinito è 300ms.",
                 "es": "Posibilidad de definir intervalo de sondeo en el asistente de configuración. El valor predeterminado es 300ms.",
                 "pl": "Możliwość zdefiniowania interwału odpytywania w kreatorze konfiguracji. Domyślna wartość to 300ms."
-            },
-            "1.1.4": {
-                "en": "Added checks before accessing non-existing options",
-                "de": "Prüfungen hinzugefügt, bevor auf nicht vorhandene Optionen zugegriffen wird",
-                "ru": "Добавлены проверки перед доступом к несуществующим опциям",
-                "pt": "Verificações adicionadas antes de acessar opções não-existentes",
-                "nl": "Controles toegevoegd voor toegang tot niet-bestaande opties",
-                "fr": "Ajout de vérifications avant d'accéder à des options non existantes",
-                "it": "Aggiunti controlli prima di accedere a opzioni non esistenti",
-                "es": "Cheques agregados antes de acceder a opciones no existentes",
-                "pl": "Dodano sprawdzenia przed dostępem do nieistniejących opcji"
             }
         },
         "title": "Telegram",
@@ -311,7 +312,7 @@
         "port": 8443,
         "bind": "0.0.0.0",
         "token": "",
-	"baseApiUrl": "https://api.telegram.org",
+        "baseApiUrl": "https://api.telegram.org",
         "password": "",
         "text2command": "",
         "rememberUsers": true,

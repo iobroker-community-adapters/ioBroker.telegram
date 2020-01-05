@@ -693,7 +693,7 @@ function saveFile(file_id, fileName, callback) {
                             path: tmpDirName + fileName
                         });
                     }));
-                
+
                 res.on('error', err =>
                     callback({error: 'Error : ' + err}));
             } else {
@@ -1404,7 +1404,7 @@ function readAllNames(ids, cb) {
 
 function readStatesCommands() {
     return new Promise((resolve, reject) => {
-        adapter.objects.getObjectView('custom', 'state', {}, (err, doc) => {
+        adapter.getObjectView('custom', 'state', {}, (err, doc) => {
             const readNames = [];
             if (doc && doc.rows) {
                 for (let i = 0, l = doc.rows.length; i < l; i++) {
@@ -1429,7 +1429,7 @@ function readEnums(name) {
     return new Promise((resolve, reject) => {
         name = name || 'rooms';
         enums[name] = {};
-        adapter.objects.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
+        adapter.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
             if (doc && doc.rows) {
                 for (let i = 0, l = doc.rows.length; i < l; i++) {
                     if (doc.rows[i].value) {
