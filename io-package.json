@@ -4,8 +4,44 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.3",
+        "version": "1.4.7",
         "news": {
+            "1.4.7": {
+                "en": "make compatible with js-controller 2.3",
+                "de": "kompatibel machen mit js-controller 2.3",
+                "ru": "сделать совместимым с js-контроллером 2.3",
+                "pt": "tornar compatível com js-controller 2.3",
+                "nl": "compatibel maken met js-controller 2.3",
+                "fr": "rendre compatible avec js-controller 2.3",
+                "it": "rendere compatibile con js-controller 2.3",
+                "es": "hacer compatible con js-controller 2.3",
+                "pl": "uczynić kompatybilnym z kontrolerem js 2.3",
+                "zh-cn": "使与js-controller 2.3兼容"
+            },
+            "1.4.6": {
+                "en": "Allowed writeOnly states in telegram",
+                "de": "Erlaubte WriteOnly-Zustände im Telegramm",
+                "ru": "Разрешено писать только состояния в телеграмме",
+                "pt": "Estados writeOnly permitidos no telegrama",
+                "nl": "Toegestaan schrijven Alleen staten in telegram",
+                "fr": "Etats d'écriture autorisés uniquement dans le télégramme",
+                "it": "Consentito writeSolo stati nel telegramma",
+                "es": "Estados de escritura solo permitidos en telegrama",
+                "pl": "Dozwolony zapis Tylko w telegramie",
+                "zh-cn": "电报中允许的writeOnly状态"
+            },
+            "1.4.4": {
+                "en": "New sendTo message \"ask\" was added",
+                "de": "Neue sendTo-Nachricht \"ask\" wurde hinzugefügt",
+                "ru": "Добавлено новое сообщение sendTo \"Ask\"",
+                "pt": "Nova mensagem sendTo \"ask\" foi adicionada",
+                "nl": "Nieuw sendTo-bericht \"vragen\" is toegevoegd",
+                "fr": "Nouveau message sendTo \"ask\" a été ajouté",
+                "it": "Nuovo messaggio Al messaggio \"chiedi\" è stato aggiunto",
+                "es": "Nuevo mensaje de envío a \"preguntar\" fue agregado",
+                "pl": "Dodano nową wiadomość SendTo „ask”",
+                "zh-cn": "添加了新的sendTo消息“询问”"
+            },
             "1.4.3": {
                 "en": "Bugfix for not yet completely implemented feature",
                 "de": "Bugfix für noch nicht vollständig implementiertes Feature",

@@ -13,15 +13,17 @@
 /* jslint node: true */
 'use strict';
 
+// https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird)
+process.env.NTBA_FIX_319 = 1;
+
 const TelegramBot = require('node-telegram-bot-api');
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
-const _ = require(__dirname + '/lib/words.js');
-const fs = require('fs');
-const LE = require(utils.controllerDir + '/lib/letsencrypt.js');
+const _     = require('./lib/words.js');
+const fs    = require('fs');
+const LE    = require(utils.controllerDir + '/lib/letsencrypt.js');
 const https = require('https');
 const socks = require('socksv5');
-
 
 let bot;
 let users = {};
@@ -113,13 +115,22 @@ function startAdapter(options) {
                 processMessage(obj);
             }
         }
-        processMessages();
     });
 
     adapter.on('ready', () => {
         adapter.config.server = adapter.config.server === 'true';
 
-        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+        !fs.existsSync(tmpDir) && fs.mkdirSync(tmpDir);
+
+        adapter._questions = [];
+        adapter.garbageCollectorinterval = setInterval(() => {
+            const now = Date.now();
+            Object.keys(callbackQueryId).forEach(id => {
+                if (now - callbackQueryId[id].ts > 120000) {
+                    delete callbackQueryId[id];
+                }
+            });
+        }, 10000);
 
         if (adapter.config.server) {
             adapter.config.port = parseInt(adapter.config.port, 10);
@@ -150,7 +161,11 @@ function startAdapter(options) {
     });
 
     adapter.on('unload', () => {
-        if (reconnectTimer) clearInterval(reconnectTimer);
+        reconnectTimer && clearInterval(reconnectTimer);
+        reconnectTimer = null;
+
+        adapter.garbageCollectorinterval && clearInterval(adapter.garbageCollectorinterval);
+        adapter.garbageCollectorinterval = null;
 
         if (adapter && adapter.config) {
             if (adapter.config.restarting !== '') {
@@ -568,8 +583,10 @@ function _sendMessageHelper(dest, name, text, options) {
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
         }
-        if (bot) {
-            bot.answerCallbackQuery(callbackQueryId[options.chatId], options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+        if (bot && callbackQueryId[options.chatId]) {
+            const originalChatId = callbackQueryId[options.chatId].id;
+            delete callbackQueryId[options.chatId];
+            bot.answerCallbackQuery(originalChatId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
                 .then(() => {
                     options = null;
                     count++;
@@ -748,42 +765,34 @@ function saveFile(file_id, fileName, callback) {
             if (res.statusCode === 200) {
                 const buf = [];
                 res.on('data', data => buf.push(data));
-                res.on('end', () => {
+                res.on('end', () =>
                     fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), err => {
-                        if (err) throw err;
+                        if (err) {
+                            throw err;
+                        }
                         callback({
                             info: 'It\'s saved! : ' + tmpDirName + fileName,
                             path: tmpDirName + fileName
-                        })
-                    });
-                });
-                res.on('error', err => {
-                    callback({
-                        error: 'Error : ' + err
-                    })
-                });
+                        });
+                    }));
+                
+                res.on('error', err =>
+                    callback({error: 'Error : ' + err}));
             } else {
-                callback({
-                    error: 'Error : statusCode !== 200'
-                });
+                callback({error: 'Error : statusCode !== 200'});
             }
         });
-    }, err => {
-        callback({
-            error: 'Error bot.getFileLink : ' + err
-        });
-    });
+    }, err => callback({error: 'Error bot.getFileLink : ' + err}));
 }
 
 function getMessage(msg) {
     const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
     adapter.log.debug('Received message: ' + JSON.stringify(msg));
 
-    if (!fs.existsSync(tmpDirName)) {
-        fs.mkdirSync(tmpDirName);
-    }
+    !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
+
     if (msg.voice) {
-        if (!fs.existsSync(tmpDirName + '/voice')) fs.mkdirSync(tmpDirName + '/voice');
+        !fs.existsSync(tmpDirName + '/voice') && fs.mkdirSync(tmpDirName + '/voice');
         saveFile(msg.voice.file_id, adapter.config.saveFiles ? '/voice/' + date + '.ogg' : '/voice/temp.ogg', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -793,7 +802,7 @@ function getMessage(msg) {
             }
         })
     } else if (adapter.config.saveFiles && msg.photo) {
-        if (!fs.existsSync(tmpDirName + '/photo')) fs.mkdirSync(tmpDirName + '/photo');
+        !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
         saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -801,10 +810,9 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
-
+        });
     } else if (adapter.config.saveFiles && msg.video) {
-        if (!fs.existsSync(tmpDirName + '/video')) fs.mkdirSync(tmpDirName + '/video');
+        !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
         saveFile(msg.video.file_id, '/video/' + date + '.mp4', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -812,9 +820,9 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
+        });
     } else if (adapter.config.saveFiles && msg.audio) {
-        if (!fs.existsSync(tmpDirName + '/audio')) fs.mkdirSync(tmpDirName + '/audio');
+        !fs.existsSync(tmpDirName + '/audio') && fs.mkdirSync(tmpDirName + '/audio');
         saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -822,9 +830,9 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
+        });
     } else if (adapter.config.saveFiles && msg.document) {
-        if (!fs.existsSync(tmpDirName + '/document')) fs.mkdirSync(tmpDirName + '/document');
+        !fs.existsSync(tmpDirName + '/document') && fs.mkdirSync(tmpDirName + '/document');
         saveFile(msg.document.file_id, '/document/' + msg.document.file_name, res => {
             if (!res.error) {
                 adapter.log.info(res.info);
@@ -832,7 +840,7 @@ function getMessage(msg) {
             } else {
                 adapter.log.debug(res.error);
             }
-        })
+        });
     }
 }
 
@@ -853,27 +861,46 @@ function processMessage(obj) {
 
     switch (obj.command) {
         case 'send':
-            {
-                if (obj.message) {
-                    let count;
-                    if (typeof obj.message === 'object') {
-                        count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
-                    } else {
-                        count = sendMessage(obj.message);
-                    }
-                    if (obj.callback) adapter.sendTo(obj.from, obj.command, count, obj.callback);
+            if (obj.message) {
+                let count;
+                if (typeof obj.message === 'object') {
+                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                } else {
+                    count = sendMessage(obj.message);
+                }
+                obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback);
+            }
+            break;
+
+        case 'ask':
+            if (obj.message) {
+                let count;
+                const question = {
+                    cb:   obj.callback,
+                    from: obj.from,
+                    ts:   Date.now(),
+                };
+                if (typeof obj.message === 'object') {
+                    count = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    question.chatId = obj.message.chatId;
+                    question.user = obj.message.user;
+                } else {
+                    count = sendMessage(obj.message);
+                }
+                if (obj.callback) {
+                    adapter._questions.push(question);
+
+                    question.timeout = setTimeout(q => {
+                        q.timeout = null;
+                        adapter.sendTo(q.from, 'ask', '__timeout__', q.callback);
+
+                        const pos = adapter._questions.indexOf(q);
+                        pos !== -1 && adapter._questions.splice(pos);
+                    }, adapter.config.answerTimeoutSec + 1000, question);
                 }
             }
+            break;
     }
-}
-
-function processMessages() {
-    adapter.getMessage((err, obj) => {
-        if (obj) {
-            processMessage(obj.command, obj.message);
-            processMessages();
-        }
-    });
 }
 
 function decrypt(key, value) {
@@ -906,9 +933,17 @@ function getListOfCommands() {
     ids.forEach(id => {
         if (!commands[id].readOnly) {
             if (commands[id].type === 'boolean') {
-                lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                if (commands[id].writeOnly) {
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}`);
+                } else {
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                }
             } else {
-                lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
+                if (commands[id].writeOnly) {
+                    lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}`);
+                } else {
+                    lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
+                }
             }
         }
     });
@@ -925,36 +960,39 @@ function getCommandsKeyboard(chatId) {
                 if (commands[id].onlyTrue) {
                     if (commands[id].buttons === 1) {
                         keyboard.push([`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`]);
-                        keyboard.push([`${commands[id].alias} ?`]);
+                        !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
                     } else {
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
-                            `${commands[id].alias} ?`
-                        ]);
+                        commands[id].writeOnly ?
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`
+                            ]) :
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
+                                `${commands[id].alias} ?`
+                            ]);
                     }
                 } else {
                     if (commands[id].buttons === 1) {
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
-                        ]);
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
-                        ]);
-                        keyboard.push([
-                            `${commands[id].alias} ?`
-                        ]);
+                        keyboard.push([`${commands[id].alias} ${commands[id].onCommand  || _('ON-Command')}`,]);
+                        keyboard.push([`${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,]);
+                        !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
                     } else if (commands[id].buttons === 2) {
                         keyboard.push([
                             `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
                             `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
                         ]);
-                        keyboard.push([`${commands[id].alias} ?`]);
+                        !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
                     } else {
-                        keyboard.push([
-                            `${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}`,
-                            `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
-                            `${commands[id].alias} ?`
-                        ]);
+                        commands[id].writeOnly ?
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand  || _('ON-Command')}`,
+                                `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`
+                            ]) :
+                            keyboard.push([
+                                `${commands[id].alias} ${commands[id].onCommand  || _('ON-Command')}`,
+                                `${commands[id].alias} ${commands[id].offCommand || _('OFF-Command')}`,
+                                `${commands[id].alias} ?`
+                            ]);
                     }
                 }
             } else if (commands[id].states) {
@@ -967,7 +1005,7 @@ function getCommandsKeyboard(chatId) {
                         s = [];
                     }
                 }
-                s.push(`${commands[id].alias} ?`);
+                !commands[id].writeOnly && s.push(`${commands[id].alias} ?`);
                 keyboard.push(s);
             } else if (commands[id].type === 'number' && commands[id].unit === '%') {
                 let s = [];
@@ -979,10 +1017,10 @@ function getCommandsKeyboard(chatId) {
                         s = [];
                     }
                 }
-                s.push(`${commands[id].alias} ?`);
+                !commands[id].writeOnly && s.push(`${commands[id].alias} ?`);
                 keyboard.push(s);
             }  else {
-                keyboard.push([`${commands[id].alias} ?`]);
+                !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
             }
         }
     });
@@ -1001,6 +1039,29 @@ function getCommandsKeyboard(chatId) {
         .catch(error => {
             adapter.log.error(error);
         });
+}
+
+function isAnswerForQuestion(adapter, msg) {
+    if (adapter._questions && adapter._questions.length) {
+        const now = Date.now();
+        const chatId = msg.chat && msg.chat.id;
+        let question = chatId && adapter._questions.find(q => q.chatId === chatId && q.user === msg.from.id && now - q.ts < adapter.config.answerTimeoutSec);
+        question = question || (chatId && adapter._questions.find(q => q.chatId === chatId && now - q.ts < adapter.config.answerTimeoutSec));
+        question = question || adapter._questions.find(q => now - q.ts < adapter.config.answerTimeoutSec);
+
+        // user have 60 seconds for answer
+        if (question && Date.now() - question.ts < adapter.config.answerTimeoutSec) {
+            if (question.timeout) {
+                clearTimeout(question.timeout);
+                question.timeout = null;
+                adapter.sendTo(question.from, 'ask', msg, question.cb);
+            }
+            adapter._questions.splice(adapter._questions.indexOf(question), 1);
+        }
+
+        // remove old questions
+        adapter._questions = adapter._questions.filter(q => now - q.ts < adapter.config.answerTimeoutSec);
+    }
 }
 
 function processTelegramText(msg) {
@@ -1033,6 +1094,8 @@ function processTelegramText(msg) {
         bot.sendMessage(msg.from.id, getListOfCommands());
         return;
     }
+
+    isAnswerForQuestion(adapter, msg);
 
     if (msg.text === adapter.config.keyboard || msg.text === '/commands') {
         adapter.log.debug('Response keyboard');
@@ -1339,16 +1402,28 @@ function connect() {
         });
 
         // callback InlineKeyboardButton
-        bot.on('callback_query', msg => {
-            // write received answer into constiable
-            adapter.log.debug('callback_query: ' + JSON.stringify(msg));
-            callbackQueryId[msg.from.id] = msg.id;
-            adapter.setState('communicate.requestMessageId', msg.message.message_id, err => {
-                err && adapter.log.error(err);
-            });
-            adapter.setState('communicate.request', '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.data, err => {
-                err && adapter.log.error(err);
-            });
+        bot.on('callback_query', callbackQuery => {
+            // write received answer into variable
+            adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
+            callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
+            adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
+
+            adapter.setState('communicate.request', '[' + (
+                !adapter.config.useUsername ? callbackQuery.from.first_name :
+                    !callbackQuery.from.username ? callbackQuery.from.first_name :
+                        callbackQuery.from.username) + ']' + callbackQuery.data, err => err && adapter.log.error(err));
+
+            isAnswerForQuestion(adapter, callbackQuery);
+
+            //const action = callbackQuery.data;
+            const msg    = callbackQuery.message;
+            const opts = {
+                chat_id: msg.chat.id,
+                message_id: msg.message_id,
+            };
+            let text = 'Ok';// = 'You hit button ' + action;
+
+            bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
             adapter.log.error('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
@@ -1475,6 +1550,8 @@ function main() {
     if (adapter.config.allowStates !== undefined) {
         adapter.config.allowStates = true;
     }
+    adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
+    adapter.config.answerTimeoutSec *= 1000;
     adapter.config.users = adapter.config.users || '';
     adapter.config.users = adapter.config.users.split(',');
     adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
