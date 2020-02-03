@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.4.7",
+        "version": "1.5.0",
         "news": {
+            "1.5.0": {
+                "en": "Added voice calls ",
+                "de": "Sprachanrufe hinzugefügt",
+                "ru": "Добавлены голосовые звонки",
+                "pt": "Chamadas de voz adicionadas",
+                "nl": "Spraakoproepen toegevoegd",
+                "fr": "Appels vocaux ajoutés",
+                "it": "Aggiunte chiamate vocali",
+                "es": "Llamadas de voz agregadas",
+                "pl": "Dodano połączenia głosowe",
+                "zh-cn": "新增语音通话"
+            },
             "1.4.7": {
                 "en": "make compatible with js-controller 2.3",
                 "de": "kompatibel machen mit js-controller 2.3",
@@ -311,7 +323,7 @@
         "port": 8443,
         "bind": "0.0.0.0",
         "token": "",
-	"baseApiUrl": "https://api.telegram.org",
+	    "baseApiUrl": "https://api.telegram.org",
         "password": "",
         "text2command": "",
         "rememberUsers": true,

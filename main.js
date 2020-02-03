@@ -26,6 +26,7 @@ const https = require('https');
 const socks = require('socksv5');
 
 let bot;
+let request;
 let users = {};
 let systemLang = 'en';
 let reconnectTimer = null;
@@ -50,6 +51,19 @@ const server = {
 };
 
 let adapter;
+
+const systemLang2Callme = {
+    en: 'en-GB-Standard-A',
+    de: 'de-DE-Standard-A',
+    ru: 'ru-RU-Standard-A',
+    pt: 'pt-BR-Standard-A',
+    nl: 'nl-NL-Standard-A',
+    fr: 'fr-FR-Standard-A',
+    it: 'it-IT-Standard-A',
+    es: 'es-ES-Standard-A',
+    pl: 'pl-PL-Standard-A',
+    'zh-cn': 'en-GB-Standard-A'
+};
 
 function startAdapter(options) {
     options = options || {};
@@ -693,7 +707,7 @@ function saveFile(file_id, fileName, callback) {
                             path: tmpDirName + fileName
                         });
                     }));
-                
+
                 res.on('error', err =>
                     callback({error: 'Error : ' + err}));
             } else {
@@ -818,6 +832,58 @@ function processMessage(obj) {
                 }
             }
             break;
+
+        case 'call':
+            if (obj.message) {
+                let call = {};
+                if (typeof obj.message === 'object') {
+                    call = obj.message;
+                } else {
+                    call.text = obj.message;
+                }
+
+                if (call.users && call.user) {
+                    adapter.log.error(`Please provide only user or users as array. Attribute user will be ignored!`);
+                }
+                if (!call.users && !call.user) {
+                    call.users = Object.keys(users).map(id => users[id]);
+                }
+                if (!call.users && call.user) {
+                    call.users = [call.user];
+                }
+                if (!(call.users instanceof Array)) {
+                    call.users = [call.users];
+                }
+                // set language
+                call.lang = call.lang || systemLang2Callme[systemLang] || systemLang2Callme.en;
+                // Set message
+                call.message = call.message || _('Call text', call.lang || systemLang);
+                //
+                if (!call.users || !call.users.length) {
+                    adapter.log.error(`Cannot make a call, because no users stored in ${adapter.namespace}.communicate.users`);
+                } else {
+                    callUsers(call.users, call.message, call.lang);
+                }
+            }
+            break;
+    }
+}
+
+function callUsers(users, text, lang, cb) {
+    if (!users || !users.length) {
+        cb && cb();
+    } else {
+        const user = users.shift();
+        request = request || require('request');
+
+        request(`http://api.callmebot.com/start.php?user=${user}&text=${encodeURIComponent(text)}&lang=${lang || systemLang2Callme[systemLang]}`, (err, state, body) => {
+            if (state.statusCode !== 200) {
+                adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
+            } else {
+                adapter.log.debug(`Call to ${user} wsa made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
+            }
+            setImmediate(callUsers, text, lang, cb);
+        });
     }
 }
 
@@ -1344,7 +1410,7 @@ function connect() {
             bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
-            adapter.log.error('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+            adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
         });
         bot.on('webhook_error', error => {
             adapter.log.error('webhook_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EPARSE'
@@ -1404,7 +1470,7 @@ function readAllNames(ids, cb) {
 
 function readStatesCommands() {
     return new Promise((resolve, reject) => {
-        adapter.objects.getObjectView('custom', 'state', {}, (err, doc) => {
+        adapter.getObjectView('custom', 'state', {}, (err, doc) => {
             const readNames = [];
             if (doc && doc.rows) {
                 for (let i = 0, l = doc.rows.length; i < l; i++) {
@@ -1426,10 +1492,10 @@ function readStatesCommands() {
 }
 
 function readEnums(name) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         name = name || 'rooms';
         enums[name] = {};
-        adapter.objects.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
+        adapter.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
             if (doc && doc.rows) {
                 for (let i = 0, l = doc.rows.length; i < l; i++) {
                     if (doc.rows[i].value) {
