@@ -839,7 +839,7 @@ function processMessage(obj) {
                 if (typeof obj.message === 'object') {
                     call = obj.message;
                 } else {
-                    call.text = obj.message;
+                    call.message = obj.message;
                 }
 
                 if (call.users && call.user) {
@@ -856,27 +856,41 @@ function processMessage(obj) {
                 }
                 // set language
                 call.lang = call.lang || systemLang2Callme[systemLang] || systemLang2Callme.en;
-                // Set message
-                call.message = call.message || _('Call text', call.lang || systemLang);
+                if (!call.file) {
+                    // Set message
+                    call.message = call.message || _('Call text', call.lang || systemLang);
+                } else {
+                    call.message = '';
+                }
+
                 //
                 if (!call.users || !call.users.length) {
                     adapter.log.error(`Cannot make a call, because no users stored in ${adapter.namespace}.communicate.users`);
                 } else {
-                    callUsers(call.users, call.message, call.lang);
+                    callUsers(call.users, call.message, call.lang, call.file);
                 }
             }
             break;
     }
 }
 
-function callUsers(users, text, lang, cb) {
+function callUsers(users, text, lang, file, cb) {
     if (!users || !users.length) {
         cb && cb();
     } else {
         const user = users.shift();
         request = request || require('request');
+        const url = 'http://api.callmebot.com/start.php?';
+        const params = ['user=' + encodeURIComponent(user)];
+        if (file) {
+            params.push('file=' + encodeURIComponent(file));
+        } else {
+            params.push('text=' + encodeURIComponent(text));
+        }
 
-        request(`http://api.callmebot.com/start.php?user=${user}&text=${encodeURIComponent(text)}&lang=${lang || systemLang2Callme[systemLang]}`, (err, state, body) => {
+        params.push('lang=' + (lang || systemLang2Callme[systemLang]));
+
+        request(url + params.join('?'), (err, state, body) => {
             if (state.statusCode !== 200) {
                 adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
             } else {

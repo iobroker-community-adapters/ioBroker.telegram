@@ -373,6 +373,15 @@ sendTo('telegram.0', 'call', {
 });
 ```
 
+or 
+
+```
+sendTo('telegram.0', 'call', {
+    file: 'url of mp3 file that is accessible from internet',
+    users: ['@Username1', '@Username2'] // Array of `users'.
+});
+```
+
 Possible values for language:
 - `ar-XA-Standard-A` - Arabic (Female voice)
 - `ar-XA-Standard-B` - Arabic (Male voice)
