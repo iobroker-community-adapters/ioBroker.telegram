@@ -849,7 +849,7 @@ function processMessage(obj) {
                     call.users = [call.user];
                 }
                 if (!call.users && !call.user) {
-                    call.users = Object.keys(users).map(id => users[id]);
+                    call.users = Object.keys(users).map(id => id);
                 }
                 if (!(call.users instanceof Array)) {
                     call.users = [call.users];
@@ -890,7 +890,7 @@ function callUsers(users, text, lang, file, cb) {
 
         params.push('lang=' + (lang || systemLang2Callme[systemLang]));
         url += params.join('&');
-        adapter.log.warn('CALL: ' + url);
+        adapter.log.debug('CALL: ' + url);
         request(url, (err, state, body) => {
             if (state.statusCode !== 200) {
                 adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
