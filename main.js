@@ -878,10 +878,9 @@ function callUsers(users, text, lang, file, cb) {
     if (!users || !users.length) {
         cb && cb();
     } else {
-        adapter.log.warn('USERS: ' + JSON.stringify(users));
         const user = users.shift();
         request = request || require('request');
-        const url = 'http://api.callmebot.com/start.php?';
+        let url = 'http://api.callmebot.com/start.php?';
         const params = ['user=' + encodeURIComponent(user)];
         if (file) {
             params.push('file=' + encodeURIComponent(file));
@@ -890,8 +889,9 @@ function callUsers(users, text, lang, file, cb) {
         }
 
         params.push('lang=' + (lang || systemLang2Callme[systemLang]));
-
-        request(url + params.join('?'), (err, state, body) => {
+        url += params.join('&');
+        adapter.log.warn('CALL: ' + url);
+        request(url, (err, state, body) => {
             if (state.statusCode !== 200) {
                 adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
             } else {
