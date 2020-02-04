@@ -892,7 +892,7 @@ function callUsers(users, text, lang, file, cb) {
         url += params.join('&');
         adapter.log.debug('CALL: ' + url);
         request(url, (err, state, body) => {
-            if (state.statusCode !== 200) {
+            if (!state || state.statusCode !== 200) {
                 adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
             } else {
                 adapter.log.debug(`Call to ${user} wsa made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
