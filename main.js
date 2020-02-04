@@ -878,7 +878,10 @@ function callUsers(users, text, lang, file, cb) {
     if (!users || !users.length) {
         cb && cb();
     } else {
-        const user = users.shift();
+        let user = users.shift();
+        if (!user.startsWith('@')) {
+            user = '@' + user;
+        }
         request = request || require('request');
 
         let url = 'http://api.callmebot.com/start.php?';
