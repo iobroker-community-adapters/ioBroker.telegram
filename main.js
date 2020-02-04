@@ -858,7 +858,7 @@ function processMessage(obj) {
                 call.lang = call.lang || systemLang2Callme[systemLang] || systemLang2Callme.en;
                 if (!call.file) {
                     // Set message
-                    call.message = call.message || _('Call text', call.lang || systemLang);
+                    call.message = call.message || call.text || _('Call text', call.lang || systemLang);
                 } else {
                     call.message = '';
                 }
