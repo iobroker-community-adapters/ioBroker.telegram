@@ -849,7 +849,11 @@ function processMessage(obj) {
                     call.users = [call.user];
                 }
                 if (!call.users && !call.user) {
-                    call.users = Object.keys(users).map(id => id);
+                    if (adapter.config.useUsername) {
+                        call.users = Object.keys(users).map(id => id.startsWith('@') ? id : '@' + id);
+                    } else {
+                        return adapter.log.error('Please activate "Store username instead of first name of remembered users" to use default user');
+                    }
                 }
                 if (!(call.users instanceof Array)) {
                     call.users = [call.users];
@@ -880,6 +884,7 @@ function callUsers(users, text, lang, file, cb) {
     } else {
         const user = users.shift();
         request = request || require('request');
+
         let url = 'http://api.callmebot.com/start.php?';
         const params = ['user=' + encodeURIComponent(user)];
         if (file) {
@@ -891,6 +896,7 @@ function callUsers(users, text, lang, file, cb) {
         params.push('lang=' + (lang || systemLang2Callme[systemLang]));
         url += params.join('&');
         adapter.log.debug('CALL: ' + url);
+
         request(url, (err, state, body) => {
             if (!state || state.statusCode !== 200) {
                 adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
