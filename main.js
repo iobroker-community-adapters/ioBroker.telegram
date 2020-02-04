@@ -878,6 +878,7 @@ function callUsers(users, text, lang, file, cb) {
     if (!users || !users.length) {
         cb && cb();
     } else {
+        adapter.log.warn('USERS: ' + JSON.stringify(users));
         const user = users.shift();
         request = request || require('request');
         const url = 'http://api.callmebot.com/start.php?';
@@ -896,7 +897,7 @@ function callUsers(users, text, lang, file, cb) {
             } else {
                 adapter.log.debug(`Call to ${user} wsa made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
             }
-            setImmediate(callUsers, text, lang, cb);
+            setImmediate(callUsers, users, text, lang, file, cb);
         });
     }
 }
