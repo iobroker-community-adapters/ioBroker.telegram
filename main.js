@@ -845,11 +845,11 @@ function processMessage(obj) {
                 if (call.users && call.user) {
                     adapter.log.error(`Please provide only user or users as array. Attribute user will be ignored!`);
                 }
-                if (!call.users && !call.user) {
-                    call.users = Object.keys(users).map(id => users[id]);
-                }
                 if (!call.users && call.user) {
                     call.users = [call.user];
+                }
+                if (!call.users && !call.user) {
+                    call.users = Object.keys(users).map(id => users[id]);
                 }
                 if (!(call.users instanceof Array)) {
                     call.users = [call.users];

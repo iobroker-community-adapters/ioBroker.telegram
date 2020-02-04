@@ -334,8 +334,8 @@ Blockly.JavaScript['telegram_call'] = function(block) {
 
     return 'sendTo("telegram' + dropdown_instance + '", "call", {' +
         '\n    text: ' + value_message +
-        (value_username ? ', \n    ' + 'user: ' + value_username : '') +
-        '\n    lang: "' + dropdown_language + '"' +
+        (value_username ? ',\n    ' + 'user: ' + value_username : '') +
+        ',\n    lang: "' + dropdown_language + '"' +
         '\n});\n' +
         logText;
 };
