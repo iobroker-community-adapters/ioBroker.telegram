@@ -2,7 +2,7 @@
  *
  *      ioBroker telegram Adapter
  *
- *      Copyright (c) 2016-2019 bluefox <dogafox@gmail.com>
+ *      Copyright (c) 2016-2020 bluefox <dogafox@gmail.com>
  *
  *      MIT License
  *
@@ -74,20 +74,19 @@ function startAdapter(options) {
     adapter.on('message', obj => {
         if (obj) {
             if (obj.command === 'adminuser') {
-                let adminuserData;
+                let adminUserData;
                 adapter.getState('communicate.users', (err, state) => {
                     err && adapter.log.error(err);
                     if (state && state.val) {
                         try {
-                            adminuserData = JSON.parse(state.val);
-                            adapter.sendTo(obj.from, obj.command, adminuserData, obj.callback);
+                            adminUserData = JSON.parse(state.val);
+                            adapter.sendTo(obj.from, obj.command, adminUserData, obj.callback);
                         } catch (err) {
                             err && adapter.log.error(err);
                             adapter.log.error('Cannot parse stored user IDs!');
                         }
                     }
                 });
-                return;
             } else if (obj.command.indexOf('delUser') !== -1) {
                 const userID = obj.command.split(' ')[1];
                 let userObj = {};
@@ -110,7 +109,6 @@ function startAdapter(options) {
                         }
                     }
                 });
-                return;
             } else if (obj.command === 'delAllUser') {
                 try {
                     adapter.setState('communicate.users', '', err => {
@@ -124,7 +122,6 @@ function startAdapter(options) {
                     err && adapter.log.error(err);
                     adapter.log.error('Cannot wipe list of saved users!');
                 }
-                return;
             } else {
                 processMessage(obj);
             }
@@ -352,7 +349,7 @@ function _sendMessageHelper(dest, name, text, options) {
     let count = 0;
 
     if (options && options.chatId !== undefined && options.user === undefined) {
-        options.user = users[options.chatId];
+        options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
     }
 
     if (options && options.latitude !== undefined) {
@@ -619,17 +616,14 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-    if (!text && (typeof options !== 'object')) {
-        if (!text && text !== 0 && (!options || !options.latitude)) {
-            adapter.log.warn('Invalid text: null');
-            return;
-        }
+    if (!text && typeof options !== 'object' && text !== 0 && (!options || !options.latitude)) {
+        return adapter.log.warn('Invalid text: null');
     }
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text !== undefined) delete options.text;
-        if (options.user !== undefined) delete options.user;
+        if (options.text !== undefined)   delete options.text;
+        if (options.user !== undefined)   delete options.user;
     }
 
     // convert
@@ -644,48 +638,52 @@ function sendMessage(text, user, chatId, options) {
     let count = 0;
 
     if (user) {
-        const userarray = user.split(',').map(build => build.trim());
+        const userArray = user.split(',').map(build => build.trim());
         let matches = 0;
-        userarray.forEach(value => {
-            for (const u in users) {
-                if (users.hasOwnProperty(u) && users[u] === value) {
+        userArray.forEach(userName => {
+            for (const id in users) {
+                if (!users.hasOwnProperty(id)) {
+                    continue;
+                }
+
+                if ((adapter.config.useUsername && users[id].userName  === userName) ||
+                   (!adapter.config.useUsername && users[id].firstName === userName)) {
                     if (options) {
-                        options.chatId = u;
+                        options.chatId = id;
                     }
                     matches++;
-                    count += _sendMessageHelper(u, value, text, options);
+                    count += _sendMessageHelper(id, userName, text, options);
                     break;
                 }
             }
         });
-        if (userarray.length !== matches) {
-            adapter.log.warn(userarray.length - matches + ' of ' + userarray.length + ' recipients are unknown!');
+
+        if (userArray.length !== matches) {
+            adapter.log.warn(userArray.length - matches + ' of ' + userArray.length + ' recipients are unknown!');
         }
         return count;
     }
 
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
     if (m) {
+        text = (text || '').toString();
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
-        for (const u in users) {
-            const re = new RegExp(m[1], 'i');
-            if (users.hasOwnProperty(u) && users[u].match(re)) {
-                if (options) {
-                    options.chatId = u;
-                }
-                count += _sendMessageHelper(u, m[1], text, options);
-                break;
+        const re = new RegExp(m[1], 'i');
+        const id = users.find(id => users[id].firstName.match(re) || users[id].userName.match(re));
+        if (id) {
+            if (id && options) {
+                options.chatId = id;
             }
+            count += _sendMessageHelper(id, m[1], text, options);
         }
     } else {
         // Send to all users
-        for (const u in users) {
-            if (!users.hasOwnProperty(u)) continue;
+        Object.keys(users).forEach(id => {
             if (options) {
-                options.chatId = u;
+                options.chatId = id;
             }
-            count += _sendMessageHelper(u, users[u], text, options);
-        }
+            count += _sendMessageHelper(id, adapter.config.useUsername ? users[id].userName : users[id].firstName, text, options);
+        });
     }
     return count;
 }
@@ -849,11 +847,9 @@ function processMessage(obj) {
                     call.users = [call.user];
                 }
                 if (!call.users && !call.user) {
-                    if (adapter.config.useUsername) {
-                        call.users = Object.keys(users).map(id => users[id].startsWith('@') ? users[id] : '@' + users[id]);
-                    } else {
-                        return adapter.log.error('Please activate "Store username instead of first name of remembered users" to use default user');
-                    }
+                    call.users = Object.keys(users)
+                        .filter(id => users[id] && users[id].userName)
+                        .map(id => users[id].userName.startsWith('@') ? users[id].userName : '@' + users[id].userName);
                 }
                 if (!(call.users instanceof Array)) {
                     call.users = [call.users];
@@ -916,14 +912,15 @@ function decrypt(key, value) {
     return result;
 }
 
-function storeUser(id, name) {
-    if (users[id] !== name) {
-        for (const u in users) {
-            if (users.hasOwnProperty(u) && users[u] === name) {
-                delete users[u];
+function storeUser(id, firstName, userName) {
+    if (!users[id] || users[id].firstName !== firstName || users[id].userName !== userName) {
+        Object.keys(users).forEach(id => {
+            if (users[id].userName === userName) {
+                delete users[id];
             }
-        }
-        users[id] = name;
+        });
+
+        users[id] = {firstName, userName};
 
         if (adapter.config.rememberUsers) {
             adapter.setState('communicate.users', JSON.stringify(users));
@@ -1167,14 +1164,18 @@ function processTelegramText(msg) {
 
         if (m) {
             if (adapter.config.password === m[1]) {
-                storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
-                if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                storeUser(msg.from.id, msg.from.first_name, msg.from.username);
+                if (adapter.config.useUsername && !msg.from.username) {
+                    adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                }
                 bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
                 return;
             } else {
                 adapter.log.warn('Got invalid password from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + m[1]);
                 bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
-                if (users[msg.from.id]) delete users[msg.from.id];
+                if (users[msg.from.id]) {
+                    delete users[msg.from.id];
+                }
             }
         }
     }
@@ -1185,8 +1186,11 @@ function processTelegramText(msg) {
         return;
     }
 
-    storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
-    if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+    storeUser(msg.from.id, msg.from.first_name, msg.from.username);
+
+    if (!msg.from.username) {
+        adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+    }
 
     if (adapter.config.allowStates) {
         // Check set state
@@ -1449,19 +1453,33 @@ function connect() {
     }
 }
 
-function updateUsers() {
+function updateUsers(cb) {
     if (adapter.config.rememberUsers) {
         adapter.getState('communicate.users', (err, state) => {
             err && adapter.log.error(err);
             if (state && state.val) {
                 try {
                     users = JSON.parse(state.val);
+
+                    // convert old format to new format
+                    Object.keys(users).forEach(id => {
+                        if (typeof users[id] !== 'object') {
+                            if (adapter.config.useUsername) {
+                                users[id] = {userName: users[id], firstName: users[id]};
+                            } else {
+                                users[id] = {firstName: users[id], userName: ''};
+                            }
+                        }
+                    });
                 } catch (err) {
                     err && adapter.log.error(err);
                     adapter.log.error('Cannot parse stored user IDs!');
                 }
             }
+            cb && cb();
         });
+    } else {
+        cb && cb();
     }
 }
 
@@ -1550,44 +1568,36 @@ function main() {
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
     adapter.config.keyboard = adapter.config.keyboard || '/cmds';
 
-    updateUsers();
-
-    if (adapter.config.allowStates !== undefined) {
-        adapter.config.allowStates = true;
-    }
-    adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
-    adapter.config.answerTimeoutSec *= 1000;
-    adapter.config.users = adapter.config.users || '';
-    adapter.config.users = adapter.config.users.split(',');
-    adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
-
-    for (let u = adapter.config.users.length - 1; u >= 0; u--) {
-        adapter.config.users[u] = adapter.config.users[u].trim().toLowerCase();
-        if (!adapter.config.users[u]) {
-            adapter.config.users.splice(u, 1);
+    updateUsers(() => {
+        if (adapter.config.allowStates !== undefined) {
+            adapter.config.allowStates = true;
         }
-    }
+        adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
+        adapter.config.answerTimeoutSec *= 1000;
+        adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
 
-    adapter.getForeignObject('system.config', (err, obj) => {
-        err && adapter.log.error(err);
-        if (obj) {
-            systemLang = obj.common.language || 'en';
-        }
+        adapter.getForeignObject('system.config', (err, obj) => {
+            err && adapter.log.error(err);
+            if (obj) {
+                systemLang = obj.common.language || 'en';
+            }
 
-        readStatesCommands()
-            .then(() => {
-                if (adapter.config.rooms) {
-                    return readEnums();
-                } else {
-                    return Promise.resolve();
-                }
-            })
-            .then(() => {
-                // init polling every hour
-                reconnectTimer = setInterval(connect, 3600000);
-                connect();
-                adapter.subscribeForeignObjects('*');
-            });
+            readStatesCommands()
+                .then(() => {
+                    if (adapter.config.rooms) {
+                        return readEnums();
+                    } else {
+                        return Promise.resolve();
+                    }
+                })
+                .then(() => {
+                    // init polling every hour
+                    reconnectTimer = setInterval(connect, 3600000);
+                    connect();
+                    // detect changes of objects
+                    adapter.subscribeForeignObjects('*');
+                });
+        });
     });
 }
 
