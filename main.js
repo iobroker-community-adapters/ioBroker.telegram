@@ -850,7 +850,7 @@ function processMessage(obj) {
                 }
                 if (!call.users && !call.user) {
                     if (adapter.config.useUsername) {
-                        call.users = Object.keys(users).map(id => id.startsWith('@') ? id : '@' + id);
+                        call.users = Object.keys(users).map(id => users[id].startsWith('@') ? users[id] : '@' + users[id]);
                     } else {
                         return adapter.log.error('Please activate "Store username instead of first name of remembered users" to use default user');
                     }
