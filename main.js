@@ -669,9 +669,9 @@ function sendMessage(text, user, chatId, options) {
         text = (text || '').toString();
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         const re = new RegExp(m[1], 'i');
-        const id = users.find(id => users[id].firstName.match(re) || users[id].userName.match(re));
+        const id = users.find(id => (!adapter.config.useUsername && users[id].firstName.match(re)) || (adapter.config.useUsername && users[id].userName.match(re)));
         if (id) {
-            if (id && options) {
+            if (options) {
                 options.chatId = id;
             }
             count += _sendMessageHelper(id, m[1], text, options);
@@ -1165,7 +1165,7 @@ function processTelegramText(msg) {
         if (m) {
             if (adapter.config.password === m[1]) {
                 storeUser(msg.from.id, msg.from.first_name, msg.from.username);
-                if (adapter.config.useUsername && !msg.from.username) {
+                if (!msg.from.username) {
                     adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
                 }
                 bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
