@@ -480,6 +480,9 @@ TODO:
 - venue
 
 ## Changelog
+### 1.5.1 (2020-02-09)
+* (Haba) Fix of the response for the "callback_query" event
+
 ### 1.5.0 (2020-02-03)
 * (bluefox) Added voice calls 
 
