@@ -1419,23 +1419,13 @@ function connect() {
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
-
+	    adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, err => err && adapter.log.error(err));
             adapter.setState('communicate.request', '[' + (
                 !adapter.config.useUsername ? callbackQuery.from.first_name :
                     !callbackQuery.from.username ? callbackQuery.from.first_name :
                         callbackQuery.from.username) + ']' + callbackQuery.data, err => err && adapter.log.error(err));
 
             isAnswerForQuestion(adapter, callbackQuery);
-
-            //const action = callbackQuery.data;
-            const msg    = callbackQuery.message;
-            const opts = {
-                chat_id: msg.chat.id,
-                message_id: msg.message_id,
-            };
-            let text = 'Ok';// = 'You hit button ' + action;
-
-            bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
             adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
