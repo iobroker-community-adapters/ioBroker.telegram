@@ -36,7 +36,12 @@ function copyFileSync(source, target) {
         }
     }
 
-    fs.writeFileSync(targetFile, fs.readFileSync(source));
+    try {
+        fs.writeFileSync(targetFile, fs.readFileSync(source));
+    }
+    catch (err) {
+        console.log("file copy error: " +source +" -> " + targetFile + " (error ignored)");
+    }
 }
 
 function copyFolderRecursiveSync(source, target, ignore) {
@@ -61,6 +66,7 @@ function copyFolderRecursiveSync(source, target, ignore) {
             }
 
             var curSource = path.join(source, file);
+            var curTarget = path.join(targetFolder, file);
             if (fs.lstatSync(curSource).isDirectory()) {
                 // ignore grunt files
                 if (file.indexOf('grunt') !== -1) return;
@@ -68,7 +74,7 @@ function copyFolderRecursiveSync(source, target, ignore) {
                 if (file === 'mocha') return;
                 copyFolderRecursiveSync(curSource, targetFolder, ignore);
             } else {
-                copyFileSync(curSource, targetFolder);
+                copyFileSync(curSource, curTarget);
             }
         });
     }
@@ -158,7 +164,7 @@ function checkIsControllerInstalled(cb, counter) {
     try {
         var f = fs.readFileSync(dataDir + 'objects.json');
         var objects = JSON.parse(f.toString());
-        if (objects['system.adapter.admin.0']) {
+        if (objects['system.certificates']) {
             console.log('checkIsControllerInstalled: installed!');
             setTimeout(function () {
                 if (cb) cb();
@@ -305,6 +311,7 @@ function installJsController(cb) {
         } else {
             // check if port 9000 is free, else admin adapter will be added to running instance
             var client = new require('net').Socket();
+            client.on('error', () => {});
             client.connect(9000, '127.0.0.1', function() {
                 console.error('Cannot initiate fisrt run of test, because one instance of application is running on this PC. Stop it and repeat.');
                 process.exit(0);
@@ -446,7 +453,23 @@ function setupController(cb) {
             restoreOriginalFiles();
             copyAdapterToController();
         }
-        if (cb) cb();
+        // read system.config object
+        var dataDir = rootDir + 'tmp/' + appName + '-data/';
+
+        var objs;
+        try {
+            objs = fs.readFileSync(dataDir + 'objects.json');
+            objs = JSON.parse(objs);
+        }
+        catch (e) {
+            console.log('ERROR reading/parsing system configuration. Ignore');
+            objs = {'system.config': {}};
+        }
+        if (!objs || !objs['system.config']) {
+            objs = {'system.config': {}};
+        }
+
+        if (cb) cb(objs['system.config']);
     });
 }
 
@@ -538,7 +561,10 @@ function startController(isStartAdapter, onObjectChange, onStateChange, callback
                     if (isStartAdapter) {
                         startAdapter(objects, states, callback);
                     } else {
-                        if (callback) callback(objects, states);
+                        if (callback) {
+                            callback(objects, states);
+                            callback = null;
+                        }
                     }
                 }
             },
@@ -578,7 +604,14 @@ function startController(isStartAdapter, onObjectChange, onStateChange, callback
                 isStatesConnected = true;
                 if (isObjectConnected) {
                     console.log('startController: started!!');
-                    startAdapter(objects, states, callback);
+                    if (isStartAdapter) {
+                        startAdapter(objects, states, callback);
+                    } else {
+                        if (callback) {
+                            callback(objects, states);
+                            callback = null;
+                        }
+                    }
                 }
             },
             change: onStateChange

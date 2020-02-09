@@ -1,8 +1,7 @@
 ![Logo](admin/telegram.png)
 # ioBroker telegram Adapter
-==============
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
+![Number of Installations](http://iobroker.live/badges/telegram-installed.svg) ![Number of Installations](http://iobroker.live/badges/telegram-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
 [![Tests](https://travis-ci.org/ioBroker/ioBroker.telegram.svg?branch=master)](https://travis-ci.org/ioBroker/ioBroker.telegram)
 
@@ -22,10 +21,10 @@ To start a conversation with your bot you need to authenticate user with "/passw
 
 **Note:** you can use short form "/p phrase".
 
-To add nice avatar picture enter ```/setuserpic``` and upload him desired picture (512x512 pixels), like this one [logo](img/logo.png).
+To add nice avatar picture enter `/setuserpic` and upload him desired picture (512x512 pixels), like this one [logo](img/logo.png).
 
-You can send message to all authenticated users over messageBox ```sendTo('telegram', 'Test message')```
-or to specific user ```sendTo('telegram', '@userName Test message')```.
+You can send message to all authenticated users over messageBox `sendTo('telegram', 'Test message')`
+or to specific user `sendTo('telegram', '@userName Test message')`.
 User must be authenticated before.
 
 You can specify user in that way too:
@@ -35,15 +34,19 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
     console.log('Sent to ' + res + ' users');
 });
 ```
+
 If you use the example above be aware of that you have to replace 'UserName' with either the firstname or the Public-Telegram-Username of the User you want to send the message to. (Depends on if the 'Store username not firstname' setting in the Adaptersettings is enabled or not)
 If the option is set and the user did not specify a public username in his telegram account, then the adapter will continue to use the firstname of the user. Keep in mind that if the user sets a public username later (after authenticating to your bot) the saved firstname will be replaced by the username the next time the user sends a message to the bot.
+
+It is possible to specify more than one recipient (just separate the Usernames by comma).
+For example: Recipient: "User1,User4,User5"
 
 You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"*.
 
 ## Usage
 You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
 
-To send photo, just send a path to file instead of text or URL: ```sendTo('telegram', 'absolute/path/file.png')``` or ```sendTo('telegram', 'https://telegram.org/img/t_logo.png')```.
+To send photo, just send a path to file instead of text or URL: `sendTo('telegram', 'absolute/path/file.png')` or `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
 Example how to send screenshot from webcam to telegram:
 
@@ -74,7 +77,6 @@ on("someState", function (obj) {
         setTimeout(sendImage, 30000);
     }
 });
-
 ```
 
 Following messages are reserved for actions:
@@ -114,6 +116,7 @@ sendTo('telegram.0', {
 Adapter tries to detect the type of message (photo, video, audio, document, sticker, action, location) depends on text in the message if the text is path to existing file, it will be sent as according type.
 
 Location will be detected on attribute latitude:
+
 ```
 sendTo('telegram.0', {
     latitude:               52.522430,
@@ -126,6 +129,7 @@ sendTo('telegram.0', {
 You have the possibility to define extra the type of the message in case you want to send the data as buffer.
 
 Following types are possible: *sticker*, *video*, *document*, *audio*, *photo*.
+
 ```
 sendTo('telegram.0', {
     text: fs.readFileSync('/opt/path/picture.png'),
@@ -188,10 +192,30 @@ if (command ==="1_2") {
 
 You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegrambotanswercallbackquerycallbackqueryid-text-showalert-options--promise).
 
+### Question
+You can send to telegram the message and the next answer will be returned in callback. 
+Timeout can be set in configuration and by default is 60 seconds.
+
+```
+sendTo('telegram.0', 'ask', {
+    user: user, // optional
+    text: 'Aure you sure?',
+    reply_markup: {
+        inline_keyboard: [
+            // two buttons could be on one line too, but here they are on different
+            [{ text: 'Yes!',  callback_data: '1' }], // first line
+            [{ text: 'No...', callback_data: '0' }]  // second line
+        ]
+    }
+}, msg => {
+    console.log('user says ' + msg.data);
+});
+``` 
+
 ## Chat ID
 From version 0.4.0 you can use chat ID to send messages to chat.
 
-```sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');```
+`sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');`
 
 ## Updating messages
 The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with *inline keyboards* using callback queries, but can also help reduce clutter in conversations with regular chat bots.
@@ -200,7 +224,7 @@ The following methods allow you to change an existing message in the message his
 Use this method to edit text sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
 
 ```
-if (command ==="1_2") {
+if (command === "1_2") {
     sendTo('telegram', {
         user: user,
         text: 'New text before buttons',
@@ -221,6 +245,7 @@ if (command ==="1_2") {
 ```
 
 *or new text for last message:*
+
 ```
 if (command ==="1_2") {
     sendTo('telegram', {
@@ -242,7 +267,7 @@ You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/rel
 Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
 
 ```
-if (command ==="1_2") {
+if (command === "1_2") {
     sendTo('telegram', {
         user: user,
         text: 'New text before buttons',
@@ -270,12 +295,12 @@ Use this method to delete a message, including service messages, with the follow
 Returns *True* on success.
 
 ```
-if (command ==="delete") {
+if (command === "delete") {
     sendTo('telegram', {
         user: user,
         deleteMessage: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val, 
+                chat_id: getState("telegram.0.communicate.requestChatId").val,
                 message_id: getState("telegram.0.communicate.requestMessageId").val
             }
         }
@@ -320,11 +345,209 @@ Following settings must be provided for server mode:
 - Chain certificate (optional)
 - Let's encrypt options - It is very easy to setup **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
 
+## Calls via telegram
+Thanks to [callmebot](https://www.callmebot.com/) api, you can make a call to your telegram account and some text will be read via TTS engine.
+
+To do that from javascript adapter just call:
+
+```
+sendTo('telegram.0', 'call', 'Some text');
+```
+
+or 
+
+```
+sendTo('telegram.0', 'call', {
+    text: 'Some text',
+    user: '@Username', // optional and the call will be done to the first user in telegram.0.communicate.users.
+    language: 'de-DE-Standard-A' // optional and the system language will be taken 
+});
+```
+
+or 
+
+```
+sendTo('telegram.0', 'call', {
+    text: 'Some text',
+    users: ['@Username1', '@Username2'] // Array of `users'.
+});
+```
+
+or 
+
+```
+sendTo('telegram.0', 'call', {
+    file: 'url of mp3 file that is accessible from internet',
+    users: ['@Username1', '@Username2'] // Array of `users'.
+});
+```
+
+Possible values for language:
+- `ar-XA-Standard-A` - Arabic (Female voice)
+- `ar-XA-Standard-B` - Arabic (Male voice)
+- `ar-XA-Standard-C` - Arabic (Male 2 voice)
+- `cs-CZ-Standard-A` - Czech (Czech Republic) (Female voice)
+- `da-DK-Standard-A` - Danish (Denmark) (Female voice)
+- `nl-NL-Standard-A` - Dutch (Netherlands) (Female voice - will be used if system language is NL and no language was provided)
+- `nl-NL-Standard-B` - Dutch (Netherlands) (Male voice)
+- `nl-NL-Standard-C` - Dutch (Netherlands) (Male 2 voice)
+- `nl-NL-Standard-D` - Dutch (Netherlands) (Female 2 voice)
+- `nl-NL-Standard-E` - Dutch (Netherlands) (Female 3 voice)
+- `en-AU-Standard-A` - English (Australia) (Female voice)
+- `en-AU-Standard-B` - English (Australia) (Male voice)
+- `en-AU-Standard-C` - English (Australia) (Female 2 voice)
+- `en-AU-Standard-D` - English (Australia) (Male 2 voice)
+- `en-IN-Standard-A` - English (India) (Female voice)
+- `en-IN-Standard-B` - English (India) (Male voice)
+- `en-IN-Standard-C` - English (India) (Male 2 voice)
+- `en-GB-Standard-A` - English (UK) (Female voice - will be used if system language is EN and no language was provided)
+- `en-GB-Standard-B` - English (UK) (Male voice)
+- `en-GB-Standard-C` - English (UK) (Female 2 voice)
+- `en-GB-Standard-D` - English (UK) (Male 2 voice)
+- `en-US-Standard-B` - English (US) (Male voice)
+- `en-US-Standard-C` - English (US) (Female voice)
+- `en-US-Standard-D` - English (US) (Male 2 voice)
+- `en-US-Standard-E` - English (US) (Female 2 voice)
+- `fil-PH-Standard-A` - Filipino (Philippines) (Female voice)
+- `fi-FI-Standard-A` - Finnish (Finland) (Female voice)
+- `fr-CA-Standard-A` - French (Canada) (Female voice)
+- `fr-CA-Standard-B` - French (Canada) (Male voice)
+- `fr-CA-Standard-C` - French (Canada) (Female 2 voice)
+- `fr-CA-Standard-D` - French (Canada) (Male 2 voice)
+- `fr-FR-Standard-A` - French (France) (Female voice - will be used if system language is FR and no language was provided)
+- `fr-FR-Standard-B` - French (France) (Male voice)
+- `fr-FR-Standard-C` - French (France) (Female 2 voice)
+- `fr-FR-Standard-D` - French (France) (Male 2 voice)
+- `de-DE-Standard-A` - German (Germany) (Female voice - will be used if system language is DE and no language was provided)
+- `de-DE-Standard-B` - German (Germany) (Male voice)
+- `el-GR-Standard-A` - Greek (Greece) (Female voice)
+- `hi-IN-Standard-A` - Hindi (India) (Female voice)
+- `hi-IN-Standard-B` - Hindi (India) (Male voice)
+- `hi-IN-Standard-C` - Hindi (India) (Male 2 voice)
+- `hu-HU-Standard-A` - Hungarian (Hungary) (Female voice)
+- `id-ID-Standard-A` - Indonesian (Indonesia) (Female voice)
+- `id-ID-Standard-B` - Indonesian (Indonesia) (Male voice)
+- `id-ID-Standard-C` - Indonesian (Indonesia) (Male 2 voice)
+- `it-IT-Standard-A` - Italian (Italy) (Female voice - will be used if system language is IT and no language was provided)
+- `it-IT-Standard-B` - Italian (Italy) (Female 2 voice)
+- `it-IT-Standard-C` - Italian (Italy) (Male voice)
+- `it-IT-Standard-D` - Italian (Italy) (Male 2 voice)
+- `ja-JP-Standard-A` - Japanese (Japan) (Female voice)
+- `ja-JP-Standard-B` - Japanese (Japan) (Female 2 voice)
+- `ja-JP-Standard-C` - Japanese (Japan) (Male voice)
+- `ja-JP-Standard-D` - Japanese (Japan) (Male 2 voice)
+- `ko-KR-Standard-A` - Korean (South Korea) (Female voice)
+- `ko-KR-Standard-B` - Korean (South Korea) (Female 2 voice)
+- `ko-KR-Standard-C` - Korean (South Korea) (Male voice)
+- `ko-KR-Standard-D` - Korean (South Korea) (Male 2 voice)
+- `cmn-CN-Standard-A` - Mandarin Chinese (Female voice)
+- `cmn-CN-Standard-B` - Mandarin Chinese (Male voice)
+- `cmn-CN-Standard-C` - Mandarin Chinese (Male 2 voice)
+- `nb-NO-Standard-A` - Norwegian (Norway) (Female voice)
+- `nb-NO-Standard-B` - Norwegian (Norway) (Male voice)
+- `nb-NO-Standard-C` - Norwegian (Norway) (Female 2 voice)
+- `nb-NO-Standard-D` - Norwegian (Norway) (Male 2 voice)
+- `nb-no-Standard-E` - Norwegian (Norway) (Female 3 voice)
+- `pl-PL-Standard-A` - Polish (Poland) (Female voice - will be used if system language is PL and no language was provided)
+- `pl-PL-Standard-B` - Polish (Poland) (Male voice)
+- `pl-PL-Standard-C` - Polish (Poland) (Male 2 voice)
+- `pl-PL-Standard-D` - Polish (Poland) (Female 2 voice)
+- `pl-PL-Standard-E` - Polish (Poland) (Female 3 voice)
+- `pt-BR-Standard-A` - Portuguese (Brazil) (Female voice - will be used if system language is PT and no language was provided)
+- `pt-PT-Standard-A` - Portuguese (Portugal) (Female voice)
+- `pt-PT-Standard-B` - Portuguese (Portugal) (Male voice)
+- `pt-PT-Standard-C` - Portuguese (Portugal) (Male 2 voice)
+- `pt-PT-Standard-D` - Portuguese (Portugal) (Female 2 voice)
+- `ru-RU-Standard-A` - Russian (Russia) (Female voice - will be used if system language is RU and no language was provided)
+- `ru-RU-Standard-B` - Russian (Russia) (Male voice)
+- `ru-RU-Standard-C` - Russian (Russia) (Female 2 voice)
+- `ru-RU-Standard-D` - Russian (Russia) (Male 2 voice)
+- `sk-SK-Standard-A` - Slovak (Slovakia) (Female voice)
+- `es-ES-Standard-A` - Spanish (Spain) (Female voice - will be used if system language is ES and no language was provided)
+- `sv-SE-Standard-A` - Swedish (Sweden) (Female voice)
+- `tr-TR-Standard-A` - Turkish (Turkey) (Female voice)
+- `tr-TR-Standard-B` - Turkish (Turkey) (Male voice)
+- `tr-TR-Standard-C` - Turkish (Turkey) (Female 2 voice)
+- `tr-TR-Standard-D` - Turkish (Turkey) (Female 3 voice)
+- `tr-TR-Standard-E` - Turkish (Turkey) (Male voice)
+- `uk-UA-Standard-A` - Ukrainian (Ukraine) (Female voice)
+- `vi-VN-Standard-A` - Vietnamese (Vietnam) (Female voice)
+- `vi-VN-Standard-B` - Vietnamese (Vietnam) (Male voice)
+- `vi-VN-Standard-C` - Vietnamese (Vietnam) (Female 2 voice)
+- `vi-VN-Standard-D` - Vietnamese (Vietnam) (Male 2 voice)
+
 TODO:
 - venue
-- dialogs
 
 ## Changelog
+### 1.5.0 (2020-02-03)
+* (bluefox) Added voice calls 
+
+### 1.4.7 (2019-12-27)
+* (Apollon77) Make compatible with js-controller 2.3
+
+### 1.4.6 (2019-12-09)
+* (bluefox) Allowed writeOnly states in telegram
+
+### 1.4.4 (2019-11-27)
+* (bluefox) New sendTo message "ask" was added (see [Question](#question) )
+
+### 1.4.3 (2019-02-21)
+* (BuZZy1337) Bugfix for not yet completely implemented feature
+
+### 1.4.2 (2019-02-18)
+* (BuZZy1337) fix for recipients containing withespaces
+* (BuZZy1337) change loglevel of "getMe" info-messages to debug
+* (bluefox) fix scroll in firefox
+
+### 1.4.1 (2019-01-12)
+* (simatec) Support for Compact mode
+
+### 1.4.0 (2019-01-06)
+* (bluefox) Custom settings for states were added
+
+### 1.3.6 (2018-12-01)
+* (Apollon77) fix #78
+
+### 1.3.5 (2018-11-04)
+* (BuZZy1337) Fix a small error caused by previous commit
+
+### 1.3.4 (2018-11-04)
+* (BuZZy1337) Ask if saved users should be wiped when password is changed.
+
+### 1.3.3 (2018-11-03)
+* (BuZZy1337) Show warning if no password is set.
+
+### 1.3.2 (2018-10-28)
+* (BuZZy1337) Just minor cosmetic fixes/changes
+
+### 1.3.1 (2018-10-08)
+* (bluefox) The ability of enable/disable of states controlling was added
+
+### 1.3.0 (2018-09-19)
+* (BuZZy1337) Added possibility to delete authenticated users in the Adapter-Config screen (via Messages tab)
+* (BuZZy1337) fixed a problem "building" the Blockly sendto block when no adapter instance exists.
+
+### 1.2.7 (2018-08-29)
+* (BuZZy1337) Added "disable notification" checkbox to blockly block.
+* (BuZZy1337) Added "parse_mode" selector to blockly block.
+
+### 1.2.6 (2018-07-30)
+* (BuZZy1337) Added support for sending Messages to Group-Chats via Blockly.
+
+### 1.2.5 (2018-07-11)
+* (BuZZy1337) Added possibility to specify more than one recipient. (separated by comma)
+
+### 1.2.4 (2018-06-02)
+* (BuZZy1337) remove HTML Tags from Logerror-Messages
+* (Apollon77) fix misleading error when setting a value for a state
+
+### 1.2.3 (2018-04-26)
+* (Osrx) Added Socks5 settings to config dialog on machines running admin 2.
+
+### 1.2.2 (2018-04-25)
+* (kirovilya) Changed library for Proxy Socks5
+
 ### 1.2.1 (2018-04-17)
 * (Haba) Added support for Proxy Socks5.
 
@@ -332,7 +555,7 @@ TODO:
 * (AlGu) Possibility to define polling interval in configuration wizard. Default is 300ms.
 
 ### 1.1.4 (2018-03-20)
-* (BasGo) Added checks before accessing non-existing options 
+* (BasGo) Added checks before accessing non-existing options
 
 ### 1.1.3 (2018-03-19)
 * (BasGo) Fixed issue preventing adapter to terminate correctly
@@ -435,7 +658,7 @@ TODO:
 
 The MIT License (MIT)
 
-Copyright (c) 2016-2018, bluefox <dogafox@gmail.com>
+Copyright (c) 2016-2020, bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
