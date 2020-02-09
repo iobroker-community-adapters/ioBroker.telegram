@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.5.0",
+        "version": "1.5.1",
         "news": {
+	    "1.5.1": {
+                "en": "Fix of the response for the callback_query event",
+                "de": "Korrigieren der Antwort auf das Ereignis callback_query",
+                "ru": "Исправление ответа адаптера на событие callback_query",
+                "pt": "Comentários sobre o retorno de chamada callback_query",
+                "nl": "Het antwoord op de gebeurtenis callback_query corrigeren",
+                "fr": "Correction de la réponse à l'événement callback_query",
+                "it": "Correzione della risposta all'evento callback_query",
+                "es": "Corregir la respuesta al evento callback_query",
+                "pl": "Poprawianie odpowiedzi na zdarzenie callback_query",
+                "zh-cn": "更正对callback_query事件的响应"
+            },
             "1.5.0": {
                 "en": "Added voice calls ",
                 "de": "Sprachanrufe hinzugefügt",
