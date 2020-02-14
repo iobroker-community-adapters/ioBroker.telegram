@@ -17,7 +17,7 @@
 process.env.NTBA_FIX_319 = 1;
 
 const TelegramBot = require('node-telegram-bot-api');
-const utils = require('@iobroker/adapter-core'); // Get common adapter utils
+const utils       = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const _     = require('./lib/words.js');
 const fs    = require('fs');
@@ -622,8 +622,8 @@ function sendMessage(text, user, chatId, options) {
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text !== undefined)   delete options.text;
-        if (options.user !== undefined)   delete options.user;
+        if (options.text   !== undefined) delete options.text;
+        if (options.user   !== undefined) delete options.user;
     }
 
     // convert
@@ -638,7 +638,11 @@ function sendMessage(text, user, chatId, options) {
     let count = 0;
 
     if (user) {
-        const userArray = user.split(',').map(build => build.trim());
+        if (typeof user !== 'string' && !(user instanceof Array)) {
+            adapter.log.warn('Invalid type of user parameter: ' + typeof user + '. Expected is string or array.');
+        }
+
+        const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(build => build.trim());
         let matches = 0;
         userArray.forEach(userName => {
             for (const id in users) {
