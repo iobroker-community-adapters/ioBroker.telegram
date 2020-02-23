@@ -1522,7 +1522,7 @@ function connect() {
 
             isAnswerForQuestion(adapter, callbackQuery);
 
-            //const action = callbackQuery.data;
+            /* const action = callbackQuery.data;
             const msg    = callbackQuery.message;
             const opts = {
                 chat_id: msg.chat.id,
@@ -1530,7 +1530,7 @@ function connect() {
             };
             let text = 'Ok';// = 'You hit button ' + action;
 
-            //bot.editMessageText(text, opts);
+            bot.editMessageText(text, opts); */
         });
         bot.on('polling_error', error => {
             adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
