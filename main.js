@@ -375,226 +375,203 @@ function _sendMessageHelper(dest, name, text, options) {
                 });
         }
     }
-    else if(options && options.type=== 'mediagroup')
-    {
-      adapter.log.debug('Send mediagroup to "' + name + '": ');
-      if(bot)
-      {
-        const {media:fileNames} = options;
-        if(fileNames instanceof Array)
-        {
-          bot.sendChatAction(dest, 'upload_photo')
-            .then((res) => {
-          if(fileNames.every((name) => fs.existsSync(name)))
-          {
-              const filesAsArray = fileNames
-                                  .map((element) =>{
-                                      try{
-                                        return {type: "photo",media: fs.readFileSync(element)}
-                                        }
-                                      catch(error){
-                                            adapter.log.error('Cannot read file' + element);
-                                          return undefined;
-                                      }
-                                    })
-                                  .filter((element) => element != undefined);
-              const size = filesAsArray.map((element)=>element.media.length).reduce((acc,val)=>acc+val);
-              adapter.log.info('Send mediagroup to "' + name + '": ' + size + ' bytes');
-              if(filesAsArray.length >0){
-                bot.sendMediaGroup(dest,filesAsArray).
-                  then((response) => saveSendRequest(response)).
-                  then(()=>{
-                    adapter.log.debug('photos sent');
-                    options = null;
-                    count++;
-                  }).catch(error => {
-                      if (options.chatId) {
-                          adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
-                      } else {
-                          adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
-                      }
-                      options = null;
-                  });
-                }
-            }
-            else
-            {
-              adapter.log.debug('files must exists');
-              options = null;
-            }
-          });
+    else if (options && options.type === 'mediagroup') {
+        adapter.log.debug('Send mediagroup to "' + name + '": ');
+        if (bot) {
+            const {media: fileNames} = options;
+            if (fileNames instanceof Array) {
+                bot.sendChatAction(dest, 'upload_photo')
+                    .then(res => {
+                        if (fileNames.every(name => fs.existsSync(name))) {
+                            const filesAsArray = fileNames
+                                .map(element => {
+                                    try {
+                                        return {type: "photo", media: fs.readFileSync(element)}
+                                    } catch (error) {
+                                        adapter.log.error('Cannot read file' + element);
+                                        return undefined;
+                                    }
+                                })
+                                .filter(element => element !== undefined);
+                            const size = filesAsArray.map((element) => element.media.length).reduce((acc, val) => acc + val);
+                            adapter.log.info('Send mediagroup to "' + name + '": ' + size + ' bytes');
+                            if (filesAsArray.length > 0) {
+                                bot.sendMediaGroup(dest, filesAsArray).then((response) => saveSendRequest(response)).then(() => {
+                                    adapter.log.debug('photos sent');
+                                    options = null;
+                                    count++;
+                                }).catch(error => {
+                                    if (options.chatId) {
+                                        adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
+                                    } else {
+                                        adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
+                                    }
+                                    options = null;
+                                });
+                            }
+                        } else {
+                            adapter.log.debug('files must exists');
+                            options = null;
+                        }
+                    });
+            } else
+                adapter.log.debug('option media should be an array');
+        } else {
+            adapter.log.debug('no files added!');
+            options = null;
         }
-        else
-            adapter.log.debug('option media should be an array');
-      }
-      else
-      {
-        adapter.log.debug('no files added!');
-        options = null;
-      }
     }
     else if (text && typeof text === 'string' && actions.includes(text)) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
-        if (bot) {
-            bot.sendChatAction(dest, text)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    adapter.log.debug('Action sent');
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send action [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
+        bot && bot.sendChatAction(dest, text)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('Action sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send action [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
     }
-    else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker')))
-    {
+    else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send sticker to "' + name + '": ' + text);
         } else {
             adapter.log.debug('Send sticker to "' + name + '": ' + text.length + ' bytes');
         }
-        if (bot) {
-            bot.sendSticker(dest, text, options)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    options = null;
-                    adapter.log.debug('Sticker sent');
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send sticker [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))){
-      if (typeof text === 'string') {
-          adapter.log.debug('Send animation to "' + name + '": ' + text);
-      } else {
-          adapter.log.debug('Send animation to "' + name + '": ' + text.length + ' bytes');
-      }
-      if (bot) {
-          bot.sendAnimation(dest, text, options)
-              .then(response => saveSendRequest(response))
-              .then(() => {
-                  adapter.log.debug('animation sent');
-                  options = null;
-                  count++;
-              })
-              .catch(error => {
-                  if (options.chatId) {
-                      adapter.log.error('Cannot send animation [chatId - ' + options.chatId + ']: ' + error);
-                  } else {
-                      adapter.log.error('Cannot send animation [user - ' + options.user + ']: ' + error);
-                  }
-                  options = null;
-              });
+        bot && bot.sendSticker(dest, text, options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                options = null;
+                adapter.log.debug('Sticker sent');
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send sticker [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
     }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
+    else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))){
+        if (typeof text === 'string') {
+            adapter.log.debug('Send animation to "' + name + '": ' + text);
+        } else {
+            adapter.log.debug('Send animation to "' + name + '": ' + text.length + ' bytes');
+        }
+        bot && bot.sendAnimation(dest, text, options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('animation sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send animation [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send animation [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send video to "' + name + '": ' + text);
         } else {
             adapter.log.debug('Send video to "' + name + '": ' + text.length + ' bytes');
         }
-        if (bot) {
-            bot.sendVideo(dest, text, options)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    adapter.log.debug('Video sent');
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send video [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
+        bot && bot.sendVideo(dest, text, options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('Video sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send video [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send document to "' + name + '": ' + text);
         } else {
             adapter.log.debug('Send document to "' + name + '": ' + text.length + ' bytes');
         }
-        if (bot) {
-            bot.sendDocument(dest, text, options)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    adapter.log.debug('Document sent');
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send document [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio'))) {
+        bot && bot.sendDocument(dest, text, options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('Document sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send document [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (text && ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send audio to "' + name + '": ' + text);
         } else {
             adapter.log.debug('Send audio to "' + name + '": ' + text.length + ' bytes');
         }
-        if (bot) {
-            bot.sendAudio(dest, text, options)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    adapter.log.debug('Audio sent');
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send audio [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
+        bot && bot.sendAudio(dest, text, options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('Audio sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send audio [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send photo to "' + name + '": ' + text);
         } else {
             adapter.log.debug('Send photo to "' + name + '": ' + text.length + ' bytes');
         }
-        if (bot) {
-            bot.sendPhoto(dest, text, options)
-                .then(response => {
-                    saveSendRequest(response);
-                })
-                .then(() => {
-                    adapter.log.debug('Photo sent');
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (options && options.answerCallbackQuery !== undefined) {
+        bot && bot.sendPhoto(dest, text, options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('Photo sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (options && options.answerCallbackQuery !== undefined) {
         adapter.log.debug('Send answerCallbackQuery to "' + name + '"');
         if (options.answerCallbackQuery.showAlert === undefined) {
             options.answerCallbackQuery.showAlert = false;
@@ -616,87 +593,75 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (options && options.editMessageReplyMarkup !== undefined) {
+    }
+    else if (options && options.editMessageReplyMarkup !== undefined) {
         adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
-        if (bot) {
-            bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
-                .then(response => {
-                    saveSendRequest(response);
-                })
-                .then(() => {
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send editMessageReplyMarkup [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send editMessageReplyMarkup [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (options && options.editMessageText !== undefined) {
+        bot && bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send editMessageReplyMarkup [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send editMessageReplyMarkup [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (options && options.editMessageText !== undefined) {
         adapter.log.debug('Send editMessageText to "' + name + '"');
-        if (bot) {
-            bot.editMessageText(text, options.editMessageText.options)
-                .then(response => {
-                    saveSendRequest(response);
-                })
-                .then(() => {
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send editMessageText [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send editMessageText [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else if (options && options.deleteMessage !== undefined) {
+        bot && bot.editMessageText(text, options.editMessageText.options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send editMessageText [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send editMessageText [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else if (options && options.deleteMessage !== undefined) {
         adapter.log.debug('Send deleteMessage to "' + name + '"');
-        if (bot) {
-            bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
-                .then(response => {
-                    saveSendRequest(response);
-                })
-                .then(() => {
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error('Cannot send deleteMessage [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send deleteMessage [user - ' + options.user + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
-    } else {
+        bot && bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options.chatId) {
+                    adapter.log.error('Cannot send deleteMessage [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send deleteMessage [user - ' + options.user + ']: ' + error);
+                }
+                options = null;
+            });
+    }
+    else {
         adapter.log.debug('Send message to "' + name + '": ' + text);
-        if (bot) {
-            bot.sendMessage(dest, text || '', options)
-                .then(response => {
-                    saveSendRequest(response);
-                })
-                .then(() => {
-                    adapter.log.debug('Message sent');
-                    options = null;
-                    count++;
-                })
-                .catch(error => {
-                    if (options && options.chatId) {
-                        adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
-                    } else {
-                        adapter.log.error('Cannot send message [user - ' + (options && options.user) + ']: ' + error);
-                    }
-                    options = null;
-                });
-        }
+        bot && bot.sendMessage(dest, text || '', options)
+            .then(response => saveSendRequest(response))
+            .then(() => {
+                adapter.log.debug('Message sent');
+                options = null;
+                count++;
+            })
+            .catch(error => {
+                if (options && options.chatId) {
+                    adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
+                } else {
+                    adapter.log.error('Cannot send message [user - ' + (options && options.user) + ']: ' + error);
+                }
+                options = null;
+            });
     }
 
     return count;
