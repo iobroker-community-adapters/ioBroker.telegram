@@ -4,9 +4,9 @@
         "require": {
             "js-controller": ">0.6.6"
         },
-        "version": "1.5.1",
+        "version": "1.5.2",
         "news": {
-            "1.5.1": {
+            "1.5.2": {
                 "en": "Invalid parameters were checked",
                 "de": "Ungültige Parameter wurden überprüft",
                 "ru": "Неверные параметры были проверены",

@@ -480,7 +480,7 @@ TODO:
 - venue
 
 ## Changelog
-### 1.5.1 (2020-02-14)
+### 1.5.2 (2020-02-23)
 * (bluefox) Invalid parameters were checked
 
 ### 1.5.0 (2020-02-03)

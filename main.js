@@ -19,11 +19,11 @@ process.env.NTBA_FIX_319 = 1;
 const TelegramBot = require('node-telegram-bot-api');
 const utils       = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
-const _     = require('./lib/words.js');
-const fs    = require('fs');
-const LE    = require(utils.controllerDir + '/lib/letsencrypt.js');
-const https = require('https');
-const socks = require('socksv5');
+const _           = require('./lib/words.js');
+const fs          = require('fs');
+const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
+const https       = require('https');
+const socks       = require('socksv5');
 
 let bot;
 let request;
@@ -200,12 +200,17 @@ function startAdapter(options) {
 
     // is called if a subscribed state changes
     adapter.on('stateChange', (id, state) => {
-        if (state && !state.ack && id.indexOf('communicate.response') !== -1) {
-            // Send to someone this message
-            sendMessage(state.val);
-        }
-        if (state && state.ack && commands[id] && commands[id].report) {
-            sendMessage(getStatus(id, state));
+        if (state) {
+            if (!state.ack) {
+                if (id.indexOf('communicate.response') !== -1) {
+                    // Send to someone this message
+                    sendMessage(state.val);
+                }
+            } else {
+                if (commands[id] && commands[id].report) {
+                    sendMessage(getStatus(id, state));
+                }
+            }
         }
     });
 
@@ -785,13 +790,15 @@ function processMessage(obj) {
 
     // filter out double messages
     const json = JSON.stringify(obj);
-    if (lastMessageTime && lastMessageText === JSON.stringify(obj) && new Date().getTime() - lastMessageTime < 1200) {
-        adapter.log.debug('Filter out double message [first was for ' + (new Date().getTime() - lastMessageTime) + 'ms]: ' + json);
+    if (lastMessageTime && lastMessageText === JSON.stringify(obj) && Date.now() - lastMessageTime < 1200) {
+        adapter.log.debug('Filter out double message [first was for ' + (Date.now() - lastMessageTime) + 'ms]: ' + json);
         return;
     }
 
-    lastMessageTime = new Date().getTime();
+    lastMessageTime = Date.now();
     lastMessageText = json;
+
+    adapter.log.debug(`Received command "${obj.command}": ${JSON.stringify(obj.message)}`);
 
     switch (obj.command) {
         case 'send':
@@ -956,6 +963,9 @@ function getListOfCommands() {
             }
         }
     });
+    if (!lines.length) {
+        lines.push(_('No commands found.'));
+    }
     return lines.join('\n');
 }
 
@@ -1075,7 +1085,7 @@ function isAnswerForQuestion(adapter, msg) {
 
 function processTelegramText(msg) {
     adapter.log.debug(JSON.stringify(msg));
-    const now = new Date().getTime();
+    const now = Date.now();
     let pollingInterval = 0;
     if (adapter.config && adapter.config.pollingInterval !== undefined) {
         pollingInterval = parseInt(adapter.config.pollingInterval, 10) || 0;
@@ -1129,9 +1139,8 @@ function processTelegramText(msg) {
                 let sValue = msg.text.substring(commands[id].alias.length + 1);
                 found = true;
                 if (sValue === '?') {
-                    adapter.getForeignState(id, (err, state) => {
-                        bot.sendMessage(msg.chat.id, getStatus(id, state));
-                    });
+                    adapter.getForeignState(id, (err, state) =>
+                        bot.sendMessage(msg.chat.id, getStatus(id, state)));
                 } else {
                     let value;
                     if (commands[id].states) {
