@@ -1530,7 +1530,7 @@ function connect() {
             };
             let text = 'Ok';// = 'You hit button ' + action;
 
-            bot.editMessageText(text, opts);
+            //bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
             adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
