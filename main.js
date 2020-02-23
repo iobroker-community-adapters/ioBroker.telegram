@@ -2,7 +2,7 @@
  *
  *      ioBroker telegram Adapter
  *
- *      Copyright (c) 2016-2019 bluefox <dogafox@gmail.com>
+ *      Copyright (c) 2016-2020 bluefox <dogafox@gmail.com>
  *
  *      MIT License
  *
@@ -17,15 +17,16 @@
 process.env.NTBA_FIX_319 = 1;
 
 const TelegramBot = require('node-telegram-bot-api');
-const utils = require('@iobroker/adapter-core'); // Get common adapter utils
+const utils       = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
-const _     = require('./lib/words.js');
-const fs    = require('fs');
-const LE    = require(utils.controllerDir + '/lib/letsencrypt.js');
-const https = require('https');
-const socks = require('socksv5');
+const _           = require('./lib/words.js');
+const fs          = require('fs');
+const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
+const https       = require('https');
+const socks       = require('socksv5');
 
 let bot;
+let request;
 let users = {};
 let systemLang = 'en';
 let reconnectTimer = null;
@@ -51,6 +52,19 @@ const server = {
 
 let adapter;
 
+const systemLang2Callme = {
+    en: 'en-GB-Standard-A',
+    de: 'de-DE-Standard-A',
+    ru: 'ru-RU-Standard-A',
+    pt: 'pt-BR-Standard-A',
+    nl: 'nl-NL-Standard-A',
+    fr: 'fr-FR-Standard-A',
+    it: 'it-IT-Standard-A',
+    es: 'es-ES-Standard-A',
+    pl: 'pl-PL-Standard-A',
+    'zh-cn': 'en-GB-Standard-A'
+};
+
 function startAdapter(options) {
     options = options || {};
     Object.assign(options, {name: adapterName});
@@ -60,20 +74,19 @@ function startAdapter(options) {
     adapter.on('message', obj => {
         if (obj) {
             if (obj.command === 'adminuser') {
-                let adminuserData;
+                let adminUserData;
                 adapter.getState('communicate.users', (err, state) => {
                     err && adapter.log.error(err);
                     if (state && state.val) {
                         try {
-                            adminuserData = JSON.parse(state.val);
-                            adapter.sendTo(obj.from, obj.command, adminuserData, obj.callback);
+                            adminUserData = JSON.parse(state.val);
+                            adapter.sendTo(obj.from, obj.command, adminUserData, obj.callback);
                         } catch (err) {
                             err && adapter.log.error(err);
                             adapter.log.error('Cannot parse stored user IDs!');
                         }
                     }
                 });
-                return;
             } else if (obj.command.indexOf('delUser') !== -1) {
                 const userID = obj.command.split(' ')[1];
                 let userObj = {};
@@ -96,7 +109,6 @@ function startAdapter(options) {
                         }
                     }
                 });
-                return;
             } else if (obj.command === 'delAllUser') {
                 try {
                     adapter.setState('communicate.users', '', err => {
@@ -110,7 +122,6 @@ function startAdapter(options) {
                     err && adapter.log.error(err);
                     adapter.log.error('Cannot wipe list of saved users!');
                 }
-                return;
             } else {
                 processMessage(obj);
             }
@@ -189,12 +200,17 @@ function startAdapter(options) {
 
     // is called if a subscribed state changes
     adapter.on('stateChange', (id, state) => {
-        if (state && !state.ack && id.indexOf('communicate.response') !== -1) {
-            // Send to someone this message
-            sendMessage(state.val);
-        }
-        if (state && state.ack && commands[id] && commands[id].report) {
-            sendMessage(getStatus(id, state));
+        if (state) {
+            if (!state.ack) {
+                if (id.indexOf('communicate.response') !== -1) {
+                    // Send to someone this message
+                    sendMessage(state.val);
+                }
+            } else {
+                if (commands[id] && commands[id].report) {
+                    sendMessage(getStatus(id, state));
+                }
+            }
         }
     });
 
@@ -236,7 +252,7 @@ function startAdapter(options) {
 
 function getStatus(id, state) {
     if (commands[id].type === 'boolean') {
-        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].off || _('OFF-Status')}`;
+        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].offStatus || _('OFF-Status')}`;
     } else {
         if (commands[id].states && commands[id].states[state.val] !== undefined) {
             state.val = commands[id].states[state.val];
@@ -336,11 +352,9 @@ function saveSendRequest(msg) {
 
 function _sendMessageHelper(dest, name, text, options) {
     let count = 0;
-
     if (options && options.chatId !== undefined && options.user === undefined) {
-        options.user = users[options.chatId];
+        options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
     }
-
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
@@ -360,7 +374,66 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (actions.indexOf(text) !== -1) {
+    }
+    else if(options && options.type=== 'mediagroup')
+    {
+      adapter.log.debug('Send mediagroup to "' + name + '": ');
+      if(bot)
+      {
+        const {media:fileNames} = options;
+        if(fileNames instanceof Array)
+        {
+          bot.sendChatAction(dest, 'upload_photo')
+            .then((res) => {
+          if(fileNames.every((name) => fs.existsSync(name)))
+          {
+              const filesAsArray = fileNames
+                                  .map((element) =>{
+                                      try{
+                                        return {type: "photo",media: fs.readFileSync(element)}
+                                        }
+                                      catch(error){
+                                            adapter.log.error('Cannot read file' + element);
+                                          return undefined;
+                                      }
+                                    })
+                                  .filter((element) => element != undefined);
+              const size = filesAsArray.map((element)=>element.media.length).reduce((acc,val)=>acc+val);
+              adapter.log.info('Send mediagroup to "' + name + '": ' + size + ' bytes');
+              if(filesAsArray.length >0){
+                bot.sendMediaGroup(dest,filesAsArray).
+                  then((response) => saveSendRequest(response)).
+                  then(()=>{
+                    adapter.log.debug('photos sent');
+                    options = null;
+                    count++;
+                  }).catch(error => {
+                      if (options.chatId) {
+                          adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
+                      } else {
+                          adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
+                      }
+                      options = null;
+                  });
+                }
+            }
+            else
+            {
+              adapter.log.debug('files must exists');
+              options = null;
+            }
+          });
+        }
+        else
+            adapter.log.debug('option media should be an array');
+      }
+      else
+      {
+        adapter.log.debug('no files added!');
+        options = null;
+      }
+    }
+    else if (text && typeof text === 'string' && actions.includes(text)) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
         if (bot) {
             bot.sendChatAction(dest, text)
@@ -379,7 +452,9 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
+    }
+    else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker')))
+    {
         if (typeof text === 'string') {
             adapter.log.debug('Send sticker to "' + name + '": ' + text);
         } else {
@@ -402,7 +477,30 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(mp4|gif)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
+    } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))){
+      if (typeof text === 'string') {
+          adapter.log.debug('Send animation to "' + name + '": ' + text);
+      } else {
+          adapter.log.debug('Send animation to "' + name + '": ' + text.length + ' bytes');
+      }
+      if (bot) {
+          bot.sendAnimation(dest, text, options)
+              .then(response => saveSendRequest(response))
+              .then(() => {
+                  adapter.log.debug('animation sent');
+                  options = null;
+                  count++;
+              })
+              .catch(error => {
+                  if (options.chatId) {
+                      adapter.log.error('Cannot send animation [chatId - ' + options.chatId + ']: ' + error);
+                  } else {
+                      adapter.log.error('Cannot send animation [user - ' + options.user + ']: ' + error);
+                  }
+                  options = null;
+              });
+    }
+    } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send video to "' + name + '": ' + text);
         } else {
@@ -605,17 +703,14 @@ function _sendMessageHelper(dest, name, text, options) {
 }
 
 function sendMessage(text, user, chatId, options) {
-    if (!text && (typeof options !== 'object')) {
-        if (!text && text !== 0 && (!options || !options.latitude)) {
-            adapter.log.warn('Invalid text: null');
-            return;
-        }
+    if (!text && typeof options !== 'object' && text !== 0 && (!options || !options.latitude)) {
+        return adapter.log.warn('Invalid text: null');
     }
 
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
-        if (options.text !== undefined) delete options.text;
-        if (options.user !== undefined) delete options.user;
+        if (options.text   !== undefined) delete options.text;
+        if (options.user   !== undefined) delete options.user;
     }
 
     // convert
@@ -630,48 +725,56 @@ function sendMessage(text, user, chatId, options) {
     let count = 0;
 
     if (user) {
-        const userarray = user.split(',').map(build => build.trim());
+        if (typeof user !== 'string' && !(user instanceof Array)) {
+            adapter.log.warn('Invalid type of user parameter: ' + typeof user + '. Expected is string or array.');
+        }
+
+        const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(build => build.trim());
         let matches = 0;
-        userarray.forEach(value => {
-            for (const u in users) {
-                if (users.hasOwnProperty(u) && users[u] === value) {
+        userArray.forEach(userName => {
+            for (const id in users) {
+                if (!users.hasOwnProperty(id)) {
+                    continue;
+                }
+
+                if ((adapter.config.useUsername && users[id].userName  === userName) ||
+                   (!adapter.config.useUsername && users[id].firstName === userName)) {
                     if (options) {
-                        options.chatId = u;
+                        options.chatId = id;
                     }
                     matches++;
-                    count += _sendMessageHelper(u, value, text, options);
+                    count += _sendMessageHelper(id, userName, text, options);
                     break;
                 }
             }
         });
-        if (userarray.length !== matches) {
-            adapter.log.warn(userarray.length - matches + ' of ' + userarray.length + ' recipients are unknown!');
+
+        if (userArray.length !== matches) {
+            adapter.log.warn(userArray.length - matches + ' of ' + userArray.length + ' recipients are unknown!');
         }
         return count;
     }
 
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
     if (m) {
+        text = (text || '').toString();
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
-        for (const u in users) {
-            const re = new RegExp(m[1], 'i');
-            if (users.hasOwnProperty(u) && users[u].match(re)) {
-                if (options) {
-                    options.chatId = u;
-                }
-                count += _sendMessageHelper(u, m[1], text, options);
-                break;
+        const re = new RegExp(m[1], 'i');
+        const id = users.find(id => (!adapter.config.useUsername && users[id].firstName.match(re)) || (adapter.config.useUsername && users[id].userName.match(re)));
+        if (id) {
+            if (options) {
+                options.chatId = id;
             }
+            count += _sendMessageHelper(id, m[1], text, options);
         }
     } else {
         // Send to all users
-        for (const u in users) {
-            if (!users.hasOwnProperty(u)) continue;
+        Object.keys(users).forEach(id => {
             if (options) {
-                options.chatId = u;
+                options.chatId = id;
             }
-            count += _sendMessageHelper(u, users[u], text, options);
-        }
+            count += _sendMessageHelper(id, adapter.config.useUsername ? users[id].userName : users[id].firstName, text, options);
+        });
     }
     return count;
 }
@@ -769,13 +872,15 @@ function processMessage(obj) {
 
     // filter out double messages
     const json = JSON.stringify(obj);
-    if (lastMessageTime && lastMessageText === JSON.stringify(obj) && new Date().getTime() - lastMessageTime < 1200) {
-        adapter.log.debug('Filter out double message [first was for ' + (new Date().getTime() - lastMessageTime) + 'ms]: ' + json);
+    if (lastMessageTime && lastMessageText === JSON.stringify(obj) && Date.now() - lastMessageTime < 1200) {
+        adapter.log.debug('Filter out double message [first was for ' + (Date.now() - lastMessageTime) + 'ms]: ' + json);
         return;
     }
 
-    lastMessageTime = new Date().getTime();
+    lastMessageTime = Date.now();
     lastMessageText = json;
+
+    adapter.log.debug(`Received command "${obj.command}": ${JSON.stringify(obj.message)}`);
 
     switch (obj.command) {
         case 'send':
@@ -818,6 +923,80 @@ function processMessage(obj) {
                 }
             }
             break;
+
+        case 'call':
+            if (obj.message) {
+                let call = {};
+                if (typeof obj.message === 'object') {
+                    call = obj.message;
+                } else {
+                    call.message = obj.message;
+                }
+
+                if (call.users && call.user) {
+                    adapter.log.error(`Please provide only user or users as array. Attribute user will be ignored!`);
+                }
+                if (!call.users && call.user) {
+                    call.users = [call.user];
+                }
+                if (!call.users && !call.user) {
+                    call.users = Object.keys(users)
+                        .filter(id => users[id] && users[id].userName)
+                        .map(id => users[id].userName.startsWith('@') ? users[id].userName : '@' + users[id].userName);
+                }
+                if (!(call.users instanceof Array)) {
+                    call.users = [call.users];
+                }
+                // set language
+                call.lang = call.lang || systemLang2Callme[systemLang] || systemLang2Callme.en;
+                if (!call.file) {
+                    // Set message
+                    call.message = call.message || call.text || _('Call text', call.lang || systemLang);
+                } else {
+                    call.message = '';
+                }
+
+                //
+                if (!call.users || !call.users.length) {
+                    adapter.log.error(`Cannot make a call, because no users stored in ${adapter.namespace}.communicate.users`);
+                } else {
+                    callUsers(call.users, call.message, call.lang, call.file);
+                }
+            }
+            break;
+    }
+}
+
+function callUsers(users, text, lang, file, cb) {
+    if (!users || !users.length) {
+        cb && cb();
+    } else {
+        let user = users.shift();
+        if (!user.startsWith('@')) {
+            user = '@' + user;
+        }
+        request = request || require('request');
+
+        let url = 'http://api.callmebot.com/start.php?';
+        const params = ['user=' + encodeURIComponent(user)];
+        if (file) {
+            params.push('file=' + encodeURIComponent(file));
+        } else {
+            params.push('text=' + encodeURIComponent(text));
+        }
+
+        params.push('lang=' + (lang || systemLang2Callme[systemLang]));
+        url += params.join('&');
+        adapter.log.debug('CALL: ' + url);
+
+        request(url, (err, state, body) => {
+            if (!state || state.statusCode !== 200) {
+                adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
+            } else {
+                adapter.log.debug(`Call to ${user} wsa made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
+            }
+            setImmediate(callUsers, users, text, lang, file, cb);
+        });
     }
 }
 
@@ -829,14 +1008,15 @@ function decrypt(key, value) {
     return result;
 }
 
-function storeUser(id, name) {
-    if (users[id] !== name) {
-        for (const u in users) {
-            if (users.hasOwnProperty(u) && users[u] === name) {
-                delete users[u];
+function storeUser(id, firstName, userName) {
+    if (!users[id] || users[id].firstName !== firstName || users[id].userName !== userName) {
+        Object.keys(users).forEach(id => {
+            if (users[id].userName === userName) {
+                delete users[id];
             }
-        }
-        users[id] = name;
+        });
+
+        users[id] = {firstName, userName};
 
         if (adapter.config.rememberUsers) {
             adapter.setState('communicate.users', JSON.stringify(users));
@@ -852,9 +1032,9 @@ function getListOfCommands() {
         if (!commands[id].readOnly) {
             if (commands[id].type === 'boolean') {
                 if (commands[id].writeOnly) {
-                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}`);
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].offCommand || _('OFF-Command')}`);
                 } else {
-                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].offCommand || _('OFF-Command')}|?`);
                 }
             } else {
                 if (commands[id].writeOnly) {
@@ -865,6 +1045,9 @@ function getListOfCommands() {
             }
         }
     });
+    if (!lines.length) {
+        lines.push(_('No commands found.'));
+    }
     return lines.join('\n');
 }
 
@@ -984,7 +1167,7 @@ function isAnswerForQuestion(adapter, msg) {
 
 function processTelegramText(msg) {
     adapter.log.debug(JSON.stringify(msg));
-    const now = new Date().getTime();
+    const now = Date.now();
     let pollingInterval = 0;
     if (adapter.config && adapter.config.pollingInterval !== undefined) {
         pollingInterval = parseInt(adapter.config.pollingInterval, 10) || 0;
@@ -1038,9 +1221,8 @@ function processTelegramText(msg) {
                 let sValue = msg.text.substring(commands[id].alias.length + 1);
                 found = true;
                 if (sValue === '?') {
-                    adapter.getForeignState(id, (err, state) => {
-                        bot.sendMessage(msg.chat.id, getStatus(id, state));
-                    });
+                    adapter.getForeignState(id, (err, state) =>
+                        bot.sendMessage(msg.chat.id, getStatus(id, state)));
                 } else {
                     let value;
                     if (commands[id].states) {
@@ -1080,14 +1262,18 @@ function processTelegramText(msg) {
 
         if (m) {
             if (adapter.config.password === m[1]) {
-                storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
-                if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                storeUser(msg.from.id, msg.from.first_name, msg.from.username);
+                if (!msg.from.username) {
+                    adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                }
                 bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
                 return;
             } else {
                 adapter.log.warn('Got invalid password from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + m[1]);
                 bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
-                if (users[msg.from.id]) delete users[msg.from.id];
+                if (users[msg.from.id]) {
+                    delete users[msg.from.id];
+                }
             }
         }
     }
@@ -1098,8 +1284,11 @@ function processTelegramText(msg) {
         return;
     }
 
-    storeUser(msg.from.id, (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
-    if (adapter.config.useUsername && !msg.from.username) adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+    storeUser(msg.from.id, msg.from.first_name, msg.from.username);
+
+    if (!msg.from.username) {
+        adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+    }
 
     if (adapter.config.allowStates) {
         // Check set state
@@ -1325,7 +1514,7 @@ function connect() {
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
-
+            adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, err => err && adapter.log.error(err));
             adapter.setState('communicate.request', '[' + (
                 !adapter.config.useUsername ? callbackQuery.from.first_name :
                     !callbackQuery.from.username ? callbackQuery.from.first_name :
@@ -1341,10 +1530,10 @@ function connect() {
             };
             let text = 'Ok';// = 'You hit button ' + action;
 
-            bot.editMessageText(text, opts);
+            //bot.editMessageText(text, opts);
         });
         bot.on('polling_error', error => {
-            adapter.log.error('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+            adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
         });
         bot.on('webhook_error', error => {
             adapter.log.error('webhook_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EPARSE'
@@ -1362,19 +1551,33 @@ function connect() {
     }
 }
 
-function updateUsers() {
+function updateUsers(cb) {
     if (adapter.config.rememberUsers) {
         adapter.getState('communicate.users', (err, state) => {
             err && adapter.log.error(err);
             if (state && state.val) {
                 try {
                     users = JSON.parse(state.val);
+
+                    // convert old format to new format
+                    Object.keys(users).forEach(id => {
+                        if (typeof users[id] !== 'object') {
+                            if (adapter.config.useUsername) {
+                                users[id] = {userName: users[id], firstName: users[id]};
+                            } else {
+                                users[id] = {firstName: users[id], userName: ''};
+                            }
+                        }
+                    });
                 } catch (err) {
                     err && adapter.log.error(err);
                     adapter.log.error('Cannot parse stored user IDs!');
                 }
             }
+            cb && cb();
         });
+    } else {
+        cb && cb();
     }
 }
 
@@ -1426,7 +1629,7 @@ function readStatesCommands() {
 }
 
 function readEnums(name) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         name = name || 'rooms';
         enums[name] = {};
         adapter.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
@@ -1463,44 +1666,36 @@ function main() {
     adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
     adapter.config.keyboard = adapter.config.keyboard || '/cmds';
 
-    updateUsers();
-
-    if (adapter.config.allowStates !== undefined) {
-        adapter.config.allowStates = true;
-    }
-    adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
-    adapter.config.answerTimeoutSec *= 1000;
-    adapter.config.users = adapter.config.users || '';
-    adapter.config.users = adapter.config.users.split(',');
-    adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
-
-    for (let u = adapter.config.users.length - 1; u >= 0; u--) {
-        adapter.config.users[u] = adapter.config.users[u].trim().toLowerCase();
-        if (!adapter.config.users[u]) {
-            adapter.config.users.splice(u, 1);
+    updateUsers(() => {
+        if (adapter.config.allowStates !== undefined) {
+            adapter.config.allowStates = true;
         }
-    }
+        adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
+        adapter.config.answerTimeoutSec *= 1000;
+        adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
 
-    adapter.getForeignObject('system.config', (err, obj) => {
-        err && adapter.log.error(err);
-        if (obj) {
-            systemLang = obj.common.language || 'en';
-        }
+        adapter.getForeignObject('system.config', (err, obj) => {
+            err && adapter.log.error(err);
+            if (obj) {
+                systemLang = obj.common.language || 'en';
+            }
 
-        readStatesCommands()
-            .then(() => {
-                if (adapter.config.rooms) {
-                    return readEnums();
-                } else {
-                    return Promise.resolve();
-                }
-            })
-            .then(() => {
-                // init polling every hour
-                reconnectTimer = setInterval(connect, 3600000);
-                connect();
-                adapter.subscribeForeignObjects('*');
-            });
+            readStatesCommands()
+                .then(() => {
+                    if (adapter.config.rooms) {
+                        return readEnums();
+                    } else {
+                        return Promise.resolve();
+                    }
+                })
+                .then(() => {
+                    // init polling every hour
+                    reconnectTimer = setInterval(connect, 3600000);
+                    connect();
+                    // detect changes of objects
+                    adapter.subscribeForeignObjects('*');
+                });
+        });
     });
 }
 

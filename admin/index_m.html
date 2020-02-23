@@ -68,10 +68,13 @@
         }
 
         function load(settings, onChange) {
-            if (!settings) return;
-            //$('#tabs').tabs();
+            if (!settings) {
+                return;
+            }
             settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
+
             oldPw = settings.password;
+
             if (settings.allowStates === undefined) {
                 settings.allowStates = true;
             }
@@ -139,10 +142,13 @@
             $('#messages').click(function () {
                 if ($('#userTable').children().length === 0) {
                     sendTo(null, 'adminuser', null, function (obj) {
-                        var text;
+                        var text = '';
                         for (var key in obj) {
                             if (obj.hasOwnProperty(key)) {
-                                text += '<tr id="' + key + '"><td>' + key + '</td><td>' + obj[key] + '</td><td><a id="delete" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td></tr>'
+                                var names = [];
+                                obj[key].userName && names.push(obj[key].userName);
+                                obj[key].firstName && names.push(obj[key].firstName);
+                                text += '<tr id="' + key + '"><td>' + key + '</td><td>' + names.join(' / ') + '</td><td><a id="delete" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td></tr>'
                             }
                         }
                         $('#userTable').append(text);
@@ -150,6 +156,7 @@
                 }
             });
         }
+
         function save2(callback) {
             var obj = {};
             $('.value').each(function () {
