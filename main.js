@@ -338,15 +338,13 @@ function saveSendRequest(msg) {
     adapter.log.debug('Request: ' + JSON.stringify(msg));
 
     if (msg && msg.message_id) {
-        adapter.setState('communicate.botSendMessageId', msg.message_id, err => {
-            err && adapter.log.error(err);
-        });
+        adapter.setState('communicate.botSendMessageId', msg.message_id, err =>
+            err && adapter.log.error(err));
     }
 
     if (msg && msg.chat && msg.chat.id) {
-        adapter.setState('communicate.botSendChatId', msg.chat.id, err => {
-            err && adapter.log.error(err);
-        });
+        adapter.setState('communicate.botSendChatId', msg.chat.id, err =>
+            err && adapter.log.error(err));
     }
 }
 
