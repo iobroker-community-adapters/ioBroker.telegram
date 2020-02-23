@@ -480,8 +480,10 @@ TODO:
 - venue
 
 ## Changelog
+
 ### 1.5.2 (2020-02-23)
 * (bluefox) Invalid parameters were checked
+* (foxriver76) removed usage of adapter.objects
 
 ### 1.5.0 (2020-02-03)
 * (bluefox) Added voice calls 
