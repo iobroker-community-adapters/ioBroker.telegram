@@ -1522,8 +1522,9 @@ function connect() {
 
             isAnswerForQuestion(adapter, callbackQuery);
 
-            /* const action = callbackQuery.data;
-            const msg    = callbackQuery.message;
+            // following code should be deleted: BF 2020.02.23
+            //const action = callbackQuery.data;
+            /* const msg    = callbackQuery.message;
             const opts = {
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,

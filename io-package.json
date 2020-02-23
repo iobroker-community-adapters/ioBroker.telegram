@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.2",
+        "version": "1.5.3",
         "news": {
+            "1.5.3": {
+                "en": "Invalid parameters were checked\nRemoved usage of adapter.objects\nFixed the response for the \"callback_query\" event",
+                "de": "Ungültige Parameter wurden überprüft\nVerwendung von adapter.objects entfernt\nDie Antwort für das Ereignis \"callback_query\" wurde behoben",
+                "ru": "Неверные параметры были проверены\nУдалено использование файла adapter.objects.\nИсправлен ответ на событие \"callback_query\"",
+                "pt": "Parâmetros inválidos foram verificados\nRemovido o uso de adapter.objects\nCorrigida a resposta para o evento \"callback_query\"",
+                "nl": "Ongeldige parameters zijn gecontroleerd\nGebruik van adapter.objects verwijderd\nDe reactie voor de gebeurtenis \"callback_query\" is opgelost",
+                "fr": "Les paramètres invalides ont été vérifiés\nSuppression de l'utilisation de adapter.objects\nCorrection de la réponse pour l'événement \"callback_query\"",
+                "it": "Sono stati controllati parametri non validi\nRimosso l'utilizzo di adapter.objects\nRisolta la risposta per l'evento \"callback_query\"",
+                "es": "Se verificaron los parámetros inválidos\nSe eliminó el uso de los objetos del adaptador.\nSe corrigió la respuesta para el evento \"callback_query\"",
+                "pl": "Nieprawidłowe parametry zostały sprawdzone\nUsunięto użycie adapter.objects\nNaprawiono odpowiedź na zdarzenie „callback_query”",
+                "zh-cn": "检查了无效的参数\n删除了adapter.objects的用法\n修复了“ callback_query”事件的响应"
+            },
             "1.5.2": {
                 "en": "Invalid parameters were checked",
                 "de": "Ungültige Parameter wurden überprüft",
