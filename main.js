@@ -352,11 +352,9 @@ function saveSendRequest(msg) {
 
 function _sendMessageHelper(dest, name, text, options) {
     let count = 0;
-
     if (options && options.chatId !== undefined && options.user === undefined) {
         options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
     }
-
     if (options && options.latitude !== undefined) {
         adapter.log.debug('Send location to "' + name + '": ' + text);
         if (bot) {
@@ -376,7 +374,66 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (actions.indexOf(text) !== -1) {
+    }
+    else if(options && options.type=== 'mediagroup')
+    {
+      adapter.log.debug('Send mediagroup to "' + name + '": ');
+      if(bot)
+      {
+        const {media:fileNames} = options;
+        if(fileNames instanceof Array)
+        {
+          bot.sendChatAction(dest, 'upload_photo')
+            .then((res) => {
+          if(fileNames.every((name) => fs.existsSync(name)))
+          {
+              const filesAsArray = fileNames
+                                  .map((element) =>{
+                                      try{
+                                        return {type: "photo",media: fs.readFileSync(element)}
+                                        }
+                                      catch(error){
+                                            adapter.log.error('Cannot read file' + element);
+                                          return undefined;
+                                      }
+                                    })
+                                  .filter((element) => element != undefined);
+              const size = filesAsArray.map((element)=>element.media.length).reduce((acc,val)=>acc+val);
+              adapter.log.info('Send mediagroup to "' + name + '": ' + size + ' bytes');
+              if(filesAsArray.length >0){
+                bot.sendMediaGroup(dest,filesAsArray).
+                  then((response) => saveSendRequest(response)).
+                  then(()=>{
+                    adapter.log.debug('photos sent');
+                    options = null;
+                    count++;
+                  }).catch(error => {
+                      if (options.chatId) {
+                          adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
+                      } else {
+                          adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
+                      }
+                      options = null;
+                  });
+                }
+            }
+            else
+            {
+              adapter.log.debug('files must exists');
+              options = null;
+            }
+          });
+        }
+        else
+            adapter.log.debug('option media should be an array');
+      }
+      else
+      {
+        adapter.log.debug('no files added!');
+        options = null;
+      }
+    }
+    else if (text && typeof text === 'string' && actions.includes(text)) {
         adapter.log.debug('Send action to "' + name + '": ' + text);
         if (bot) {
             bot.sendChatAction(dest, text)
@@ -395,7 +452,9 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
+    }
+    else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker')))
+    {
         if (typeof text === 'string') {
             adapter.log.debug('Send sticker to "' + name + '": ' + text);
         } else {
@@ -418,7 +477,30 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                 });
         }
-    } else if (text && ((typeof text === 'string' && text.match(/\.(mp4|gif)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
+    } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))){
+      if (typeof text === 'string') {
+          adapter.log.debug('Send animation to "' + name + '": ' + text);
+      } else {
+          adapter.log.debug('Send animation to "' + name + '": ' + text.length + ' bytes');
+      }
+      if (bot) {
+          bot.sendAnimation(dest, text, options)
+              .then(response => saveSendRequest(response))
+              .then(() => {
+                  adapter.log.debug('animation sent');
+                  options = null;
+                  count++;
+              })
+              .catch(error => {
+                  if (options.chatId) {
+                      adapter.log.error('Cannot send animation [chatId - ' + options.chatId + ']: ' + error);
+                  } else {
+                      adapter.log.error('Cannot send animation [user - ' + options.user + ']: ' + error);
+                  }
+                  options = null;
+              });
+    }
+    } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
         if (typeof text === 'string') {
             adapter.log.debug('Send video to "' + name + '": ' + text);
         } else {
