@@ -1,33 +1,29 @@
 {
   "name": "iobroker.telegram",
   "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
-  "version": "1.4.3",
+  "version": "1.5.2",
   "author": "bluefox <dogafox@gmail.com>",
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
   "repository": {
     "type": "git",
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
   },
-  "license": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/ioBroker/ioBroker.telegram/blob/master/LICENSE"
-    }
-  ],
   "keywords": [
     "iobroker",
     "notification",
     "telegram",
     "message"
   ],
+  "socksv5description": "Taken from https://github.com/christophgysin/socksv5/commits/fix-normailzeargs",
   "dependencies": {
-    "node-telegram-bot-api": "^0.30.0",
+    "node-telegram-bot-api": "^0.40.0",
     "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9",
-    "@iobroker/adapter-core": "^1.0.3"
+    "@iobroker/adapter-core": "^1.0.3",
+    "request": "^2.88.2"
   },
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "mocha": "^6.0.2",
+    "gulp": "^4.0.2",
+    "mocha": "^7.0.1",
     "chai": "^4.2.0"
   },
   "bugs": {
