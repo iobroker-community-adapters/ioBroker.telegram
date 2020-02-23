@@ -252,7 +252,7 @@ function startAdapter(options) {
 
 function getStatus(id, state) {
     if (commands[id].type === 'boolean') {
-        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].off || _('OFF-Status')}`;
+        return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].offStatus || _('OFF-Status')}`;
     } else {
         if (commands[id].states && commands[id].states[state.val] !== undefined) {
             state.val = commands[id].states[state.val];
@@ -950,9 +950,9 @@ function getListOfCommands() {
         if (!commands[id].readOnly) {
             if (commands[id].type === 'boolean') {
                 if (commands[id].writeOnly) {
-                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}`);
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].offCommand || _('OFF-Command')}`);
                 } else {
-                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].off || _('OFF-Command')}|?`);
+                    lines.push(`${commands[id].alias} ${commands[id].onCommand || _('ON-Command')}|${commands[id].offCommand || _('OFF-Command')}|?`);
                 }
             } else {
                 if (commands[id].writeOnly) {
