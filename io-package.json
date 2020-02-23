@@ -2,21 +2,21 @@
     "common": {
         "name": "telegram",
         "require": {
-            "js-controller": ">0.6.6"
+            "js-controller": ">2.0.0"
         },
-        "version": "1.5.1",
+        "version": "1.5.2",
         "news": {
-	    "1.5.1": {
-                "en": "Fix of the response for the callback_query event",
-                "de": "Korrigieren der Antwort auf das Ereignis callback_query",
-                "ru": "Исправление ответа адаптера на событие callback_query",
-                "pt": "Comentários sobre o retorno de chamada callback_query",
-                "nl": "Het antwoord op de gebeurtenis callback_query corrigeren",
-                "fr": "Correction de la réponse à l'événement callback_query",
-                "it": "Correzione della risposta all'evento callback_query",
-                "es": "Corregir la respuesta al evento callback_query",
-                "pl": "Poprawianie odpowiedzi na zdarzenie callback_query",
-                "zh-cn": "更正对callback_query事件的响应"
+            "1.5.2": {
+                "en": "Invalid parameters were checked",
+                "de": "Ungültige Parameter wurden überprüft",
+                "ru": "Неверные параметры были проверены",
+                "pt": "Parâmetros inválidos foram verificados",
+                "nl": "Ongeldige parameters zijn gecontroleerd",
+                "fr": "Les paramètres invalides ont été vérifiés",
+                "it": "Sono stati controllati parametri non validi",
+                "es": "Se verificaron los parámetros inválidos",
+                "pl": "Nieprawidłowe parametry zostały sprawdzone",
+                "zh-cn": "检查了无效的参数"
             },
             "1.5.0": {
                 "en": "Added voice calls ",
@@ -148,7 +148,7 @@
         "port": 8443,
         "bind": "0.0.0.0",
         "token": "",
-	    "baseApiUrl": "https://api.telegram.org",
+        "baseApiUrl": "https://api.telegram.org",
         "password": "",
         "text2command": "",
         "rememberUsers": true,
