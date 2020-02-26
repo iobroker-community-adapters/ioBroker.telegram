@@ -923,19 +923,19 @@ function processMessage(obj) {
                 if (!call.users || !call.users.length) {
                     adapter.log.error(`Cannot make a call, because no users stored in ${adapter.namespace}.communicate.users`);
                 } else {
-                    callUsers(call.users, call.message, call.lang, call.file);
+                    callUsers(call.users, call.message, call.lang, call.file, call.repeats);
                 }
             }
             break;
     }
 }
 
-function callUsers(users, text, lang, file, cb) {
+function callUsers(users, text, lang, file, repeats, cb) {
     if (!users || !users.length) {
         cb && cb();
     } else {
         let user = users.shift();
-        if (!user.startsWith('@')) {
+        if (!user.startsWith('@') && !user.startsWith('+') && !user.startsWith('00')) {
             user = '@' + user;
         }
         request = request || require('request');
@@ -946,6 +946,9 @@ function callUsers(users, text, lang, file, cb) {
             params.push('file=' + encodeURIComponent(file));
         } else {
             params.push('text=' + encodeURIComponent(text));
+        }
+        if (repeats !== undefined) {
+            params.push('rpt=' + (parseInt(repeats, 10) || 0));
         }
 
         params.push('lang=' + (lang || systemLang2Callme[systemLang]));
@@ -958,7 +961,7 @@ function callUsers(users, text, lang, file, cb) {
             } else {
                 adapter.log.debug(`Call to ${user} wsa made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
             }
-            setImmediate(callUsers, users, text, lang, file, cb);
+            setImmediate(callUsers, users, text, lang, file, repeats, cb);
         });
     }
 }
