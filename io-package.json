@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.3",
+        "version": "1.5.4",
         "news": {
+            "1.5.4": {
+                "en": "Improvement of callmebot",
+                "de": "Verbesserung des Callmebot",
+                "ru": "Улучшение callmebot",
+                "pt": "Melhoria do callmebot",
+                "nl": "Verbetering van callmebot",
+                "fr": "Amélioration de callmebot",
+                "it": "Miglioramento di callmebot",
+                "es": "Mejora de callmebot",
+                "pl": "Ulepszenie callmebot",
+                "zh-cn": "Callmebot的改进"
+            },
             "1.5.3": {
                 "en": "Invalid parameters were checked\nRemoved usage of adapter.objects\nFixed the response for the \"callback_query\" event",
                 "de": "Ungültige Parameter wurden überprüft\nVerwendung von adapter.objects entfernt\nDie Antwort für das Ereignis \"callback_query\" wurde behoben",

@@ -940,7 +940,7 @@ function callUsers(users, text, lang, file, repeats, cb) {
         }
         request = request || require('request');
 
-        let url = 'http://api.callmebot.com/start.php?';
+        let url = 'http://api.callmebot.com/start.php?source=iobroker&';
         const params = ['user=' + encodeURIComponent(user)];
         if (file) {
             params.push('file=' + encodeURIComponent(file));
