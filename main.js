@@ -977,7 +977,10 @@ function decrypt(key, value) {
 function storeUser(id, firstName, userName) {
     if (!users[id] || users[id].firstName !== firstName || users[id].userName !== userName) {
         Object.keys(users).forEach(id => {
-            if (users[id].userName === userName) {
+           if (userName && users[id].userName === userName) {
+                delete users[id];
+            }
+           if (!userName && !users[id].userName && users[id].firstName === firstName) {
                 delete users[id];
             }
         });
