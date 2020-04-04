@@ -508,6 +508,10 @@ TODO:
 - venue
 
 ## Changelog
+### 1.5.5 (2020-04-04)
+* (alutov) Fixed bug for telegram users with an empty user name
+* (Mark Rohrbacher) Allowed JSON objects in telegram.*.communicate.response 
+
 ### 1.5.4 (2020-03-11)
 * (bluefox) Improvement of callmebot
 

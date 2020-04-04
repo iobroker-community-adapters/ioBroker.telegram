@@ -910,7 +910,7 @@ function processMessage(obj) {
                 if (!call.users && !call.user) {
                     call.users = Object.keys(users)
                         .filter(id => users[id] && users[id].userName)
-                        .map(id => users[id].userName.startsWith('@') ? users[id].userName : '@' + users[id].userName);
+                        .map(id => users[id].userName.startsWith('@') ? users[id].userName : ('@' + users[id].userName));
                 }
                 if (!(call.users instanceof Array)) {
                     call.users = [call.users];

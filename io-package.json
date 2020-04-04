@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.4",
+        "version": "1.5.5",
         "news": {
+            "1.5.5": {
+                "en": "Fixed bug for telegram users with an empty user name\nAllowed JSON objects in telegram.*.communicate.response ",
+                "de": "Fehler für Telegrammbenutzer mit einem leeren Benutzernamen behoben\nZulässige JSON-Objekte im Telegramm. *. Communicate.response",
+                "ru": "Исправлена ошибка для пользователей телеграммы с пустым именем пользователя\nРазрешенные объекты JSON в телеграмме. *. Connect.response",
+                "pt": "Corrigido o erro para usuários de telegrama com um nome de usuário vazio\nObjetos JSON permitidos no telegrama. *. Communic.response",
+                "nl": "Bug opgelost voor telegramgebruikers met een lege gebruikersnaam\nToegestane JSON-objecten in telegram. *. Communic.response",
+                "fr": "Correction d'un bug pour les utilisateurs de télégrammes avec un nom d'utilisateur vide\nObjets JSON autorisés dans le télégramme. *. Communic.response",
+                "it": "Bug risolto per gli utenti di telegrammi con un nome utente vuoto\nOggetti JSON consentiti in telegramma. *. Communic.response",
+                "es": "Error solucionado para usuarios de telegramas con un nombre de usuario vacío\nObjetos JSON permitidos en telegrama. *. Comunicar.responder",
+                "pl": "Naprawiono błąd dla użytkowników telegramów z pustą nazwą użytkownika\nDozwolone obiekty JSON w telegramie. *. Communic.response",
+                "zh-cn": "修复了用户名为空的电报用户的错误\n电报中允许的JSON对象。*。communicate.response"
+            },
             "1.5.4": {
                 "en": "Improvement of callmebot",
                 "de": "Verbesserung des Callmebot",
