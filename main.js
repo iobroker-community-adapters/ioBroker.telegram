@@ -670,6 +670,11 @@ function sendMessage(text, user, chatId, options) {
         return adapter.log.warn('Invalid text: null');
     }
 
+    if (typeof text === 'object' && text.text !== undefined && typeof text.text === 'string' && options === undefined) {
+        options = text;
+        text = options.text;
+    }
+
     if (options) {
         if (options.chatId !== undefined) delete options.chatId;
         if (options.text   !== undefined) delete options.text;
