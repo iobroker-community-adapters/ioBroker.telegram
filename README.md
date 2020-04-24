@@ -507,7 +507,7 @@ Possible values for language:
 TODO:
 - venue
 
-## Auto-Inline keyboard based on settings in admin
+## Auto-Inline keyboard based on settings in admin (Easy-Keyboard)
 For every state the additional settings could be enabled:
 
 ![settings](img/stateSettings.png)
