@@ -573,6 +573,30 @@ E.g. `Door lamp => deactivated` if the state of the device changed to false and 
 E.g. for buttons, they have no OFF state. In this case no OFF button will be shown.
 
 ![settings](img/stateSettings7.png)
+
+## How to receive messages in group chats using telegram adapter
+If telegram bot receives messages sent by user to the bot in private chats, but not receives messages sent by users in group chats. 
+In this case you must to talk to @botfather and disable the privacy mode.
+
+BotFather chat:
+
+```
+You: /setprivacy
+
+BotFather: Choose a bot to change group messages settings.
+
+You: @your_name_bot
+
+BotFather: 'Enable' - your bot will only receive messages that either start with the '/' symbol or mention the bot by username.
+
+'Disable' - your bot will receive all messages that people send to groups.
+
+Current status is: ENABLED
+
+You: Disable
+
+BotFather: Success! The new status is: DISABLED. /help
+```
  
 ## Changelog
 ### 1.5.6 (2020-04-04)
