@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.5",
+        "version": "1.5.6",
         "news": {
+            "1.5.6": {
+                "en": "Fixed missing languages for blockly",
+                "de": "Fehlende Sprachen für blockly behoben",
+                "ru": "Исправлены недостающие языки для блочных",
+                "pt": "Correção de idiomas ausentes para blockly",
+                "nl": "Ontbrekende talen voor blokkeren verholpen",
+                "fr": "Correction des langues manquantes pour blockly",
+                "it": "Risolto il problema con le lingue mancanti",
+                "es": "Se corrigieron los idiomas faltantes para blockly",
+                "pl": "Naprawiono brakujące języki dla blokowania",
+                "zh-cn": "修复了缺少语言的问题"
+            },
             "1.5.5": {
                 "en": "Fixed bug for telegram users with an empty user name\nAllowed JSON objects in telegram.*.communicate.response ",
                 "de": "Fehler für Telegrammbenutzer mit einem leeren Benutzernamen behoben\nZulässige JSON-Objekte im Telegramm. *. Communicate.response",

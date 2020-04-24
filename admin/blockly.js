@@ -1,8 +1,20 @@
 'use strict';
 
-goog.provide('Blockly.JavaScript.Sendto');
+if (typeof goog !== 'undefined') {
+    goog.provide('Blockly.JavaScript.Sendto');
 
-goog.require('Blockly.JavaScript');
+    goog.require('Blockly.JavaScript');
+}
+
+// remove it somewhen, because it defined in javascript=>blocks_words.js from javascript>=4.6.0
+Blockly.Translate = Blockly.Translate || function (word, lang) {
+    lang = lang || systemLang;
+    if (Blockly.Words && Blockly.Words[word]) {
+        return Blockly.Words[word][lang] || Blockly.Words[word].en;
+    } else {
+        return word;
+    }
+};
 
 // --- SendTo telegram --------------------------------------------------
 Blockly.Words['telegram']               = {'en': 'telegram',                    'pt': 'telegram',                       'pl': 'telegram',                           'nl': 'telegram',                       'it': 'telegram',                       'es': 'telegram',                       'fr': 'telegram',                           'de': 'telegram',                           'ru': 'telegram'};
@@ -40,7 +52,7 @@ Blockly.Sendto.blocks['telegram'] =
 
 Blockly.Blocks['telegram'] = {
     init: function() {
-        var options = [[Blockly.Words['telegram_anyInstance'][systemLang], '']];
+        var options = [[Blockly.Translate('telegram_anyInstance'), '']];
         if (typeof main !== 'undefined' && main.instances) {
             for (var i = 0; i < main.instances.length; i++) {
                 var m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
@@ -61,28 +73,28 @@ Blockly.Blocks['telegram'] = {
         }
 
         this.appendDummyInput('INSTANCE')
-            .appendField(Blockly.Words['telegram'][systemLang])
+            .appendField(Blockly.Translate('telegram'))
             .appendField(new Blockly.FieldDropdown(options), 'INSTANCE');
 
         this.appendValueInput('MESSAGE')
-            .appendField(Blockly.Words['telegram_message'][systemLang]);
+            .appendField(Blockly.Translate('telegram_message'));
 
         var input = this.appendValueInput('USERNAME')
             .setCheck('String')
-            .appendField(Blockly.Words['telegram_username'][systemLang]);
+            .appendField(Blockly.Translate('telegram_username'));
 
         this.appendDummyInput('LOG')
-            .appendField(Blockly.Words['telegram_log'][systemLang])
+            .appendField(Blockly.Translate('telegram_log'))
             .appendField(new Blockly.FieldDropdown([
-                [Blockly.Words['telegram_log_none'][systemLang],  ''],
-                [Blockly.Words['telegram_log_info'][systemLang],  'log'],
-                [Blockly.Words['telegram_log_debug'][systemLang], 'debug'],
-                [Blockly.Words['telegram_log_warn'][systemLang],  'warn'],
-                [Blockly.Words['telegram_log_error'][systemLang], 'error']
+                [Blockly.Translate('telegram_log_none'),  ''],
+                [Blockly.Translate('telegram_log_info'),  'log'],
+                [Blockly.Translate('telegram_log_debug'), 'debug'],
+                [Blockly.Translate('telegram_log_warn'),  'warn'],
+                [Blockly.Translate('telegram_log_error'), 'error']
             ]), 'LOG');
 
         this.appendDummyInput('SILENT')
-            .appendField(Blockly.Words['telegram_silent'][systemLang])
+            .appendField(Blockly.Translate('telegram_silent'))
             .appendField(new Blockly.FieldCheckbox("FALSE"), "SILENT");
 
         this.appendDummyInput('PARSEMODE')
@@ -96,8 +108,8 @@ Blockly.Blocks['telegram'] = {
         this.setNextStatement(true, null);
 
         this.setColour(Blockly.Sendto.HUE);
-        this.setTooltip(Blockly.Words['telegram_tooltip'][systemLang]);
-        this.setHelpUrl(Blockly.Words['telegram_help'][systemLang]);
+        this.setTooltip(Blockly.Translate('telegram_tooltip'));
+        this.setHelpUrl(Blockly.Translate('telegram_help'));
     }
 };
 
@@ -127,18 +139,7 @@ Blockly.JavaScript['telegram'] = function(block) {
 // --- SendTo call telegram --------------------------------------------------
 Blockly.Words['telegram_call']          = {'en': 'call via Telegram', 'de': 'per Telegramm anrufen', 'ru': 'звонок через Telegram', 'pt': 'chamada via Telegram', 'nl': 'bellen via Telegram', 'fr': 'appeler par Telegram', 'it': 'chiama via Telegram',    'es': 'llamar por Telegram', 'pl': 'połączenie za Telegram', 'zh-cn': '通过电报电话'};
 Blockly.Words['telegram_call_system']   = {'en': 'System language', 'de': 'Systemsprache', 'ru': 'Системный язык', 'pt': 'Idioma do sistema', 'nl': 'Systeem taal', 'fr': 'Langue du système', 'it': 'Linguaggio di sistema', 'es': 'Lenguaje del sistema', 'pl': 'Język systemowy', 'zh-cn': '系统语言'};
-Blockly.Words['telegram_call_tooltip']  = {
-    'en': 'Call via Telegram and say some text',
-    'de': 'Rufen Sie per Telegram an und sagen Sie etwas Text',
-    'ru': 'Звоните через Telegram и произносите текст',
-    'pt': 'Ligue por Telegram e diga algum texto',
-    'nl': 'Bel via Telegram en zeg wat tekst',
-    'fr': 'Appelez par Telegram et dites du texte',
-    'it': 'Chiama via Telegram e pronuncia un messaggio',
-    'es': 'Llama por Telegram y di algo de texto',
-    'pl': 'Zadzwoń za pośrednictwem Telegram i powiedz tekst',
-    'zh-cn': '通过电报呼叫并说一些文字'
-};
+Blockly.Words['telegram_call_tooltip']  = {'en': 'Call via Telegram and say some text', 'de': 'Rufen Sie per Telegram an und sagen Sie etwas Text','ru': 'Звоните через Telegram и произносите текст',    'pt': 'Ligue por Telegram e diga algum texto',    'nl': 'Bel via Telegram en zeg wat tekst',    'fr': 'Appelez par Telegram et dites du texte',    'it': 'Chiama via Telegram e pronuncia un messaggio',    'es': 'Llama por Telegram y di algo de texto',    'pl': 'Zadzwoń za pośrednictwem Telegram i powiedz tekst',    'zh-cn': '通过电报呼叫并说一些文字'};
 Blockly.Words['telegram_call_help']     = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram'};
 
 Blockly.Sendto.blocks['telegram_call'] =
@@ -163,7 +164,7 @@ Blockly.Sendto.blocks['telegram_call'] =
 
 Blockly.Blocks['telegram_call'] = {
     init: function() {
-        var options = [[Blockly.Words['telegram_anyInstance'][systemLang], '']];
+        var options = [[Blockly.Translate('telegram_anyInstance'), '']];
         if (typeof main !== 'undefined' && main.instances) {
             for (var i = 0; i < main.instances.length; i++) {
                 var m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
@@ -184,18 +185,18 @@ Blockly.Blocks['telegram_call'] = {
         }
 
         this.appendDummyInput('INSTANCE')
-            .appendField(Blockly.Words['telegram_call'][systemLang])
+            .appendField(Blockly.Translate('telegram_call'))
             .appendField(new Blockly.FieldDropdown(options), 'INSTANCE');
 
         this.appendValueInput('MESSAGE')
-            .appendField(Blockly.Words['telegram_message'][systemLang]);
+            .appendField(Blockly.Translate('telegram_message'));
 
         var input = this.appendValueInput('USERNAME')
             .setCheck('String')
-            .appendField(Blockly.Words['telegram_username'][systemLang]);
+            .appendField(Blockly.Translate('telegram_username'));
 
         var languages = [
-            [Blockly.Words['telegram_call_system'][systemLang], ''],
+            [Blockly.Translate('telegram_call_system'), ''],
             ['German (Germany) (Female)', 'de-DE-Standard-A'],
             ['German (Germany) (Male)', 'de-DE-Standard-B'],
             ['English (US) (Male)', 'en-US-Standard-B'],
@@ -291,17 +292,17 @@ Blockly.Blocks['telegram_call'] = {
         ];
 
         this.appendDummyInput('LANGUAGE')
-            .appendField(Blockly.Words['telegram'][systemLang])
+            .appendField(Blockly.Translate('telegram'))
             .appendField(new Blockly.FieldDropdown(languages), 'LANGUAGE');
 
         this.appendDummyInput('LOG')
-            .appendField(Blockly.Words['telegram_log'][systemLang])
+            .appendField(Blockly.Translate('telegram_log'))
             .appendField(new Blockly.FieldDropdown([
-                [Blockly.Words['telegram_log_none'][systemLang],  ''],
-                [Blockly.Words['telegram_log_info'][systemLang],  'log'],
-                [Blockly.Words['telegram_log_debug'][systemLang], 'debug'],
-                [Blockly.Words['telegram_log_warn'][systemLang],  'warn'],
-                [Blockly.Words['telegram_log_error'][systemLang], 'error']
+                [Blockly.Translate('telegram_log_none'),  ''],
+                [Blockly.Translate('telegram_log_info'),  'log'],
+                [Blockly.Translate('telegram_log_debug'), 'debug'],
+                [Blockly.Translate('telegram_log_warn'),  'warn'],
+                [Blockly.Translate('telegram_log_error'), 'error']
             ]), 'LOG');
 
         if (input.connection) {
@@ -313,8 +314,8 @@ Blockly.Blocks['telegram_call'] = {
         this.setNextStatement(true, null);
 
         this.setColour(Blockly.Sendto.HUE);
-        this.setTooltip(Blockly.Words['telegram_tooltip'][systemLang]);
-        this.setHelpUrl(Blockly.Words['telegram_help'][systemLang]);
+        this.setTooltip(Blockly.Translate('telegram_call_tooltip'));
+        this.setHelpUrl(Blockly.Translate('telegram_call_help'));
     }
 };
 

@@ -30,6 +30,8 @@ let request;
 let users = {};
 let systemLang = 'en';
 let reconnectTimer = null;
+let pollConnectionStatus = null;
+let isConnected = null;
 let lastMessageTime = 0;
 let lastMessageText = '';
 const enums = {};
@@ -175,6 +177,9 @@ function startAdapter(options) {
         reconnectTimer && clearInterval(reconnectTimer);
         reconnectTimer = null;
 
+        pollConnectionStatus && clearInterval(pollConnectionStatus);
+        pollConnectionStatus = null;
+
         adapter.garbageCollectorinterval && clearInterval(adapter.garbageCollectorinterval);
         adapter.garbageCollectorinterval = null;
 
@@ -195,7 +200,8 @@ function startAdapter(options) {
                 console.error('Cannot close server: ' + e);
             }
         }
-        if (adapter && adapter.setState) adapter.setState('info.connection', false, true);
+        isConnected && adapter && adapter.setState && adapter.setState('info.connection', false, true);
+        isConnected = false;
     });
 
     // is called if a subscribed state changes
@@ -258,6 +264,24 @@ function getStatus(id, state) {
             state.val = commands[id].states[state.val];
         }
         return `${commands[id].alias} => ${state.val}`;
+    }
+}
+
+function connectionState(connected) {
+    if (isConnected !== connected) {
+        isConnected = connected;
+        adapter.setState('info.connection', isConnected, true);
+        if (isConnected && pollConnectionStatus) {
+            clearInterval(pollConnectionStatus);
+            pollConnectionStatus = null;
+        } else if (!isConnected) {
+            pollConnectionStatus = setInterval(() => {
+                bot && bot.getMe && bot.getMe().then(data => {
+                    adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
+                    connectionState(true);
+                });
+            });
+        }
     }
 }
 
@@ -1094,9 +1118,11 @@ function getCommandsKeyboard(chatId) {
                 }
                 !commands[id].writeOnly && s.push(`${commands[id].alias} ?`);
                 keyboard.push(s);
-            }  else {
-                !commands[id].writeOnly && keyboard.push([`${commands[id].alias} ?`]);
+            } else {
+                adapter.log.warn(`Unsupported state type for keyboard: ${commands[id].type}. Only numbers and booleans are supported`);
             }
+        } else {
+            keyboard.push(`${commands[id].alias} ?`);
         }
     });
 
@@ -1140,6 +1166,8 @@ function isAnswerForQuestion(adapter, msg) {
 }
 
 function processTelegramText(msg) {
+    connectionState(true);
+
     adapter.log.debug(JSON.stringify(msg));
     const now = Date.now();
     let pollingInterval = 0;
@@ -1386,7 +1414,7 @@ function connect() {
         // Check connection
         bot.getMe().then(data => {
             adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
-            adapter.setState('info.connection', true, true);
+            connectionState(true);
         });
     } else {
         let agent;
@@ -1424,12 +1452,13 @@ function connect() {
             }
             agent = new socks.HttpsAgent(socksConfig);
         }
+
         if (adapter.config.server) {
             // Setup server way
             const serverOptions = {
                 polling: false,
                 filepath: true,
-		baseApiUrl: adapter.config.baseApiUrl
+		        baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
                 serverOptions.request = { agent: agent };
@@ -1446,7 +1475,7 @@ function connect() {
                     interval: parseInt(adapter.config.pollingInterval, 10) || 300
                 },
                 filepath: true,
-		baseApiUrl: adapter.config.baseApiUrl
+		        baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
                 pollingOptions.request = { agent: agent };
@@ -1459,7 +1488,7 @@ function connect() {
         // Check connection
         bot.getMe().then(data => {
             adapter.log.debug('getMe: ' + JSON.stringify(data));
-            adapter.setState('info.connection', true, true);
+            connectionState(true);
 
             if (adapter.config.restarted !== '') {
                 // default text
@@ -1474,16 +1503,20 @@ function connect() {
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
         bot.on('message', msg => {
+            connectionState(true);
+
             if (adapter.config.storeRawRequest) {
-                adapter.setState('communicate.requestRaw', JSON.stringify(msg), err => {
-                    err && adapter.log.error(err);
-                });
+                adapter.setState('communicate.requestRaw', JSON.stringify(msg), err =>
+                    err && adapter.log.error(err));
             }
+
             getMessage(msg);
         });
 
         // callback InlineKeyboardButton
         bot.on('callback_query', callbackQuery => {
+            connectionState(true);
+
             // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
@@ -1507,12 +1540,22 @@ function connect() {
 
             bot.editMessageText(text, opts); */
         });
+
         bot.on('polling_error', error => {
-            adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+            if (error && error.toString().includes('ECONNRESET')) {
+                if (isConnected) {
+                    adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+                    connectionState(false);
+                }
+            } else {
+                adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+            }
         });
+
         bot.on('webhook_error', error => {
             adapter.log.error('webhook_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EPARSE'
             adapter.log.debug('bot restarting...');
+
             bot.stopPolling().then(
                 response => {
                     adapter.log.debug('Start Polling');
@@ -1629,12 +1672,13 @@ function main() {
         adapter.log.error('Token is not set!');
         return;
     }
+    adapter.setState('info.connection', false, true);
 
     adapter.subscribeStates('communicate.request');
     adapter.subscribeStates('communicate.response');
 
     // clear states
-    adapter.setState('communicate.request', '', true);
+    adapter.setState('communicate.request',  '', true);
     adapter.setState('communicate.response', '', true);
     adapter.setState('communicate.pathFile', '', true);
 
