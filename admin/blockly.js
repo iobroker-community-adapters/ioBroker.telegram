@@ -6,7 +6,7 @@ if (typeof goog !== 'undefined') {
     goog.require('Blockly.JavaScript');
 }
 
-// remove it somewhen, because it defined in javascript=>blocks_words.js from javascript>=4.6.0
+// remove it somewhere, because it defined in javascript=>blocks_words.js from javascript>=4.6.0
 Blockly.Translate = Blockly.Translate || function (word, lang) {
     lang = lang || systemLang;
     if (Blockly.Words && Blockly.Words[word]) {
