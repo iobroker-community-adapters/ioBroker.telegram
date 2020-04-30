@@ -4,9 +4,9 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.7",
+        "version": "1.5.8",
         "news": {
-            "1.5.7": {
+            "1.5.8": {
                 "en": "errors on webserver initialization are handled properly",
                 "de": "Fehler bei der Webserver-Initialisierung werden ordnungsgemäß behandelt",
                 "ru": "ошибки при инициализации веб-сервера обрабатываются правильно",
