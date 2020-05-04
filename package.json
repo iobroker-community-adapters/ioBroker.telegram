@@ -1,37 +1,37 @@
 {
-    "name": "iobroker.telegram",
-    "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
-    "version": "1.5.8",
-    "author": "bluefox <dogafox@gmail.com>",
-    "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
-    },
-    "keywords": [
-        "iobroker",
-        "notification",
-        "telegram",
-        "message"
-    ],
-    "socksv5description": "Taken from https://github.com/christophgysin/socksv5/commits/fix-normailzeargs",
-    "dependencies": {
-        "node-telegram-bot-api": "^0.40.0",
-        "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9",
-        "@iobroker/adapter-core": "^2.4.0",
-        "request": "^2.88.2"
-    },
-    "devDependencies": {
-        "gulp": "^4.0.2",
-        "mocha": "^7.1.2",
-        "chai": "^4.2.0"
-    },
-    "bugs": {
-        "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
-    },
-    "main": "main.js",
-    "scripts": {
-        "test": "node node_modules/mocha/bin/mocha --exit"
-    },
-    "license": "MIT"
+  "name": "iobroker.telegram",
+  "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
+  "version": "1.5.9",
+  "author": "bluefox <dogafox@gmail.com>",
+  "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
+  },
+  "keywords": [
+    "iobroker",
+    "notification",
+    "telegram",
+    "message"
+  ],
+  "socksv5description": "Taken from https://github.com/christophgysin/socksv5/commits/fix-normailzeargs",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.40.0",
+    "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9",
+    "@iobroker/adapter-core": "^2.4.0",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "mocha": "^7.1.2",
+    "chai": "^4.2.0"
+  },
+  "bugs": {
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
+  },
+  "main": "main.js",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha --exit"
+  },
+  "license": "MIT"
 }

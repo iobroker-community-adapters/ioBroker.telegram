@@ -600,7 +600,7 @@ BotFather: Success! The new status is: DISABLED. /help
  
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.5.9 (2020-05-04)
 * (Apollon77) potential error fixed when sending messages
 * (Apollon77) webserver initialization optimized again to prevent errors with invalid certificates 
 

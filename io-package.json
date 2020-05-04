@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.8",
+        "version": "1.5.9",
         "news": {
+            "1.5.9": {
+                "en": "potential error fixed when sending messages\nwebserver initialization optimized again to prevent errors with invalid certificates",
+                "de": "Möglicher Fehler beim Senden von Nachrichten behoben\nDie Webserver-Initialisierung wurde erneut optimiert, um Fehler mit ungültigen Zertifikaten zu vermeiden",
+                "ru": "исправлена потенциальная ошибка при отправке сообщений\nИнициализация веб-сервера снова оптимизирована для предотвращения ошибок с недействительными сертификатами",
+                "pt": "erro potencial corrigido ao enviar mensagens\ninicialização do servidor da web otimizada novamente para evitar erros com certificados inválidos",
+                "nl": "mogelijke fout verholpen bij het verzenden van berichten\nde initialisatie van de webserver is opnieuw geoptimaliseerd om fouten met ongeldige certificaten te voorkomen",
+                "fr": "erreur potentielle corrigée lors de l'envoi de messages\ninitialisation du serveur Web optimisée à nouveau pour éviter les erreurs avec des certificats invalides",
+                "it": "potenziale errore risolto durante l'invio di messaggi\ninizializzazione del server web nuovamente ottimizzata per prevenire errori con certificati non validi",
+                "es": "error potencial corregido al enviar mensajes\nLa inicialización del servidor web se optimizó nuevamente para evitar errores con certificados no válidos",
+                "pl": "potencjalny błąd naprawiony podczas wysyłania wiadomości\ninicjalizacja serwera WWW została ponownie zoptymalizowana, aby zapobiec błędom z nieprawidłowymi certyfikatami",
+                "zh-cn": "发送邮件时潜在的错误已修复\n再次优化了Web服务器的初始化，以防止证书无效而出错"
+            },
             "1.5.8": {
                 "en": "errors on webserver initialization are handled properly",
                 "de": "Fehler bei der Webserver-Initialisierung werden ordnungsgemäß behandelt",
