@@ -1549,6 +1549,10 @@ function connect() {
             // write received answer into variable
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
+            if (adapter.config.storeRawRequest) {
+                adapter.setState('communicate.requestRaw', JSON.stringify(callbackQuery), err =>
+                    err && adapter.log.error(err));
+            }
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
             adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, err => err && adapter.log.error(err));
             adapter.setState('communicate.request', '[' + (
