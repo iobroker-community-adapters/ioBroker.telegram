@@ -16,7 +16,7 @@
   ],
   "socksv5description": "Taken from https://github.com/christophgysin/socksv5/commits/fix-normailzeargs",
   "dependencies": {
-    "node-telegram-bot-api": "^0.40.0",
+    "node-telegram-bot-api": "^0.50.0",
     "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9",
     "@iobroker/adapter-core": "^2.4.0",
     "request": "^2.88.2"
