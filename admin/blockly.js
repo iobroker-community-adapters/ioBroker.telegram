@@ -141,6 +141,7 @@ Blockly.Words['telegram_call']          = {'en': 'call via Telegram', 'de': 'per
 Blockly.Words['telegram_call_system']   = {'en': 'System language', 'de': 'Systemsprache', 'ru': 'Системный язык', 'pt': 'Idioma do sistema', 'nl': 'Systeem taal', 'fr': 'Langue du système', 'it': 'Linguaggio di sistema', 'es': 'Lenguaje del sistema', 'pl': 'Język systemowy', 'zh-cn': '系统语言'};
 Blockly.Words['telegram_call_tooltip']  = {'en': 'Call via Telegram and say some text', 'de': 'Rufen Sie per Telegram an und sagen Sie etwas Text','ru': 'Звоните через Telegram и произносите текст',    'pt': 'Ligue por Telegram e diga algum texto',    'nl': 'Bel via Telegram en zeg wat tekst',    'fr': 'Appelez par Telegram et dites du texte',    'it': 'Chiama via Telegram e pronuncia un messaggio',    'es': 'Llama por Telegram y di algo de texto',    'pl': 'Zadzwoń za pośrednictwem Telegram i powiedz tekst',    'zh-cn': '通过电报呼叫并说一些文字'};
 Blockly.Words['telegram_call_help']     = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram'};
+Blockly.Words['telegram_call_repeats']          = {'en': 'repeats', 'de': 'Wiederholungen', 'ru': 'repeats', 'pt': 'repeats', 'nl': 'repeats', 'fr': 'repeats', 'it': 'repeats',    'es': 'repeats', 'pl': 'repeats', 'zh-cn': 'repeats'};
 
 Blockly.Sendto.blocks['telegram_call'] =
     '<block type="telegram_call">'
@@ -157,6 +158,8 @@ Blockly.Sendto.blocks['telegram_call'] =
     + '         </shadow>'
     + '     </value>'
     + '     <value name="LANGUAGE">'
+    + '     </value>'
+    + '     <value name="REPEATS">'
     + '     </value>'
     + '     <value name="LOG">'
     + '     </value>'
@@ -295,6 +298,16 @@ Blockly.Blocks['telegram_call'] = {
             .appendField(Blockly.Translate('telegram'))
             .appendField(new Blockly.FieldDropdown(languages), 'LANGUAGE');
 
+        this.appendDummyInput('REPEATS')
+            .appendField(Blockly.Translate('telegram_call_repeats'))
+            .appendField(new Blockly.FieldDropdown([
+                ['1',  '1'],
+                ['2',  '2'],
+                ['3', '3'],
+                ['4',  '4'],
+                ['5', '5']
+            ]), 'REPEATS');
+
         this.appendDummyInput('LOG')
             .appendField(Blockly.Translate('telegram_log'))
             .appendField(new Blockly.FieldDropdown([
@@ -322,6 +335,7 @@ Blockly.Blocks['telegram_call'] = {
 Blockly.JavaScript['telegram_call'] = function(block) {
     var dropdown_instance = block.getFieldValue('INSTANCE');
     var dropdown_language = block.getFieldValue('LANGUAGE');
+    var repeats = block.getFieldValue('REPEATS');
     var logLevel = block.getFieldValue('LOG');
     var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
@@ -337,6 +351,7 @@ Blockly.JavaScript['telegram_call'] = function(block) {
         '\n    text: ' + value_message +
         (value_username ? ',\n    ' + 'user: ' + value_username : '') +
         ',\n    lang: "' + dropdown_language + '"' +
+        ',\n    repeats: "' + repeats + '"' +
         '\n});\n' +
         logText;
 };
