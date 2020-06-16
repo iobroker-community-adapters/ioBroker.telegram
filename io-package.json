@@ -237,7 +237,8 @@
         "certChained": "",
         "leEnabled": false,
         "leUpdate": false,
-        "leCheckPort": 80
+        "leCheckPort": 80,
+		"saveFiles": false
     },
     "objects": [
         {
