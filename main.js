@@ -781,7 +781,16 @@ function sendMessage(text, user, chatId, options) {
         text = (text || '').toString();
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         const re = new RegExp(m[1], 'i');
-        const id = users.find(id => (!adapter.config.useUsername && users[id].firstName.match(re)) || (adapter.config.useUsername && users[id].userName.match(re)));
+        let id = "";
+        for (const id_t in users) {
+            if (!users.hasOwnProperty(id_t)) {
+                continue;
+            }
+            if ((adapter.config.useUsername && users[id_t].userName.match(re)) || (!adapter.config.useUsername && users[id_t].firstName.match(re))) {
+                    id = id_t
+                    break;
+            }
+        }
         if (id) {
             if (options) {
                 options.chatId = id;
