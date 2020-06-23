@@ -725,6 +725,12 @@ function sendMessage(text, user, chatId, options) {
     if (text && typeof text === 'object' && text.text !== undefined && typeof text.text === 'string' && options === undefined) {
         options = text;
         text = options.text;
+        if (options.chatId) {
+            chatId = options.chatId;
+        }
+        if (options.user) {
+            user = options.user;
+        }
     }
 
     if (options && typeof options === 'object') {
