@@ -633,6 +633,11 @@ msg.payload = {
 
 ## Changelog
 
+### __WORK IN PROGRESS__
+* (MarkRohrbacher) Allow overriding chatId / user when writing JSON objects to telegram.INSTANCE.communicate.response
+* (blazeis) Fix Send message via Response field with Username
+* (Garfonso) fill requestRaw also for callbackQuery
+
 ### 1.5.9 (2020-05-04)
 * (Apollon77) potential error fixed when sending messages
 * (Apollon77) webserver initialization optimized again to prevent errors with invalid certificates 
