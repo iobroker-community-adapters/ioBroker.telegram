@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.5.9",
+        "version": "1.6.0",
         "news": {
+            "1.6.0": {
+                "en": "Allow overriding chatId / user when writing JSON objects to telegram.INSTANCE.communicate.response\nFix Send message via Response field with Username\nfill requestRaw also for callbackQuery",
+                "de": "Erlauben Sie das Überschreiben von chatId / user, wenn Sie JSON-Objekte in telegram.INSTANCE.communicate.response schreiben\nFix Nachricht über Antwortfeld mit Benutzername senden korrigieren\nFüllen Sie requestRaw auch für callbackQuery aus",
+                "ru": "Разрешить переопределение chatId / user при записи объектов JSON в telegram.INSTANCE.communicate.response\nИсправить Отправить сообщение через поле ответа с именем пользователя\nзаполните requestRaw также для callbackQuery",
+                "pt": "Permitir a substituição de chatId / user ao gravar objetos JSON em telegram.INSTANCE.communicate.response\nCorrigir Enviar mensagem via campo de resposta com nome de usuário\npreencher requestRaw também para callbackQuery",
+                "nl": "Sta het overschrijven van chatId / user toe bij het schrijven van JSON-objecten naar telegram.INSTANCE.communicate.response\nFix Stuur bericht via antwoordveld met gebruikersnaam\nfill requestRaw ook voor callbackQuery",
+                "fr": "Autoriser le remplacement de chatId / user lors de l'écriture d'objets JSON dans telegram.INSTANCE.communicate.response\nFix Envoyer un message via le champ de réponse avec le nom d'utilisateur\nfill requestRaw aussi pour callbackQuery",
+                "it": "Consenti l'override di chatId / utente durante la scrittura di oggetti JSON su telegram.INSTANCE.communicate.response\nRisolto il problema con Invia messaggio tramite campo Risposta con nome utente\nfill requestRaw anche per callbackQuery",
+                "es": "Permitir anular chatId / user al escribir objetos JSON en telegram.INSTANCE.communicate.response\nCorregir Enviar mensaje a través del campo Respuesta con nombre de usuario\nllenar requestRaw también para callbackQuery",
+                "pl": "Zezwalaj na zastępowanie chatId / user podczas zapisywania obiektów JSON w telegram.INSTANCE.communicate.response\nNapraw Wyślij wiadomość przez pole odpowiedzi z nazwą użytkownika\nfill requestRaw również dla callbackQuery",
+                "zh-cn": "将JSON对象写入telegram.INSTANCE.communicate.response时，允许覆盖chatId /用户\n使用用户名修复通过响应字段发送消息\n也为callbackQuery填充requestRaw"
+            },
             "1.5.9": {
                 "en": "potential error fixed when sending messages\nwebserver initialization optimized again to prevent errors with invalid certificates",
                 "de": "Möglicher Fehler beim Senden von Nachrichten behoben\nDie Webserver-Initialisierung wurde erneut optimiert, um Fehler mit ungültigen Zertifikaten zu vermeiden",
@@ -238,7 +250,7 @@
         "leEnabled": false,
         "leUpdate": false,
         "leCheckPort": 80,
-		"saveFiles": false
+        "saveFiles": false
     },
     "objects": [
         {
