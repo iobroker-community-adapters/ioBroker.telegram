@@ -6,7 +6,7 @@ var states  = null;
 
 function checkConnectionOfAdapter(cb, counter) {
     counter = counter || 0;
-    if (counter > 20) {
+    if (counter > 60) {
         cb && cb('Cannot check connection');
         return;
     }
@@ -18,7 +18,7 @@ function checkConnectionOfAdapter(cb, counter) {
         } else {
             setTimeout(function () {
                 checkConnectionOfAdapter(cb, counter + 1);
-            }, 1000);
+            }, 250);
         }
     });
 }
