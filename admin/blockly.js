@@ -95,11 +95,11 @@ Blockly.Blocks['telegram'] = {
 
         this.appendDummyInput('SILENT')
             .appendField(Blockly.Translate('telegram_silent'))
-            .appendField(new Blockly.FieldCheckbox("FALSE"), "SILENT");
+            .appendField(new Blockly.FieldCheckbox('FALSE'), 'SILENT');
 
         this.appendDummyInput('PARSEMODE')
-            .appendField("Parsemode")
-            .appendField(new Blockly.FieldDropdown([["default","default"], ["HTML","HTML"], ["Markdown","Markdown"]]), "PARSEMODE");
+            .appendField('Parsemode')
+            .appendField(new Blockly.FieldDropdown([['default', 'default'], ['HTML', 'HTML'], ['Markdown', 'Markdown']]), 'PARSEMODE');
 
         if (input.connection) input.connection._optional = true;
 
@@ -351,7 +351,7 @@ Blockly.JavaScript['telegram_call'] = function(block) {
         '\n    text: ' + value_message +
         (value_username ? ',\n    ' + 'user: ' + value_username : '') +
         ',\n    lang: "' + dropdown_language + '"' +
-        ',\n    repeats: "' + repeats + '"' +
+        ',\n    repeats: "' + (parseInt(repeats, 10) || 1) + '"' +
         '\n});\n' +
         logText;
 };
