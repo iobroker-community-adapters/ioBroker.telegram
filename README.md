@@ -60,6 +60,14 @@ The JSON syntax also allows to add options from the [telegram bots API](https://
 }
 ```
 
+In order to send messages to groups, you have to invite the bot to the group you want the bot to post in. 
+By providing the `chat_id` to the JSON message payload you can actually send messages to those groups. 
+
+In order to find out the `chat_id` you have to set the adapter's log level to `debug`. 
+You can then just ping your bot in the groups you want the bot to send messages to. 
+Make sure you put a `/` in front of the message in order for the bot to see the message ([if the bot privacy is turned on](#How-to-receive-messages-in-group-chats-using-telegram-adapter)).
+The iobroker log will then show you the chat id in the logs.
+
 ## Usage
 You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
 
