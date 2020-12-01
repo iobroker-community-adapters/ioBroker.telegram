@@ -638,7 +638,7 @@ msg.payload = {
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.6.1 (2020-12-01)
 * (ChristianB86) Added option to set the amount of repeats for telegram call.
 
 ### 1.6.0 (2020-11-09)

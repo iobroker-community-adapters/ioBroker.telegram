@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.6.0",
+        "version": "1.6.1",
         "news": {
+            "1.6.1": {
+                "en": "Added option to set the amount of repeats for telegram call.",
+                "de": "Option hinzugefügt, um die Anzahl der Wiederholungen für Telegrammanrufe festzulegen.",
+                "ru": "Добавлена возможность установить количество повторов для звонка в Telegram.",
+                "pt": "Adicionada opção para definir a quantidade de repetições para chamada de telegrama.",
+                "nl": "Optie toegevoegd om het aantal herhalingen voor telegramoproepen in te stellen.",
+                "fr": "Ajout d'une option pour définir le nombre de répétitions pour l'appel de télégramme.",
+                "it": "Aggiunta opzione per impostare la quantità di ripetizioni per la chiamata del telegramma.",
+                "es": "Opción agregada para establecer la cantidad de repeticiones para la llamada de telegrama.",
+                "pl": "Dodano opcję ustawiania liczby powtórzeń wywołania telegramu.",
+                "zh-cn": "添加了用于设置电报呼叫重复次数的选项。"
+            },
             "1.6.0": {
                 "en": "Allow overriding chatId / user when writing JSON objects to telegram.INSTANCE.communicate.response\nFix Send message via Response field with Username\nfill requestRaw also for callbackQuery",
                 "de": "Erlauben Sie das Überschreiben von chatId / user, wenn Sie JSON-Objekte in telegram.INSTANCE.communicate.response schreiben\nFix Nachricht über Antwortfeld mit Benutzername senden korrigieren\nFüllen Sie requestRaw auch für callbackQuery aus",
