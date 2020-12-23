@@ -1166,7 +1166,7 @@ function getCommandsKeyboard(chatId) {
                 adapter.log.warn(`Unsupported state type for keyboard: ${commands[id].type}. Only numbers and booleans are supported`);
             }
         } else {
-            keyboard.push(`${commands[id].alias} ?`);
+            keyboard.push([`${commands[id].alias} ?`]);
         }
     });
 
