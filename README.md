@@ -646,7 +646,7 @@ msg.payload = {
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.6.2 (2020-12-27)
 * (fincha) Fixing error with keyboard
 
 ### 1.6.1 (2020-12-01)

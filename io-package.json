@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.6.1",
+        "version": "1.6.2",
         "news": {
+            "1.6.2": {
+                "en": "Fixing error with keyboard",
+                "de": "Fehler mit Tastatur behoben",
+                "ru": "Исправление ошибки с клавиатурой",
+                "pt": "Corrigindo erro com teclado",
+                "nl": "Fout herstellen met toetsenbord",
+                "fr": "Correction d'une erreur avec le clavier",
+                "it": "Errore di correzione con la tastiera",
+                "es": "Corregir error con el teclado",
+                "pl": "Naprawianie błędu z klawiaturą",
+                "zh-cn": "修正键盘错误"
+            },
             "1.6.1": {
                 "en": "Added option to set the amount of repeats for telegram call.",
                 "de": "Option hinzugefügt, um die Anzahl der Wiederholungen für Telegrammanrufe festzulegen.",
