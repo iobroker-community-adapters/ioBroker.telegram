@@ -646,6 +646,9 @@ msg.payload = {
 
 ## Changelog
 
+### __WORK IN PROGRESS__
+* (fincha) Fixing error with keyboard
+
 ### 1.6.1 (2020-12-01)
 * (ChristianB86) Added option to set the amount of repeats for telegram call.
 

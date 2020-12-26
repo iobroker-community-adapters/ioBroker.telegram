@@ -237,7 +237,12 @@
             "minWidth": 800,
             "width": 1224,
             "height": 600
-        }
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ]
     },
     "native": {
         "server": "false",
