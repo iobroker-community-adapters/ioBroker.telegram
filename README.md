@@ -645,7 +645,7 @@ msg.payload = {
 -->
 
 ## Changelog
-### 1.6.3 (2021-01-08)
+### __WORK IN PROGRESS__
 * (bluefox) Support of new Let's Encrypt (only with js-controller 3.2.x)
 
 ### 1.6.2 (2020-12-27)
