@@ -2,7 +2,7 @@
  *
  *      ioBroker telegram Adapter
  *
- *      Copyright (c) 2016-2020 bluefox <dogafox@gmail.com>
+ *      Copyright (c) 2016-2021 bluefox <dogafox@gmail.com>
  *
  *      MIT License
  *
@@ -149,13 +149,13 @@ function startAdapter(options) {
             adapter.config.port = parseInt(adapter.config.port, 10);
 
             // Load certificates
-            adapter.getCertificates((err, certificates, leConfig) => {
+            adapter.getCertificates(async (err, certificates, leConfig) => {
                 adapter.config.certificates = certificates;
                 adapter.config.leConfig = leConfig;
                 adapter.config.secure = true;
 
                 try {
-                    server.server = LE.createServer(handleWebHook, adapter.config, adapter.config.certificates, adapter.config.leConfig, adapter.log);
+                    server.server = await LE.createServer(handleWebHook, adapter.config, adapter.config.certificates, adapter.config.leConfig, adapter.log, adapter);
                 } catch (err) {
                     adapter.log.error(`Cannot create webserver: ${err}`);
                     adapter.terminate ? adapter.terminate(utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION) : process.exit(utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
