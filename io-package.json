@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.6.3",
+        "version": "1.7.0",
         "news": {
+            "1.7.0": {
+                "en": "Support of new Let's Encrypt (only with js-controller 3.2.x)",
+                "de": "Unterstützung des neuen Let's Encrypt (nur mit js-controller 3.2.x)",
+                "ru": "Поддержка нового Let's Encrypt (только с js-controller 3.2.x)",
+                "pt": "Suporte do novo Let's Encrypt (apenas com js-controller 3.2.x)",
+                "nl": "Ondersteuning van nieuwe Let's Encrypt (alleen met js-controller 3.2.x)",
+                "fr": "Prise en charge du nouveau Let's Encrypt (uniquement avec js-controller 3.2.x)",
+                "it": "Supporto del nuovo Let's Encrypt (solo con js-controller 3.2.x)",
+                "es": "Soporte del nuevo Let's Encrypt (solo con js-controller 3.2.x)",
+                "pl": "Obsługa nowego Let's Encrypt (tylko z js-controller 3.2.x)",
+                "zh-cn": "支持新的Let's Encrypt（仅适用于js-controller 3.2.x）"
+            },
             "1.6.2": {
                 "en": "Fixing error with keyboard",
                 "de": "Fehler mit Tastatur behoben",
