@@ -44,6 +44,7 @@ const tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
 tmp.pop();
 const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
+const mediagroupExport = {};
 let tmpDirName;
 
 const server = {
@@ -864,13 +865,34 @@ function getMessage(msg) {
         })
     } else if (adapter.config.saveFiles && msg.photo) {
         !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
-        saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', res => {
-            if (!res.error) {
-                adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
-            } else {
-                adapter.log.debug(res.error);
-            }
+      const qualiMap = {0: 'low',
+                          1 : 'med',
+                          2 : 'high',
+                          3 : 'highdef'};
+
+
+        msg.photo.forEach((item, i) => {
+          let quali = "none";
+          if(qualiMap.hasOwnProperty(i))
+            quali = qualiMap[i];
+          let fileName = '';
+          if(msg.media_group_id){
+            if(!mediagroupExport.hasOwnProperty(msg.media_group_id))
+              mediagroupExport[msg.media_group_id] = 0;
+            else
+              mediagroupExport[msg.media_group_id] ++;
+            fileName = '/photo/' + date +'_mgpIdx_'+mediagroupExport[msg.media_group_id]+'_'+ quali +'.jpg';
+          }
+          else
+            fileName = '/photo/' + date +'_'+ quali +'.jpg';
+          saveFile(item.file_id,fileName, res => {
+              if (!res.error) {
+                  adapter.log.info(res.info);
+                  adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+              } else {
+                  adapter.log.debug(res.error);
+              }
+          });
         });
     } else if (adapter.config.saveFiles && msg.video) {
         !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
