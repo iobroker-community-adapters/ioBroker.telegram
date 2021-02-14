@@ -865,11 +865,11 @@ function getMessage(msg) {
         })
     } else if (adapter.config.saveFiles && msg.photo) {
         !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
-      const qualiMap = {0: 'low',
+  
+	const qualiMap = {0: 'low',
                           1 : 'med',
                           2 : 'high',
                           3 : 'highdef'};
-
 
         msg.photo.forEach((item, i) => {
             let quali = "none";
