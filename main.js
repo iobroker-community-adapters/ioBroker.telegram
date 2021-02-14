@@ -872,27 +872,29 @@ function getMessage(msg) {
 
 
         msg.photo.forEach((item, i) => {
-          let quali = "none";
-          if(qualiMap.hasOwnProperty(i))
-            quali = qualiMap[i];
-          let fileName = '';
-          if(msg.media_group_id){
-            if(!mediagroupExport.hasOwnProperty(msg.media_group_id))
-              mediagroupExport[msg.media_group_id] = 0;
-            else
-              mediagroupExport[msg.media_group_id] ++;
-            fileName = '/photo/' + date +'_mgpIdx_'+mediagroupExport[msg.media_group_id]+'_'+ quali +'.jpg';
-          }
-          else
-            fileName = '/photo/' + date +'_'+ quali +'.jpg';
-          saveFile(item.file_id,fileName, res => {
-              if (!res.error) {
-                  adapter.log.info(res.info);
-                  adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
-              } else {
-                  adapter.log.debug(res.error);
-              }
-          });
+            let quali = "none";
+            if (qualiMap.hasOwnProperty(i)) {
+                quali = qualiMap[i];
+	    }
+            let fileName = '';
+            if (msg.media_group_id) {
+                if (!mediagroupExport.hasOwnProperty(msg.media_group_id)) {
+                    mediagroupExport[msg.media_group_id] = 0;
+		} else {
+                    mediagroupExport[msg.media_group_id] ++;
+		}
+                fileName = '/photo/' + date + '_mgpIdx_' + mediagroupExport[msg.media_group_id]+'_' + quali + '.jpg';
+            } else {
+            	fileName = '/photo/' + date + '_' + quali + '.jpg';
+	    }
+            saveFile(item.file_id, fileName, res => {
+                if (!res.error) {
+                    adapter.log.info(res.info);
+                    adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                } else {
+                    adapter.log.debug(res.error);
+                }
+            });
         });
     } else if (adapter.config.saveFiles && msg.video) {
         !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
