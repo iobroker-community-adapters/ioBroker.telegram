@@ -865,7 +865,7 @@ function getMessage(msg) {
         })
     } else if (adapter.config.saveFiles && msg.photo) {
         !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
-  
+
         const qualiMap = {
 	    0: 'low',
             1 : 'med',
@@ -881,13 +881,24 @@ function getMessage(msg) {
             let fileName = '';
             if (msg.media_group_id) {
                 if (!mediagroupExport.hasOwnProperty(msg.media_group_id)) {
-                    mediagroupExport[msg.media_group_id] = 0;
+                  const id = Object.keys(mediagroupExport).length;
+                  mediagroupExport[msg.media_group_id] = {
+                    id:id,
+                    count:0
+                  };
 		} else {
-                    mediagroupExport[msg.media_group_id] ++;
+                mediagroupExport[msg.media_group_id].count++;
 		}
-                fileName = '/photo/' + date + '_mgpIdx_' + mediagroupExport[msg.media_group_id]+'_' + quali + '.jpg';
+                fileName = '/photo/' + date +'_grpID_'+mediagroupExport[msg.media_group_id].id +"_"+mediagroupExport[msg.media_group_id].count+'_'+ quali +'.jpg';
             } else {
-            	fileName = '/photo/' + date + '_' + quali + '.jpg';
+              fileName = '/photo/' + date + '_' + quali + '.jpg';
+              if(fs.existsSync(tmpDirName + fileName)){
+                let tIdx = 0;
+                do{
+                  fileName = '/photo/' + date +'_'+ tIdx + '_' + quali + '.jpg';
+                  tIdx ++;
+                 }while(fs.existsSync(tmpDirName + fileName));
+              }
 	    }
             saveFile(item.file_id, fileName, res => {
                 if (!res.error) {
