@@ -312,8 +312,11 @@ function connectionState(connected) {
                 bot && bot.getMe && bot.getMe().then(data => {
                     adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
                     connectionState(true);
-                });
-            });
+                 }).catch((error)=>{
+                    adapter.log.error('connectionState-Error:'+error);
+                		return;
+                		    });
+                            },300);
         }
     }
 }
