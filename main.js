@@ -309,14 +309,15 @@ function connectionState(connected) {
             pollConnectionStatus = null;
         } else if (!isConnected) {
             pollConnectionStatus = setInterval(() => {
-                bot && bot.getMe && bot.getMe().then(data => {
+                bot && bot.getMe && bot.getMe()
+                .then(data => {
                     adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
                     connectionState(true);
-                 }).catch((error)=>{
-                    adapter.log.error('connectionState-Error:'+error);
-                		return;
-                		    });
-                            },300);
+                })
+                .catch((error) => {
+                    adapter.log.error('getMe (reconnect) Error:' + error);
+                });
+            },300);
         }
     }
 }
@@ -454,24 +455,30 @@ function _sendMessageHelper(dest, name, text, options) {
                             const size = filesAsArray.map((element) => element.media.length).reduce((acc, val) => acc + val);
                             adapter.log.info('Send mediagroup to "' + name + '": ' + size + ' bytes');
                             if (filesAsArray.length > 0) {
-                                bot.sendMediaGroup(dest, filesAsArray).then((response) => saveSendRequest(response)).then(() => {
-                                    adapter.log.debug('photos sent');
-                                    options = null;
-                                    count++;
-                                }).catch(error => {
-                                    if (options.chatId) {
-                                        adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
-                                    } else {
-                                        adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
-                                    }
-                                    options = null;
-                                });
+                                bot.sendMediaGroup(dest, filesAsArray).then((response) => saveSendRequest(response))
+                                    .then(() => {
+                                        adapter.log.debug('photos sent');
+                                        options = null;
+                                        count++;
+                                    })
+                                    .catch(error => {
+                                        if (options.chatId) {
+                                            adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
+                                        } else {
+                                            adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
+                                        }
+                                        options = null;
+                                    });
                             }
                         } else {
                             adapter.log.debug('files must exists');
                             options = null;
                         }
+                    })
+                    .catch((error) => {
+                        adapter.log.error('upload Error:' + error);
                     });
+                ;
             } else
                 adapter.log.debug('option media should be an array');
         } else {
@@ -1226,7 +1233,7 @@ function getCommandsKeyboard(chatId) {
             adapter.log.debug('Message sent');
         })
         .catch(error => {
-            adapter.log.error(error);
+            adapter.log.error('Send message error: ' + error);
         });
 }
 
@@ -1266,7 +1273,10 @@ function processTelegramText(msg) {
     // ignore all messages older than 30 seconds + polling interval
     if (now - msg.date * 1000 > pollingInterval + 30000) {
         adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: (' + (pollingInterval + 30000) + ') ' + msg.text);
-        bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text);
+        bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text)
+            .catch((error) => {
+                adapter.log.error('send Message Error:' + error);
+            });
         return;
     }
     msg.text = (msg.text ||'').trim();
@@ -1277,12 +1287,18 @@ function processTelegramText(msg) {
     }
 
     if (msg.text === '/password') {
-        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
+            .catch((error) => {
+                adapter.log.error('send Message Error:' + error);
+            });
         return;
     }
 
     if (msg.text === '/help') {
-        bot.sendMessage(msg.from.id, getListOfCommands());
+        bot.sendMessage(msg.from.id, getListOfCommands())
+            .catch((error) => {
+                adapter.log.error('send Message Error:' + error);
+            });
         return;
     }
 
@@ -1311,8 +1327,7 @@ function processTelegramText(msg) {
                 let sValue = msg.text.substring(commands[id].alias.length + 1);
                 found = true;
                 if (sValue === '?') {
-                    adapter.getForeignState(id, (err, state) =>
-                        bot.sendMessage(msg.chat.id, getStatus(id, state)));
+                    adapter.getForeignState(id, (err, state) => bot.sendMessage(msg.chat.id, getStatus(id, state)).catch((error) => adapter.log.error('send Message Error:' + error)));
                 } else {
                     let value;
                     if (commands[id].states) {
@@ -1328,7 +1343,7 @@ function processTelegramText(msg) {
                         sValue = sValue.replace('%', '').trim();
                         value = parseFloat(sValue);
                         if (sValue !== value.toString()) {
-                            bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue));
+                            bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue)).catch((error) => adapter.log.error('send Message Error:' + error));
                             continue;
                         }
                     } else {
@@ -1336,7 +1351,7 @@ function processTelegramText(msg) {
                     }
 
                     adapter.setForeignState(id, value, err =>
-                        bot.sendMessage(msg.chat.id, _('Done')));
+                        bot.sendMessage(msg.chat.id, _('Done'))).catch((error) => adapter.log.error('send Message Error:' + error));
                 }
             }
         }
@@ -1356,11 +1371,11 @@ function processTelegramText(msg) {
                 if (!msg.from.username) {
                     adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
                 }
-                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username));
+                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username)).catch((error) => adapter.log.error('send Message Error:' + error));
                 return;
             } else {
                 adapter.log.warn('Got invalid password from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + m[1]);
-                bot.sendMessage(msg.from.id, _('Invalid password', systemLang));
+                bot.sendMessage(msg.from.id, _('Invalid password', systemLang)).catch((error) => adapter.log.error('send Message Error:' + error));
                 if (users[msg.from.id]) {
                     delete users[msg.from.id];
                 }
@@ -1370,7 +1385,7 @@ function processTelegramText(msg) {
 
     // todo support commands: instances, running, restart
     if (adapter.config.password && !users[msg.from.id]) {
-        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang));
+        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang)).catch((error) => adapter.log.error('send Message Error:' + error));
         return;
     }
 
@@ -1401,19 +1416,19 @@ function processTelegramText(msg) {
                     m = null;
                 }
                 if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err);
+                    if (err) bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
                     if (state) {
                         adapter.setForeignState(id1, val1, err => {
                             if (msg) {
                                 if (err) {
-                                    bot.sendMessage(msg.from.id, err);
+                                    bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
                                 } else {
-                                    bot.sendMessage(msg.from.id, _('Done', systemLang));
+                                    bot.sendMessage(msg.from.id, _('Done', systemLang)).catch((error) => adapter.log.error('send Message Error:' + error));
                                 }
                             }
                         });
                     } else {
-                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1));
+                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1)).catch((error) => adapter.log.error('send Message Error:' + error));
                     }
                 }
             });
@@ -1437,11 +1452,11 @@ function processTelegramText(msg) {
                     m = null;
                 }
                 if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err);
+                    if (err) bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
                     if (state) {
-                        bot.sendMessage(msg.from.id, state.val.toString());
+                        bot.sendMessage(msg.from.id, state.val.toString()).catch((error) => adapter.log.error('send Message Error:' + error));
                     } else {
-                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2));
+                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2)).catch((error) => adapter.log.error('send Message Error:' + error));
                     }
                 }
             });
@@ -1460,7 +1475,7 @@ function processTelegramText(msg) {
         }, response => {
             if (response && response.response) {
                 adapter.log.debug('Send response: ' + response.response);
-                bot.sendMessage(response.id, response.response);
+                bot.sendMessage(response.id, response.response).catch((error) => adapter.log.error('send Message Error:' + error));
             }
         });
     }
@@ -1503,7 +1518,7 @@ function connect() {
         bot.getMe().then(data => {
             adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
             connectionState(true);
-        });
+        }).catch((error) => adapter.log.error('getMe (reconnect) Error:' + error));
     } else {
         let agent;
         if (proxy === true) {
@@ -1586,7 +1601,7 @@ function connect() {
                     sendMessage(adapter.config.restarted);
                 }
             }
-        });
+        }).catch((error) => adapter.log.error('getMe Error:' + error));
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
