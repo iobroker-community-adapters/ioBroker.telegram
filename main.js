@@ -300,24 +300,35 @@ function getStatus(id, state) {
     }
 }
 
-function connectionState(connected) {
+function connectionState(connected, logSuccess) {
+    let errorCounter = 0;
+
+    function checkConnection() {
+        pollConnectionStatus = null;
+        bot && bot.getMe && bot.getMe()
+            .then(data => {
+                adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
+                connectionState(true, errorCounter > 0);
+            })
+            .catch((error) => {
+                (errorCounter % 10 === 0) && adapter.log.error('getMe (reconnect #' + errorCounter + ') Error:' + error);
+                errorCounter++;
+                pollConnectionStatus && clearTimeout(pollConnectionStatus);
+                pollConnectionStatus = setTimeout(checkConnection, 1000);
+            });
+    }
+
+    if (connected && logSuccess) {
+        adapter.log.info('getMe (reconnect): Success');
+    }
     if (isConnected !== connected) {
         isConnected = connected;
         adapter.setState('info.connection', isConnected, true);
         if (isConnected && pollConnectionStatus) {
-            clearInterval(pollConnectionStatus);
+            clearTimeout(pollConnectionStatus);
             pollConnectionStatus = null;
         } else if (!isConnected) {
-            pollConnectionStatus = setInterval(() => {
-                bot && bot.getMe && bot.getMe()
-                .then(data => {
-                    adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
-                    connectionState(true);
-                })
-                .catch((error) => {
-                    adapter.log.error('getMe (reconnect) Error:' + error);
-                });
-            },300);
+            checkConnection();
         }
     }
 }
