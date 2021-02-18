@@ -44,6 +44,7 @@ const tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
 tmp.pop();
 const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
+const mediagroupExport = {};
 let tmpDirName;
 
 const server = {
@@ -311,8 +312,11 @@ function connectionState(connected) {
                 bot && bot.getMe && bot.getMe().then(data => {
                     adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
                     connectionState(true);
-                });
-            });
+                 }).catch((error)=>{
+                    adapter.log.error('connectionState-Error:'+error);
+                		return;
+                		    });
+                            },300);
         }
     }
 }
@@ -864,13 +868,49 @@ function getMessage(msg) {
         })
     } else if (adapter.config.saveFiles && msg.photo) {
         !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
-        saveFile(msg.photo[3].file_id, '/photo/' + date + '.jpg', res => {
-            if (!res.error) {
-                adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+
+        const qualiMap = {
+	    0: 'low',
+            1 : 'med',
+            2 : 'high',
+            3 : 'highdef'
+	};
+
+        msg.photo.forEach((item, i) => {
+            let quali = "none";
+            if (qualiMap.hasOwnProperty(i)) {
+                quali = qualiMap[i];
+	    }
+            let fileName = '';
+            if (msg.media_group_id) {
+                if (!mediagroupExport.hasOwnProperty(msg.media_group_id)) {
+                  const id = Object.keys(mediagroupExport).length;
+                  mediagroupExport[msg.media_group_id] = {
+                    id:id,
+                    count:0
+                  };
+		} else {
+                mediagroupExport[msg.media_group_id].count++;
+		}
+                fileName = '/photo/' + date +'_grpID_'+mediagroupExport[msg.media_group_id].id +"_"+mediagroupExport[msg.media_group_id].count+'_'+ quali +'.jpg';
             } else {
-                adapter.log.debug(res.error);
-            }
+              fileName = '/photo/' + date + '_' + quali + '.jpg';
+              if(fs.existsSync(tmpDirName + fileName)){
+                let tIdx = 0;
+                do{
+                  fileName = '/photo/' + date +'_'+ tIdx + '_' + quali + '.jpg';
+                  tIdx ++;
+                 }while(fs.existsSync(tmpDirName + fileName));
+              }
+	    }
+            saveFile(item.file_id, fileName, res => {
+                if (!res.error) {
+                    adapter.log.info(res.info);
+                    adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                } else {
+                    adapter.log.debug(res.error);
+                }
+            });
         });
     } else if (adapter.config.saveFiles && msg.video) {
         !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
