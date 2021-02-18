@@ -1612,7 +1612,10 @@ function connect() {
                     sendMessage(adapter.config.restarted);
                 }
             }
-        }).catch((error) => adapter.log.error('getMe Error:' + error));
+        }).catch((error) => {
+            adapter.log.error('getMe Error:' + error)
+            connectionState(false);
+        });
 
         // Matches /echo [whatever]
         bot.onText(/(.+)/, processTelegramText);
@@ -1660,13 +1663,9 @@ function connect() {
         });
 
         bot.on('polling_error', error => {
-            if (error && error.toString().includes('ECONNRESET')) {
-                if (isConnected) {
-                    adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
-                    connectionState(false);
-                }
-            } else {
-                adapter.log.warn('polling_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+            if (isConnected) {
+                adapter.log.warn('polling_error: ' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+                connectionState(false);
             }
         });
 
