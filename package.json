@@ -16,7 +16,7 @@
   ],
   "socksv5description": "Taken from https://github.com/christophgysin/socksv5/commits/fix-normailzeargs",
   "dependencies": {
-    "node-telegram-bot-api": "^0.51.0",
+    "node-telegram-bot-api": "^0.52.0",
     "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9",
     "@iobroker/adapter-core": "^2.4.0",
     "request": "^2.88.2"
@@ -25,8 +25,8 @@
     "@alcalzone/release-script": "^1.8.3",
     "axios": "^0.21.1",
     "gulp": "^4.0.2",
-    "mocha": "^8.3.0",
-    "chai": "^4.3.0"
+    "mocha": "^8.3.2",
+    "chai": "^4.3.4"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
