@@ -291,14 +291,14 @@ gulp.task('translate', async function (done) {
     }
 
     if (iopackage && iopackage.common) {
-        /*if (iopackage.common.news) {
+        if (iopackage.common.news) {
             console.log('Translate News');
             for (let k in iopackage.common.news) {
                 console.log('News: ' + k);
                 let nw = iopackage.common.news[k];
                 await translateNotExisting(nw, null, yandex);
             }
-        }*/
+        }
         if (iopackage.common.titleLang) {
             console.log('Translate Title');
             await translateNotExisting(iopackage.common.titleLang, iopackage.common.title, yandex);
