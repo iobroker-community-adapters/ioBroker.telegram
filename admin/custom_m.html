@@ -136,8 +136,8 @@
             "pl": "Zgłoś zmiany",
             "zh-cn": "报告变更"
         },
-        "If the changes must de sent to telegram": {
-            "en": "If the changes must de sent to telegram",
+        "If the changes must be sent to telegram": {
+            "en": "If the changes must be sent to telegram",
             "de": "Wenn die Änderungen an Telegramm gesendet werden müssen",
             "ru": "Должны ли быть изменения отправлены в Telegram",
             "pt": "Se as alterações devem ser enviadas para telegrama",
@@ -303,15 +303,16 @@
                     onlyTrue:    !!(obj.common.role || '').match(/^button/),
                     buttons:     3
                 };
+            } else {
+                return {
+                    enabled:     false,
+                    report:      obj.common.read !== false,
+                    readOnly:    obj.common.write === false,
+                    writeOnly:   false,
+                    alias:       '',
+                    buttons:     3
+                };
             }
-            return {
-                enabled:     false,
-                report:      obj.common.read !== false,
-                readOnly:    obj.common.write === false,
-                writeOnly:   false,
-                alias:       '',
-                buttons:     3
-            };
         }
     }
 

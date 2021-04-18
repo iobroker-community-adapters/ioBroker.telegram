@@ -266,7 +266,8 @@
             {
                 "js-controller": ">=2.0.0"
             }
-        ]
+        ],
+        "jsonCustom": true
     },
     "native": {
         "server": "false",
