@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.8.0",
+        "version": "1.8.1",
         "news": {
+            "1.8.1": {
+                "en": "added the admin5 support",
+                "de": "Die admin5-Unterstützung wurde hinzugefügt",
+                "ru": "добавлена поддержка admin5",
+                "pt": "adicionou o suporte admin5",
+                "nl": "de admin5-ondersteuning toegevoegd",
+                "fr": "a ajouté le support admin5",
+                "it": "aggiunto il supporto admin5",
+                "es": "agregó el soporte admin5",
+                "pl": "dodano obsługę admin5",
+                "zh-cn": "添加了admin5支持"
+            },
             "1.8.0": {
                 "en": "(Apollon77/Nahasapeemapetilon) catch several API error cases to hopefully get around  adapter crashes on network errors\nadd support for media groups and multiple image qualities",
                 "de": "(Apollon77 / Nahasapeemapetilon) fängt mehrere API-Fehlerfälle ab, um hoffentlich Adapterabstürze bei Netzwerkfehlern zu umgehen\nUnterstützung für Mediengruppen und mehrere Bildqualitäten hinzufügen",

@@ -645,7 +645,7 @@ msg.payload = {
 -->
 
 ## Changelog
-### __WORK IN PROGRESS__
+### 1.8.1 (2021-04-20)
 * (bluefox) added the admin5 support
 
 ### 1.8.0 (2021-02-22)
