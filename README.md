@@ -645,6 +645,8 @@ msg.payload = {
 -->
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (bluefox) added the admin5 support
 
 ### 1.8.0 (2021-02-22)
 * (Apollon77/Nahasapeemapetilon) catch several API error cases to hopefully get around  adapter crashes on network errors
