@@ -781,10 +781,26 @@ function sendMessage(text, user, chatId, options) {
         if (typeof user !== 'string' && !(user instanceof Array)) {
             adapter.log.warn('Invalid type of user parameter: ' + typeof user + '. Expected is string or array.');
         }
+	    
+	if (typeof user === 'string') {
+            var user2;
+            user2 = user.replace('\'', '');
+            if (!isNaN(user2)) {
+                return _sendMessageHelper(user2, 'chat', text, options);
+            }
+        }
 
         const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(build => build.trim());
         let matches = 0;
         userArray.forEach(userName => {
+	    var user2;
+            user2 = userName.replace('\'', '');
+            if (!isNaN(user2)) {
+                count += _sendMessageHelper(user2, 'chat', text, options);
+                matches++;
+                return;
+            }
+	
             for (const id in users) {
                 if (!users.hasOwnProperty(id)) {
                     continue;
