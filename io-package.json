@@ -4,8 +4,20 @@
         "require": {
             "js-controller": ">2.0.0"
         },
-        "version": "1.8.0",
+        "version": "1.8.1",
         "news": {
+            "1.8.1": {
+                "en": "added the admin5 support",
+                "de": "Die admin5-Unterstützung wurde hinzugefügt",
+                "ru": "добавлена поддержка admin5",
+                "pt": "adicionou o suporte admin5",
+                "nl": "de admin5-ondersteuning toegevoegd",
+                "fr": "a ajouté le support admin5",
+                "it": "aggiunto il supporto admin5",
+                "es": "agregó el soporte admin5",
+                "pl": "dodano obsługę admin5",
+                "zh-cn": "添加了admin5支持"
+            },
             "1.8.0": {
                 "en": "(Apollon77/Nahasapeemapetilon) catch several API error cases to hopefully get around  adapter crashes on network errors\nadd support for media groups and multiple image qualities",
                 "de": "(Apollon77 / Nahasapeemapetilon) fängt mehrere API-Fehlerfälle ab, um hoffentlich Adapterabstürze bei Netzwerkfehlern zu umgehen\nUnterstützung für Mediengruppen und mehrere Bildqualitäten hinzufügen",
@@ -244,7 +256,8 @@
             "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
             "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
             "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
-            "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem"
+            "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem",
+            "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人"
         },
         "authors": [
             "bluefox <dogafox@gmail.com>"
@@ -278,7 +291,8 @@
             {
                 "js-controller": ">=2.0.0"
             }
-        ]
+        ],
+        "jsonCustom": true
     },
     "native": {
         "server": "false",

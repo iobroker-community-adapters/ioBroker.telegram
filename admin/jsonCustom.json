@@ -1,0 +1,308 @@
+{
+  "i18n": {
+    "Alias": {
+      "en": "Alias",
+      "de": "Alias",
+      "ru": "Имя",
+      "pt": "Alias",
+      "nl": "Alias",
+      "fr": "Alias",
+      "it": "Alias",
+      "es": "Alias",
+      "pl": "Alias",
+      "zh-cn": "别名"
+    },
+    "Leave empty to use object's name": {
+      "en": "Leave empty to use object's name",
+      "de": "Leer lassen, um den Namen des Objekts zu verwenden",
+      "ru": "Оставьте пустым, чтобы использовать имя объекта",
+      "pt": "Deixe em branco para usar o nome do objeto",
+      "nl": "Laat leeg om de naam van het object te gebruiken",
+      "fr": "Laisser vide pour utiliser le nom de l'objet",
+      "it": "Lascia vuoto per usare il nome dell'oggetto",
+      "es": "Deje vacío para usar el nombre del objeto",
+      "pl": "Pozostaw puste, aby użyć nazwy obiektu",
+      "zh-cn": "Leave empty to use object's name"
+    },
+    "Read only": {
+      "en": "Read only",
+      "de": "Schreibgeschützt",
+      "ru": "Только для чтения",
+      "pt": "Somente leitura",
+      "nl": "Alleen lezen",
+      "fr": "Lecture seulement",
+      "it": "Sola lettura",
+      "es": "Solo lectura",
+      "pl": "Tylko czytać",
+      "zh-cn": "只读"
+    },
+    "Only delivers the changes": {
+      "en": "Only delivers the changes",
+      "de": "Liefert nur die Änderungen",
+      "ru": "Только оповещает об изменениях",
+      "pt": "Apenas entrega as alterações",
+      "nl": "Levert alleen de wijzigingen",
+      "fr": "Ne livre que les changements",
+      "it": "Fornisce solo le modifiche",
+      "es": "Solo entrega los cambios.",
+      "pl": "Dostarcza tylko zmiany",
+      "zh-cn": "仅交付更改"
+    },
+    "Report changes": {
+      "en": "Report changes",
+      "de": "Änderungen melden",
+      "ru": "Отчет об изменениях",
+      "pt": "Comunicar alterações",
+      "nl": "Wijzigingen doorgeven",
+      "fr": "Signaler les modifications",
+      "it": "Segnala cambiamenti",
+      "es": "Informe de cambios",
+      "pl": "Zgłoś zmiany",
+      "zh-cn": "报告变更"
+    },
+    "If the changes must be sent to telegram": {
+      "en": "If the changes must be sent to telegram",
+      "de": "Wenn die Änderungen an Telegramm gesendet werden müssen",
+      "ru": "Должны ли быть изменения отправлены в Telegram",
+      "pt": "Se as alterações devem ser enviadas para telegrama",
+      "nl": "Als de wijzigingen verzonden moeten worden naar telegram",
+      "fr": "Si les modifications doivent être envoyées au télégramme",
+      "it": "Se le modifiche devono essere inviate al telegramma",
+      "es": "Si los cambios deben enviarse a telegrama.",
+      "pl": "Jeśli zmiany muszą zostać wysłane do telegramu",
+      "zh-cn": "如果必须将更改发送给电报"
+    },
+    "OFF status": {
+      "en": "Off text",
+      "de": "Aus Text",
+      "ru": "Текст Выкл.",
+      "pt": "Fora do texto",
+      "nl": "Uit tekst",
+      "fr": "Hors texte",
+      "it": "Off testo",
+      "es": "Fuera de texto",
+      "pl": "Wyłącz tekst",
+      "zh-cn": "关闭状态"
+    },
+    "Default - 'OFF'": {
+      "en": "Default - 'OFF'",
+      "de": "Standardeinstellung - 'AUS'",
+      "ru": "По умолчанию - 'Выкл'",
+      "pt": "Padrão - 'OFF'",
+      "nl": "Standaard - 'UIT'",
+      "fr": "Par défaut - 'OFF'",
+      "it": "Predefinito - 'OFF'",
+      "es": "Predeterminado - 'OFF'",
+      "pl": "Domyślnie - 'OFF'",
+      "zh-cn": "默认值-'OFF'"
+    },
+    "ON status": {
+      "en": "ON text",
+      "de": "EIN text",
+      "ru": "Текст Вкл.",
+      "pt": "No texto",
+      "nl": "Op tekst",
+      "fr": "Sur le texte",
+      "it": "Sul testo",
+      "es": "En el texto",
+      "pl": "Na tekst",
+      "zh-cn": "ON状态"
+    },
+    "Default - 'ON'": {
+      "en": "Default - 'ON'",
+      "de": "Standard 'EIN'",
+      "ru": "По умолчанию - 'ВКЛ'",
+      "pt": "Padrão - 'ON'",
+      "nl": "Standaard - 'AAN'",
+      "fr": "Par défaut - 'ON'",
+      "it": "Predefinito - 'ON'",
+      "es": "Predeterminado - 'ON'",
+      "pl": "Domyślne - 'WŁ'",
+      "zh-cn": "默认值-'ON'"
+    },
+    "OFF command": {
+      "en": "OFF command",
+      "de": "AUS-Befehl",
+      "ru": "Команда выключения",
+      "pt": "Comando OFF",
+      "nl": "UIT commando",
+      "fr": "Commande OFF",
+      "it": "Comando OFF",
+      "es": "Comando OFF",
+      "pl": "WYŁ Polecenie",
+      "zh-cn": "OFF指令"
+    },
+    "ON command": {
+      "en": "ON command",
+      "de": "AN-Befehl",
+      "ru": "Команда включения",
+      "pt": "No comando",
+      "nl": "Op commando",
+      "fr": "Sur commande",
+      "it": "A comando",
+      "es": "Comando ON",
+      "pl": "Na komendę",
+      "zh-cn": "ON命令"
+    },
+    "Only true": {
+      "en": "Only true",
+      "de": "Nur wahr",
+      "ru": "Только вкл.",
+      "pt": "Só é verdade",
+      "nl": "Alleen waar",
+      "fr": "Seulement vrai",
+      "it": "Solo vero",
+      "es": "Solo cierto",
+      "pl": "Tylko true",
+      "zh-cn": "只有“真实”的价值"
+    },
+    "Only false": {
+      "en": "Only false",
+      "de": "Nur falsch",
+      "ru": "Только выкл."
+    },
+    "Do not show OFF": {
+      "en": "Do not show OFF",
+      "de": "Gib nicht an",
+      "ru": "Не показывать Выкл.",
+      "pt": "Não se exiba",
+      "nl": "Niet tonen UIT",
+      "fr": "Ne pas montrer",
+      "it": "Non mostrare OFF",
+      "es": "No mostrar",
+      "pl": "Nie popisuj się",
+      "zh-cn": "不炫耀"
+    },
+    "Buttons in line": {
+      "en": "Buttons in line",
+      "de": "Knöpfen in Linie",
+      "ru": "Кнопок в строке",
+      "pt": "Botões em linha",
+      "nl": "Knoppen in de rij",
+      "fr": "Boutons en ligne",
+      "it": "Pulsanti in linea",
+      "es": "Botones en linea",
+      "pl": "Przyciski w linii",
+      "zh-cn": "排队按钮"
+    },
+    "Write only": {
+      "en": "Write only",
+      "de": "Nur schreiben",
+      "ru": "Только запись",
+      "pt": "Somente gravação",
+      "nl": "Alleen schrijven",
+      "fr": "Écrire seulement",
+      "it": "Scrivi solo",
+      "es": "Escribir solamente",
+      "pl": "Tylko pisać",
+      "zh-cn": "只写"
+    },
+    "No status query": {
+      "en": "No status query",
+      "de": "Keine Statusabfrage",
+      "ru": "Нет запроса статуса",
+      "pt": "Nenhuma consulta de status",
+      "nl": "Geen statusvraag",
+      "fr": "Aucune requête d'état",
+      "it": "Nessuna query sullo stato",
+      "es": "Sin consulta de estado",
+      "pl": "Brak zapytania o status",
+      "zh-cn": "无状态查询"
+    }
+  },
+  "items": {
+    "alias": {
+      "type": "text",
+      "sm": 12,
+      "label": "Alias",
+      "default": "",
+      "help": "Leave empty to use object's name"
+    },
+    "readOnly": {
+      "newLine": true,
+      "type": "checkbox",
+      "label": "Read only",
+      "help": "Only delivers the changes",
+      "defaultFunc": "customObj.common && customObj.common.write === false",
+      "sm": 6
+    },
+    "report": {
+      "type": "checkbox",
+      "label": "Report changes",
+      "help": "If the changes must be sent to telegram",
+      "defaultFunc": "customObj.common && customObj.common.read !== false",
+      "sm": 6
+    },
+    "buttons": {
+      "newLine": true,
+      "type": "number",
+      "label": "Buttons in line",
+      "default": 3,
+      "min": 1,
+      "max": 3,
+      "sm": 6
+    },
+    "writeOnly": {
+      "type": "checkbox",
+      "label": "Write only",
+      "default": false,
+      "help": "No status query",
+      "sm": 6
+    },
+    "offCommand": {
+      "newLine": true,
+      "type": "text",
+      "hidden": "customObj.common.type !== 'boolean' || data.onlyTrue",
+      "label": "OFF command",
+      "help": "Default - 'OFF'",
+      "default": "",
+      "hideOnlyControl": true,
+      "sm": 6
+    },
+    "onCommand": {
+      "type": "text",
+      "hidden": "customObj.common.type !== 'boolean' || data.onlyFalse",
+      "label": "ON command",
+      "help": "Default - 'ON'",
+      "default": "",
+      "sm": 6
+    },
+    "offStatus": {
+      "newLine": true,
+      "hidden": "customObj.common.type !== 'boolean' || data.onlyTrue",
+      "hideOnlyControl": true,
+      "type": "text",
+      "label": "OFF status",
+      "help": "Default - 'OFF'",
+      "default": "",
+      "sm": 6
+    },
+    "onStatus": {
+      "type": "text",
+      "hidden": "customObj.common.type !== 'boolean' || data.onlyFalse",
+      "label": "ON status",
+      "help": "Default - 'ON'",
+      "default": "",
+      "sm": 6
+    },
+    "onlyFalse": {
+      "newLine": true,
+      "type": "checkbox",
+      "hidden": "customObj.common.type !== 'boolean'",
+      "disabled": "data.onlyTrue",
+      "label": "Only false",
+      "help": "Do not show ON",
+      "default": false,
+      "sm": 6
+    },
+    "onlyTrue": {
+      "hidden": "customObj.common.type !== 'boolean'",
+      "disabled": "data.onlyFalse",
+      "defaultFunc": "customObj.common ? !!(customObj.common.role || '').match(/^button/) : false",
+      "type": "checkbox",
+      "label": "Only true",
+      "help": "Do not show OFF",
+      "sm": 6
+    }
+  }
+}
