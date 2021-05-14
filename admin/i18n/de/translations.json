@@ -26,7 +26,7 @@
     "OFF-Status": "ausgeschaltet",
     "ON-Command": "an",
     "ON-Status": "eingeschaltet",
-    "Please enter password in form \"/password phrase\"": "Bitte geben Sie das Kennwort in dieser Form ein: \"/password phrase\"",
+    "Please enter password in form \"/password phrase\"": "Das Password muss in der Form \"/password phrase\" eingegeben werden",
     "Polling interval (ms)": "Abrufintervall (ms)",
     "Port": "Port",
     "Port to check the domain:": "Port um die Erreichbarkeit der Domain zu prüfen",
