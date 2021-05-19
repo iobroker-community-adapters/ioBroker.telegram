@@ -6,7 +6,7 @@
     "Buttons in line": "Buttons in line",
     "Call text": "This is ioBroker calling. Something is happened in your house.",
     "Chained certificate": "Chained certificate",
-    "Changed_Password": "You have changed the password for your Bot. Do you want to delete all saved users now? Every user then has to reauthenticate with the new password before they can communicate with the bot again.",
+    "Changed_Password": "You have changed the password for your Bot. Do you want to delete all saved users now? Every user would have to authenticate again with the new password before they can communicate with the bot again.",
     "Command to show the keyboard": "Command to show the keyboard",
     "Done": "Done",
     "ID \"%s\" not found.": "ID \"%s\" not found.",
