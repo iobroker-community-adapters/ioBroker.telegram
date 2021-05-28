@@ -410,12 +410,12 @@ function saveSendRequest(msg) {
     adapter.log.debug('Request: ' + JSON.stringify(msg));
 
     if (msg && msg.message_id) {
-        adapter.setState('communicate.botSendMessageId', msg.message_id, err =>
+        adapter.setState('communicate.botSendMessageId', msg.message_id, true, err =>
             err && adapter.log.error(err));
     }
 
     if (msg && msg.chat && msg.chat.id) {
-        adapter.setState('communicate.botSendChatId', msg.chat.id, err =>
+        adapter.setState('communicate.botSendChatId', msg.chat.id, true, err =>
             err && adapter.log.error(err));
     }
 }
@@ -888,17 +888,17 @@ function getMessage(msg) {
         !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
 
         const qualiMap = {
-	    0: 'low',
+        0: 'low',
             1 : 'med',
             2 : 'high',
             3 : 'highdef'
-	};
+    };
 
         msg.photo.forEach((item, i) => {
             let quali = "none";
             if (qualiMap.hasOwnProperty(i)) {
                 quali = qualiMap[i];
-	    }
+        }
             let fileName = '';
             if (msg.media_group_id) {
                 if (!mediagroupExport.hasOwnProperty(msg.media_group_id)) {
@@ -907,9 +907,9 @@ function getMessage(msg) {
                     id:id,
                     count:0
                   };
-		} else {
+        } else {
                 mediagroupExport[msg.media_group_id].count++;
-		}
+        }
                 fileName = '/photo/' + date +'_grpID_'+mediagroupExport[msg.media_group_id].id +"_"+mediagroupExport[msg.media_group_id].count+'_'+ quali +'.jpg';
             } else {
               fileName = '/photo/' + date + '_' + quali + '.jpg';
@@ -920,7 +920,7 @@ function getMessage(msg) {
                   tIdx ++;
                  }while(fs.existsSync(tmpDirName + fileName));
               }
-	    }
+        }
             saveFile(item.file_id, fileName, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
@@ -1572,7 +1572,7 @@ function connect() {
             const serverOptions = {
                 polling: false,
                 filepath: true,
-		        baseApiUrl: adapter.config.baseApiUrl
+                baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
                 serverOptions.request = { agent: agent };
@@ -1589,7 +1589,7 @@ function connect() {
                     interval: parseInt(adapter.config.pollingInterval, 10) || 300
                 },
                 filepath: true,
-		        baseApiUrl: adapter.config.baseApiUrl
+                baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
                 pollingOptions.request = { agent: agent };
