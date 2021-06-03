@@ -99,7 +99,7 @@ function startAdapter(options) {
                         try {
                             userObj = JSON.parse(state.val);
                             delete userObj[userID];
-                            adapter.setState('communicate.users', JSON.stringify(userObj), err => {
+                            adapter.setState('communicate.users', JSON.stringify(userObj), true, err => {
                                 if (!err) {
                                     adapter.sendTo(obj.from, obj.command, userID, obj.callback);
                                     updateUsers();
@@ -114,7 +114,7 @@ function startAdapter(options) {
                 });
             } else if (obj.command === 'delAllUser') {
                 try {
-                    adapter.setState('communicate.users', '', err => {
+                    adapter.setState('communicate.users', '', true, err => {
                         if (!err) {
                             adapter.sendTo(obj.from, obj.command, true, obj.callback);
                             updateUsers();
@@ -849,7 +849,7 @@ function saveFile(file_id, fileName, callback) {
                 const buf = [];
                 res.on('data', data => buf.push(data));
                 res.on('end', () =>
-                    fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), err => {
+                    fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), true, err => {
                         if (err) {
                             throw err;
                         }
@@ -859,13 +859,13 @@ function saveFile(file_id, fileName, callback) {
                         });
                     }));
 
-                res.on('error', err =>
+                res.on('error', true, err =>
                     callback({error: 'Error : ' + err}));
             } else {
                 callback({error: 'Error : statusCode !== 200'});
             }
         });
-    }, err => callback({error: 'Error bot.getFileLink : ' + err}));
+    }, true, err => callback({error: 'Error bot.getFileLink : ' + err}));
 }
 
 function getMessage(msg) {
@@ -879,7 +879,7 @@ function getMessage(msg) {
         saveFile(msg.voice.file_id, adapter.config.saveFiles ? '/voice/' + date + '.ogg' : '/voice/temp.ogg', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
             } else {
                 adapter.log.debug(res.error);
             }
@@ -924,7 +924,7 @@ function getMessage(msg) {
             saveFile(item.file_id, fileName, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
-                    adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                    adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
                 } else {
                     adapter.log.debug(res.error);
                 }
@@ -935,7 +935,7 @@ function getMessage(msg) {
         saveFile(msg.video.file_id, '/video/' + date + '.mp4', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
             } else {
                 adapter.log.debug(res.error);
             }
@@ -945,7 +945,7 @@ function getMessage(msg) {
         saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
             } else {
                 adapter.log.debug(res.error);
             }
@@ -955,7 +955,7 @@ function getMessage(msg) {
         saveFile(msg.document.file_id, '/document/' + msg.document.file_name, res => {
             if (!res.error) {
                 adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, err => err && adapter.log.error(err));
+                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
             } else {
                 adapter.log.debug(res.error);
             }
@@ -1123,7 +1123,7 @@ function storeUser(id, firstName, userName) {
         users[id] = {firstName, userName};
 
         if (adapter.config.rememberUsers) {
-            adapter.setState('communicate.users', JSON.stringify(users));
+            adapter.setState('communicate.users', JSON.stringify(users), true);
         }
     }
 }
@@ -1361,7 +1361,7 @@ function processTelegramText(msg) {
                         value = sValue
                     }
 
-                    adapter.setForeignState(id, value, err =>
+                    adapter.setForeignState(id, value, true, err =>
                         bot.sendMessage(msg.chat.id, _('Done'))).catch((error) => adapter.log.error('send Message Error:' + error));
                 }
             }
@@ -1429,7 +1429,7 @@ function processTelegramText(msg) {
                 if (msg) {
                     if (err) bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
                     if (state) {
-                        adapter.setForeignState(id1, val1, err => {
+                        adapter.setForeignState(id1, val1, true, err => {
                             if (msg) {
                                 if (err) {
                                     bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
@@ -1490,11 +1490,11 @@ function processTelegramText(msg) {
             }
         });
     }
-    adapter.setState('communicate.requestChatId', msg.chat.id, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestMessageId', msg.message_id, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestChatId', msg.chat.id, true, err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestMessageId', msg.message_id, true, err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', true, err => err && adapter.log.error(err));
     adapter.setState('communicate.request',
-        '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.text,
+        '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.text, true,
         err => err && adapter.log.error(err));
 }
 
@@ -1623,7 +1623,7 @@ function connect() {
             connectionState(true);
 
             if (adapter.config.storeRawRequest) {
-                adapter.setState('communicate.requestRaw', JSON.stringify(msg), err =>
+                adapter.setState('communicate.requestRaw', JSON.stringify(msg), true, err =>
                     err && adapter.log.error(err));
             }
 
@@ -1638,15 +1638,15 @@ function connect() {
             adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
             if (adapter.config.storeRawRequest) {
-                adapter.setState('communicate.requestRaw', JSON.stringify(callbackQuery), err =>
+                adapter.setState('communicate.requestRaw', JSON.stringify(callbackQuery), true, err =>
                     err && adapter.log.error(err));
             }
-            adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, err => err && adapter.log.error(err));
-            adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, err => err && adapter.log.error(err));
+            adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, true, err => err && adapter.log.error(err));
+            adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, true, err => err && adapter.log.error(err));
             adapter.setState('communicate.request', '[' + (
                 !adapter.config.useUsername ? callbackQuery.from.first_name :
                     !callbackQuery.from.username ? callbackQuery.from.first_name :
-                        callbackQuery.from.username) + ']' + callbackQuery.data, err => err && adapter.log.error(err));
+                        callbackQuery.from.username) + ']' + callbackQuery.data, true, err => err && adapter.log.error(err));
 
             isAnswerForQuestion(adapter, callbackQuery);
 

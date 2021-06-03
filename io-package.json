@@ -386,7 +386,7 @@
             "common": {
                 "role": "text",
                 "name": "Chat ID of last received request",
-                "type": "string",
+                "type": "number",
                 "read": true,
                 "write": false
             },
@@ -398,7 +398,7 @@
             "common": {
                 "role": "text",
                 "name": "Message ID of last received request",
-                "type": "string",
+                "type": "number",
                 "read": true,
                 "write": false
             },
@@ -434,7 +434,7 @@
             "common": {
                 "role": "text",
                 "name": "User ID of last received request",
-                "type": "string",
+                "type": "number",
                 "read": true,
                 "write": false
             },
