@@ -434,7 +434,7 @@
             "common": {
                 "role": "text",
                 "name": "User ID of last received request",
-                "type": "number",
+                "type": "string",
                 "read": true,
                 "write": false
             },
