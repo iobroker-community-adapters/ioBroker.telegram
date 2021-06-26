@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "telegram",
-        "version": "1.8.2",
+        "version": "1.8.3",
         "news": {
+            "1.8.3": {
+                "en": "corrected bug with many simultaneous requests \nformatting\nimplemented editMessageMedia and editMessageCaption\nEncrypt token \nCorrected error with password\nCorrected error with boolean easy controls",
+                "de": "Fehler mit vielen gleichzeitigen Anfragen behoben\nFormatierung\neditMessageMedia und editMessageCaption implementiert\nToken verschlüsseln\nFehler mit Passwort behoben\nFehler mit booleschen einfachen Steuerelementen korrigiert",
+                "ru": "исправлена ошибка с множеством одновременных запросов\nформатирование\nреализованы editMessageMedia и editMessageCaption\nЗашифровать токен\nИсправлена ошибка с паролем\nИсправлена ошибка с помощью простых логических элементов управления",
+                "pt": "bug corrigido com muitas solicitações simultâneas\nformatação\nimplementado editMessageMedia e editMessageCaption\nCriptografar token\nErro corrigido com senha\nErro corrigido com controles fáceis booleanos",
+                "nl": "bug gecorrigeerd met veel gelijktijdige verzoeken\nopmaak\ngeïmplementeerd editMessageMedia en editMessageCaption\nVersleutel token\nFout gecorrigeerd met wachtwoord\nFout gecorrigeerd met boolean easy controls",
+                "fr": "bug corrigé avec de nombreuses requêtes simultanées\nmise en page\nimplémenté editMessageMedia et editMessageCaption\nChiffrer le jeton\nErreur corrigée avec le mot de passe\nErreur corrigée avec des commandes simples booléennes",
+                "it": "bug corretto con molte richieste simultanee\nformattazione\nimplementato editMessageMedia e editMessageCaption\nCrittografa il token\nErrore corretto con password\nErrore corretto con controlli booleani facili",
+                "es": "error corregido con muchas solicitudes simultáneas\nformateo\nimplementado editMessageMedia y editMessageCaption\nCifrar token\nError corregido con contraseña\nError corregido con controles booleanos fáciles",
+                "pl": "poprawiony błąd z wieloma jednoczesnymi żądaniami\nformatowanie\nzaimplementowano editMessageMedia i editMessageCaption\nZaszyfruj token\nPoprawiony błąd z hasłem\nPoprawiony błąd z łatwymi kontrolkami boolowskimi",
+                "zh-cn": "修正了许多同时请求的错误\n格式化\n实现了 editMessageMedia 和 editMessageCaption\n加密令牌\n更正密码错误\n使用布尔型简单控件更正错误"
+            },
             "1.8.2": {
                 "en": "fixed data types",
                 "de": "Datentypen korrigiert"
@@ -131,8 +143,14 @@
             }
         ]
     },
-    "protectedNative": ["token", "password"],
-    "encryptedNative": ["token", "password"],
+    "protectedNative": [
+        "token",
+        "password"
+    ],
+    "encryptedNative": [
+        "token",
+        "password"
+    ],
     "native": {
         "server": "false",
         "port": 8443,

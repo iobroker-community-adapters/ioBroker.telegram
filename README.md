@@ -689,7 +689,7 @@ msg.payload = {
 -->
 
 ## Changelog
-### __WORK IN PROGRESS__
+### 1.8.3 (2021-06-26)
 * (Nahasapeemapetilon) corrected bug with many simultaneous requests 
 * (bluefox) formatting
 * (bluefox) implemented editMessageMedia and editMessageCaption
