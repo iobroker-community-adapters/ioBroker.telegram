@@ -38,7 +38,7 @@ sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
 If you use the example above be aware of that you have to replace 'UserName' with either the first name or the Public-Telegram-Username of the User you want to send the message to. (Depends on if the 'Store username not firstname' setting in the adapter settings is enabled or not)
 If the option is set and the user did not specify a public username in his telegram account, then the adapter will continue to use the firstname of the user. Keep in mind that if the user sets a public username later (after authenticating to your bot) the saved firstname will be replaced by the username the next time the user sends a message to the bot.
 
-It is possible to specify more than one recipient (just separate the User names by comma).
+It is possible to specify more than one recipient (just separate the usernames by comma).
 For example: Recipient: "User1,User4,User5"
 
 You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"* or with a JSON object:
@@ -49,7 +49,7 @@ You can send message over state too, just set state *"telegram.INSTANCE.communic
 }
 ```
 
-The JSON syntax also allows to add options from the [telegram bots API](https://core.telegram.org/bots/api), as well as setting the user or chatId:
+The JSON syntax also allows the adding options from the [telegram bots API](https://core.telegram.org/bots/api), as well as setting the user or chatId:
 
 ```
 {
@@ -60,7 +60,7 @@ The JSON syntax also allows to add options from the [telegram bots API](https://
 }
 ```
 
-In order to send messages to groups, you have to invite the bot to the group you want the bot to post in. 
+In order to send messages to the groups, you have to invite the bot to the group you want the bot to post in. 
 By providing the `chat_id` to the JSON message payload you can actually send messages to those groups. 
 
 In order to find out the `chat_id` you have to set the adapter's log level to `debug`. 
@@ -73,7 +73,7 @@ You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.te
 
 To send a photo, just send a path to file instead of text or URL: `sendTo('telegram', 'absolute/path/file.png')` or `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
-Example how to send a screen shot from web-cam to telegram:
+Example how to send a screenshot from web-cam to telegram:
 
 ```
 var request = require('request');
@@ -128,7 +128,7 @@ sendTo('telegram.0', {
 ```
 
 **Possible options**:
-- *disable_notification*: Sends the message silently. iOS users will not receive a notification, Android users will receive a notification with no sound. (all types)
+- *disable_notification*: Sends the message silently. The iOS users will not receive a notification, Android users will receive a notification with no sound. (all types)
 - *parse_mode*: Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message. Possible values: "Markdown", "MarkdownV2", "HTML" (message)
 - *disable_web_page_preview*: Disables link previews for links in this message (message)
 - *caption*: Caption for the document, photo or video, 0-200 characters (video, audio, photo, document)
@@ -224,7 +224,7 @@ Timeout can be set in configuration and by default is 60 seconds.
 ```
 sendTo('telegram.0', 'ask', {
     user: user, // optional
-    text: 'Aure you sure?',
+    text: 'Are you sure?',
     reply_markup: {
         inline_keyboard: [
             // two buttons could be on one line too, but here they are on different
@@ -287,6 +287,50 @@ if (command ==="1_2") {
 ```
 
 You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).     
+
+### editMessageCaption
+Use this method to edit caption of the message sent by the bot or via the bot (for inline bots). 
+On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
+
+```
+if (command === "1_2") {
+    sendTo('telegram', {
+        user, // optional
+        text: 'New caption',
+        editMessageCaption: {
+            options: {
+                chat_id: getState("telegram.0.communicate.requestChatId").val,
+                message_id: getState("telegram.0.communicate.requestMessageId").val
+            }
+        }
+    });
+}
+```
+
+You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).     
+
+### editMessageMedia
+Use this method to edit picture of the message sent by the bot or via the bot (for inline bots). 
+On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
+
+```
+if (command === "1_2") {
+    sendTo('telegram', {
+        user, // optional
+        text: 'picture.jpg',
+        editMessageMedia: {
+            options: {
+                chat_id: (await getStateAsync('telegram.0.communicate.botSendChatId')).val,
+                message_id: (await getStateAsync('telegram.0.communicate.botSendMessageId')).val
+            }
+        }
+    });
+}
+```
+
+Supported are following media types: `photo`, `animation`, `audio`, `document`, `video`.
+
+You can read more [here](https://core.telegram.org/bots/api#editmessagemedia).     
 
 ### editMessageReplyMarkup
 Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
@@ -383,7 +427,7 @@ You can set the value of state if you now the ID:
 ## Polling or Server mode
 If polling mode is used, the adapter polls by default every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to the polling interval. The polling interval can be defined in adapter configuration.
 
-To use server mode you ioBroker instance must be reachable from internet (e.g. with noip.com dynamic DNS service).
+To use server mode you ioBroker instance must be reachable from internet (e.g. with `noip.com` dynamic DNS service).
 
 Telegram can work only with HTTPS servers, but you can use **let's encrypt** certificates.
 
@@ -391,11 +435,11 @@ Following settings must be provided for server mode:
 
 - URL - in form https://yourdomain.com:8443.
 - IP - Ip address, where the server will be bound. Default 0.0.0.0. Do not change it if you are not sure.
-- Port - actually only 443, 80, 88, 8443 ports are supported by telegram, but you can forward ports to any one through your router.
+- Port - actually only 443, 80, 88, 8443 ports are supported by telegram, but you can forward ports to anyone through your router.
 - Public certificate - required, if **let's encrypt** is disabled.
 - Private key - required, if **let's encrypt** is disabled.
 - Chain certificate (optional)
-- Let's encrypt options - It is very easy to setup **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
+- Let's encrypt options - It is very easy to set up **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
 
 ## Calls via telegram
 Thanks to [callmebot](https://www.callmebot.com/) api, you can make a call to your telegram account and some text will be read via TTS engine.
@@ -537,19 +581,19 @@ For every state the additional settings could be enabled:
 
 ![settings](img/stateSettings.png)
 
-By entering "/cmds" the following keyboard will be displayed in telegram:
+By entering `/cmds` the following keyboard will be displayed in telegram:
 
 ![settings](img/stateSettings1.png)
 
-"/cmds" could be replaced by any text (e.g. "?") in the configuration dialog of telegram adapter.
+`/cmds` could be replaced by any text (e.g. "?") in the configuration dialog of telegram adapter.
 
 If **Use rooms in keyboard command** option is enabled in the configuration dialog of telegram adapter, so in the first step the room list will be shown. ***Not yet implemented***
 
 ### Settings in the state
-First of all the configuration must be enabled.
+First the configuration must be enabled.
 
 #### Alias  
-Name of the device. If empty the name will be taken from object. 
+Name of the device. If the name is empty, the name will be taken from object. 
 By entering "Door lamp" following menu will be shown for boolean state.
 ![settings](img/stateSettings2.png)
 
@@ -557,10 +601,10 @@ You can switch the device ON, turn the device OFF or request the state.
 If you Click `Door lamp ?`, you will get `Door lamp  => switched off`.
  
 ### Read only
-If activated, no ON/OFF buttons will be shown, just a `Door lamp ?`.
+If activated, ON/OFF buttons will be not shown, just a `Door lamp ?`.
 
 ### Report changes
-If the status of device changed (e.g. some one turned the lamp on physically), the new status will be delivered to telegram.
+If the status of device changed (e.g. someone turned the lamp on physically), the new status will be delivered to telegram.
 E.g. `Door lamp  => switched on`.
 
 ### Buttons in line
@@ -570,7 +614,7 @@ Because of the long name maybe it is better to show only 2 (or even just one) bu
 ![settings](img/stateSettings3.png)
 
 ### Write only
-If activated, no the status query (`Door lamp ?`) button will be shown.
+If activated, the status query (`Door lamp ?`) button will be not shown.
  ![settings](img/stateSettings4.png)
  
 ### ON Command
@@ -582,7 +626,7 @@ Will produce following keyboard:
 ![settings](img/stateSettings6.png)
 
 ### ON Text
-Which text will be shown by state report. 
+The text, that will be shown by state report. 
 E.g. `Door lamp => activated` if the state of the device changed to true and the **ON Text** is `activated` 
 
 The ON/OFF Texts will be shown only if **Report changes** is activated.
@@ -595,13 +639,13 @@ Same as **ON Text**, but for OFF.
 E.g. `Door lamp => deactivated` if the state of the device changed to false and the **OFF Text** is `deactivated` 
 
 ### Only true
-E.g. for buttons, they have no OFF state. In this case no OFF button will be shown.
+E.g. for buttons, they have no OFF state. In this case the OFF button will be not shown.
 
 ![settings](img/stateSettings7.png)
 
 ## How to receive messages in group chats using telegram adapter
 If telegram bot receives messages sent by user to the bot in private chats, but not receives messages sent by users in group chats. 
-In this case you must talk to @botfather and disable the privacy mode.
+In this case you must talk to `@botfather` and disable the privacy mode.
 
 BotFather chat:
 
@@ -648,6 +692,10 @@ msg.payload = {
 ### __WORK IN PROGRESS__
 * (Nahasapeemapetilon) corrected bug with many simultaneous requests 
 * (bluefox) formatting
+* (bluefox) implemented editMessageMedia and editMessageCaption
+* (bluefox) Encrypt token 
+* (bluefox) Corrected error with password
+* (bluefox) Corrected error with boolean easy controls
 
 ### 1.8.2 (2021-05-28)
 * (Diginix) fixed data types

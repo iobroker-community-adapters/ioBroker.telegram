@@ -112,7 +112,7 @@
 
             showHideSettings();
             onChange(false);
-            if (M) M.updateTextFields();
+            M && M.updateTextFields();
 
             $('#userdiv').on('click', 'a', function () {
                 const deleteID = $(this).attr("data-id");
@@ -128,7 +128,7 @@
                         for (var key in obj) {
                             if (obj.hasOwnProperty(key)) {
                                 var names = [];
-                                obj[key].userName && names.push(obj[key].userName);
+                                obj[key].userName  && names.push(obj[key].userName);
                                 obj[key].firstName && names.push(obj[key].firstName);
                                 text += '<tr id="' + key + '"><td>' + key + '</td><td>' + names.join(' / ') + '</td><td><a id="delete" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td></tr>'
                             }
@@ -152,8 +152,7 @@
 
             if ($('#server').val() === 'true') {
                 if (!$('#leEnabled').prop('checked') && (!$('#certPublic').val() || !$('#certPrivate').val())) {
-                    showMessage(_('Set certificates or load it first in the system settings (right top).'));
-                    return;
+                    return showMessage(_('Set certificates or load it first in the system settings (right top).'));
                 }
                 if (!$('#url').val()) {
                     showMessage(_('URL may not be empty'));
@@ -161,8 +160,7 @@
             }
 
             if ($('#passwordRepeat').val() !== obj.password) {
-                showMessage(_('Password confirmation is not equal with password'));
-                return;
+                return showMessage(_('Password confirmation is not equal with password'));
             }
             //obj.password = encrypt('Zgfr56gFe87jJON', obj.password);
 
@@ -193,7 +191,6 @@
                 save2(callback);
             }
         }
-
     </script>
     <style>
         .marg {

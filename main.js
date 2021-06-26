@@ -47,7 +47,7 @@ const tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
 tmp.pop();
 const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
-const mediagroupExport = {};
+const mediaGroupExport = {};
 let tmpDirName;
 
 const server = {
@@ -58,7 +58,7 @@ const server = {
 
 let adapter;
 
-const systemLang2Callme = {
+const systemLang2CallMe = {
     en: 'en-GB-Standard-A',
     de: 'de-DE-Standard-A',
     ru: 'ru-RU-Standard-A',
@@ -429,6 +429,166 @@ function _sendMessageHelper(dest, name, text, options) {
         if (options && options.chatId !== undefined && options.user === undefined) {
             options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
         }
+
+        if (options && options.editMessageReplyMarkup !== undefined) {
+            adapter.log.debug(`Send editMessageReplyMarkup to "${name}"`);
+            bot && bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send editMessageReplyMarkup [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send editMessageReplyMarkup [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (options && options.editMessageText !== undefined) {
+            adapter.log.debug(`Send editMessageText to "${name}"`);
+            bot && bot.editMessageText(text, options.editMessageText.options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send editMessageText [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send editMessageText [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (options && options.editMessageMedia !== undefined) {
+            adapter.log.debug(`Send editMessageMedia to "${name}"`);
+            if (text) {
+                let mediaInput;
+                if ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo')) {
+                    mediaInput = {
+                        type: 'photo',
+                        media: text
+                    };
+                } else
+                if ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation')) {
+                    mediaInput = {
+                        type: 'animation',
+                        media: text
+                    };
+                } else
+                if ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video')) {
+                    mediaInput = {
+                        type: 'video',
+                        media: text
+                    };
+                } else
+                if ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio')) {
+                    mediaInput = {
+                        type: 'audio',
+                        media: text
+                    };
+                } else
+                if ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document')) {
+                    mediaInput = {
+                        type: 'document',
+                        media: text
+                    };
+                }
+
+                if (mediaInput) {
+                    const opts = {
+                        qs:  options.editMessageMedia.options,
+                    };
+                    opts.formData = {};
+
+                    const payload = Object.assign({}, mediaInput);
+
+                    delete payload.media;
+                    delete payload.fileOptions;
+
+                    try {
+                        const attachName = String(0);
+                        const [formData, fileId] = bot._formatSendData(attachName, mediaInput.media, mediaInput.fileOptions);
+                        if (formData) {
+                            opts.formData[attachName] = formData[attachName];
+                            payload.media = `attach://${attachName}`;
+                        } else {
+                            payload.media = fileId;
+                        }
+                    } catch (ex) {
+                        return Promise.reject(ex);
+                    }
+
+                    opts.qs.media = JSON.stringify(payload);
+                    bot && bot._request('editMessageMedia', opts)
+                        .then(response => saveSendRequest(response))
+                        .then(() => {
+                            options = null;
+                            count++;
+                            resolve(count);
+                        })
+                        .catch(error => {
+                            if (options.chatId) {
+                                adapter.log.error(`Cannot send editMessageMedia [chatId - ${options.chatId}]: ${error}`);
+                            } else {
+                                adapter.log.error(`Cannot send editMessageMedia [user - ${options.user}]: ${error}`);
+                            }
+                            options = null;
+                            resolve(count);
+                        });
+                } else {
+                    adapter.log.error(`Cannot send editMessageMedia [chatId - ${options.chatId}]: unsupported media type`);
+                    options = null;
+                    resolve(count);
+                }
+            } else {
+                adapter.log.error(`Cannot send editMessageMedia [chatId - ${options.chatId}]: no media found. "text" may not be empty`);
+                options = null;
+                resolve(count);
+            }
+        } else if (options && options.editMessageCaption !== undefined) {
+            adapter.log.debug(`Send editMessageCaption to "${name}"`);
+            bot && bot.editMessageCaption(text, options.editMessageCaption.options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send editMessageCaption [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send editMessageCaption [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (options && options.deleteMessage !== undefined) {
+            adapter.log.debug(`Send deleteMessage to "${name}"`);
+            bot && bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send deleteMessage [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send deleteMessage [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else
         if (options && options.latitude !== undefined) {
             adapter.log.debug(`Send location to "${name}": ${text}`);
             if (bot) {
@@ -451,7 +611,7 @@ function _sendMessageHelper(dest, name, text, options) {
                     });
             }
         } else if (options && options.type === 'mediagroup') {
-            adapter.log.debug(`Send mediagroup to "${name}": `);
+            adapter.log.debug(`Send media group to "${name}": `);
             if (bot) {
                 const {media: fileNames} = options;
                 if (fileNames instanceof Array) {
@@ -469,7 +629,7 @@ function _sendMessageHelper(dest, name, text, options) {
                                     })
                                     .filter(element => element !== undefined);
                                 const size = filesAsArray.map((element) => element.media.length).reduce((acc, val) => acc + val);
-                                adapter.log.info(`Send mediagroup to "${name}": ${size} bytes`);
+                                adapter.log.info(`Send media group to "${name}": ${size} bytes`);
                                 if (filesAsArray.length > 0) {
                                     bot.sendMediaGroup(dest, filesAsArray)
                                         .then((response) => saveSendRequest(response))
@@ -481,9 +641,9 @@ function _sendMessageHelper(dest, name, text, options) {
                                         })
                                         .catch(error => {
                                             if (options.chatId) {
-                                                adapter.log.error(`Cannot send mediagroup [chatId - ${options.chatId}]: ${error}`);
+                                                adapter.log.error(`Cannot send media group [chatId - ${options.chatId}]: ${error}`);
                                             } else {
-                                                adapter.log.error(`Cannot send mediagroup [user - ${options.user}]: ${error}`);
+                                                adapter.log.error(`Cannot send media group [user - ${options.user}]: ${error}`);
                                             }
                                             options = null;
                                             resolve(count);
@@ -688,60 +848,6 @@ function _sendMessageHelper(dest, name, text, options) {
                         resolve(count);
                     });
             }
-        } else if (options && options.editMessageReplyMarkup !== undefined) {
-            adapter.log.debug(`Send editMessageReplyMarkup to "${name}"`);
-            bot && bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    options = null;
-                    count++;
-                    resolve(count);
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error(`Cannot send editMessageReplyMarkup [chatId - ${options.chatId}]: ${error}`);
-                    } else {
-                        adapter.log.error(`Cannot send editMessageReplyMarkup [user - ${options.user}]: ${error}`);
-                    }
-                    options = null;
-                    resolve(count);
-                });
-        } else if (options && options.editMessageText !== undefined) {
-            adapter.log.debug(`Send editMessageText to "${name}"`);
-            bot && bot.editMessageText(text, options.editMessageText.options)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    options = null;
-                    count++;
-                    resolve(count);
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error(`Cannot send editMessageText [chatId - ${options.chatId}]: ${error}`);
-                    } else {
-                        adapter.log.error(`Cannot send editMessageText [user - ${options.user}]: ${error}`);
-                    }
-                    options = null;
-                    resolve(count);
-                });
-        } else if (options && options.deleteMessage !== undefined) {
-            adapter.log.debug(`Send deleteMessage to "${name}"`);
-            bot && bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
-                .then(response => saveSendRequest(response))
-                .then(() => {
-                    options = null;
-                    count++;
-                    resolve(count);
-                })
-                .catch(error => {
-                    if (options.chatId) {
-                        adapter.log.error(`Cannot send deleteMessage [chatId - ${options.chatId}]: ${error}`);
-                    } else {
-                        adapter.log.error(`Cannot send deleteMessage [user - ${options.user}]: ${error}`);
-                    }
-                    options = null;
-                    resolve(count);
-                });
         } else {
             adapter.log.debug(`Send message to "${name}": ${text}`);
             bot && bot.sendMessage(dest, text || '', options)
@@ -840,7 +946,9 @@ function sendMessage(text, user, chatId, options) {
             .then(results => results.reduce((e, acc) => acc + e, 0))
             .catch(e => e);
     }
+
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
+
     if (m) {
         text = (text || '').toString();
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
@@ -870,6 +978,7 @@ function sendMessage(text, user, chatId, options) {
             tPromiseList.push(_sendMessageHelper(id, adapter.config.useUsername ? users[id].userName : users[id].firstName, text, options));
         });
     }
+
     return Promise.all(tPromiseList)
         .then((results) =>
             results.reduce((e, acc) => acc + e, 0))
@@ -936,16 +1045,16 @@ function getMessage(msg) {
             }
             let fileName = '';
             if (msg.media_group_id) {
-                if (!mediagroupExport.hasOwnProperty(msg.media_group_id)) {
-                    const id = Object.keys(mediagroupExport).length;
-                    mediagroupExport[msg.media_group_id] = {
+                if (!mediaGroupExport.hasOwnProperty(msg.media_group_id)) {
+                    const id = Object.keys(mediaGroupExport).length;
+                    mediaGroupExport[msg.media_group_id] = {
                         id,
                         count: 0
                     };
                 } else {
-                    mediagroupExport[msg.media_group_id].count++;
+                    mediaGroupExport[msg.media_group_id].count++;
                 }
-                fileName = `/photo/${date}_grpID_${mediagroupExport[msg.media_group_id].id}_${mediagroupExport[msg.media_group_id].count}_${quality}.jpg`;
+                fileName = `/photo/${date}_grpID_${mediaGroupExport[msg.media_group_id].id}_${mediaGroupExport[msg.media_group_id].count}_${quality}.jpg`;
             } else {
                 fileName = `/photo/${date}_${quality}.jpg`;
                 if (fs.existsSync(tmpDirName + fileName)) {
@@ -1087,7 +1196,7 @@ function processMessage(obj) {
                     call.users = [call.users];
                 }
                 // set language
-                call.lang = call.lang || systemLang2Callme[systemLang] || systemLang2Callme.en;
+                call.lang = call.lang || systemLang2CallMe[systemLang] || systemLang2CallMe.en;
                 if (!call.file) {
                     // Set message
                     call.message = call.message || call.text || _('Call text', call.lang || systemLang);
@@ -1127,7 +1236,7 @@ function callUsers(users, text, lang, file, repeats, cb) {
             params.push('rpt=' + (parseInt(repeats, 10) || 0));
         }
 
-        params.push('lang=' + (lang || systemLang2Callme[systemLang]));
+        params.push('lang=' + (lang || systemLang2CallMe[systemLang]));
         url += params.join('&');
         adapter.log.debug('CALL: ' + url);
 
@@ -1151,8 +1260,8 @@ function decrypt(key, value) {
 }
 
 function encrypt(key, value) {
-    var result = '';
-    for (var i = 0; i < value.length; ++i) {
+    let result = '';
+    for (let i = 0; i < value.length; ++i) {
         result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
     }
     return result;
@@ -1359,9 +1468,28 @@ function processTelegramText(msg) {
         return;
     }
 
-    if (msg.text === '/help') {
-        return bot.sendMessage(msg.from.id, getListOfCommands())
-            .catch(error => adapter.log.error('send Message Error:' + error));
+    if (adapter.config.password) {
+        // if user sent password
+        let m = msg.text.match(/^\/password (.+)$/);
+        m = m || msg.text.match(/^\/p (.+)$/);
+
+        if (m) {
+            if (adapter.config.password === m[1]) {
+                storeUser(msg.from.id, msg.from.first_name, msg.from.username);
+                if (!msg.from.username) {
+                    adapter.log.warn(`User ${msg.from.first_name} hast not set an username in the Telegram App!!`);
+                }
+                return bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + user)
+                    .catch(error => adapter.log.error('send Message Error:' + error));
+            } else {
+                adapter.log.warn(`Got invalid password from ${user}: ${m[1]}`);
+                bot.sendMessage(msg.from.id, _('Invalid password', systemLang))
+                    .catch(error => adapter.log.error('send Message Error:' + error));
+                if (users[msg.from.id]) {
+                    delete users[msg.from.id];
+                }
+            }
+        }
     }
 
     // todo support commands: instances, running, restart
@@ -1369,6 +1497,11 @@ function processTelegramText(msg) {
         bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
             .catch(error => adapter.log.error('send Message Error:' + error));
         return;
+    }
+
+    if (msg.text === '/help') {
+        return bot.sendMessage(msg.from.id, getListOfCommands())
+            .catch(error => adapter.log.error('send Message Error:' + error));
     }
 
     isAnswerForQuestion(adapter, msg);
@@ -1410,7 +1543,7 @@ function processTelegramText(msg) {
                     }
 
                     if (commands[id].type === 'boolean') {
-                        value = commands[id].onCommand ? sValue === commands[id].onCommand : sValue === _('ON') || sValue === 'true'  || sValue === '1';
+                        value = commands[id].onCommand ? sValue === commands[id].onCommand : sValue === _('ON-Command') || sValue === 'true' || sValue.toLowerCase() === 'on' || sValue === '1';
                     } else if (commands[id].type === 'number') {
                         sValue = sValue.replace('%', '').trim();
                         value = parseFloat(sValue);
@@ -1432,30 +1565,6 @@ function processTelegramText(msg) {
     }
     if (found) {
         return;
-    }
-
-    if (adapter.config.password) {
-        // if user sent password
-        let m = msg.text.match(/^\/password (.+)$/);
-        m = m || msg.text.match(/^\/p (.+)$/);
-
-        if (m) {
-            if (adapter.config.password === m[1]) {
-                storeUser(msg.from.id, msg.from.first_name, msg.from.username);
-                if (!msg.from.username) {
-                    adapter.log.warn(`User ${msg.from.first_name} hast not set an username in the Telegram App!!`);
-                }
-                return bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + user)
-                    .catch(error => adapter.log.error('send Message Error:' + error));
-            } else {
-                adapter.log.warn(`Got invalid password from ${user}: ${m[1]}`);
-                bot.sendMessage(msg.from.id, _('Invalid password', systemLang))
-                    .catch(error => adapter.log.error('send Message Error:' + error));
-                if (users[msg.from.id]) {
-                    delete users[msg.from.id];
-                }
-            }
-        }
     }
 
     storeUser(msg.from.id, msg.from.first_name, msg.from.username);
@@ -1890,7 +1999,7 @@ function main() {
     adapter.setState('communicate.response', '', true);
     adapter.setState('communicate.pathFile', '', true);
 
-    adapter.config.password = decrypt('Zgfr56gFe87jJON', adapter.config.password || '');
+    adapter.config.password = adapter.config.password || '';
     adapter.config.keyboard = adapter.config.keyboard || '/cmds';
 
     updateUsers(() => {
