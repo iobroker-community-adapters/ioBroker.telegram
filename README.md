@@ -441,6 +441,18 @@ Following settings must be provided for server mode:
 - Chain certificate (optional)
 - Let's encrypt options - It is very easy to set up **let's encrypt** certificates. Please read [here](https://github.com/ioBroker/ioBroker.admin#lets-encrypt-certificates) about it.
 
+## Advanced security
+The authentication of users could be disabled. So no one new can authenticate.
+
+To create a list of trusted users, first disable the option "Do not authenticate new users" and 
+authenticate all users that should be in the trusted list by sending the `/password <PASSWORD>` message.
+
+The users, that sent valid password will be stored in the trusted list. 
+
+After that teh option "Do not authenticate new users" could be activated and no new users can authenticate.
+
+To use this option the option "Remember authenticated users" must be activated.
+
 ## Calls via telegram
 Thanks to [callmebot](https://www.callmebot.com/) api, you can make a call to your telegram account and some text will be read via TTS engine.
 
@@ -669,16 +681,16 @@ BotFather: Success! The new status is: DISABLED. /help
 
 ## How to send messages via node-red
 For simple text messages to all users, just put the text within the payload of the message and
-send it to the ioBroker state *"telegram.INSTANCE.communicate.response"*.
+send it to the ioBroker state `telegram.INSTANCE.communicate.response`.
 
 If you want to set additional options, fill the payload with a JSON object, such as:
 ```
 msg.payload = {
-    /* text is the only mandatory field here */
+    // text is the only mandatory field here
     "text": "*bold _italic bold ~italic bold strikethrough~ __underline italic bold___ bold*",
-    /* optional chatId or user, the receipient of the message */
+    // optional chatId or user, the recipient of the message
     "chatId": "1234567890",
-    /* optional settings from the telegram bots API */
+    // optional settings from the telegram bots API
     "parse_mode": "MarkdownV2"
 }
 ```
@@ -689,6 +701,10 @@ msg.payload = {
 -->
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (bluefox) Added the option to not authenticate the new users
+* (bluefox) Added the option to disable system messages for specific users
+
 ### 1.8.3 (2021-06-26)
 * (Nahasapeemapetilon) corrected bug with many simultaneous requests 
 * (bluefox) formatting
@@ -737,7 +753,7 @@ msg.payload = {
 * (Mark Rohrbacher) Allowed JSON objects in telegram.*.communicate.response 
 
 ### 1.5.4 (2020-03-11)
-* (bluefox) Improvement of callmebot
+* (bluefox) Improvement of `callmebot`
 
 ### 1.5.3 (2020-02-23)
 * (foxriver76) removed usage of adapter.objects
@@ -792,7 +808,7 @@ msg.payload = {
 
 ### 1.3.0 (2018-09-19)
 * (BuZZy1337) Added possibility to delete authenticated users in the Adapter-Config screen (via Messages tab)
-* (BuZZy1337) fixed a problem "building" the Blockly sendto block when no adapter instance exists.
+* (BuZZy1337) fixed a problem "building" the Blockly `sendto` block when no adapter instance exists.
 
 ### 1.2.7 (2018-08-29)
 * (BuZZy1337) Added "disable notification" checkbox to blockly block.

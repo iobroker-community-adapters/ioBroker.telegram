@@ -164,6 +164,7 @@
         "storeRawRequest": false,
         "restarting": "_",
         "restarted": "_",
+        "doNotAcceptNewUsers": false,
         "url": "",
         "useUsername": false,
         "keyboard": "/cmds",

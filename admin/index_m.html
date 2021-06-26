@@ -110,30 +110,55 @@
                 showHideSettings();
             });
 
+            $('#doNotAcceptNewUsers').on('change', function () {
+                if ($(this).prop('checked')) {
+                    $('#rememberUsers').prop('checked', true);
+                }
+            });
+            $('#rememberUsers').on('change', function () {
+                if (!$(this).prop('checked')) {
+                    $('#doNotAcceptNewUsers').prop('checked', false);
+                }
+            });
+
             showHideSettings();
             onChange(false);
             M && M.updateTextFields();
 
-            $('#userdiv').on('click', 'a', function () {
-                const deleteID = $(this).attr("data-id");
-                sendTo(null, 'delUser ' + deleteID, null, function (obj) {
-                    $('#' + obj).remove();
-                });
-            });
-
-            $('#messages').click(function () {
+            $('#messages').on('click', function () {
                 if ($('#userTable').children().length === 0) {
                     sendTo(null, 'adminuser', null, function (obj) {
                         var text = '';
+                        var title = _('Remove user from trusted list');
                         for (var key in obj) {
                             if (obj.hasOwnProperty(key)) {
                                 var names = [];
                                 obj[key].userName  && names.push(obj[key].userName);
                                 obj[key].firstName && names.push(obj[key].firstName);
-                                text += '<tr id="' + key + '"><td>' + key + '</td><td>' + names.join(' / ') + '</td><td><a id="delete" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td></tr>'
+                                text += '<tr id="' + key + '">';
+                                text += '<td>' + key + '</td>';
+                                text += '<td>' + names.join(' / ') + '</td>';
+                                text += '<td data-id="' + key + '" class="sys-message"><input type="checkbox"  ' + (obj[key].sysMessages !== false ? 'checked' : '') + '/><span></span></td>';
+                                text += '<td><a title="' + title + '" data-id="' + key + '" class="btn-floating waves-effect waves-light red btn-small button-delete"><i class="material-icons">delete</i></a></td>';
+                                text += '</tr>'
                             }
                         }
                         $('#userTable').append(text);
+                        $('.button-delete').on('click', function () {
+                            const itemId = $(this).attr('data-id');
+                            sendTo(null, 'delUser', itemId, function (obj) {
+                                $('#' + obj).remove();
+                            });
+                        });
+                        $('.sys-message').on('click', function () {
+                            const itemId = $(this).attr('data-id');
+                            const checked = obj[key].sysMessages === false;
+                            obj[key].sysMessages = checked;
+                            $(this).find('input').prop('checked', checked);
+                            sendTo(null, 'systemMessages', {itemId: itemId, checked: checked}, function (obj) {
+                                console.log('changed')
+                            });
+                        });
                     });
                 }
             });
@@ -273,6 +298,12 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s12 m12 l12">
+                        <input id="doNotAcceptNewUsers" class="value" type="checkbox" />
+                        <label class="translate" for="doNotAcceptNewUsers">Do not authenticate new users</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m12 l12">
                         <input id="useUsername" class="value" type="checkbox" />
                         <label class="translate" for="useUsername">Store username instead of firstname of remembered users</label>
                     </div>
@@ -361,8 +392,9 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Delete?</th>
+                                    <th class="translate">Name</th>
+                                    <th class="translate">System messages</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody id="userTable">

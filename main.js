@@ -93,8 +93,8 @@ function startAdapter(options) {
                         }
                     }
                 });
-            } else if (obj.command.indexOf('delUser') !== -1) {
-                const userID = obj.command.split(' ')[1];
+            } else if (obj.command === 'delUser') {
+                const userID = obj.message;
                 let userObj = {};
                 adapter.getState('communicate.users', (err, state) => {
                     err && adapter.log.error(err);
@@ -106,12 +106,35 @@ function startAdapter(options) {
                                 if (!err) {
                                     adapter.sendTo(obj.from, obj.command, userID, obj.callback);
                                     updateUsers();
-                                    adapter.log.warn('User ' + userID + ' has been deleted!!');
+                                    adapter.log.warn(`User ${userID} has been deleted!`);
                                 }
                             });
                         } catch (err) {
                             err && adapter.log.error(err);
-                            adapter.log.error('Cannot delete user ' + userID + '!');
+                            adapter.log.error(`Cannot delete user ${userID}!`);
+                        }
+                    }
+                });
+            } else if (obj.command === 'systemMessages') {
+                const userID = obj.message.itemId;
+                const checked = obj.message.checked;
+                let userObj = {};
+                adapter.getState('communicate.users', (err, state) => {
+                    err && adapter.log.error(err);
+                    if (state && state.val) {
+                        try {
+                            userObj = JSON.parse(state.val);
+                            userObj[userID].sysMessages = checked;
+                            adapter.setState('communicate.users', JSON.stringify(userObj), true, err => {
+                                if (!err) {
+                                    adapter.sendTo(obj.from, obj.command, userID, obj.callback);
+                                    updateUsers();
+                                    adapter.log.info(`Receiving of system messages for user "${userID}" has been changed to ${checked}!`);
+                                }
+                            });
+                        } catch (err) {
+                            err && adapter.log.error(err);
+                            adapter.log.error(`Cannot change user ${userID}!`);
                         }
                     }
                 });
@@ -223,9 +246,9 @@ function startAdapter(options) {
             if (adapter.config.restarting !== '') {
                 // default text
                 if (adapter.config.restarting === '_' || adapter.config.restarting === null || adapter.config.restarting === undefined) {
-                    sendMessage(adapter.config.rememberUsers ? _('Restarting...') : _('Restarting... Reauthenticate!'));
+                    sendSystemMessage(adapter.config.rememberUsers ? _('Restarting...') : _('Restarting... Reauthenticate!'));
                 } else {
-                    sendMessage(adapter.config.restarting);
+                    sendSystemMessage(adapter.config.restarting);
                 }
             }
             try {
@@ -290,6 +313,14 @@ function startAdapter(options) {
     tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
 
     return adapter;
+}
+
+function sendSystemMessage(text) {
+    const _users = Object.keys(users)
+        .filter(id => users[id].sysMessages !== false)
+        .map(id => adapter.config.useUsername ? users[id].userName : users[id].firstName);
+
+    sendMessage(text, _users);
 }
 
 function getStatus(id, state) {
@@ -1460,15 +1491,14 @@ function processTelegramText(msg) {
         msg.text = msg.text.substring(0, pos);
     }
 
-    if (msg.text === '/password') {
-        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
+    if (msg.text === '/password' && !adapter.config.doNotAcceptNewUser) {
+        return bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
             .catch(error => {
                 adapter.log.error('send Message Error:' + error);
             });
-        return;
     }
 
-    if (adapter.config.password) {
+    if (adapter.config.password && !adapter.config.doNotAcceptNewUsers) {
         // if user sent password
         let m = msg.text.match(/^\/password (.+)$/);
         m = m || msg.text.match(/^\/p (.+)$/);
@@ -1493,10 +1523,11 @@ function processTelegramText(msg) {
     }
 
     // todo support commands: instances, running, restart
-    if (adapter.config.password && !users[msg.from.id]) {
-        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
+
+    // If user is not in the trusted list
+    if ((adapter.config.password || adapter.config.doNotAcceptNewUsers) && !users[msg.from.id]) {
+        return bot.sendMessage(msg.from.id, _(adapter.config.doNotAcceptNewUsers ? 'User is not in the list' : 'Please enter password in form "/password phrase"', systemLang))
             .catch(error => adapter.log.error('send Message Error:' + error));
-        return;
     }
 
     if (msg.text === '/help') {
@@ -1784,9 +1815,9 @@ function connect() {
             if (adapter.config.restarted !== '') {
                 // default text
                 if (adapter.config.restarted === '_' || adapter.config.restarted === null || adapter.config.restarted === undefined) {
-                    sendMessage(_('Started!'));
+                    sendSystemMessage(_('Started!'));
                 } else {
-                    sendMessage(adapter.config.restarted);
+                    sendSystemMessage(adapter.config.restarted);
                 }
             }
         }).catch(error => {
@@ -1875,9 +1906,9 @@ function updateUsers(cb) {
                     Object.keys(users).forEach(id => {
                         if (typeof users[id] !== 'object') {
                             if (adapter.config.useUsername) {
-                                users[id] = {userName: users[id], firstName: users[id]};
+                                users[id] = {userName: users[id], firstName: users[id], sysMessages: users[id].sysMessages !== false};
                             } else {
-                                users[id] = {firstName: users[id], userName: ''};
+                                users[id] = {firstName: users[id], userName: '', sysMessages: users[id].sysMessages !== false};
                             }
                         }
                     });

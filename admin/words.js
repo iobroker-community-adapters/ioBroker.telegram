@@ -79,4 +79,64 @@ systemDictionary = {
     "value as boolean": {                            "en": "value as boolean",                                "de": "Wert als Boolean",                                "ru": "логическое значение",                             "pt": "valor como booleano",                             "nl": "waarde als Boolean",                              "fr": "valeur en tant que booléen",                      "it": "valore come booleano",                            "es": "valor como booleano",                             "pl": "wartość jako boolean",                            "zh-cn": "布尔值"},
     "value as number": {                             "en": "value as number",                                 "de": "Wert als Zahl",                                   "ru": "значение в виде число",                           "pt": "valor como numero",                               "nl": "waarde als nummer",                               "fr": "valeur en nombre",                                "it": "valore come numero",                              "es": "valor como numero",                               "pl": "wartość jako liczba",                             "zh-cn": "价值作为数字"},
     "value as string": {                             "en": "value as string",                                 "de": "Wert als String",                                 "ru": "значение в виде строки",                          "pt": "valor como string",                               "nl": "waarde als tekenreeks",                           "fr": "valeur sous forme de chaîne",                     "it": "valore come stringa",                             "es": "valor como cadena",                               "pl": "wartość jako ciąg",                               "zh-cn": "值作为字符串"},
+    "System messages": {
+        "en": "System messages",
+        "de": "Systemmeldungen",
+        "ru": "Системные сообщения",
+        "pt": "Mensagens do sistema",
+        "nl": "Systeemberichten",
+        "fr": "Messages système",
+        "it": "Messaggi di sistema",
+        "es": "Mensajes del sistema",
+        "pl": "Komunikaty systemowe",
+        "zh-cn": "系统消息"
+    },
+    "Name": {
+        "en": "Name",
+        "de": "Name",
+        "ru": "Имя",
+        "pt": "Nome",
+        "nl": "Naam",
+        "fr": "Nom",
+        "it": "Nome",
+        "es": "Nombre",
+        "pl": "Nazwa",
+        "zh-cn": "名称"
+    },
+    "Remove user from trusted list": {
+        "en": "Remove user from trusted list",
+        "de": "Benutzer aus vertrauenswürdiger Liste entfernen",
+        "ru": "Удалить пользователя из списка доверенных",
+        "pt": "Remover usuário da lista confiável",
+        "nl": "Gebruiker verwijderen van vertrouwde lijst",
+        "fr": "Supprimer l'utilisateur de la liste de confiance",
+        "it": "Rimuovi l'utente dall'elenco di fiducia",
+        "es": "Eliminar usuario de la lista de confianza",
+        "pl": "Usuń użytkownika z listy zaufanych",
+        "zh-cn": "从信任列表中删除用户"
+    },
+    "Do not authenticate new users": {
+        "en": "Do not authenticate new users",
+        "de": "Neue Benutzer nicht authentifizieren",
+        "ru": "Не аутентифицировать новых пользователей",
+        "pt": "Não autentique novos usuários",
+        "nl": "Authenticeer geen nieuwe gebruikers",
+        "fr": "Ne pas authentifier les nouveaux utilisateurs",
+        "it": "Non autenticare nuovi utenti",
+        "es": "No autentique nuevos usuarios",
+        "pl": "Nie uwierzytelniaj nowych użytkowników",
+        "zh-cn": "不验证新用户"
+    },
+    "User is not in the list": {
+        "en": "User is not in the list",
+        "de": "Benutzer ist nicht in der Liste",
+        "ru": "Пользователя нет в списке",
+        "pt": "O usuário não está na lista",
+        "nl": "Gebruiker staat niet in de lijst",
+        "fr": "L'utilisateur n'est pas dans la liste",
+        "it": "L'utente non è nell'elenco",
+        "es": "El usuario no está en la lista",
+        "pl": "Użytkownika nie ma na liście",
+        "zh-cn": "用户不在列表中"
+    }
 };
