@@ -1,37 +1,18 @@
 <html>
 
 <head>
-    <!-- these 4 files always have to be included -->
     <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
     <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
 
     <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-    <!-- these files always have to be included -->
     <script type="text/javascript" src="../../js/translate.js"></script>
     <script type="text/javascript" src="../../lib/js/materialize.js"></script>
     <script type="text/javascript" src="../../js/adapter-settings.js"></script>
     <script type="text/javascript" src="words.js"></script>
     <script type="text/javascript">
-        //var isStarted =   null;
         let oldPw;
-
-        function encrypt(key, value) {
-            var result = "";
-            for (var i = 0; i < value.length; ++i) {
-                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-            }
-            return result;
-        }
-
-        function decrypt(key, value) {
-            var result = "";
-            for (var i = 0; i < value.length; ++i) {
-                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-            }
-            return result;
-        }
 
         function showHideSettings() {
             if ($('#server').val() === 'true') {
@@ -71,7 +52,6 @@
             if (!settings) {
                 return;
             }
-            settings.password = decrypt('Zgfr56gFe87jJON', settings.password);
 
             oldPw = settings.password;
 
@@ -79,9 +59,11 @@
                 settings.allowStates = true;
             }
 
-            if (!settings.lePort) settings.lePort = 80;
-            if (settings.server === undefined) settings.server = 'false';
-            if (!settings.pollingInterval) settings.pollingInterval = 300;
+            settings.lePort = settings.lePort || 80;
+            if (settings.server === undefined) {
+                settings.server = 'false';
+            }
+            settings.pollingInterval = settings.pollingInterval || 300;
 
             getIPs(function (ips) {
                 for (var i = 0; i < ips.length; i++) {
@@ -182,7 +164,7 @@
                 showMessage(_('Password confirmation is not equal with password'));
                 return;
             }
-            obj.password = encrypt('Zgfr56gFe87jJON', obj.password);
+            //obj.password = encrypt('Zgfr56gFe87jJON', obj.password);
 
             callback(obj);
         }
@@ -281,7 +263,7 @@
                         <span class="translate help">Leave it blank if no password desired</span>
                     </div>
                     <div class="input-field col s12 m6 l5">
-                        <input id="passwordRepeat" class="value" type="password" />
+                        <input id="passwordRepeat" type="password" />
                         <label class="translate" for="passwordRepeat">password repeat</label>
                         <span class="translate help">Repeat password</span>
                     </div>
@@ -303,7 +285,7 @@
                         <input id="saveFiles" class="value" type="checkbox" />
                         <label class="translate" for="saveFiles">Save media files</label>
                     </div>
-                </div>	
+                </div>
                 <div class="row">
                     <div class="input-field col s12 m6 l6">
                         <input id="proxy" class="value" type="checkbox" />

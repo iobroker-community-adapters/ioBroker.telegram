@@ -22,8 +22,12 @@ const adapterName = require('./package.json').name.split('.').pop();
 const _           = require('./lib/words.js');
 const fs          = require('fs');
 const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
+const tools       = require(utils.controllerDir + '/lib/tools');
 const https       = require('https');
-const socks       = require('socksv5');
+
+const DEFAULT_SECRET = 'Zgfr56gFe87jJOM';
+
+let socks;
 
 let bot;
 let request;
@@ -38,7 +42,6 @@ const enums = {};
 
 const commands = {};
 const callbackQueryId = {};
-const tools = require(utils.controllerDir + '/lib/tools');
 const configFile = tools.getConfigFileName();
 const tmp = configFile.split(/[\\\/]+/);
 tmp.pop();
@@ -310,7 +313,7 @@ function connectionState(connected, logSuccess) {
                 adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
                 connectionState(true, errorCounter > 0);
             })
-            .catch((error) => {
+            .catch(error => {
                 (errorCounter % 10 === 0) && adapter.log.error('getMe (reconnect #' + errorCounter + ') Error:' + error);
                 errorCounter++;
                 pollConnectionStatus && clearTimeout(pollConnectionStatus);
@@ -421,265 +424,274 @@ function saveSendRequest(msg) {
 }
 
 function _sendMessageHelper(dest, name, text, options) {
-   return new Promise((resolve,reject)=>{
-    let count = 0;
-    if (options && options.chatId !== undefined && options.user === undefined) {
-        options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
-    }
-    if (options && options.latitude !== undefined) {
-        adapter.log.debug('Send location to "' + name + '": ' + text);
-        if (bot) {
-            bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options)
+    return new Promise((resolve, reject) => {
+        let count = 0;
+        if (options && options.chatId !== undefined && options.user === undefined) {
+            options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
+        }
+        if (options && options.latitude !== undefined) {
+            adapter.log.debug(`Send location to "${name}": ${text}`);
+            if (bot) {
+                bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options)
+                    .then(response => saveSendRequest(response))
+                    .then(() => {
+                        adapter.log.debug('Location sent');
+                        options = null;
+                        count++;
+                        resolve(count);
+                    })
+                    .catch(error => {
+                        if (options.chatId) {
+                            adapter.log.error(`Cannot send location [chatId - ${options.chatId}]: ${error}`);
+                        } else {
+                            adapter.log.error(`Cannot send location [user - ${options.user}]: ${error}`);
+                        }
+                        options = null;
+                        reject(error);
+                    });
+            }
+        } else if (options && options.type === 'mediagroup') {
+            adapter.log.debug(`Send mediagroup to "${name}": `);
+            if (bot) {
+                const {media: fileNames} = options;
+                if (fileNames instanceof Array) {
+                    bot.sendChatAction(dest, 'upload_photo')
+                        .then(param => {
+                            if (fileNames.every(name => fs.existsSync(name))) {
+                                const filesAsArray = fileNames
+                                    .map(element => {
+                                        try {
+                                            return {type: 'photo', media: fs.readFileSync(element)}
+                                        } catch (error) {
+                                            adapter.log.error('Cannot read file' + element);
+                                            return undefined;
+                                        }
+                                    })
+                                    .filter(element => element !== undefined);
+                                const size = filesAsArray.map((element) => element.media.length).reduce((acc, val) => acc + val);
+                                adapter.log.info(`Send mediagroup to "${name}": ${size} bytes`);
+                                if (filesAsArray.length > 0) {
+                                    bot.sendMediaGroup(dest, filesAsArray)
+                                        .then((response) => saveSendRequest(response))
+                                        .then(() => {
+                                            adapter.log.debug('photos sent');
+                                            count++;
+                                            resolve(count);
+                                            options = null;
+                                        })
+                                        .catch(error => {
+                                            if (options.chatId) {
+                                                adapter.log.error(`Cannot send mediagroup [chatId - ${options.chatId}]: ${error}`);
+                                            } else {
+                                                adapter.log.error(`Cannot send mediagroup [user - ${options.user}]: ${error}`);
+                                            }
+                                            options = null;
+                                            resolve(count);
+                                        });
+                                }
+                            } else {
+                                adapter.log.debug('files must exists');
+                                options = null;
+                                resolve(count);
+                            }
+                        })
+                        .catch(error => {
+                            adapter.log.error('upload Error:' + error);
+                        });
+                } else {
+                    adapter.log.debug('option media should be an array');
+                    resolve(count);
+                }
+            } else {
+                adapter.log.debug('no files added!');
+                options = null;
+                resolve(count);
+            }
+        } else if (text && typeof text === 'string' && actions.includes(text)) {
+            adapter.log.debug(`Send action to "${name}": ${text}`);
+            bot && bot.sendChatAction(dest, text)
                 .then(response => saveSendRequest(response))
                 .then(() => {
-                    adapter.log.debug('Location sent');
+                    adapter.log.debug('Action sent');
                     options = null;
                     count++;
                     resolve(count);
                 })
                 .catch(error => {
                     if (options.chatId) {
-                        adapter.log.error('Cannot send location [chatId - ' + options.chatId + ']: ' + error);
+                        adapter.log.error(`Cannot send action [chatId - ${options.chatId}]: ${error}`);
                     } else {
-                        adapter.log.error('Cannot send location [user - ' + options.user + ']: ' + error);
+                        adapter.log.error(`Cannot send action [user - ${options.user}]: ${error}`);
                     }
                     options = null;
-                    reject(error);
+                    resolve(count);
                 });
-        }
-    }
-    else if (options && options.type === 'mediagroup') {
-        adapter.log.debug('Send mediagroup to "' + name + '": ');
-        if (bot) {
-            const {media: fileNames} = options;
-            if (fileNames instanceof Array) {
-                bot.sendChatAction(dest, 'upload_photo')
-                    .then(param => {
-                        if (fileNames.every(name => fs.existsSync(name))) {
-                            const filesAsArray = fileNames
-                                .map(element => {
-                                    try {
-                                        return {type: "photo", media: fs.readFileSync(element)}
-                                    } catch (error) {
-                                        adapter.log.error('Cannot read file' + element);
-                                        return undefined;
-                                    }
-                                })
-                                .filter(element => element !== undefined);
-                            const size = filesAsArray.map((element) => element.media.length).reduce((acc, val) => acc + val);
-                            adapter.log.info('Send mediagroup to "' + name + '": ' + size + ' bytes');
-                            if (filesAsArray.length > 0) {
-                                bot.sendMediaGroup(dest, filesAsArray)
-                                   .then((response) => saveSendRequest(response))
-                                   .then(() => {
-                                        adapter.log.debug('photos sent');
-                                        count++;
-                                        resolve(count);
-                                        options = null;
-                                    })
-                                    .catch(error => {
-                                        if (options.chatId) {
-                                            adapter.log.error('Cannot send mediagroup [chatId - ' + options.chatId + ']: ' + error);
-                                        } else {
-                                            adapter.log.error('Cannot send mediagroup [user - ' + options.user + ']: ' + error);
-                                        }
-                                        options = null;
-                                        resolve(count);
-                                    });
-                            }
-                        } else {
-                            adapter.log.debug('files must exists');
-                            options = null;
-                            resolve(count);
-                        }
+        } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send sticker to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send sticker to "${name}": ${text.length} bytes`);
+            }
+            bot && bot.sendSticker(dest, text, options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('Sticker sent');
+                    count++;
+                    resolve(count);
+                    options = null;
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send sticker [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send sticker [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send animation to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send animation to "${name}": ${text.length} bytes`);
+            }
+            bot && bot.sendAnimation(dest, text, options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('animation sent');
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send animation [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send animation [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send video to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send video to "${name}": ${text.length} bytes`);
+            }
+            bot && bot.sendVideo(dest, text, options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('Video sent');
+                    count++;
+                    resolve(count);
+                    options = null;
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send video [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send video [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send document to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send document to "${name}": ${text.length} bytes`);
+            }
+            bot && bot.sendDocument(dest, text, options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('Document sent');
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send document [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send document [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (text && ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send audio to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send audio to "${name}": ${text.length} bytes`);
+            }
+            bot && bot.sendAudio(dest, text, options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('Audio sent');
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send audio [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send audio [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send photo to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send photo to "${name}": ${text.length} bytes`);
+            }
+            bot && bot.sendPhoto(dest, text, options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('Photo sent');
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send photo [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send photo [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (options && options.answerCallbackQuery !== undefined) {
+            adapter.log.debug(`Send answerCallbackQuery to "${name}"`);
+            if (options.answerCallbackQuery.showAlert === undefined) {
+                options.answerCallbackQuery.showAlert = false;
+            }
+            if (bot && callbackQueryId[options.chatId]) {
+                const originalChatId = callbackQueryId[options.chatId].id;
+                delete callbackQueryId[options.chatId];
+                bot.answerCallbackQuery(originalChatId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+                    .then(() => {
+                        options = null;
+                        count++;
+                        resolve(count);
                     })
-                    .catch((error) => {
-                        adapter.log.error('upload Error:' + error);
+                    .catch(error => {
+                        if (options.chatId) {
+                            adapter.log.error(`Cannot send answerCallbackQuery [chatId - ${options.chatId}]: ${error}`);
+                        } else {
+                            adapter.log.error(`Cannot send answerCallbackQuery [user - ${options.user}]: ${error}`);
+                        }
+                        options = null;
+                        resolve(count);
                     });
-                ;
-            } else{
-                adapter.log.debug('option media should be an array');
-                resolve(count);
-              }
-        } else {
-            adapter.log.debug('no files added!');
-            options = null;
-            resolve(count);
-        }
-    }
-    else if (text && typeof text === 'string' && actions.includes(text)) {
-        adapter.log.debug('Send action to "' + name + '": ' + text);
-        bot && bot.sendChatAction(dest, text)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Action sent');
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send action [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send action [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
-        if (typeof text === 'string') {
-            adapter.log.debug('Send sticker to "' + name + '": ' + text);
-        } else {
-            adapter.log.debug('Send sticker to "' + name + '": ' + text.length + ' bytes');
-        }
-        bot && bot.sendSticker(dest, text, options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Sticker sent');
-                count++;
-                resolve(count);
-                options = null;
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send sticker [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send sticker [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))){
-        if (typeof text === 'string') {
-            adapter.log.debug('Send animation to "' + name + '": ' + text);
-        } else {
-            adapter.log.debug('Send animation to "' + name + '": ' + text.length + ' bytes');
-        }
-        bot && bot.sendAnimation(dest, text, options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('animation sent');
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send animation [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send animation [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
-        if (typeof text === 'string') {
-            adapter.log.debug('Send video to "' + name + '": ' + text);
-        } else {
-            adapter.log.debug('Send video to "' + name + '": ' + text.length + ' bytes');
-        }
-        bot && bot.sendVideo(dest, text, options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Video sent');
-                count++;
-                resolve(count);
-                options = null;
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send video [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send video [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
-        if (typeof text === 'string') {
-            adapter.log.debug('Send document to "' + name + '": ' + text);
-        } else {
-            adapter.log.debug('Send document to "' + name + '": ' + text.length + ' bytes');
-        }
-        bot && bot.sendDocument(dest, text, options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Document sent');
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send document [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send document [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (text && ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio'))) {
-        if (typeof text === 'string') {
-            adapter.log.debug('Send audio to "' + name + '": ' + text);
-        } else {
-            adapter.log.debug('Send audio to "' + name + '": ' + text.length + ' bytes');
-        }
-        bot && bot.sendAudio(dest, text, options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Audio sent');
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send audio [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send audio [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
-        if (typeof text === 'string') {
-            adapter.log.debug('Send photo to "' + name + '": ' + text);
-        } else {
-            adapter.log.debug('Send photo to "' + name + '": ' + text.length + ' bytes');
-        }
-        bot && bot.sendPhoto(dest, text, options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Photo sent');
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send photo [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send photo [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (options && options.answerCallbackQuery !== undefined) {
-        adapter.log.debug('Send answerCallbackQuery to "' + name + '"');
-        if (options.answerCallbackQuery.showAlert === undefined) {
-            options.answerCallbackQuery.showAlert = false;
-        }
-        if (bot && callbackQueryId[options.chatId]) {
-            const originalChatId = callbackQueryId[options.chatId].id;
-            delete callbackQueryId[options.chatId];
-            bot.answerCallbackQuery(originalChatId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert)
+            }
+        } else if (options && options.editMessageReplyMarkup !== undefined) {
+            adapter.log.debug(`Send editMessageReplyMarkup to "${name}"`);
+            bot && bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
+                .then(response => saveSendRequest(response))
                 .then(() => {
                     options = null;
                     count++;
@@ -687,100 +699,77 @@ function _sendMessageHelper(dest, name, text, options) {
                 })
                 .catch(error => {
                     if (options.chatId) {
-                        adapter.log.error('Cannot send answerCallbackQuery [chatId - ' + options.chatId + ']: ' + error);
+                        adapter.log.error(`Cannot send editMessageReplyMarkup [chatId - ${options.chatId}]: ${error}`);
                     } else {
-                        adapter.log.error('Cannot send answerCallbackQuery [user - ' + options.user + ']: ' + error);
+                        adapter.log.error(`Cannot send editMessageReplyMarkup [user - ${options.user}]: ${error}`);
                     }
                     options = null;
                     resolve(count);
                 });
-        }
-    }
-    else if (options && options.editMessageReplyMarkup !== undefined) {
-        adapter.log.debug('Send editMessageReplyMarkup to "' + name + '"');
-        bot && bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send editMessageReplyMarkup [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send editMessageReplyMarkup [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (options && options.editMessageText !== undefined) {
-        adapter.log.debug('Send editMessageText to "' + name + '"');
-        bot && bot.editMessageText(text, options.editMessageText.options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send editMessageText [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send editMessageText [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else if (options && options.deleteMessage !== undefined) {
-        adapter.log.debug('Send deleteMessage to "' + name + '"');
-        bot && bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options.chatId) {
-                    adapter.log.error('Cannot send deleteMessage [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send deleteMessage [user - ' + options.user + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
-    }
-    else {
-        adapter.log.debug('Send message to "' + name + '": ' + text);
-        bot && bot.sendMessage(dest, text || '', options)
-            .then(response => saveSendRequest(response))
-            .then(() => {
-                adapter.log.debug('Message sent');
-                options = null;
-                count++;
-                resolve(count);
-            })
-            .catch(error => {
-                if (options && options.chatId) {
-                    adapter.log.error('Cannot send message [chatId - ' + options.chatId + ']: ' + error);
-                } else {
-                    adapter.log.error('Cannot send message [user - ' + (options && options.user) + ']: ' + error);
-                }
-                options = null;
-                resolve(count);
-            });
+        } else if (options && options.editMessageText !== undefined) {
+            adapter.log.debug(`Send editMessageText to "${name}"`);
+            bot && bot.editMessageText(text, options.editMessageText.options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send editMessageText [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send editMessageText [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else if (options && options.deleteMessage !== undefined) {
+            adapter.log.debug(`Send deleteMessage to "${name}"`);
+            bot && bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options.chatId) {
+                        adapter.log.error(`Cannot send deleteMessage [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send deleteMessage [user - ${options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
+        } else {
+            adapter.log.debug(`Send message to "${name}": ${text}`);
+            bot && bot.sendMessage(dest, text || '', options)
+                .then(response => saveSendRequest(response))
+                .then(() => {
+                    adapter.log.debug('Message sent');
+                    options = null;
+                    count++;
+                    resolve(count);
+                })
+                .catch(error => {
+                    if (options && options.chatId) {
+                        adapter.log.error(`Cannot send message [chatId - ${options.chatId}]: ${error}`);
+                    } else {
+                        adapter.log.error(`Cannot send message [user - ${options && options.user}]: ${error}`);
+                    }
+                    options = null;
+                    resolve(count);
+                });
 
-    }
-  });
+        }
+    });
 }
 
 function sendMessage(text, user, chatId, options) {
     if (!text && typeof options !== 'object' && text !== 0 && (!options || !options.latitude)) {
        adapter.log.warn('Invalid text: null');
-       return new Promise((resolve,reject)=>{resolve(0);});
+       return Promise.resolve(0);
     }
 
     if (text && typeof text === 'object' && text.text !== undefined && typeof text.text === 'string' && options === undefined) {
@@ -795,9 +784,15 @@ function sendMessage(text, user, chatId, options) {
     }
 
     if (options && typeof options === 'object') {
-        if (options.chatId !== undefined) delete options.chatId;
-        if (options.text   !== undefined) delete options.text;
-        if (options.user   !== undefined) delete options.user;
+        if (options.chatId !== undefined) {
+            delete options.chatId;
+        }
+        if (options.text !== undefined) {
+            delete options.text;
+        }
+        if (options.user !== undefined) {
+            delete options.user;
+        }
     }
     options = options || {};
     let tPromiseList = [];
@@ -807,14 +802,14 @@ function sendMessage(text, user, chatId, options) {
     }
     if (chatId) {
         tPromiseList.push(_sendMessageHelper(chatId, 'chat', text, options));
-        return Promise.all(tPromiseList).then((results)=>{
-          return results.reduce((e,acc)=>acc+e);})
-          .catch(e=>{
-            return e;});
+        return Promise.all(tPromiseList)
+            .then(results =>
+                results.reduce((e, acc) => acc + e, 0))
+            .catch(e => e);
     }
     else if (user) {
         if (typeof user !== 'string' && !(user instanceof Array)) {
-            adapter.log.warn('Invalid type of user parameter: ' + typeof user + '. Expected is string or array.');
+            adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
         }
 
         const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(build => build.trim());
@@ -838,26 +833,26 @@ function sendMessage(text, user, chatId, options) {
         });
 
         if (userArray.length !== matches) {
-            adapter.log.warn(userArray.length - matches + ' of ' + userArray.length + ' recipients are unknown!');
+            adapter.log.warn(`${userArray.length - matches} of ${userArray.length} recipients are unknown!`);
         }
-        return Promise.all(tPromiseList).then((results)=>{
-          return results.reduce((e,acc)=>acc+e);})
-          .catch(e=>{
-            return e;});
+
+        return Promise.all(tPromiseList)
+            .then(results => results.reduce((e, acc) => acc + e, 0))
+            .catch(e => e);
     }
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
     if (m) {
         text = (text || '').toString();
         text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
         const re = new RegExp(m[1], 'i');
-        let id = "";
+        let id = '';
         for (const id_t in users) {
             if (!users.hasOwnProperty(id_t)) {
                 continue;
             }
             if ((adapter.config.useUsername && users[id_t].userName.match(re)) || (!adapter.config.useUsername && users[id_t].firstName.match(re))) {
-                    id = id_t
-                    break;
+                id = id_t
+                break;
             }
         }
         if (id) {
@@ -875,11 +870,10 @@ function sendMessage(text, user, chatId, options) {
             tPromiseList.push(_sendMessageHelper(id, adapter.config.useUsername ? users[id].userName : users[id].firstName, text, options));
         });
     }
-    return Promise.all(tPromiseList).then((results)=>{
-      return results.reduce((e,acc)=>acc+e);})
-      .catch(e=>{
-        return -1;
-      });
+    return Promise.all(tPromiseList)
+        .then((results) =>
+            results.reduce((e, acc) => acc + e, 0))
+        .catch(e => -1);
 }
 
 function saveFile(file_id, fileName, callback) {
@@ -917,7 +911,7 @@ function getMessage(msg) {
 
     if (msg.voice) {
         !fs.existsSync(tmpDirName + '/voice') && fs.mkdirSync(tmpDirName + '/voice');
-        saveFile(msg.voice.file_id, adapter.config.saveFiles ? '/voice/' + date + '.ogg' : '/voice/temp.ogg', res => {
+        saveFile(msg.voice.file_id, adapter.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', res => {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
@@ -928,40 +922,40 @@ function getMessage(msg) {
     } else if (adapter.config.saveFiles && msg.photo) {
         !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
 
-        const qualiMap = {
-        0: 'low',
-            1 : 'med',
-            2 : 'high',
-            3 : 'highdef'
-    };
+        const qualityMap = {
+            0: 'low',
+            1: 'med',
+            2: 'high',
+            3: 'highdef'
+        };
 
         msg.photo.forEach((item, i) => {
-            let quali = "none";
-            if (qualiMap.hasOwnProperty(i)) {
-                quali = qualiMap[i];
-        }
+            let quality = 'none';
+            if (qualityMap.hasOwnProperty(i)) {
+                quality = qualityMap[i];
+            }
             let fileName = '';
             if (msg.media_group_id) {
                 if (!mediagroupExport.hasOwnProperty(msg.media_group_id)) {
-                  const id = Object.keys(mediagroupExport).length;
-                  mediagroupExport[msg.media_group_id] = {
-                    id:id,
-                    count:0
-                  };
-        } else {
-                mediagroupExport[msg.media_group_id].count++;
-        }
-                fileName = '/photo/' + date +'_grpID_'+mediagroupExport[msg.media_group_id].id +"_"+mediagroupExport[msg.media_group_id].count+'_'+ quali +'.jpg';
+                    const id = Object.keys(mediagroupExport).length;
+                    mediagroupExport[msg.media_group_id] = {
+                        id,
+                        count: 0
+                    };
+                } else {
+                    mediagroupExport[msg.media_group_id].count++;
+                }
+                fileName = `/photo/${date}_grpID_${mediagroupExport[msg.media_group_id].id}_${mediagroupExport[msg.media_group_id].count}_${quality}.jpg`;
             } else {
-              fileName = '/photo/' + date + '_' + quali + '.jpg';
-              if(fs.existsSync(tmpDirName + fileName)){
-                let tIdx = 0;
-                do{
-                  fileName = '/photo/' + date +'_'+ tIdx + '_' + quali + '.jpg';
-                  tIdx ++;
-                 }while(fs.existsSync(tmpDirName + fileName));
-              }
-        }
+                fileName = `/photo/${date}_${quality}.jpg`;
+                if (fs.existsSync(tmpDirName + fileName)) {
+                    let tIdx = 0;
+                    do {
+                        fileName = `/photo/${date}_${tIdx}_${quality}.jpg`;
+                        tIdx++;
+                    } while (fs.existsSync(tmpDirName + fileName));
+                }
+            }
             saveFile(item.file_id, fileName, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
@@ -973,7 +967,7 @@ function getMessage(msg) {
         });
     } else if (adapter.config.saveFiles && msg.video) {
         !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
-        saveFile(msg.video.file_id, '/video/' + date + '.mp4', res => {
+        saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
@@ -983,7 +977,7 @@ function getMessage(msg) {
         });
     } else if (adapter.config.saveFiles && msg.audio) {
         !fs.existsSync(tmpDirName + '/audio') && fs.mkdirSync(tmpDirName + '/audio');
-        saveFile(msg.audio.file_id, '/audio/' + date + '.mp3', res => {
+        saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
             if (!res.error) {
                 adapter.log.info(res.info);
                 adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
@@ -1005,15 +999,18 @@ function getMessage(msg) {
 }
 
 function processMessage(obj) {
-    if (!obj || !obj.command) return;
+    if (!obj || !obj.command) {
+        return;
+    }
     // Ignore own answers
-    if (obj.message && obj.message.response) return;
+    if (obj.message && obj.message.response) {
+        return;
+    }
 
     // filter out double messages
     const json = JSON.stringify(obj);
     if (lastMessageTime && lastMessageText === JSON.stringify(obj) && Date.now() - lastMessageTime < 1200) {
-        adapter.log.debug('Filter out double message [first was for ' + (Date.now() - lastMessageTime) + 'ms]: ' + json);
-        return;
+        return adapter.log.debug('Filter out double message [first was for ' + (Date.now() - lastMessageTime) + 'ms]: ' + json);
     }
 
     lastMessageTime = Date.now();
@@ -1024,16 +1021,16 @@ function processMessage(obj) {
     switch (obj.command) {
         case 'send':
             if (obj.message) {
-              let tPromise;
+                let tPromise;
                 if (typeof obj.message === 'object') {
                     tPromise = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
                 } else {
                     tPromise = sendMessage(obj.message);
                 }
-                tPromise.then(count=>{
-                  obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback);
-                })
-                .catch(e=>{});
+
+                tPromise
+                    .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback))
+                    .catch(e => adapter.log.error('Cannot send command: ' + e));
             }
             break;
 
@@ -1051,8 +1048,8 @@ function processMessage(obj) {
                 } else {
                     sendMessage(obj.message);
                 }
-                if (obj.callback) {
 
+                if (obj.callback) {
                     adapter._questions.push(question);
 
                     question.timeout = setTimeout(q => {
@@ -1153,6 +1150,14 @@ function decrypt(key, value) {
     return result;
 }
 
+function encrypt(key, value) {
+    var result = '';
+    for (var i = 0; i < value.length; ++i) {
+        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+    }
+    return result;
+}
+
 function storeUser(id, firstName, userName) {
     if (!users[id] || users[id].firstName !== firstName || users[id].userName !== userName) {
         Object.keys(users).forEach(id => {
@@ -1193,9 +1198,11 @@ function getListOfCommands() {
             }
         }
     });
+
     if (!lines.length) {
         lines.push(_('No commands found.'));
     }
+
     return lines.join('\n');
 }
 
@@ -1319,6 +1326,9 @@ function processTelegramText(msg) {
     connectionState(true);
 
     adapter.log.debug(JSON.stringify(msg));
+
+    const user = !adapter.config.useUsername ? msg.from.first_name : (!msg.from.username ? msg.from.first_name : msg.from.username);
+
     const now = Date.now();
     let pollingInterval = 0;
     if (adapter.config && adapter.config.pollingInterval !== undefined) {
@@ -1327,14 +1337,14 @@ function processTelegramText(msg) {
 
     // ignore all messages older than 30 seconds + polling interval
     if (now - msg.date * 1000 > pollingInterval + 30000) {
-        adapter.log.warn('Message from ' + msg.from.name + ' ignored, becasue too old: (' + (pollingInterval + 30000) + ') ' + msg.text);
-        bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text)
-            .catch((error) => {
-                adapter.log.error('send Message Error:' + error);
-            });
-        return;
+        adapter.log.warn(`Message from ${msg.from.name} ignored, because too old: (${pollingInterval + 30000}) ${msg.text}`);
+        return bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text)
+            .catch(error => adapter.log.error('send Message Error:' + error));
+
     }
+
     msg.text = (msg.text ||'').trim();
+
     // sometimes telegram sends messages like "message@user_name"
     const pos = msg.text.lastIndexOf('@');
     if (pos !== -1) {
@@ -1343,17 +1353,21 @@ function processTelegramText(msg) {
 
     if (msg.text === '/password') {
         bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
-            .catch((error) => {
+            .catch(error => {
                 adapter.log.error('send Message Error:' + error);
             });
         return;
     }
 
     if (msg.text === '/help') {
-        bot.sendMessage(msg.from.id, getListOfCommands())
-            .catch((error) => {
-                adapter.log.error('send Message Error:' + error);
-            });
+        return bot.sendMessage(msg.from.id, getListOfCommands())
+            .catch(error => adapter.log.error('send Message Error:' + error));
+    }
+
+    // todo support commands: instances, running, restart
+    if (adapter.config.password && !users[msg.from.id]) {
+        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
+            .catch(error => adapter.log.error('send Message Error:' + error));
         return;
     }
 
@@ -1382,11 +1396,14 @@ function processTelegramText(msg) {
                 let sValue = msg.text.substring(commands[id].alias.length + 1);
                 found = true;
                 if (sValue === '?') {
-                    adapter.getForeignState(id, (err, state) => bot.sendMessage(msg.chat.id, getStatus(id, state)).catch((error) => adapter.log.error('send Message Error:' + error)));
+                    adapter.getForeignState(id, (err, state) =>
+                        bot.sendMessage(msg.chat.id, getStatus(id, state))
+                            .catch(error => adapter.log.error('send Message Error:' + error)));
                 } else {
                     let value;
                     if (commands[id].states) {
-                        const sState = Object.keys(commands[id].states).find(val => commands[id].states[val] === sValue);
+                        const sState = Object.keys(commands[id].states)
+                            .find(val => commands[id].states[val] === sValue);
                         if (sState !== null && sState !== undefined) {
                             sValue = sState;
                         }
@@ -1398,7 +1415,8 @@ function processTelegramText(msg) {
                         sValue = sValue.replace('%', '').trim();
                         value = parseFloat(sValue);
                         if (sValue !== value.toString()) {
-                            bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue)).catch((error) => adapter.log.error('send Message Error:' + error));
+                            bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue))
+                                .catch(error => adapter.log.error('send Message Error:' + error));
                             continue;
                         }
                     } else {
@@ -1406,7 +1424,8 @@ function processTelegramText(msg) {
                     }
 
                     adapter.setForeignState(id, value, true, err =>
-                        bot.sendMessage(msg.chat.id, _('Done'))).catch((error) => adapter.log.error('send Message Error:' + error));
+                        bot.sendMessage(msg.chat.id, _('Done')))
+                        .catch(error => adapter.log.error('send Message Error:' + error));
                 }
             }
         }
@@ -1424,13 +1443,14 @@ function processTelegramText(msg) {
             if (adapter.config.password === m[1]) {
                 storeUser(msg.from.id, msg.from.first_name, msg.from.username);
                 if (!msg.from.username) {
-                    adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+                    adapter.log.warn(`User ${msg.from.first_name} hast not set an username in the Telegram App!!`);
                 }
-                bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username)).catch((error) => adapter.log.error('send Message Error:' + error));
-                return;
+                return bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + user)
+                    .catch(error => adapter.log.error('send Message Error:' + error));
             } else {
-                adapter.log.warn('Got invalid password from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + m[1]);
-                bot.sendMessage(msg.from.id, _('Invalid password', systemLang)).catch((error) => adapter.log.error('send Message Error:' + error));
+                adapter.log.warn(`Got invalid password from ${user}: ${m[1]}`);
+                bot.sendMessage(msg.from.id, _('Invalid password', systemLang))
+                    .catch(error => adapter.log.error('send Message Error:' + error));
                 if (users[msg.from.id]) {
                     delete users[msg.from.id];
                 }
@@ -1438,16 +1458,10 @@ function processTelegramText(msg) {
         }
     }
 
-    // todo support commands: instances, running, restart
-    if (adapter.config.password && !users[msg.from.id]) {
-        bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang)).catch((error) => adapter.log.error('send Message Error:' + error));
-        return;
-    }
-
     storeUser(msg.from.id, msg.from.first_name, msg.from.username);
 
     if (!msg.from.username) {
-        adapter.log.warn('User ' + msg.from.first_name + ' hast not set an username in the Telegram App!!');
+        adapter.log.warn(`User ${msg.from.first_name} hast not set an username in the Telegram App!!`);
     }
 
     if (adapter.config.allowStates) {
@@ -1471,19 +1485,23 @@ function processTelegramText(msg) {
                     m = null;
                 }
                 if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
+                    if (err) bot.sendMessage(msg.from.id, err)
+                        .catch(error => adapter.log.error('send Message Error:' + error));
                     if (state) {
                         adapter.setForeignState(id1, val1, true, err => {
                             if (msg) {
                                 if (err) {
-                                    bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
+                                    bot.sendMessage(msg.from.id, err)
+                                        .catch(error => adapter.log.error('send Message Error:' + error));
                                 } else {
-                                    bot.sendMessage(msg.from.id, _('Done', systemLang)).catch((error) => adapter.log.error('send Message Error:' + error));
+                                    bot.sendMessage(msg.from.id, _('Done', systemLang))
+                                        .catch(error => adapter.log.error('send Message Error:' + error));
                                 }
                             }
                         });
                     } else {
-                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1)).catch((error) => adapter.log.error('send Message Error:' + error));
+                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1))
+                            .catch(error => adapter.log.error('send Message Error:' + error));
                     }
                 }
             });
@@ -1507,11 +1525,14 @@ function processTelegramText(msg) {
                     m = null;
                 }
                 if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err).catch((error) => adapter.log.error('send Message Error:' + error));
+                    if (err) bot.sendMessage(msg.from.id, err)
+                        .catch(error => adapter.log.error('send Message Error:' + error));
                     if (state) {
-                        bot.sendMessage(msg.from.id, state.val.toString()).catch((error) => adapter.log.error('send Message Error:' + error));
+                        bot.sendMessage(msg.from.id, state.val.toString())
+                            .catch(error => adapter.log.error('send Message Error:' + error));
                     } else {
-                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2)).catch((error) => adapter.log.error('send Message Error:' + error));
+                        bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2))
+                            .catch(error => adapter.log.error('send Message Error:' + error));
                     }
                 }
             });
@@ -1519,27 +1540,26 @@ function processTelegramText(msg) {
         }
     }
 
-    adapter.log.debug('Got message from ' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ': ' + msg.text);
+    adapter.log.debug(`Got message from ${user}: ${msg.text}`);
 
     // Send to text2command
     if (adapter.config.text2command) {
         adapter.sendTo(adapter.config.text2command, 'send', {
             text: msg.text.replace(/\//g, '#').replace(/_/g, ' '),
             id: msg.chat.id,
-            user: (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username)
+            user
         }, response => {
             if (response && response.response) {
                 adapter.log.debug('Send response: ' + response.response);
-                bot.sendMessage(response.id, response.response).catch((error) => adapter.log.error('send Message Error:' + error));
+                bot.sendMessage(response.id, response.response).catch(error => adapter.log.error('send Message Error:' + error));
             }
         });
     }
+
     adapter.setState('communicate.requestChatId', msg.chat.id, true, err => err && adapter.log.error(err));
     adapter.setState('communicate.requestMessageId', msg.message_id, true, err => err && adapter.log.error(err));
     adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.request',
-        '[' + (!adapter.config.useUsername ? msg.from.first_name : !msg.from.username ? msg.from.first_name : msg.from.username) + ']' + msg.text, true,
-        err => err && adapter.log.error(err));
+    adapter.setState('communicate.request', `[${user}]${msg.text}`, true, err => err && adapter.log.error(err));
 }
 
 function connect() {
@@ -1570,10 +1590,12 @@ function connect() {
             }
         }
         // Check connection
-        bot.getMe().then(data => {
-            adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
-            connectionState(true);
-        }).catch((error) => adapter.log.error('getMe (reconnect) Error:' + error));
+        bot.getMe()
+            .then(data => {
+                adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
+                connectionState(true);
+            })
+            .catch(error => adapter.log.error('getMe (reconnect) Error:' + error));
     } else {
         let agent;
         if (proxy === true) {
@@ -1603,6 +1625,8 @@ function connect() {
                 proxyPort: proxyPort,
                 auths: []
             };
+            socks = socks || require('socksv5');
+
             if (proxyLogin) {
                 socksConfig.auths.push(socks.auth.UserPassword(proxyLogin, proxyPassword));
             } else {
@@ -1638,7 +1662,7 @@ function connect() {
             if (agent) {
                 pollingOptions.request = { agent: agent };
             }
-            adapter.log.debug('Start polling with: ' + pollingOptions.polling.interval + '(' + typeof pollingOptions.polling.interval + ')' + ' ms interval');
+            adapter.log.debug(`Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`);
             bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('');
         }
@@ -1656,7 +1680,7 @@ function connect() {
                     sendMessage(adapter.config.restarted);
                 }
             }
-        }).catch((error) => {
+        }).catch(error => {
             adapter.log.error('getMe Error:' + error)
             connectionState(false);
         });
@@ -1708,13 +1732,13 @@ function connect() {
 
         bot.on('polling_error', error => {
             if (isConnected) {
-                adapter.log.warn('polling_error: ' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EFATAL'
+                adapter.log.warn(`polling_error: ${error.code}, ${error.message.replace(/<[^>]+>/g, '')}`); // => 'EFATAL'
                 connectionState(false);
             }
         });
 
         bot.on('webhook_error', error => {
-            adapter.log.error('webhook_error:' + error.code + ', ' + error.message.replace(/<[^>]+>/g, '')); // => 'EPARSE'
+            adapter.log.error(`webhook_error:${error.code}, ${error.message.replace(/<[^>]+>/g, '')}`); // => 'EPARSE'
             adapter.log.debug('bot restarting...');
 
             bot.stopPolling().then(
@@ -1774,7 +1798,6 @@ function readAllNames(ids, cb) {
                 commands[id].unit   = obj.common && obj.common.unit;
                 commands[id].min    = obj.common && obj.common.min;
                 commands[id].max    = obj.common && obj.common.max;
-                //console.log('Subscribe ' + id); //->adapter.log ???
                 adapter.subscribeForeignStates(id, () =>
                     setImmediate(readAllNames, ids, cb));
             } else {
@@ -1833,6 +1856,30 @@ function main() {
         adapter.log.error('Token is not set!');
         return;
     }
+
+    // if old encoding detected
+    if (!adapter.config.token.includes(':') || adapter.config.token[0] < '0' || adapter.config.token[0] > '9') {
+        // decode password and token
+        return adapter.getForeignObjectAsync('system.adapter.' + adapter.namespace)
+            .then(obj => adapter.getForeignObjectAsync('system.config')
+                    .then(data => {
+                        let systemSecret;
+                        if (data && data.native) {
+                            systemSecret = data.native.secret;
+                        }
+                        systemSecret = systemSecret || DEFAULT_SECRET;
+                        if (obj.native.passwordRepeat) {
+                            obj.native.password = encrypt(systemSecret, obj.native.passwordRepeat);
+                            delete obj.native.passwordRepeat;
+                        } else {
+                            const password = decrypt('Zgfr56gFe87jJON', obj.native.password || '');
+                            obj.native.password = encrypt(systemSecret, password);
+                        }
+                        obj.native.token = encrypt(systemSecret, obj.native.token);
+                        return adapter.setForeignObjectAsync(obj._id, obj);
+                    }));
+    }
+
     adapter.setState('info.connection', false, true);
 
     adapter.subscribeStates('communicate.request');

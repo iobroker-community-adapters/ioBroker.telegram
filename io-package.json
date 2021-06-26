@@ -1,9 +1,6 @@
 {
     "common": {
         "name": "telegram",
-        "require": {
-            "js-controller": ">2.0.0"
-        },
         "version": "1.8.2",
         "news": {
             "1.8.2": {
@@ -81,176 +78,12 @@
                 "es": "Permitir anular chatId / user al escribir objetos JSON en telegram.INSTANCE.communicate.response\nCorregir Enviar mensaje a través del campo Respuesta con nombre de usuario\nllenar requestRaw también para callbackQuery",
                 "pl": "Zezwalaj na zastępowanie chatId / user podczas zapisywania obiektów JSON w telegram.INSTANCE.communicate.response\nNapraw Wyślij wiadomość przez pole odpowiedzi z nazwą użytkownika\nfill requestRaw również dla callbackQuery",
                 "zh-cn": "将JSON对象写入telegram.INSTANCE.communicate.response时，允许覆盖chatId /用户\n使用用户名修复通过响应字段发送消息\n也为callbackQuery填充requestRaw"
-            },
-            "1.5.9": {
-                "en": "potential error fixed when sending messages\nwebserver initialization optimized again to prevent errors with invalid certificates",
-                "de": "Möglicher Fehler beim Senden von Nachrichten behoben\nDie Webserver-Initialisierung wurde erneut optimiert, um Fehler mit ungültigen Zertifikaten zu vermeiden",
-                "ru": "исправлена потенциальная ошибка при отправке сообщений\nИнициализация веб-сервера снова оптимизирована для предотвращения ошибок с недействительными сертификатами",
-                "pt": "erro potencial corrigido ao enviar mensagens\ninicialização do servidor da web otimizada novamente para evitar erros com certificados inválidos",
-                "nl": "mogelijke fout verholpen bij het verzenden van berichten\nde initialisatie van de webserver is opnieuw geoptimaliseerd om fouten met ongeldige certificaten te voorkomen",
-                "fr": "erreur potentielle corrigée lors de l'envoi de messages\ninitialisation du serveur Web optimisée à nouveau pour éviter les erreurs avec des certificats invalides",
-                "it": "potenziale errore risolto durante l'invio di messaggi\ninizializzazione del server web nuovamente ottimizzata per prevenire errori con certificati non validi",
-                "es": "error potencial corregido al enviar mensajes\nLa inicialización del servidor web se optimizó nuevamente para evitar errores con certificados no válidos",
-                "pl": "potencjalny błąd naprawiony podczas wysyłania wiadomości\ninicjalizacja serwera WWW została ponownie zoptymalizowana, aby zapobiec błędom z nieprawidłowymi certyfikatami",
-                "zh-cn": "发送邮件时潜在的错误已修复\n再次优化了Web服务器的初始化，以防止证书无效而出错"
-            },
-            "1.5.8": {
-                "en": "errors on webserver initialization are handled properly",
-                "de": "Fehler bei der Webserver-Initialisierung werden ordnungsgemäß behandelt",
-                "ru": "ошибки при инициализации веб-сервера обрабатываются правильно",
-                "pt": "erros na inicialização do servidor da web são tratados adequadamente",
-                "nl": "fouten bij het initialiseren van de webserver worden correct afgehandeld",
-                "fr": "les erreurs lors de l'initialisation du serveur Web sont gérées correctement",
-                "it": "gli errori sull'inizializzazione del server web sono gestiti correttamente",
-                "es": "los errores en la inicialización del servidor web se manejan correctamente",
-                "pl": "błędy przy inicjalizacji serwera są obsługiwane poprawnie",
-                "zh-cn": "网站服务器初始化错误得到正确处理"
-            },
-            "1.5.6": {
-                "en": "Fixed missing languages for blockly",
-                "de": "Fehlende Sprachen für blockly behoben",
-                "ru": "Исправлены недостающие языки для блочных",
-                "pt": "Correção de idiomas ausentes para blockly",
-                "nl": "Ontbrekende talen voor blokkeren verholpen",
-                "fr": "Correction des langues manquantes pour blockly",
-                "it": "Risolto il problema con le lingue mancanti",
-                "es": "Se corrigieron los idiomas faltantes para blockly",
-                "pl": "Naprawiono brakujące języki dla blokowania",
-                "zh-cn": "修复了缺少语言的问题"
-            },
-            "1.5.5": {
-                "en": "Fixed bug for telegram users with an empty user name\nAllowed JSON objects in telegram.*.communicate.response ",
-                "de": "Fehler für Telegrammbenutzer mit einem leeren Benutzernamen behoben\nZulässige JSON-Objekte im Telegramm. *. Communicate.response",
-                "ru": "Исправлена ошибка для пользователей телеграммы с пустым именем пользователя\nРазрешенные объекты JSON в телеграмме. *. Connect.response",
-                "pt": "Corrigido o erro para usuários de telegrama com um nome de usuário vazio\nObjetos JSON permitidos no telegrama. *. Communic.response",
-                "nl": "Bug opgelost voor telegramgebruikers met een lege gebruikersnaam\nToegestane JSON-objecten in telegram. *. Communic.response",
-                "fr": "Correction d'un bug pour les utilisateurs de télégrammes avec un nom d'utilisateur vide\nObjets JSON autorisés dans le télégramme. *. Communic.response",
-                "it": "Bug risolto per gli utenti di telegrammi con un nome utente vuoto\nOggetti JSON consentiti in telegramma. *. Communic.response",
-                "es": "Error solucionado para usuarios de telegramas con un nombre de usuario vacío\nObjetos JSON permitidos en telegrama. *. Comunicar.responder",
-                "pl": "Naprawiono błąd dla użytkowników telegramów z pustą nazwą użytkownika\nDozwolone obiekty JSON w telegramie. *. Communic.response",
-                "zh-cn": "修复了用户名为空的电报用户的错误\n电报中允许的JSON对象。*。communicate.response"
-            },
-            "1.5.4": {
-                "en": "Improvement of callmebot",
-                "de": "Verbesserung des Callmebot",
-                "ru": "Улучшение callmebot",
-                "pt": "Melhoria do callmebot",
-                "nl": "Verbetering van callmebot",
-                "fr": "Amélioration de callmebot",
-                "it": "Miglioramento di callmebot",
-                "es": "Mejora de callmebot",
-                "pl": "Ulepszenie callmebot",
-                "zh-cn": "Callmebot的改进"
-            },
-            "1.5.3": {
-                "en": "Invalid parameters were checked\nRemoved usage of adapter.objects\nFixed the response for the \"callback_query\" event",
-                "de": "Ungültige Parameter wurden überprüft\nVerwendung von adapter.objects entfernt\nDie Antwort für das Ereignis \"callback_query\" wurde behoben",
-                "ru": "Неверные параметры были проверены\nУдалено использование файла adapter.objects.\nИсправлен ответ на событие \"callback_query\"",
-                "pt": "Parâmetros inválidos foram verificados\nRemovido o uso de adapter.objects\nCorrigida a resposta para o evento \"callback_query\"",
-                "nl": "Ongeldige parameters zijn gecontroleerd\nGebruik van adapter.objects verwijderd\nDe reactie voor de gebeurtenis \"callback_query\" is opgelost",
-                "fr": "Les paramètres invalides ont été vérifiés\nSuppression de l'utilisation de adapter.objects\nCorrection de la réponse pour l'événement \"callback_query\"",
-                "it": "Sono stati controllati parametri non validi\nRimosso l'utilizzo di adapter.objects\nRisolta la risposta per l'evento \"callback_query\"",
-                "es": "Se verificaron los parámetros inválidos\nSe eliminó el uso de los objetos del adaptador.\nSe corrigió la respuesta para el evento \"callback_query\"",
-                "pl": "Nieprawidłowe parametry zostały sprawdzone\nUsunięto użycie adapter.objects\nNaprawiono odpowiedź na zdarzenie „callback_query”",
-                "zh-cn": "检查了无效的参数\n删除了adapter.objects的用法\n修复了“ callback_query”事件的响应"
-            },
-            "1.5.2": {
-                "en": "Invalid parameters were checked",
-                "de": "Ungültige Parameter wurden überprüft",
-                "ru": "Неверные параметры были проверены",
-                "pt": "Parâmetros inválidos foram verificados",
-                "nl": "Ongeldige parameters zijn gecontroleerd",
-                "fr": "Les paramètres invalides ont été vérifiés",
-                "it": "Sono stati controllati parametri non validi",
-                "es": "Se verificaron los parámetros inválidos",
-                "pl": "Nieprawidłowe parametry zostały sprawdzone",
-                "zh-cn": "检查了无效的参数"
-            },
-            "1.5.0": {
-                "en": "Added voice calls ",
-                "de": "Sprachanrufe hinzugefügt",
-                "ru": "Добавлены голосовые звонки",
-                "pt": "Chamadas de voz adicionadas",
-                "nl": "Spraakoproepen toegevoegd",
-                "fr": "Appels vocaux ajoutés",
-                "it": "Aggiunte chiamate vocali",
-                "es": "Llamadas de voz agregadas",
-                "pl": "Dodano połączenia głosowe",
-                "zh-cn": "新增语音通话"
-            },
-            "1.4.7": {
-                "en": "make compatible with js-controller 2.3",
-                "de": "kompatibel machen mit js-controller 2.3",
-                "ru": "сделать совместимым с js-контроллером 2.3",
-                "pt": "tornar compatível com js-controller 2.3",
-                "nl": "compatibel maken met js-controller 2.3",
-                "fr": "rendre compatible avec js-controller 2.3",
-                "it": "rendere compatibile con js-controller 2.3",
-                "es": "hacer compatible con js-controller 2.3",
-                "pl": "uczynić kompatybilnym z kontrolerem js 2.3",
-                "zh-cn": "使与js-controller 2.3兼容"
-            },
-            "1.4.6": {
-                "en": "Allowed writeOnly states in telegram",
-                "de": "Erlaubte WriteOnly-Zustände im Telegramm",
-                "ru": "Разрешено писать только состояния в телеграмме",
-                "pt": "Estados writeOnly permitidos no telegrama",
-                "nl": "Toegestaan schrijven Alleen staten in telegram",
-                "fr": "Etats d'écriture autorisés uniquement dans le télégramme",
-                "it": "Consentito writeSolo stati nel telegramma",
-                "es": "Estados de escritura solo permitidos en telegrama",
-                "pl": "Dozwolony zapis Tylko w telegramie",
-                "zh-cn": "电报中允许的writeOnly状态"
-            },
-            "1.4.4": {
-                "en": "New sendTo message \"ask\" was added",
-                "de": "Neue sendTo-Nachricht \"ask\" wurde hinzugefügt",
-                "ru": "Добавлено новое сообщение sendTo \"Ask\"",
-                "pt": "Nova mensagem sendTo \"ask\" foi adicionada",
-                "nl": "Nieuw sendTo-bericht \"vragen\" is toegevoegd",
-                "fr": "Nouveau message sendTo \"ask\" a été ajouté",
-                "it": "Nuovo messaggio Al messaggio \"chiedi\" è stato aggiunto",
-                "es": "Nuevo mensaje de envío a \"preguntar\" fue agregado",
-                "pl": "Dodano nową wiadomość SendTo „ask”",
-                "zh-cn": "添加了新的sendTo消息“询问”"
-            },
-            "1.4.3": {
-                "en": "Bugfix for not yet completely implemented feature",
-                "de": "Bugfix für noch nicht vollständig implementiertes Feature",
-                "ru": "Исправлена ​​ошибка для еще не полностью реализованной функции",
-                "pt": "Bugfix para o recurso ainda não completamente implementado",
-                "nl": "Bugfix voor nog niet volledig geïmplementeerde functie",
-                "fr": "Correction de bug pour la fonctionnalité pas encore complètement implémentée",
-                "it": "Bugfix per funzionalità non ancora completamente implementate",
-                "es": "Corrección de errores para la característica aún no implementada por completo",
-                "pl": "Bugfix dla jeszcze nie w pełni zaimplementowanej funkcji",
-                "zh-cn": "修正尚未完全实现的功能"
-            },
-            "1.4.2": {
-                "en": "fix for sending message to recipients which contains whitespace",
-                "de": "Fix für das Senden von Nachrichten an Empfänger, die Leerzeichen enthalten",
-                "ru": "исправлена ​​ошибка отправки сообщения получателям, содержащее пробелы",
-                "pt": "correção para envio de mensagem para destinatários que contém espaço em branco",
-                "nl": "oplossing voor het verzenden van berichten naar ontvangers die witruimte bevatten",
-                "fr": "correctif pour l'envoi aux destinataires d'un message contenant des espaces",
-                "it": "correzione per l'invio di messaggi a destinatari che contengono spazi bianchi",
-                "es": "Solución para enviar mensajes a destinatarios que contienen espacios en blanco.",
-                "pl": "poprawka do wysyłania wiadomości do odbiorców, która zawiera białe spacje",
-                "zh-cn": "修复了向包含空格的收件人发送邮件的问题"
-            },
-            "1.4.1": {
-                "en": "Support for Compact mode",
-                "de": "Unterstützung für den Kompaktmodus",
-                "ru": "Поддержка компактного режима",
-                "pt": "Suporte para o modo compacto",
-                "nl": "Ondersteuning voor de Compact-modus",
-                "fr": "Prise en charge du mode compact",
-                "it": "Supporto per la modalità compatta",
-                "es": "Soporte para el modo compacto",
-                "pl": "Obsługa trybu Compact"
             }
         },
         "title": "Telegram",
+        "titleLang": {
+            "en": "Telegram"
+        },
         "desc": {
             "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
             "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
@@ -275,6 +108,8 @@
         "icon": "telegram.png",
         "materialize": true,
         "supportCustoms": true,
+        "connectionType": "cloud",
+        "dataSource": "poll",
         "compact": true,
         "keywords": [
             "notification",
@@ -286,18 +121,18 @@
         "type": "messaging",
         "stopBeforeUpdate": true,
         "blockly": true,
-        "config": {
-            "minWidth": 800,
-            "width": 1224,
-            "height": 600
+        "adminUI": {
+            "custom": "json",
+            "config": "materialize"
         },
         "dependencies": [
             {
                 "js-controller": ">=2.0.0"
             }
-        ],
-        "jsonCustom": true
+        ]
     },
+    "protectedNative": ["token", "password"],
+    "encryptedNative": ["token", "password"],
     "native": {
         "server": "false",
         "port": 8443,

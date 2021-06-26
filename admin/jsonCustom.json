@@ -161,9 +161,20 @@
       "de": "Nur falsch",
       "ru": "Только выкл."
     },
+    "Do not show ON": {
+      "en": "Do not show ON",
+      "de": "Zeige kein AN",
+      "ru": "Не показывать Вкл.",
+      "nl": "Niet tonen AAN",
+      "fr": "Ne pas afficher ON",
+      "it": "Non mostrare ON",
+      "es": "No mostrar EN",
+      "pl": "Nie pokazuj ON",
+      "zh-cn": "不显示 ON"
+    },
     "Do not show OFF": {
       "en": "Do not show OFF",
-      "de": "Gib nicht an",
+      "de": "Zeige kein AUS",
       "ru": "Не показывать Выкл.",
       "pt": "Não se exiba",
       "nl": "Niet tonen UIT",
