@@ -135,6 +135,7 @@
         "connectionType": "cloud",
         "dataSource": "poll",
         "compact": true,
+        "tier": 1,
         "keywords": [
             "notification",
             "telegram",

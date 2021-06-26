@@ -1,11 +1,13 @@
 ![Logo](admin/telegram.png)
 # ioBroker telegram Adapter
 
-![Number of Installations](http://iobroker.live/badges/telegram-installed.svg) ![Number of Installations](http://iobroker.live/badges/telegram-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
-[![Tests](https://travis-ci.org/ioBroker/ioBroker.telegram.svg?branch=master)](https://travis-ci.org/ioBroker/ioBroker.telegram)
+![Number of Installations](http://iobroker.live/badges/telegram-installed.svg)
+![Number of Installations](http://iobroker.live/badges/telegram-stable.svg)
+[![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
 
-[![NPM](https://nodei.co/npm/iobroker.telegram.png?downloads=true)](https://nodei.co/npm/iobroker.telegram/)
+![Test and Release](https://github.com/iobroker-community-adapters/iobroker.telegram/workflows/Test%20and%20Release/badge.svg)
+[![Translation status](https://weblate.iobroker.net/widgets/adapters/-/telegram/svg-badge.svg)](https://weblate.iobroker.net/engage/adapters/?utm_source=widget)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
 
 ## Configuration
 Ask [@BotFather](https://telegram.me/botfather) to create new bot ```/newbot```.
@@ -701,6 +703,10 @@ msg.payload = {
 -->
 
 ## Changelog
+
+### __WORK IN PROGRESS__
+* (Apollon77) Add tier for js-controller 3.3
+
 ### 1.9.0 (2021-06-26)
 * (bluefox) Added the option to not authenticate the new users
 * (bluefox) Added the option to disable system messages for specific users
