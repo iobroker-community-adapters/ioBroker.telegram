@@ -701,7 +701,7 @@ msg.payload = {
 -->
 
 ## Changelog
-### __WORK IN PROGRESS__
+### 1.9.0 (2021-06-26)
 * (bluefox) Added the option to not authenticate the new users
 * (bluefox) Added the option to disable system messages for specific users
 
