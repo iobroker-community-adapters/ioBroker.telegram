@@ -1587,7 +1587,7 @@ function processTelegramText(msg) {
                         value = sValue
                     }
 
-                    adapter.setForeignState(id, value, true, err =>
+                    adapter.setForeignState(id, value, false, err =>
                         bot.sendMessage(msg.chat.id, _('Done')))
                         .catch(error => adapter.log.error('send Message Error:' + error));
                 }
@@ -1628,7 +1628,7 @@ function processTelegramText(msg) {
                     if (err) bot.sendMessage(msg.from.id, err)
                         .catch(error => adapter.log.error('send Message Error:' + error));
                     if (state) {
-                        adapter.setForeignState(id1, val1, true, err => {
+                        adapter.setForeignState(id1, val1, false, err => {
                             if (msg) {
                                 if (err) {
                                     bot.sendMessage(msg.from.id, err)

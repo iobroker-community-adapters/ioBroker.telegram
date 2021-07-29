@@ -706,6 +706,7 @@ msg.payload = {
 
 ### __WORK IN PROGRESS__
 * (Apollon77) Add tier for js-controller 3.3
+* (bluefox) Fixed the control of the states 
 
 ### 1.9.0 (2021-06-26)
 * (bluefox) Added the option to not authenticate the new users
