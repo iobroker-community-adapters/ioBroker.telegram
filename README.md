@@ -704,7 +704,7 @@ msg.payload = {
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.9.1 (2021-07-29)
 * (Apollon77) Add tier for js-controller 3.3
 * (bluefox) Fixed the control of the states 
 
