@@ -24,13 +24,14 @@ const fs          = require('fs');
 const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
 const tools       = require(utils.controllerDir + '/lib/tools');
 const https       = require('https');
+const axios = require("axios");
 
 const DEFAULT_SECRET = 'Zgfr56gFe87jJOM';
 
 let socks;
 
 let bot;
-let request;
+let axios;
 let users = {};
 let systemLang = 'en';
 let reconnectTimer = null;
@@ -1254,7 +1255,7 @@ function callUsers(users, text, lang, file, repeats, cb) {
         if (!user.startsWith('@') && !user.startsWith('+') && !user.startsWith('00')) {
             user = '@' + user;
         }
-        request = request || require('request');
+        axios = axios || require('axios');
 
         let url = 'http://api.callmebot.com/start.php?source=iobroker&';
         const params = ['user=' + encodeURIComponent(user)];
@@ -1271,14 +1272,20 @@ function callUsers(users, text, lang, file, repeats, cb) {
         url += params.join('&');
         adapter.log.debug('CALL: ' + url);
 
-        request(url, (err, state, body) => {
-            if (!state || state.statusCode !== 200) {
-                adapter.log.error(`Cannot make a call to ${user}: ${err || body || (state && state.statusCode) || 'Unknown error'}`);
-            } else {
-                adapter.log.debug(`Call to ${user} wsa made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
-            }
-            setImmediate(callUsers, users, text, lang, file, repeats, cb);
-        });
+        axios.get(url)
+            .then(response => {
+                const body = response && response.data;
+                if (!body || response || response.status !== 200) {
+                    adapter.log.error(`Cannot make a call to ${user}: ${body || (response && response.status) || 'Unknown error'}`);
+                } else {
+                    adapter.log.debug(`Call to ${user} was made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
+                }
+                setImmediate(callUsers, users, text, lang, file, repeats, cb);
+            })
+            .catch(err => {
+                adapter.log.error(`Cannot make a call to ${user}: ${err || 'Unknown error'}`);
+                setImmediate(callUsers, users, text, lang, file, repeats, cb);
+            });
     }
 }
 
