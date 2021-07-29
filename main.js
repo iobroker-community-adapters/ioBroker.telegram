@@ -444,6 +444,11 @@ function handleWebHook(req, res) {
 function saveSendRequest(msg) {
     adapter.log.debug('Request: ' + JSON.stringify(msg));
 
+    if (msg && adapter.config.storeRawRequest) {
+        adapter.setState('communicate.botSendRaw', JSON.stringify(msg), true, err =>
+            err && adapter.log.error(err));
+    }
+
     if (msg && msg.message_id) {
         adapter.setState('communicate.botSendMessageId', msg.message_id, true, err =>
             err && adapter.log.error(err));
