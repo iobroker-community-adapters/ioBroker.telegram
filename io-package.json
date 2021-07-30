@@ -3,18 +3,6 @@
         "name": "telegram",
         "version": "1.9.1",
         "news": {
-            "1.9.1": {
-                "en": "Add tier for js-controller 3.3\nFixed the control of the states",
-                "de": "Stufe für js-controller 3.3 . hinzufügen\nDie Kontrolle der Zustände wurde behoben",
-                "ru": "Добавить уровень для js-controller 3.3\nИсправлен контроль состояний",
-                "pt": "Adicionar camada para js-controller 3.3\nCorrigido o controle dos estados",
-                "nl": "Laag toevoegen voor js-controller 3.3\nDe controle over de staten opgelost",
-                "fr": "Ajouter un niveau pour js-controller 3.3\nCorrection du contrôle des états",
-                "it": "Aggiungi livello per js-controller 3.3\nRisolto il controllo degli stati",
-                "es": "Agregar nivel para js-controller 3.3\nArreglado el control de los estados.",
-                "pl": "Dodaj warstwę dla kontrolera js 3.3\nPoprawiono kontrolę stanów",
-                "zh-cn": "为 js-controller 3.3 添加层\n修复了对状态的控制"
-            },
             "1.9.0": {
                 "en": "Added the option to not authenticate the new users\nAdded the option to disable system messages for specific users",
                 "de": "Option hinzugefügt, die neuen Benutzer nicht zu authentifizieren\nOption zum Deaktivieren von Systemnachrichten für bestimmte Benutzer hinzugefügt",

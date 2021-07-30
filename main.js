@@ -24,14 +24,13 @@ const fs          = require('fs');
 const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
 const tools       = require(utils.controllerDir + '/lib/tools');
 const https       = require('https');
-const axios = require("axios");
+const axios       = require("axios");
 
 const DEFAULT_SECRET = 'Zgfr56gFe87jJOM';
 
 let socks;
 
 let bot;
-let axios;
 let users = {};
 let systemLang = 'en';
 let reconnectTimer = null;
