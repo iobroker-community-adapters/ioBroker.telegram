@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "telegram",
-        "version": "1.9.1",
+        "version": "1.10.0",
         "news": {
+            "1.10.0": {
+                "en": "Add botSendRaw state to allow processing of the RAW data send by bot\nAdd tier for js-controller 3.3\nFixed the control of the states",
+                "de": "Fügen Sie den botSendRaw-Status hinzu, um die Verarbeitung der vom Bot gesendeten RAW-Daten zu ermöglichen\nStufe für js-controller 3.3 . hinzufügen\nDie Kontrolle der Zustände wurde behoben",
+                "ru": "Добавьте состояние botSendRaw, чтобы разрешить обработку RAW-данных, отправленных ботом\nДобавить уровень для js-controller 3.3\nИсправлен контроль состояний",
+                "pt": "Adicione o estado botSendRaw para permitir o processamento dos dados RAW enviados por bot\nAdicionar camada para js-controller 3.3\nCorrigido o controle dos estados",
+                "nl": "Voeg botSendRaw-status toe om verwerking van de RAW-gegevens die door bot zijn verzonden toe te staan\nLaag toevoegen voor js-controller 3.3\nDe controle over de staten opgelost Fixed",
+                "fr": "Ajouter l'état botSendRaw pour permettre le traitement des données RAW envoyées par le bot\nAjouter un niveau pour js-controller 3.3\nCorrection du contrôle des états",
+                "it": "Aggiungi lo stato botSendRaw per consentire l'elaborazione dei dati RAW inviati dal bot\nAggiungi livello per js-controller 3.3\nRisolto il controllo degli stati",
+                "es": "Agregue el estado botSendRaw para permitir el procesamiento de los datos RAW enviados por bot\nAgregar nivel para js-controller 3.3\nArreglado el control de los estados.",
+                "pl": "Dodaj stan botSendRaw, aby umożliwić przetwarzanie danych RAW wysyłanych przez bota\nDodaj warstwę dla kontrolera js 3.3\nPoprawiono kontrolę stanów",
+                "zh-cn": "添加 botSendRaw 状态以允许处理 bot 发送的 RAW 数据\n为 js-controller 3.3 添加层\n修复了对状态的控制"
+            },
             "1.9.0": {
                 "en": "Added the option to not authenticate the new users\nAdded the option to disable system messages for specific users",
                 "de": "Option hinzugefügt, die neuen Benutzer nicht zu authentifizieren\nOption zum Deaktivieren von Systemnachrichten für bestimmte Benutzer hinzugefügt",

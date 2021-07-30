@@ -704,7 +704,7 @@ msg.payload = {
 
 ## Changelog
 
-### __WORK IN PROGRESS__
+### 1.10.0 (2021-07-30)
 * (PeterVoronov) Add botSendRaw state to allow processing of the RAW data send by bot
 * (Apollon77) Add tier for js-controller 3.3
 * (bluefox) Fixed the control of the states
