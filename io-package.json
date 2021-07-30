@@ -308,6 +308,18 @@
             "native": {}
         },
         {
+            "_id": "communicate.botSendRaw",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Raw Data of last sent message by the bot",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
             "_id": "communicate.requestUserId",
             "type": "state",
             "common": {
