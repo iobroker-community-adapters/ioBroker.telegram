@@ -17,17 +17,18 @@ Blockly.Translate = Blockly.Translate || function (word, lang) {
 };
 
 // --- SendTo telegram --------------------------------------------------
-Blockly.Words['telegram']               = {'en': 'telegram',                    'pt': 'telegram',                       'pl': 'telegram',                           'nl': 'telegram',                       'it': 'telegram',                       'es': 'telegram',                       'fr': 'telegram',                           'de': 'telegram',                           'ru': 'telegram'};
-Blockly.Words['telegram_message']       = {'en': 'message',                     'pt': 'mensagem',                       'pl': 'wiadomość',                          'nl': 'bericht',                        'it': 'Messaggio',                      'es': 'mensaje',                        'fr': 'message',                            'de': 'Meldung',                            'ru': 'сообщение'};
-Blockly.Words['telegram_username']      = {'en': 'Recipient (optional)',        'pt': 'Nome do usuário (opcional)',     'pl': 'Nazwa użytkownika (opcjonalnie)',    'nl': 'Gebruikersnaam (optioneel)',     'it': 'Nome utente (facoltativo)',      'es': 'Nombre de usuario (opcional)',   'fr': 'Nom d\'utilisateur (facultatif)',    'de': 'Empfänger (optional)',               'ru': 'имя пользователя (не обяз.)'};
-Blockly.Words['telegram_anyInstance']   = {'en': 'all instances',               'pt': 'todas as instâncias',            'pl': 'wszystkie przypadki',                'nl': 'alle instanties',                'it': 'tutte le istanze',               'es': 'todas las instancias',           'fr': 'toutes les instances',               'de': 'Alle Instanzen',                     'ru': 'На все драйвера'};
-Blockly.Words['telegram_tooltip']       = {'en': 'Send message to telegram',    'pt': 'Enviar mensagem para telegrama', 'pl': 'Wyślij wiadomość do telegramu',      'nl': 'Stuur bericht naar telegram',    'it': 'Invia messaggio al telegramma',  'es': 'Enviar mensaje al telegrama',    'fr': 'Envoyer un message au télégramme',   'de': 'Sende eine Meldung über Telegram',   'ru': 'Послать сообщение через Telegram'};
-Blockly.Words['telegram_log']           = {'en': 'log level',                   'pt': 'nível de log',                   'pl': 'poziom dziennika',                   'nl': 'Log niveau',                     'it': 'livello log',                    'es': 'nivel de registro',              'fr': 'niveau de journalisation',           'de': 'Loglevel',                           'ru': 'Протокол'};
-Blockly.Words['telegram_log_none']      = {'en': 'none',                        'pt': 'Nenhum',                         'pl': 'Żaden',                              'nl': 'geen',                           'it': 'nessuna',                        'es': 'ninguna',                        'fr': 'aucun',                              'de': 'keins',                              'ru': 'нет'};
-Blockly.Words['telegram_log_info']      = {'en': 'info',                        'pt': 'info',                           'pl': 'informacje',                         'nl': 'Info',                           'it': 'Informazioni',                   'es': 'información',                    'fr': 'Info',                               'de': 'info',                               'ru': 'инфо'};
-Blockly.Words['telegram_log_debug']     = {'en': 'debug',                       'pt': 'depurar',                        'pl': 'odpluskwić',                         'nl': 'Debug',                          'it': 'Debug',                          'es': 'depurar',                        'fr': 'déboguer',                           'de': 'debug',                              'ru': 'debug'};
-Blockly.Words['telegram_log_warn']      = {'en': 'warning',                     'pt': 'Atenção',                        'pl': 'ostrzeżenie',                        'nl': 'waarschuwing',                   'it': 'avvertimento',                   'es': 'advertencia',                    'fr': 'Attention',                          'de': 'warning',                            'ru': 'warning'};
-Blockly.Words['telegram_log_error']     = {'en': 'error',                       'pt': 'erro',                           'pl': 'błąd',                               'nl': 'fout',                           'it': 'errore',                         'es': 'error',                          'fr': 'Erreur',                             'de': 'error',                              'ru': 'ошибка'};
+Blockly.Words['telegram']               = {'en': 'telegram',                        'pt': 'telegram',                       'pl': 'telegram',                           'nl': 'telegram',                       'it': 'telegram',                       'es': 'telegram',                       'fr': 'telegram',                           'de': 'telegram',                           'ru': 'telegram'};
+Blockly.Words['telegram_message']       = {'en': 'message',                         'pt': 'mensagem',                       'pl': 'wiadomość',                          'nl': 'bericht',                        'it': 'Messaggio',                      'es': 'mensaje',                        'fr': 'message',                            'de': 'Meldung',                            'ru': 'сообщение'};
+Blockly.Words['telegram_username']      = {'en': 'Recipient (Username, optional)',  'pt': 'Destinatário (nome de usuário, opcional)', 'de': 'Empfänger (Benutzername, optional)',    'ru': 'Получатель (имя пользователя, необязательно)',       'nl': 'Ontvanger (gebruikersnaam, optioneel)',    'fr': 'Destinataire (nom d\'utilisateur, facultatif)',    'it': 'Destinatario (Nome utente, facoltativo)',    'es': 'Destinatario (nombre de usuario, opcional)',    'pl': 'Odbiorca (nazwa użytkownika, opcjonalnie)',    'zh-cn': '收件人（用户名，可选）'  };
+Blockly.Words['telegram_chatid']        = {'en': 'Recipient (Chat-ID, optional)',   'de': 'Empfänger (Chat-ID, optional)',    'ru': 'Получатель (Chat-ID, необязательно)',    'pt': 'Destinatário (Chat-ID, opcional)',    'nl': 'Ontvanger (Chat-ID, optioneel)',    'fr': 'Destinataire (Chat-ID, facultatif)',    'it': 'Destinatario (ID chat, facoltativo)',    'es': 'Destinatario (Chat-ID, opcional)',    'pl': 'Odbiorca (identyfikator czatu, opcjonalnie)',    'zh-cn': '收件人（聊天 ID，可选）'  };
+Blockly.Words['telegram_anyInstance']   = {'en': 'all instances',                   'pt': 'todas as instâncias',            'pl': 'wszystkie przypadki',                'nl': 'alle instanties',                'it': 'tutte le istanze',               'es': 'todas las instancias',           'fr': 'toutes les instances',               'de': 'Alle Instanzen',                     'ru': 'На все драйвера'};
+Blockly.Words['telegram_tooltip']       = {'en': 'Send message to telegram',        'pt': 'Enviar mensagem para telegrama', 'pl': 'Wyślij wiadomość do telegramu',      'nl': 'Stuur bericht naar telegram',    'it': 'Invia messaggio al telegramma',  'es': 'Enviar mensaje al telegrama',    'fr': 'Envoyer un message au télégramme',   'de': 'Sende eine Meldung über Telegram',   'ru': 'Послать сообщение через Telegram'};
+Blockly.Words['telegram_log']           = {'en': 'log level',                       'pt': 'nível de log',                   'pl': 'poziom dziennika',                   'nl': 'Log niveau',                     'it': 'livello log',                    'es': 'nivel de registro',              'fr': 'niveau de journalisation',           'de': 'Loglevel',                           'ru': 'Протокол'};
+Blockly.Words['telegram_log_none']      = {'en': 'none',                            'pt': 'Nenhum',                         'pl': 'Żaden',                              'nl': 'geen',                           'it': 'nessuna',                        'es': 'ninguna',                        'fr': 'aucun',                              'de': 'keins',                              'ru': 'нет'};
+Blockly.Words['telegram_log_info']      = {'en': 'info',                            'pt': 'info',                           'pl': 'informacje',                         'nl': 'Info',                           'it': 'Informazioni',                   'es': 'información',                    'fr': 'Info',                               'de': 'info',                               'ru': 'инфо'};
+Blockly.Words['telegram_log_debug']     = {'en': 'debug',                           'pt': 'depurar',                        'pl': 'odpluskwić',                         'nl': 'Debug',                          'it': 'Debug',                          'es': 'depurar',                        'fr': 'déboguer',                           'de': 'debug',                              'ru': 'debug'};
+Blockly.Words['telegram_log_warn']      = {'en': 'warning',                         'pt': 'Atenção',                        'pl': 'ostrzeżenie',                        'nl': 'waarschuwing',                   'it': 'avvertimento',                   'es': 'advertencia',                    'fr': 'Attention',                          'de': 'warning',                            'ru': 'warning'};
+Blockly.Words['telegram_log_error']     = {'en': 'error',                           'pt': 'erro',                           'pl': 'błąd',                               'nl': 'fout',                           'it': 'errore',                         'es': 'error',                          'fr': 'Erreur',                             'de': 'error',                              'ru': 'ошибка'};
 Blockly.Words['telegram_help']          = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md'};
 Blockly.Words['telegram_silent']        = {'en': 'without notification',        'de': 'ohne Benachrichtigung',          'ru': 'без уведомления',                    'pt': 'sem notificação',                'nl': 'zonder kennisgeving',            'fr': 'sans notification',              'it': 'senza notifica',                     'es': 'sin notificación',                   'pl': 'bez powiadomienia'};
 
@@ -41,6 +42,8 @@ Blockly.Sendto.blocks['telegram'] =
     + '         </shadow>'
     + '     </value>'
     + '     <value name="USERNAME">'
+    + '     </value>'
+    + '     <value name="CHATID">'
     + '     </value>'
     + '     <value name="LOG">'
     + '     </value>'
@@ -83,6 +86,10 @@ Blockly.Blocks['telegram'] = {
             .setCheck('String')
             .appendField(Blockly.Translate('telegram_username'));
 
+        var input = this.appendValueInput('CHATID')
+            .setCheck('String')
+            .appendField(Blockly.Translate('telegram_chatid'));
+
         this.appendDummyInput('LOG')
             .appendField(Blockly.Translate('telegram_log'))
             .appendField(new Blockly.FieldDropdown([
@@ -118,6 +125,7 @@ Blockly.JavaScript['telegram'] = function(block) {
     var logLevel = block.getFieldValue('LOG');
     var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
+    var value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
     var silent = block.getFieldValue('SILENT');
     var parsemode = block.getFieldValue('PARSEMODE');
 
@@ -129,7 +137,8 @@ Blockly.JavaScript['telegram'] = function(block) {
     }
 
     return 'sendTo("telegram' + dropdown_instance + '", "send", {\n    text: ' +
-        value_message + (value_username ? ', \n    ' + (value_username.startsWith('-',1) ? 'chatId: ' : 'user: ') + value_username : '') +
+        value_message + (value_username ? ', \n    user: ' + value_username : '') +
+        (value_chatid ? ', \n    chatId: ' + value_chatid : '') +
         (silent === 'TRUE' ? ', \n    disable_notification: true' : '') +
         (parsemode !== 'default' ? ', \n    parse_mode: "' + parsemode + '"': '') +
         '\n});\n' +
@@ -339,6 +348,7 @@ Blockly.JavaScript['telegram_call'] = function(block) {
     var logLevel = block.getFieldValue('LOG');
     var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
+    var value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
 
     var logText;
     if (logLevel) {
