@@ -1259,7 +1259,6 @@ function callUsers(users, text, lang, file, repeats, cb) {
         if (!user.startsWith('@') && !user.startsWith('+') && !user.startsWith('00')) {
             user = '@' + user;
         }
-        axios = axios || require('axios');
 
         let url = 'http://api.callmebot.com/start.php?source=iobroker&';
         const params = ['user=' + encodeURIComponent(user)];
