@@ -1476,6 +1476,7 @@ function isAnswerForQuestion(adapter, msg) {
 function processTelegramText(msg) {
     connectionState(true);
 
+    // see https://core.telegram.org/bots/api#message
     adapter.log.debug(JSON.stringify(msg));
 
     const user = !adapter.config.useUsername ? msg.from.first_name : (!msg.from.username ? msg.from.first_name : msg.from.username);
@@ -1709,7 +1710,7 @@ function processTelegramText(msg) {
 
     adapter.setState('communicate.requestChatId', msg.chat.id, true, err => err && adapter.log.error(err));
     adapter.setState('communicate.requestMessageId', msg.message_id, true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', true, err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestUserId', msg.from ? msg.from.id : '', true, err => err && adapter.log.error(err));
     adapter.setState('communicate.request', `[${user}]${msg.text}`, true, err => err && adapter.log.error(err));
 }
 
