@@ -269,7 +269,10 @@ function startAdapter(options) {
             if (!state.ack) {
                 if (id.indexOf('communicate.response') !== -1) {
                     // Send to someone this message
-                    sendMessage(state.val);
+                    sendMessage(state.val)
+                        .then(data => {
+                            adapter.setState('communicate.response', state.val, true);
+                        });
                 }
             } else {
                 if (commands[id] && commands[id].report) {
