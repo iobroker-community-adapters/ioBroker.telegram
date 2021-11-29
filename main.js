@@ -1278,7 +1278,7 @@ function callUsers(users, text, lang, file, repeats, cb) {
         axios.get(url)
             .then(response => {
                 const body = response && response.data;
-                if (!body || response && response.status !== 200) {
+                if (!body || (response && response.status !== 200)) {
                     adapter.log.error(`Cannot make a call to ${user}: ${body || (response && response.status) || 'Unknown error'}`);
                 } else {
                     adapter.log.debug(`Call to ${user} was made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`);
