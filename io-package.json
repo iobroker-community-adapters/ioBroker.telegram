@@ -164,7 +164,7 @@
         },
         "dependencies": [
             {
-                "js-controller": ">=2.0.0"
+                "js-controller": ">=3.3.0"
             }
         ]
     },
@@ -202,17 +202,6 @@
         "leCheckPort": 80,
         "saveFiles": false
     },
-    "objects": [
-        {
-            "_id": "_design/custom",
-            "language": "javascript",
-            "views": {
-                "state": {
-                    "map": "function(doc) { if (doc.type === 'state' && (doc.common.custom || doc.common.history)) emit(doc._id, doc.common.custom || doc.common.history) }"
-                }
-            }
-        }
-    ],
     "instanceObjects": [
         {
             "_id": "info",
