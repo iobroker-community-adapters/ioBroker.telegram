@@ -703,7 +703,7 @@ msg.payload = {
 -->
 
 ## Changelog
-### __WORK IN PROGRESS__
+### 1.11.0 (2022-01-26)
 * (bluefox) Added bruteforce protection
 * (bluefox) Extended blockly with `disable_web_preview` option
 * (bluefox) added `communicate.responseSilent` state to answer silently

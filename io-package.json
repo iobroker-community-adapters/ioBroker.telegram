@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.10.1",
+    "version": "1.11.0",
     "news": {
+      "1.11.0": {
+        "en": "Added bruteforce protection\nExtended blockly with `disable_web_preview` option\nadded `communicate.responseSilent` state to answer silently",
+        "de": "Bruteforce-Schutz hinzugefügt\nBlockweise erweitert mit der Option `disable_web_preview`\n`communicate.responseSilent`-Zustand hinzugefügt, um still zu antworten",
+        "ru": "Добавлена защита от брутфорса\nРасширен блочно с опцией `disable_web_preview`\nдобавлено состояние `communicate.responseSilent` для молчаливого ответа",
+        "pt": "Proteção de força bruta adicionada\nEstendido em bloco com a opção `disable_web_preview`\nadicionado o estado `communicate.responseSilent` para responder silenciosamente",
+        "nl": "Bruteforce-bescherming toegevoegd\nBlockly uitgebreid met de optie 'disable_web_preview'\nstatus `communicate.responseSilent` toegevoegd om stil te antwoorden",
+        "fr": "Protection contre la force brute ajoutée\nÉtendu en bloc avec l'option `disable_web_preview`\najout de l'état `communicate.responseSilent` pour répondre en silence",
+        "it": "Aggiunta protezione dalla forza bruta\nEsteso in blocco con l'opzione `disable_web_preview`\naggiunto lo stato `communicate.responseSilent` per rispondere in silenzio",
+        "es": "Protección de fuerza bruta agregada\nExtendido en bloques con la opción `disable_web_preview`\nSe agregó el estado `communicate.responseSilent` para responder en silencio.",
+        "pl": "Dodano ochronę przed bruteforce\nRozszerzony blokowo z opcją `disable_web_preview`\ndodano stan `communicate.responseSilent` do cichej odpowiedzi",
+        "zh-cn": "添加了蛮力保护\n使用 `disable_web_preview` 选项扩展块\n添加了`communicate.responseSilent`状态以静默回答"
+      },
       "1.10.1": {
         "en": "Updated telegram library",
         "de": "Aktualisierte Telegrammbibliothek",
@@ -66,18 +78,6 @@
         "es": "agregó el soporte admin5",
         "pl": "dodano obsługę admin5",
         "zh-cn": "添加了admin5支持"
-      },
-      "1.8.0": {
-        "en": "(Apollon77/Nahasapeemapetilon) catch several API error cases to hopefully get around  adapter crashes on network errors\nadd support for media groups and multiple image qualities",
-        "de": "(Apollon77 / Nahasapeemapetilon) fängt mehrere API-Fehlerfälle ab, um hoffentlich Adapterabstürze bei Netzwerkfehlern zu umgehen\nUnterstützung für Mediengruppen und mehrere Bildqualitäten hinzufügen",
-        "ru": "(Apollon77 / Nahasapeemapetilon) отлавливает несколько случаев ошибок API, чтобы, надеюсь, обойти сбои адаптера при сетевых ошибках\nдобавить поддержку медиа-групп и различных качеств изображений",
-        "pt": "(Apollon77 / Nahasapeemapetilon) captura vários casos de erro de API para contornar travamentos do adaptador em erros de rede\nadicionar suporte para grupos de mídia e várias qualidades de imagem",
-        "nl": "(Apollon77 / Nahasapeemapetilon) vangen verschillende API-foutgevallen op om hopelijk adaptercrashes door netwerkfouten te omzeilen\nondersteuning toevoegen voor mediagroepen en meerdere beeldkwaliteiten",
-        "fr": "(Apollon77 / Nahasapeemapetilon) attrapez plusieurs cas d'erreur d'API pour, espérons-le, contourner les plantages d'adaptateur en cas d'erreurs réseau\najouter la prise en charge des groupes de médias et de multiples qualités d'image",
-        "it": "(Apollon77 / Nahasapeemapetilon) rileva diversi casi di errore API per aggirare, si spera, i crash dell'adattatore in caso di errori di rete\naggiungere il supporto per i gruppi di media e più qualità di immagine",
-        "es": "(Apollon77 / Nahasapeemapetilon) detecta varios casos de error de API para, con suerte, evitar fallas del adaptador en errores de red\nagregar soporte para grupos de medios y múltiples calidades de imagen",
-        "pl": "(Apollon77 / Nahasapeemapetilon) Wyłap kilka przypadków błędów interfejsu API, aby mieć nadzieję na obejście awarii karty w przypadku błędów sieciowych\ndodać obsługę grup medialnych i wielu jakości obrazu",
-        "zh-cn": "（Apollon77 / Nahasapeemapetilon）捕获了几种API错误案例，以期解决因网络错误引起的适配器崩溃\n添加对媒体组和多种图像质量的支持"
       }
     },
     "title": "Telegram",
