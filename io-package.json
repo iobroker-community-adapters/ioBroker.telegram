@@ -289,7 +289,19 @@
       "type": "state",
       "common": {
         "role": "text",
-        "name": "Send text through telegram",
+        "name": "Send text through telegram with notification",
+        "type": "string",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.responseSilent",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Send text through telegram silently",
         "type": "string",
         "read": true,
         "write": true

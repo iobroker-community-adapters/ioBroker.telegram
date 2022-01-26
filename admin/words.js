@@ -79,4 +79,28 @@ systemDictionary = {
     "value as boolean": {                            "en": "value as boolean",                                "de": "Wert als Boolean",                                "ru": "логическое значение",                             "pt": "valor como booleano",                             "nl": "waarde als Boolean",                              "fr": "valeur en tant que booléen",                      "it": "valore come booleano",                            "es": "valor como booleano",                             "pl": "wartość jako boolean",                            "zh-cn": "布尔值"},
     "value as number": {                             "en": "value as number",                                 "de": "Wert als Zahl",                                   "ru": "значение в виде число",                           "pt": "valor como numero",                               "nl": "waarde als nummer",                               "fr": "valeur en nombre",                                "it": "valore come numero",                              "es": "valor como numero",                               "pl": "wartość jako liczba",                             "zh-cn": "价值作为数字"},
     "value as string": {                             "en": "value as string",                                 "de": "Wert als String",                                 "ru": "значение в виде строки",                          "pt": "valor como string",                               "nl": "waarde als tekenreeks",                           "fr": "valeur sous forme de chaîne",                     "it": "valore come stringa",                             "es": "valor como cadena",                               "pl": "wartość jako ciąg",                               "zh-cn": "值作为字符串"},
+    "Too many attempts. Blocked for": {
+        "en": "Too many attempts. Blocked for",
+        "de": "Zu viele Versuche. Gesperrt für",
+        "ru": "Слишком много попыток. Заблокировано для",
+        "pt": "Muitas tentativas. Bloqueado por",
+        "nl": "Te veel pogingen. Geblokkeerd voor",
+        "fr": "Trop d'essais. Bloqué pour",
+        "it": "Troppi tentativi. Bloccato per",
+        "es": "Demasiados intentos. bloqueado por",
+        "pl": "Zbyt wiele prób. Zablokowany przez",
+        "zh-cn": "太多的尝试。被阻止"
+    },
+    "seconds": {
+        "en": "seconds",
+        "de": "Sekunden",
+        "ru": "секунд/ы",
+        "pt": "segundos",
+        "nl": "seconden",
+        "fr": "secondes",
+        "it": "secondi",
+        "es": "segundos",
+        "pl": "sekundy",
+        "zh-cn": "秒"
+    }
 };

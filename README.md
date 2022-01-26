@@ -703,6 +703,11 @@ msg.payload = {
 -->
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (bluefox) Added bruteforce protection
+* (bluefox) Extended blockly with `disable_web_preview` option
+* (bluefox) added `communicate.responseSilent` state to answer silently
+
 ### 1.10.1 (2022-01-26)
 * (bluefox) Updated telegram library
 

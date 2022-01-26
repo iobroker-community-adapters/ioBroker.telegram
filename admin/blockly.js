@@ -31,7 +31,7 @@ Blockly.Words['telegram_log_warn']      = {'en': 'warning',                     
 Blockly.Words['telegram_log_error']     = {'en': 'error',                           'pt': 'erro',                           'pl': 'błąd',                               'nl': 'fout',                           'it': 'errore',                         'es': 'error',                          'fr': 'Erreur',                             'de': 'error',                              'ru': 'ошибка'};
 Blockly.Words['telegram_help']          = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md'};
 Blockly.Words['telegram_silent']        = {'en': 'without notification',        'de': 'ohne Benachrichtigung',          'ru': 'без уведомления',                    'pt': 'sem notificação',                'nl': 'zonder kennisgeving',            'fr': 'sans notification',              'it': 'senza notifica',                     'es': 'sin notificación',                   'pl': 'bez powiadomienia'};
-
+Blockly.Words['telegram_disable_web_preview'] = {'en': 'disable web preview', 'de': 'Deaktivieren Sie die Webvorschau', 'ru': 'отключить предварительный просмотр в Интернете', 'pt': 'desativar a visualização da web', 'nl': 'webvoorbeeld uitschakelen', 'fr': 'désactiver l\'aperçu Web','it': 'disabilitare l\'anteprima web', 'es': 'deshabilitar la vista previa web', 'pl': 'wyłącz podgląd internetowy', 'zh-cn': '禁用网页预览'};
 Blockly.Sendto.blocks['telegram'] =
     '<block type="telegram">'
     + '     <value name="INSTANCE">'
@@ -50,6 +50,8 @@ Blockly.Sendto.blocks['telegram'] =
     + '     <value name="SILENT">'
     + '     </value>'
     + '     <value name="PARSEMODE">'
+    + '     </value>'
+    + '     <value name="DISABLE_WEB_PAGE_PREVIEW">'
     + '     </value>'
     + '</block>';
 
@@ -86,7 +88,7 @@ Blockly.Blocks['telegram'] = {
             .setCheck('String')
             .appendField(Blockly.Translate('telegram_username'));
 
-        var input = this.appendValueInput('CHATID')
+        var input1 = this.appendValueInput('CHATID')
             .setCheck('String')
             .appendField(Blockly.Translate('telegram_chatid'));
 
@@ -106,9 +108,18 @@ Blockly.Blocks['telegram'] = {
 
         this.appendDummyInput('PARSEMODE')
             .appendField('Parsemode')
-            .appendField(new Blockly.FieldDropdown([['default', 'default'], ['HTML', 'HTML'], ['Markdown', 'Markdown']]), 'PARSEMODE');
+            .appendField(new Blockly.FieldDropdown([['default', 'default'], ['HTML', 'HTML'], ['MarkdownV2', 'MarkdownV2']]), 'PARSEMODE');
 
-        if (input.connection) input.connection._optional = true;
+        this.appendDummyInput('DISABLE_WEB_PAGE_PREVIEW')
+            .appendField(Blockly.Translate('telegram_disable_web_preview'))
+            .appendField(new Blockly.FieldCheckbox('FALSE'), 'DISABLE_WEB_PAGE_PREVIEW');
+
+        if (input.connection) {
+            input.connection._optional = true;
+        }
+        if (input1.connection) {
+            input1.connection._optional = true;
+        }
 
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
@@ -127,6 +138,7 @@ Blockly.JavaScript['telegram'] = function(block) {
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
     var value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
     var silent = block.getFieldValue('SILENT');
+    var disable_web_page_preview = block.getFieldValue('DISABLE_WEB_PAGE_PREVIEW');
     var parsemode = block.getFieldValue('PARSEMODE');
 
     var logText;
@@ -140,6 +152,7 @@ Blockly.JavaScript['telegram'] = function(block) {
         value_message + (value_username ? ', \n    user: ' + value_username : '') +
         (value_chatid ? ', \n    chatId: ' + value_chatid : '') +
         (silent === 'TRUE' ? ', \n    disable_notification: true' : '') +
+        (disable_web_page_preview === 'TRUE' ? ', \n    disable_web_page_preview: true' : '') +
         (parsemode !== 'default' ? ', \n    parse_mode: "' + parsemode + '"': '') +
         '\n});\n' +
         logText;

@@ -39,6 +39,8 @@ let isConnected = null;
 let lastMessageTime = 0;
 let lastMessageText = '';
 const enums = {};
+const protection = {};
+let gcInterval = null;
 
 const commands = {};
 const callbackQueryId = {};
@@ -223,18 +225,23 @@ function startAdapter(options) {
                         });
                         adapter.log.info('https server listening on port ' + port);
 
-                        main();
+                        main()
+                            .then(() => {});
                     });
                 }
             });
         } else {
-            main();
+            main()
+                .then(() => {});
         }
     });
 
     adapter.on('unload', () => {
         reconnectTimer && clearInterval(reconnectTimer);
         reconnectTimer = null;
+
+        gcInterval && clearInterval(gcInterval);
+        gcInterval = null;
 
         pollConnectionStatus && clearInterval(pollConnectionStatus);
         pollConnectionStatus = null;
@@ -267,12 +274,15 @@ function startAdapter(options) {
     adapter.on('stateChange', (id, state) => {
         if (state) {
             if (!state.ack) {
-                if (id.indexOf('communicate.response') !== -1) {
+                if (id.endsWith('communicate.response')) {
                     // Send to someone this message
                     sendMessage(state.val)
-                        .then(data => {
-                            adapter.setState('communicate.response', state.val, true);
-                        });
+                        .then(data => adapter.setState('communicate.response', state.val, true));
+                } else
+                if (id.endsWith('communicate.responseSilent')) {
+                    // Send to someone this message
+                    sendMessage(state.val, null, null, {disable_notification: true})
+                        .then(data => adapter.setState('communicate.responseSilent', state.val, true));
                 }
             } else {
                 if (commands[id] && commands[id].report) {
@@ -323,7 +333,7 @@ function sendSystemMessage(text) {
         .filter(id => users[id].sysMessages !== false)
         .map(id => adapter.config.useUsername ? users[id].userName : users[id].firstName);
 
-    sendMessage(text, _users);
+    sendMessage(text, _users, null, {disable_notification: true});
 }
 
 function getStatus(id, state) {
@@ -939,7 +949,9 @@ function sendMessage(text, user, chatId, options) {
             delete options.user;
         }
     }
+
     options = options || {};
+
     let tPromiseList = [];
     // convert
     if (text !== undefined && text !== null && typeof text !== 'object') {
@@ -1024,31 +1036,33 @@ function sendMessage(text, user, chatId, options) {
         .catch(e => -1);
 }
 
-function saveFile(file_id, fileName, callback) {
-    bot.getFileLink(file_id).then(url => {
-        adapter.log.debug('Received message: ' + url);
-        https.get(url, res => {
-            if (res.statusCode === 200) {
-                const buf = [];
-                res.on('data', data => buf.push(data));
-                res.on('end', () =>
-                    fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), true, err => {
-                        if (err) {
-                            throw err;
-                        }
-                        callback({
-                            info: 'It\'s saved! : ' + tmpDirName + fileName,
-                            path: tmpDirName + fileName
-                        });
-                    }));
+function saveFile(fileID, fileName, callback) {
+    bot.getFileLink(fileID)
+        .then(url => {
+            adapter.log.debug('Received message: ' + url);
+            https.get(url, res => {
+                if (res.statusCode === 200) {
+                    const buf = [];
+                    res.on('data', data => buf.push(data));
+                    res.on('end', () =>
+                        fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), true, err => {
+                            if (err) {
+                                throw err;
+                            }
+                            callback({
+                                info: 'It\'s saved! : ' + tmpDirName + fileName,
+                                path: tmpDirName + fileName
+                            });
+                        }));
 
-                res.on('error', true, err =>
-                    callback({error: 'Error : ' + err}));
-            } else {
-                callback({error: 'Error : statusCode !== 200'});
-            }
-        });
-    }, true, err => callback({error: 'Error bot.getFileLink : ' + err}));
+                    res.on('error', true, err =>
+                        callback({error: 'Error: ' + err}));
+                } else {
+                    callback({error: 'Error: statusCode !== 200'});
+                }
+            });
+        })
+        .catch(err => callback({error: 'Error bot.getFileLink: ' + err}));
 }
 
 function getMessage(msg) {
@@ -1104,6 +1118,7 @@ function getMessage(msg) {
                     } while (fs.existsSync(tmpDirName + fileName));
                 }
             }
+
             saveFile(item.file_id, fileName, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
@@ -1158,7 +1173,7 @@ function processMessage(obj) {
     // filter out double messages
     const json = JSON.stringify(obj);
     if (lastMessageTime && lastMessageText === JSON.stringify(obj) && Date.now() - lastMessageTime < 1200) {
-        return adapter.log.debug('Filter out double message [first was for ' + (Date.now() - lastMessageTime) + 'ms]: ' + json);
+        return adapter.log.debug(`Filter out double message [first was for ${Date.now() - lastMessageTime}ms]: ${json}`);
     }
 
     lastMessageTime = Date.now();
@@ -1475,6 +1490,33 @@ function isAnswerForQuestion(adapter, msg) {
     }
 }
 
+function garbageCollector() {
+    const now = Date.now() - 5 * 60000; // last 5 minutes
+
+    Object.keys(protection)
+        .forEach(user => {
+            let a;
+            for (a = 0; a < protection[user].length; a++) {
+                // find first entry newer than 5 minutes
+                if (protection[user][a] > now) {
+                    break;
+                }
+            }
+            // remove all old entries
+            if (a < protection[user].length && a) {
+                protection[user].splice(0, a);
+            }
+            if (!protection[user].length) {
+                delete protection[user];
+            }
+        });
+
+    if (!Object.keys(protection).length) {
+        gcInterval && clearInterval(gcInterval);
+        gcInterval = null;
+    }
+}
+
 function processTelegramText(msg) {
     connectionState(true);
 
@@ -1493,7 +1535,7 @@ function processTelegramText(msg) {
     if (now - msg.date * 1000 > pollingInterval + 30000) {
         adapter.log.warn(`Message from ${msg.from.name} ignored, because too old: (${pollingInterval + 30000}) ${msg.text}`);
         return bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text)
-            .catch(error => adapter.log.error('send Message Error:' + error));
+            .catch(error => adapter.log.error('send Message Error: ' + error));
 
     }
 
@@ -1507,9 +1549,7 @@ function processTelegramText(msg) {
 
     if (msg.text === '/password' && !adapter.config.doNotAcceptNewUser) {
         return bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
-            .catch(error => {
-                adapter.log.error('send Message Error:' + error);
-            });
+            .catch(error => adapter.log.error('send Message Error:' + error));
     }
 
     if (adapter.config.password && !adapter.config.doNotAcceptNewUsers) {
@@ -1518,17 +1558,36 @@ function processTelegramText(msg) {
         m = m || msg.text.match(/^\/p (.+)$/);
 
         if (m) {
+            garbageCollector();
+
+            if (protection[user] && protection[user].length >= 5) {
+                return bot.sendMessage(msg.from.id, _('Too many attempts. Blocked for', systemLang) + ' ' + Math.round((now - protection[user][protection[user].length - 1]) / 1000) + ' ' + _('seconds', systemLang))
+                    .catch(error => adapter.log.error('send Message Error: ' + error));
+            }
+
             if (adapter.config.password === m[1]) {
+                if (protection[user]) {
+                    delete protection[user];
+                }
                 storeUser(msg.from.id, msg.from.first_name, msg.from.username);
+
                 if (!msg.from.username) {
                     adapter.log.warn(`User ${msg.from.first_name} hast not set an username in the Telegram App!!`);
                 }
+
                 return bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + user)
-                    .catch(error => adapter.log.error('send Message Error:' + error));
+                    .catch(error => adapter.log.error('send Message Error: ' + error));
             } else {
+                protection[user] = protection[user] || [];
+                protection[user].push(Date.now());
+
+                gcInterval = gcInterval || setInterval(() => garbageCollector(), 60000);
+
                 adapter.log.warn(`Got invalid password from ${user}: ${m[1]}`);
+
                 bot.sendMessage(msg.from.id, _('Invalid password', systemLang))
-                    .catch(error => adapter.log.error('send Message Error:' + error));
+                    .catch(error => adapter.log.error('send Message Error: ' + error));
+
                 if (users[msg.from.id]) {
                     delete users[msg.from.id];
                 }
@@ -1541,12 +1600,12 @@ function processTelegramText(msg) {
     // If user is not in the trusted list
     if ((adapter.config.password || adapter.config.doNotAcceptNewUsers) && !users[msg.from.id]) {
         return bot.sendMessage(msg.from.id, _(adapter.config.doNotAcceptNewUsers ? 'User is not in the list' : 'Please enter password in form "/password phrase"', systemLang))
-            .catch(error => adapter.log.error('send Message Error:' + error));
+            .catch(error => adapter.log.error('send Message Error: ' + error));
     }
 
     if (msg.text === '/help') {
         return bot.sendMessage(msg.from.id, getListOfCommands())
-            .catch(error => adapter.log.error('send Message Error:' + error));
+            .catch(error => adapter.log.error('send Message Error: ' + error));
     }
 
     isAnswerForQuestion(adapter, msg);
@@ -1576,7 +1635,7 @@ function processTelegramText(msg) {
                 if (sValue === '?') {
                     adapter.getForeignState(id, (err, state) =>
                         bot.sendMessage(msg.chat.id, getStatus(id, state))
-                            .catch(error => adapter.log.error('send Message Error:' + error)));
+                            .catch(error => adapter.log.error('send Message Error: ' + error)));
                 } else {
                     let value;
                     if (commands[id].states) {
@@ -1594,7 +1653,7 @@ function processTelegramText(msg) {
                         value = parseFloat(sValue);
                         if (sValue !== value.toString()) {
                             bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue))
-                                .catch(error => adapter.log.error('send Message Error:' + error));
+                                .catch(error => adapter.log.error('send Message Error: ' + error));
                             continue;
                         }
                     } else {
@@ -1603,7 +1662,7 @@ function processTelegramText(msg) {
 
                     adapter.setForeignState(id, value, false, err =>
                         bot.sendMessage(msg.chat.id, _('Done')))
-                        .catch(error => adapter.log.error('send Message Error:' + error));
+                        .catch(error => adapter.log.error('send Message Error: ' + error));
                 }
             }
         }
@@ -1624,6 +1683,7 @@ function processTelegramText(msg) {
         if (m) {
             let id1 = m[1];
             let val1 = m[2];
+
             // clear by timeout id
             let memoryLeak1 = setTimeout(() => {
                 msg = null;
@@ -1640,22 +1700,22 @@ function processTelegramText(msg) {
                 }
                 if (msg) {
                     if (err) bot.sendMessage(msg.from.id, err)
-                        .catch(error => adapter.log.error('send Message Error:' + error));
+                        .catch(error => adapter.log.error('send Message Error: ' + error));
                     if (state) {
                         adapter.setForeignState(id1, val1, false, err => {
                             if (msg) {
                                 if (err) {
                                     bot.sendMessage(msg.from.id, err)
-                                        .catch(error => adapter.log.error('send Message Error:' + error));
+                                        .catch(error => adapter.log.error('send Message Error: ' + error));
                                 } else {
                                     bot.sendMessage(msg.from.id, _('Done', systemLang))
-                                        .catch(error => adapter.log.error('send Message Error:' + error));
+                                        .catch(error => adapter.log.error('send Message Error: ' + error));
                                 }
                             }
                         });
                     } else {
                         bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1))
-                            .catch(error => adapter.log.error('send Message Error:' + error));
+                            .catch(error => adapter.log.error('send Message Error: ' + error));
                     }
                 }
             });
@@ -1666,12 +1726,14 @@ function processTelegramText(msg) {
         m = msg.text.match(/^\/state (.+)$/);
         if (m) {
             let id2 = m[1];
+
             // clear by timeout id
             let memoryLeak2 = setTimeout(() => {
                 id2 = null;
                 msg = null;
                 memoryLeak2 = null;
             }, 1000);
+
             adapter.getForeignState(id2, (err, state) => {
                 if (memoryLeak2) {
                     clearTimeout(memoryLeak2);
@@ -1680,13 +1742,13 @@ function processTelegramText(msg) {
                 }
                 if (msg) {
                     if (err) bot.sendMessage(msg.from.id, err)
-                        .catch(error => adapter.log.error('send Message Error:' + error));
+                        .catch(error => adapter.log.error('send Message Error: ' + error));
                     if (state) {
                         bot.sendMessage(msg.from.id, state.val.toString())
-                            .catch(error => adapter.log.error('send Message Error:' + error));
+                            .catch(error => adapter.log.error('send Message Error: ' + error));
                     } else {
                         bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2))
-                            .catch(error => adapter.log.error('send Message Error:' + error));
+                            .catch(error => adapter.log.error('send Message Error: ' + error));
                     }
                 }
             });
@@ -1705,7 +1767,7 @@ function processTelegramText(msg) {
         }, response => {
             if (response && response.response) {
                 adapter.log.debug('Send response: ' + response.response);
-                bot.sendMessage(response.id, response.response).catch(error => adapter.log.error('send Message Error:' + error));
+                bot.sendMessage(response.id, response.response).catch(error => adapter.log.error('send Message Error: ' + error));
             }
         });
     }
@@ -1814,7 +1876,7 @@ function connect() {
                 baseApiUrl: adapter.config.baseApiUrl
             };
             if (agent) {
-                pollingOptions.request = { agent: agent };
+                pollingOptions.request = { agent };
             }
             adapter.log.debug(`Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`);
             bot = new TelegramBot(adapter.config.token, pollingOptions);
@@ -1908,10 +1970,10 @@ function connect() {
     }
 }
 
-function updateUsers(cb) {
+async function updateUsers() {
     if (adapter.config.rememberUsers) {
-        adapter.getState('communicate.users', (err, state) => {
-            err && adapter.log.error(err);
+        try {
+            const state = await adapter.getState('communicate.users');
             if (state && state.val) {
                 try {
                     users = JSON.parse(state.val);
@@ -1931,10 +1993,9 @@ function updateUsers(cb) {
                     adapter.log.error('Cannot parse stored user IDs!');
                 }
             }
-            cb && cb();
-        });
-    } else {
-        cb && cb();
+        } catch (err) {
+            adapter.log.error(err);
+        }
     }
 }
 
@@ -2005,79 +2066,77 @@ function readEnums(name) {
     });
 }
 
-function main() {
+async function main() {
     if (!adapter.config.token) {
-        adapter.log.error('Token is not set!');
-        return;
+        return adapter.log.error('Token is not set!');
     }
 
     // if old encoding detected
     if (!adapter.config.token.includes(':') || adapter.config.token[0] < '0' || adapter.config.token[0] > '9') {
         // decode password and token
-        return adapter.getForeignObjectAsync('system.adapter.' + adapter.namespace)
-            .then(obj => adapter.getForeignObjectAsync('system.config')
-                    .then(data => {
-                        let systemSecret;
-                        if (data && data.native) {
-                            systemSecret = data.native.secret;
-                        }
-                        systemSecret = systemSecret || DEFAULT_SECRET;
-                        if (obj.native.passwordRepeat) {
-                            obj.native.password = encrypt(systemSecret, obj.native.passwordRepeat);
-                            delete obj.native.passwordRepeat;
-                        } else {
-                            const password = decrypt('Zgfr56gFe87jJON', obj.native.password || '');
-                            obj.native.password = encrypt(systemSecret, password);
-                        }
-                        obj.native.token = encrypt(systemSecret, obj.native.token);
-                        return adapter.setForeignObjectAsync(obj._id, obj);
-                    }));
+        const obj = await adapter.getForeignObjectAsync('system.adapter.' + adapter.namespace);
+        const data = await adapter.getForeignObjectAsync('system.config');
+        let systemSecret;
+        if (data && data.native) {
+            systemSecret = data.native.secret;
+        }
+        systemSecret = systemSecret || DEFAULT_SECRET;
+        if (obj.native.passwordRepeat) {
+            obj.native.password = encrypt(systemSecret, obj.native.passwordRepeat);
+            delete obj.native.passwordRepeat;
+        } else {
+            const password = decrypt('Zgfr56gFe87jJON', obj.native.password || '');
+            obj.native.password = encrypt(systemSecret, password);
+        }
+        obj.native.token = encrypt(systemSecret, obj.native.token);
+        await adapter.setForeignObjectAsync(obj._id, obj);
+        return;
     }
 
-    adapter.setState('info.connection', false, true);
+    await adapter.setStateAsync('info.connection', false, true);
 
-    adapter.subscribeStates('communicate.request');
-    adapter.subscribeStates('communicate.response');
+    await adapter.subscribeStatesAsync('communicate.request');
+    await adapter.subscribeStatesAsync('communicate.response');
+    await adapter.subscribeStatesAsync('communicate.responseSilent');
 
     // clear states
-    adapter.setState('communicate.request',  '', true);
-    adapter.setState('communicate.response', '', true);
-    adapter.setState('communicate.pathFile', '', true);
+    await adapter.setStateAsync('communicate.request',  '', true);
+    await adapter.setStateAsync('communicate.response', '', true);
+    await adapter.setStateAsync('communicate.responseSilent', '', true);
+    await adapter.setStateAsync('communicate.pathFile', '', true);
 
     adapter.config.password = adapter.config.password || '';
     adapter.config.keyboard = adapter.config.keyboard || '/cmds';
 
-    updateUsers(() => {
-        if (adapter.config.allowStates !== undefined) {
-            adapter.config.allowStates = true;
+    await updateUsers();
+    if (adapter.config.allowStates !== undefined) {
+        adapter.config.allowStates = true;
+    }
+    adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
+    adapter.config.answerTimeoutSec *= 1000;
+    adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
+
+    try {
+        const obj = await adapter.getForeignObjectAsync('system.config');
+
+        if (obj) {
+            systemLang = obj.common.language || 'en';
         }
-        adapter.config.answerTimeoutSec = parseInt(adapter.config.answerTimeoutSec, 10) || 60;
-        adapter.config.answerTimeoutSec *= 1000;
-        adapter.config.rememberUsers = adapter.config.rememberUsers === 'true' || adapter.config.rememberUsers === true;
 
-        adapter.getForeignObject('system.config', (err, obj) => {
-            err && adapter.log.error(err);
-            if (obj) {
-                systemLang = obj.common.language || 'en';
-            }
+        await readStatesCommands()
+        if (adapter.config.rooms) {
+            await readEnums();
+        }
+        // init polling every hour
+        reconnectTimer = setInterval(connect, 3600000);
 
-            readStatesCommands()
-                .then(() => {
-                    if (adapter.config.rooms) {
-                        return readEnums();
-                    } else {
-                        return Promise.resolve();
-                    }
-                })
-                .then(() => {
-                    // init polling every hour
-                    reconnectTimer = setInterval(connect, 3600000);
-                    connect();
-                    // detect changes of objects
-                    adapter.subscribeForeignObjects('*');
-                });
-        });
-    });
+        connect();
+
+        // detect changes of objects
+        await adapter.subscribeForeignObjectsAsync('*');
+    } catch (err) {
+        adapter.log.error(err);
+    }
 }
 
 // If started as allInOne/compact mode => return function to create instance
