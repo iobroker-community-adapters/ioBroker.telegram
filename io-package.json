@@ -1,360 +1,324 @@
 {
-    "common": {
-        "name": "telegram",
-        "version": "1.10.0",
-        "news": {
-            "1.10.0": {
-                "en": "Add botSendRaw state to allow processing of the RAW data send by bot\nAdd tier for js-controller 3.3\nFixed the control of the states",
-                "de": "Fügen Sie den botSendRaw-Status hinzu, um die Verarbeitung der vom Bot gesendeten RAW-Daten zu ermöglichen\nStufe für js-controller 3.3 . hinzufügen\nDie Kontrolle der Zustände wurde behoben",
-                "ru": "Добавьте состояние botSendRaw, чтобы разрешить обработку RAW-данных, отправленных ботом\nДобавить уровень для js-controller 3.3\nИсправлен контроль состояний",
-                "pt": "Adicione o estado botSendRaw para permitir o processamento dos dados RAW enviados por bot\nAdicionar camada para js-controller 3.3\nCorrigido o controle dos estados",
-                "nl": "Voeg botSendRaw-status toe om verwerking van de RAW-gegevens die door bot zijn verzonden toe te staan\nLaag toevoegen voor js-controller 3.3\nDe controle over de staten opgelost Fixed",
-                "fr": "Ajouter l'état botSendRaw pour permettre le traitement des données RAW envoyées par le bot\nAjouter un niveau pour js-controller 3.3\nCorrection du contrôle des états",
-                "it": "Aggiungi lo stato botSendRaw per consentire l'elaborazione dei dati RAW inviati dal bot\nAggiungi livello per js-controller 3.3\nRisolto il controllo degli stati",
-                "es": "Agregue el estado botSendRaw para permitir el procesamiento de los datos RAW enviados por bot\nAgregar nivel para js-controller 3.3\nArreglado el control de los estados.",
-                "pl": "Dodaj stan botSendRaw, aby umożliwić przetwarzanie danych RAW wysyłanych przez bota\nDodaj warstwę dla kontrolera js 3.3\nPoprawiono kontrolę stanów",
-                "zh-cn": "添加 botSendRaw 状态以允许处理 bot 发送的 RAW 数据\n为 js-controller 3.3 添加层\n修复了对状态的控制"
-            },
-            "1.9.0": {
-                "en": "Added the option to not authenticate the new users\nAdded the option to disable system messages for specific users",
-                "de": "Option hinzugefügt, die neuen Benutzer nicht zu authentifizieren\nOption zum Deaktivieren von Systemnachrichten für bestimmte Benutzer hinzugefügt",
-                "ru": "Добавлена возможность не аутентифицировать новых пользователей\nДобавлена возможность отключить системные сообщения для определенных пользователей",
-                "pt": "Adicionada a opção de não autenticar os novos usuários\nAdicionada a opção de desativar mensagens do sistema para usuários específicos",
-                "nl": "De optie toegevoegd om de nieuwe gebruikers niet te authenticeren\nDe optie toegevoegd om systeemberichten voor specifieke gebruikers uit te schakelen",
-                "fr": "Ajout de l'option pour ne pas authentifier les nouveaux utilisateurs\nAjout de l'option pour désactiver les messages système pour des utilisateurs spécifiques",
-                "it": "Aggiunta l'opzione per non autenticare i nuovi utenti\nAggiunta l'opzione per disabilitare i messaggi di sistema per utenti specifici",
-                "es": "Añadida la opción de no autenticar a los nuevos usuarios.\nSe agregó la opción para deshabilitar los mensajes del sistema para usuarios específicos.",
-                "pl": "Dodano opcję, aby nie uwierzytelniać nowych użytkowników\nDodano opcję wyłączenia wiadomości systemowych dla określonych użytkowników",
-                "zh-cn": "添加了不对新用户进行身份验证的选项\n添加了禁用特定用户的系统消息的选项"
-            },
-            "1.8.3": {
-                "en": "corrected bug with many simultaneous requests \nformatting\nimplemented editMessageMedia and editMessageCaption\nEncrypt token \nCorrected error with password\nCorrected error with boolean easy controls",
-                "de": "Fehler mit vielen gleichzeitigen Anfragen behoben\nFormatierung\neditMessageMedia und editMessageCaption implementiert\nToken verschlüsseln\nFehler mit Passwort behoben\nFehler mit booleschen einfachen Steuerelementen korrigiert",
-                "ru": "исправлена ошибка с множеством одновременных запросов\nформатирование\nреализованы editMessageMedia и editMessageCaption\nЗашифровать токен\nИсправлена ошибка с паролем\nИсправлена ошибка с помощью простых логических элементов управления",
-                "pt": "bug corrigido com muitas solicitações simultâneas\nformatação\nimplementado editMessageMedia e editMessageCaption\nCriptografar token\nErro corrigido com senha\nErro corrigido com controles fáceis booleanos",
-                "nl": "bug gecorrigeerd met veel gelijktijdige verzoeken\nopmaak\ngeïmplementeerd editMessageMedia en editMessageCaption\nVersleutel token\nFout gecorrigeerd met wachtwoord\nFout gecorrigeerd met boolean easy controls",
-                "fr": "bug corrigé avec de nombreuses requêtes simultanées\nmise en page\nimplémenté editMessageMedia et editMessageCaption\nChiffrer le jeton\nErreur corrigée avec le mot de passe\nErreur corrigée avec des commandes simples booléennes",
-                "it": "bug corretto con molte richieste simultanee\nformattazione\nimplementato editMessageMedia e editMessageCaption\nCrittografa il token\nErrore corretto con password\nErrore corretto con controlli booleani facili",
-                "es": "error corregido con muchas solicitudes simultáneas\nformateo\nimplementado editMessageMedia y editMessageCaption\nCifrar token\nError corregido con contraseña\nError corregido con controles booleanos fáciles",
-                "pl": "poprawiony błąd z wieloma jednoczesnymi żądaniami\nformatowanie\nzaimplementowano editMessageMedia i editMessageCaption\nZaszyfruj token\nPoprawiony błąd z hasłem\nPoprawiony błąd z łatwymi kontrolkami boolowskimi",
-                "zh-cn": "修正了许多同时请求的错误\n格式化\n实现了 editMessageMedia 和 editMessageCaption\n加密令牌\n更正密码错误\n使用布尔型简单控件更正错误"
-            },
-            "1.8.2": {
-                "en": "fixed data types",
-                "de": "Datentypen korrigiert"
-            },
-            "1.8.1": {
-                "en": "added the admin5 support",
-                "de": "Die admin5-Unterstützung wurde hinzugefügt",
-                "ru": "добавлена поддержка admin5",
-                "pt": "adicionou o suporte admin5",
-                "nl": "de admin5-ondersteuning toegevoegd",
-                "fr": "a ajouté le support admin5",
-                "it": "aggiunto il supporto admin5",
-                "es": "agregó el soporte admin5",
-                "pl": "dodano obsługę admin5",
-                "zh-cn": "添加了admin5支持"
-            },
-            "1.8.0": {
-                "en": "(Apollon77/Nahasapeemapetilon) catch several API error cases to hopefully get around  adapter crashes on network errors\nadd support for media groups and multiple image qualities",
-                "de": "(Apollon77 / Nahasapeemapetilon) fängt mehrere API-Fehlerfälle ab, um hoffentlich Adapterabstürze bei Netzwerkfehlern zu umgehen\nUnterstützung für Mediengruppen und mehrere Bildqualitäten hinzufügen",
-                "ru": "(Apollon77 / Nahasapeemapetilon) отлавливает несколько случаев ошибок API, чтобы, надеюсь, обойти сбои адаптера при сетевых ошибках\nдобавить поддержку медиа-групп и различных качеств изображений",
-                "pt": "(Apollon77 / Nahasapeemapetilon) captura vários casos de erro de API para contornar travamentos do adaptador em erros de rede\nadicionar suporte para grupos de mídia e várias qualidades de imagem",
-                "nl": "(Apollon77 / Nahasapeemapetilon) vangen verschillende API-foutgevallen op om hopelijk adaptercrashes door netwerkfouten te omzeilen\nondersteuning toevoegen voor mediagroepen en meerdere beeldkwaliteiten",
-                "fr": "(Apollon77 / Nahasapeemapetilon) attrapez plusieurs cas d'erreur d'API pour, espérons-le, contourner les plantages d'adaptateur en cas d'erreurs réseau\najouter la prise en charge des groupes de médias et de multiples qualités d'image",
-                "it": "(Apollon77 / Nahasapeemapetilon) rileva diversi casi di errore API per aggirare, si spera, i crash dell'adattatore in caso di errori di rete\naggiungere il supporto per i gruppi di media e più qualità di immagine",
-                "es": "(Apollon77 / Nahasapeemapetilon) detecta varios casos de error de API para, con suerte, evitar fallas del adaptador en errores de red\nagregar soporte para grupos de medios y múltiples calidades de imagen",
-                "pl": "(Apollon77 / Nahasapeemapetilon) Wyłap kilka przypadków błędów interfejsu API, aby mieć nadzieję na obejście awarii karty w przypadku błędów sieciowych\ndodać obsługę grup medialnych i wielu jakości obrazu",
-                "zh-cn": "（Apollon77 / Nahasapeemapetilon）捕获了几种API错误案例，以期解决因网络错误引起的适配器崩溃\n添加对媒体组和多种图像质量的支持"
-            },
-            "1.7.0": {
-                "en": "Support of new Let's Encrypt (only with js-controller 3.2.x)",
-                "de": "Unterstützung des neuen Let's Encrypt (nur mit js-controller 3.2.x)",
-                "ru": "Поддержка нового Let's Encrypt (только с js-controller 3.2.x)",
-                "pt": "Suporte do novo Let's Encrypt (apenas com js-controller 3.2.x)",
-                "nl": "Ondersteuning van nieuwe Let's Encrypt (alleen met js-controller 3.2.x)",
-                "fr": "Prise en charge du nouveau Let's Encrypt (uniquement avec js-controller 3.2.x)",
-                "it": "Supporto del nuovo Let's Encrypt (solo con js-controller 3.2.x)",
-                "es": "Soporte del nuevo Let's Encrypt (solo con js-controller 3.2.x)",
-                "pl": "Obsługa nowego Let's Encrypt (tylko z js-controller 3.2.x)",
-                "zh-cn": "支持新的Let's Encrypt（仅适用于js-controller 3.2.x）"
-            },
-            "1.6.2": {
-                "en": "Fixing error with keyboard",
-                "de": "Fehler mit Tastatur behoben",
-                "ru": "Исправление ошибки с клавиатурой",
-                "pt": "Corrigindo erro com teclado",
-                "nl": "Fout herstellen met toetsenbord",
-                "fr": "Correction d'une erreur avec le clavier",
-                "it": "Errore di correzione con la tastiera",
-                "es": "Corregir error con el teclado",
-                "pl": "Naprawianie błędu z klawiaturą",
-                "zh-cn": "修正键盘错误"
-            },
-            "1.6.1": {
-                "en": "Added option to set the amount of repeats for telegram call.",
-                "de": "Option hinzugefügt, um die Anzahl der Wiederholungen für Telegrammanrufe festzulegen.",
-                "ru": "Добавлена возможность установить количество повторов для звонка в Telegram.",
-                "pt": "Adicionada opção para definir a quantidade de repetições para chamada de telegrama.",
-                "nl": "Optie toegevoegd om het aantal herhalingen voor telegramoproepen in te stellen.",
-                "fr": "Ajout d'une option pour définir le nombre de répétitions pour l'appel de télégramme.",
-                "it": "Aggiunta opzione per impostare la quantità di ripetizioni per la chiamata del telegramma.",
-                "es": "Opción agregada para establecer la cantidad de repeticiones para la llamada de telegrama.",
-                "pl": "Dodano opcję ustawiania liczby powtórzeń wywołania telegramu.",
-                "zh-cn": "添加了用于设置电报呼叫重复次数的选项。"
-            },
-            "1.6.0": {
-                "en": "Allow overriding chatId / user when writing JSON objects to telegram.INSTANCE.communicate.response\nFix Send message via Response field with Username\nfill requestRaw also for callbackQuery",
-                "de": "Erlauben Sie das Überschreiben von chatId / user, wenn Sie JSON-Objekte in telegram.INSTANCE.communicate.response schreiben\nFix Nachricht über Antwortfeld mit Benutzername senden korrigieren\nFüllen Sie requestRaw auch für callbackQuery aus",
-                "ru": "Разрешить переопределение chatId / user при записи объектов JSON в telegram.INSTANCE.communicate.response\nИсправить Отправить сообщение через поле ответа с именем пользователя\nзаполните requestRaw также для callbackQuery",
-                "pt": "Permitir a substituição de chatId / user ao gravar objetos JSON em telegram.INSTANCE.communicate.response\nCorrigir Enviar mensagem via campo de resposta com nome de usuário\npreencher requestRaw também para callbackQuery",
-                "nl": "Sta het overschrijven van chatId / user toe bij het schrijven van JSON-objecten naar telegram.INSTANCE.communicate.response\nFix Stuur bericht via antwoordveld met gebruikersnaam\nfill requestRaw ook voor callbackQuery",
-                "fr": "Autoriser le remplacement de chatId / user lors de l'écriture d'objets JSON dans telegram.INSTANCE.communicate.response\nFix Envoyer un message via le champ de réponse avec le nom d'utilisateur\nfill requestRaw aussi pour callbackQuery",
-                "it": "Consenti l'override di chatId / utente durante la scrittura di oggetti JSON su telegram.INSTANCE.communicate.response\nRisolto il problema con Invia messaggio tramite campo Risposta con nome utente\nfill requestRaw anche per callbackQuery",
-                "es": "Permitir anular chatId / user al escribir objetos JSON en telegram.INSTANCE.communicate.response\nCorregir Enviar mensaje a través del campo Respuesta con nombre de usuario\nllenar requestRaw también para callbackQuery",
-                "pl": "Zezwalaj na zastępowanie chatId / user podczas zapisywania obiektów JSON w telegram.INSTANCE.communicate.response\nNapraw Wyślij wiadomość przez pole odpowiedzi z nazwą użytkownika\nfill requestRaw również dla callbackQuery",
-                "zh-cn": "将JSON对象写入telegram.INSTANCE.communicate.response时，允许覆盖chatId /用户\n使用用户名修复通过响应字段发送消息\n也为callbackQuery填充requestRaw"
-            }
-        },
-        "title": "Telegram",
-        "titleLang": {
-            "en": "Telegram"
-        },
-        "desc": {
-            "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
-            "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
-            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через браузер",
-            "pt": "Este adaptador permite enviar e receber mensagens de telegramas de ioBroker e ser um bot",
-            "nl": "Met deze adapter kunt u telegramberichten van ioBroker verzenden en ontvangen en een bot zijn",
-            "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
-            "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
-            "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
-            "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem",
-            "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人"
-        },
-        "authors": [
-            "bluefox <dogafox@gmail.com>"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "mode": "daemon",
-        "messagebox": true,
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
-        "loglevel": "info",
-        "icon": "telegram.png",
-        "materialize": true,
-        "supportCustoms": true,
-        "connectionType": "cloud",
-        "dataSource": "poll",
-        "compact": true,
-        "tier": 1,
-        "keywords": [
-            "notification",
-            "telegram",
-            "message"
-        ],
-        "restartSchedule": "4 5 * * *",
-        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.telegram/master/admin/telegram.png",
-        "type": "messaging",
-        "stopBeforeUpdate": true,
-        "blockly": true,
-        "adminUI": {
-            "custom": "json",
-            "config": "materialize"
-        },
-        "dependencies": [
-            {
-                "js-controller": ">=3.3.0"
-            }
-        ]
+  "common": {
+    "name": "telegram",
+    "version": "1.10.1",
+    "news": {
+      "1.10.1": {
+        "en": "Updated telegram library",
+        "de": "Aktualisierte Telegrammbibliothek",
+        "ru": "Обновлена библиотека телеграмм.",
+        "pt": "Biblioteca de telegramas atualizada",
+        "nl": "Bijgewerkte telegrambibliotheek",
+        "fr": "Bibliothèque de télégrammes mise à jour",
+        "it": "Libreria di telegrammi aggiornata",
+        "es": "Biblioteca de telegramas actualizada",
+        "pl": "Zaktualizowana biblioteka telegramów",
+        "zh-cn": "更新的电报库"
+      },
+      "1.10.0": {
+        "en": "Add botSendRaw state to allow processing of the RAW data send by bot\nAdd tier for js-controller 3.3\nFixed the control of the states",
+        "de": "Fügen Sie den botSendRaw-Status hinzu, um die Verarbeitung der vom Bot gesendeten RAW-Daten zu ermöglichen\nStufe für js-controller 3.3 . hinzufügen\nDie Kontrolle der Zustände wurde behoben",
+        "ru": "Добавьте состояние botSendRaw, чтобы разрешить обработку RAW-данных, отправленных ботом\nДобавить уровень для js-controller 3.3\nИсправлен контроль состояний",
+        "pt": "Adicione o estado botSendRaw para permitir o processamento dos dados RAW enviados por bot\nAdicionar camada para js-controller 3.3\nCorrigido o controle dos estados",
+        "nl": "Voeg botSendRaw-status toe om verwerking van de RAW-gegevens die door bot zijn verzonden toe te staan\nLaag toevoegen voor js-controller 3.3\nDe controle over de staten opgelost Fixed",
+        "fr": "Ajouter l'état botSendRaw pour permettre le traitement des données RAW envoyées par le bot\nAjouter un niveau pour js-controller 3.3\nCorrection du contrôle des états",
+        "it": "Aggiungi lo stato botSendRaw per consentire l'elaborazione dei dati RAW inviati dal bot\nAggiungi livello per js-controller 3.3\nRisolto il controllo degli stati",
+        "es": "Agregue el estado botSendRaw para permitir el procesamiento de los datos RAW enviados por bot\nAgregar nivel para js-controller 3.3\nArreglado el control de los estados.",
+        "pl": "Dodaj stan botSendRaw, aby umożliwić przetwarzanie danych RAW wysyłanych przez bota\nDodaj warstwę dla kontrolera js 3.3\nPoprawiono kontrolę stanów",
+        "zh-cn": "添加 botSendRaw 状态以允许处理 bot 发送的 RAW 数据\n为 js-controller 3.3 添加层\n修复了对状态的控制"
+      },
+      "1.9.0": {
+        "en": "Added the option to not authenticate the new users\nAdded the option to disable system messages for specific users",
+        "de": "Option hinzugefügt, die neuen Benutzer nicht zu authentifizieren\nOption zum Deaktivieren von Systemnachrichten für bestimmte Benutzer hinzugefügt",
+        "ru": "Добавлена возможность не аутентифицировать новых пользователей\nДобавлена возможность отключить системные сообщения для определенных пользователей",
+        "pt": "Adicionada a opção de não autenticar os novos usuários\nAdicionada a opção de desativar mensagens do sistema para usuários específicos",
+        "nl": "De optie toegevoegd om de nieuwe gebruikers niet te authenticeren\nDe optie toegevoegd om systeemberichten voor specifieke gebruikers uit te schakelen",
+        "fr": "Ajout de l'option pour ne pas authentifier les nouveaux utilisateurs\nAjout de l'option pour désactiver les messages système pour des utilisateurs spécifiques",
+        "it": "Aggiunta l'opzione per non autenticare i nuovi utenti\nAggiunta l'opzione per disabilitare i messaggi di sistema per utenti specifici",
+        "es": "Añadida la opción de no autenticar a los nuevos usuarios.\nSe agregó la opción para deshabilitar los mensajes del sistema para usuarios específicos.",
+        "pl": "Dodano opcję, aby nie uwierzytelniać nowych użytkowników\nDodano opcję wyłączenia wiadomości systemowych dla określonych użytkowników",
+        "zh-cn": "添加了不对新用户进行身份验证的选项\n添加了禁用特定用户的系统消息的选项"
+      },
+      "1.8.3": {
+        "en": "corrected bug with many simultaneous requests \nformatting\nimplemented editMessageMedia and editMessageCaption\nEncrypt token \nCorrected error with password\nCorrected error with boolean easy controls",
+        "de": "Fehler mit vielen gleichzeitigen Anfragen behoben\nFormatierung\neditMessageMedia und editMessageCaption implementiert\nToken verschlüsseln\nFehler mit Passwort behoben\nFehler mit booleschen einfachen Steuerelementen korrigiert",
+        "ru": "исправлена ошибка с множеством одновременных запросов\nформатирование\nреализованы editMessageMedia и editMessageCaption\nЗашифровать токен\nИсправлена ошибка с паролем\nИсправлена ошибка с помощью простых логических элементов управления",
+        "pt": "bug corrigido com muitas solicitações simultâneas\nformatação\nimplementado editMessageMedia e editMessageCaption\nCriptografar token\nErro corrigido com senha\nErro corrigido com controles fáceis booleanos",
+        "nl": "bug gecorrigeerd met veel gelijktijdige verzoeken\nopmaak\ngeïmplementeerd editMessageMedia en editMessageCaption\nVersleutel token\nFout gecorrigeerd met wachtwoord\nFout gecorrigeerd met boolean easy controls",
+        "fr": "bug corrigé avec de nombreuses requêtes simultanées\nmise en page\nimplémenté editMessageMedia et editMessageCaption\nChiffrer le jeton\nErreur corrigée avec le mot de passe\nErreur corrigée avec des commandes simples booléennes",
+        "it": "bug corretto con molte richieste simultanee\nformattazione\nimplementato editMessageMedia e editMessageCaption\nCrittografa il token\nErrore corretto con password\nErrore corretto con controlli booleani facili",
+        "es": "error corregido con muchas solicitudes simultáneas\nformateo\nimplementado editMessageMedia y editMessageCaption\nCifrar token\nError corregido con contraseña\nError corregido con controles booleanos fáciles",
+        "pl": "poprawiony błąd z wieloma jednoczesnymi żądaniami\nformatowanie\nzaimplementowano editMessageMedia i editMessageCaption\nZaszyfruj token\nPoprawiony błąd z hasłem\nPoprawiony błąd z łatwymi kontrolkami boolowskimi",
+        "zh-cn": "修正了许多同时请求的错误\n格式化\n实现了 editMessageMedia 和 editMessageCaption\n加密令牌\n更正密码错误\n使用布尔型简单控件更正错误"
+      },
+      "1.8.2": {
+        "en": "fixed data types",
+        "de": "Datentypen korrigiert"
+      },
+      "1.8.1": {
+        "en": "added the admin5 support",
+        "de": "Die admin5-Unterstützung wurde hinzugefügt",
+        "ru": "добавлена поддержка admin5",
+        "pt": "adicionou o suporte admin5",
+        "nl": "de admin5-ondersteuning toegevoegd",
+        "fr": "a ajouté le support admin5",
+        "it": "aggiunto il supporto admin5",
+        "es": "agregó el soporte admin5",
+        "pl": "dodano obsługę admin5",
+        "zh-cn": "添加了admin5支持"
+      },
+      "1.8.0": {
+        "en": "(Apollon77/Nahasapeemapetilon) catch several API error cases to hopefully get around  adapter crashes on network errors\nadd support for media groups and multiple image qualities",
+        "de": "(Apollon77 / Nahasapeemapetilon) fängt mehrere API-Fehlerfälle ab, um hoffentlich Adapterabstürze bei Netzwerkfehlern zu umgehen\nUnterstützung für Mediengruppen und mehrere Bildqualitäten hinzufügen",
+        "ru": "(Apollon77 / Nahasapeemapetilon) отлавливает несколько случаев ошибок API, чтобы, надеюсь, обойти сбои адаптера при сетевых ошибках\nдобавить поддержку медиа-групп и различных качеств изображений",
+        "pt": "(Apollon77 / Nahasapeemapetilon) captura vários casos de erro de API para contornar travamentos do adaptador em erros de rede\nadicionar suporte para grupos de mídia e várias qualidades de imagem",
+        "nl": "(Apollon77 / Nahasapeemapetilon) vangen verschillende API-foutgevallen op om hopelijk adaptercrashes door netwerkfouten te omzeilen\nondersteuning toevoegen voor mediagroepen en meerdere beeldkwaliteiten",
+        "fr": "(Apollon77 / Nahasapeemapetilon) attrapez plusieurs cas d'erreur d'API pour, espérons-le, contourner les plantages d'adaptateur en cas d'erreurs réseau\najouter la prise en charge des groupes de médias et de multiples qualités d'image",
+        "it": "(Apollon77 / Nahasapeemapetilon) rileva diversi casi di errore API per aggirare, si spera, i crash dell'adattatore in caso di errori di rete\naggiungere il supporto per i gruppi di media e più qualità di immagine",
+        "es": "(Apollon77 / Nahasapeemapetilon) detecta varios casos de error de API para, con suerte, evitar fallas del adaptador en errores de red\nagregar soporte para grupos de medios y múltiples calidades de imagen",
+        "pl": "(Apollon77 / Nahasapeemapetilon) Wyłap kilka przypadków błędów interfejsu API, aby mieć nadzieję na obejście awarii karty w przypadku błędów sieciowych\ndodać obsługę grup medialnych i wielu jakości obrazu",
+        "zh-cn": "（Apollon77 / Nahasapeemapetilon）捕获了几种API错误案例，以期解决因网络错误引起的适配器崩溃\n添加对媒体组和多种图像质量的支持"
+      }
     },
-    "protectedNative": [
-        "token",
-        "password"
-    ],
-    "encryptedNative": [
-        "token",
-        "password"
-    ],
-    "native": {
-        "server": "false",
-        "port": 8443,
-        "bind": "0.0.0.0",
-        "token": "",
-        "baseApiUrl": "https://api.telegram.org",
-        "password": "",
-        "text2command": "",
-        "rememberUsers": true,
-        "allowStates": true,
-        "storeRawRequest": false,
-        "restarting": "_",
-        "restarted": "_",
-        "doNotAcceptNewUsers": false,
-        "url": "",
-        "useUsername": false,
-        "keyboard": "/cmds",
-        "rooms": false,
-        "certPublic": "",
-        "certPrivate": "",
-        "certChained": "",
-        "leEnabled": false,
-        "leUpdate": false,
-        "leCheckPort": 80,
-        "saveFiles": false
+    "title": "Telegram",
+    "titleLang": {
+      "en": "Telegram"
     },
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "If connected to Telegram server",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.request",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Last received request",
-                "type": "string",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.requestRaw",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": "Raw Data of last received request",
-                "type": "string",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.requestChatId",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Chat ID of last received request",
-                "type": "number",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.requestMessageId",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Message ID of last received request",
-                "type": "number",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.botSendChatId",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Chat ID of last sent message by the bot",
-                "type": "number",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.botSendMessageId",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Message ID of last sent message by the bot",
-                "type": "number",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.botSendRaw",
-            "type": "state",
-            "common": {
-                "role": "json",
-                "name": "Raw Data of last sent message by the bot",
-                "type": "string",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.requestUserId",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "User ID of last received request",
-                "type": "string",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.response",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Send text through telegram",
-                "type": "string",
-                "read": true,
-                "write": true
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.users",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "Users as json, which are constantly authenticated",
-                "type": "string",
-                "read": false,
-                "write": false
-            },
-            "native": {}
-        },
-        {
-            "_id": "communicate.pathFile",
-            "type": "state",
-            "common": {
-                "role": "text",
-                "name": "The path to the last file received",
-                "type": "string",
-                "read": true,
-                "write": false
-            },
-            "native": {}
-        }
+    "desc": {
+      "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
+      "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
+      "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через браузер",
+      "pt": "Este adaptador permite enviar e receber mensagens de telegramas de ioBroker e ser um bot",
+      "nl": "Met deze adapter kunt u telegramberichten van ioBroker verzenden en ontvangen en een bot zijn",
+      "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
+      "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
+      "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
+      "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem",
+      "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人"
+    },
+    "authors": [
+      "bluefox <dogafox@gmail.com>"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "messagebox": true,
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
+    "loglevel": "info",
+    "icon": "telegram.png",
+    "materialize": true,
+    "supportCustoms": true,
+    "connectionType": "cloud",
+    "dataSource": "poll",
+    "compact": true,
+    "tier": 1,
+    "keywords": [
+      "notification",
+      "telegram",
+      "message"
+    ],
+    "restartSchedule": "4 5 * * *",
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.telegram/master/admin/telegram.png",
+    "type": "messaging",
+    "stopBeforeUpdate": true,
+    "blockly": true,
+    "adminUI": {
+      "custom": "json",
+      "config": "materialize"
+    },
+    "dependencies": [
+      {
+        "js-controller": ">=3.3.0"
+      }
     ]
+  },
+  "protectedNative": [
+    "token",
+    "password"
+  ],
+  "encryptedNative": [
+    "token",
+    "password"
+  ],
+  "native": {
+    "server": "false",
+    "port": 8443,
+    "bind": "0.0.0.0",
+    "token": "",
+    "baseApiUrl": "https://api.telegram.org",
+    "password": "",
+    "text2command": "",
+    "rememberUsers": true,
+    "allowStates": true,
+    "storeRawRequest": false,
+    "restarting": "_",
+    "restarted": "_",
+    "doNotAcceptNewUsers": false,
+    "url": "",
+    "useUsername": false,
+    "keyboard": "/cmds",
+    "rooms": false,
+    "certPublic": "",
+    "certPrivate": "",
+    "certChained": "",
+    "leEnabled": false,
+    "leUpdate": false,
+    "leCheckPort": 80,
+    "saveFiles": false
+  },
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "If connected to Telegram server",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.request",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Last received request",
+        "type": "string",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestRaw",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Raw Data of last received request",
+        "type": "string",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestChatId",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Chat ID of last received request",
+        "type": "number",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestMessageId",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Message ID of last received request",
+        "type": "number",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.botSendChatId",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Chat ID of last sent message by the bot",
+        "type": "number",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.botSendMessageId",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Message ID of last sent message by the bot",
+        "type": "number",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.botSendRaw",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Raw Data of last sent message by the bot",
+        "type": "string",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestUserId",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "User ID of last received request",
+        "type": "string",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.response",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Send text through telegram",
+        "type": "string",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.users",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Users as json, which are constantly authenticated",
+        "type": "string",
+        "read": false,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.pathFile",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "The path to the last file received",
+        "type": "string",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    }
+  ]
 }
