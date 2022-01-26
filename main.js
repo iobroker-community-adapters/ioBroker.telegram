@@ -269,7 +269,10 @@ function startAdapter(options) {
             if (!state.ack) {
                 if (id.indexOf('communicate.response') !== -1) {
                     // Send to someone this message
-                    sendMessage(state.val);
+                    sendMessage(state.val)
+                        .then(data => {
+                            adapter.setState('communicate.response', state.val, true);
+                        });
                 }
             } else {
                 if (commands[id] && commands[id].report) {
@@ -1475,6 +1478,7 @@ function isAnswerForQuestion(adapter, msg) {
 function processTelegramText(msg) {
     connectionState(true);
 
+    // see https://core.telegram.org/bots/api#message
     adapter.log.debug(JSON.stringify(msg));
 
     const user = !adapter.config.useUsername ? msg.from.first_name : (!msg.from.username ? msg.from.first_name : msg.from.username);
@@ -1708,7 +1712,7 @@ function processTelegramText(msg) {
 
     adapter.setState('communicate.requestChatId', msg.chat.id, true, err => err && adapter.log.error(err));
     adapter.setState('communicate.requestMessageId', msg.message_id, true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestUserId', msg.user ? msg.user.id : '', true, err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestUserId', msg.from ? msg.from.id : '', true, err => err && adapter.log.error(err));
     adapter.setState('communicate.request', `[${user}]${msg.text}`, true, err => err && adapter.log.error(err));
 }
 
