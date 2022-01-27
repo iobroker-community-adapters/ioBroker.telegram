@@ -1973,7 +1973,7 @@ function connect() {
 async function updateUsers() {
     if (adapter.config.rememberUsers) {
         try {
-            const state = await adapter.getState('communicate.users');
+            const state = await adapter.getStateAsync('communicate.users');
             if (state && state.val) {
                 try {
                     users = JSON.parse(state.val);
