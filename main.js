@@ -1031,7 +1031,7 @@ function sendMessage(text, user, chatId, options) {
     }
 
     return Promise.all(tPromiseList)
-        .then((results) =>
+        .then(results =>
             results.reduce((e, acc) => acc + e, 0))
         .catch(e => -1);
 }
@@ -1044,18 +1044,20 @@ function saveFile(fileID, fileName, callback) {
                 if (res.statusCode === 200) {
                     const buf = [];
                     res.on('data', data => buf.push(data));
-                    res.on('end', () =>
-                        fs.writeFile(tmpDirName + fileName, Buffer.concat(buf), true, err => {
-                            if (err) {
-                                throw err;
-                            }
-                            callback({
-                                info: 'It\'s saved! : ' + tmpDirName + fileName,
-                                path: tmpDirName + fileName
-                            });
-                        }));
+                    res.on('end', () => {
+                        try {
+                            fs.writeFileSync(tmpDirName + fileName, Buffer.concat(buf));
+                        } catch (err) {
+                            return callback({error: 'Error: ' + err});
+                        }
 
-                    res.on('error', true, err =>
+                        callback({
+                            info: 'It\'s saved! : ' + tmpDirName + fileName,
+                            path: tmpDirName + fileName
+                        });
+                    });
+
+                    res.on('error', err =>
                         callback({error: 'Error: ' + err}));
                 } else {
                     callback({error: 'Error: statusCode !== 200'});

@@ -703,6 +703,9 @@ msg.payload = {
 -->
 
 ## Changelog
+### __WORK IN PROGRESS__
+* (bluefox) fixed the receiving files
+
 ### 1.11.0 (2022-01-26)
 * (bluefox) Added bruteforce protection
 * (bluefox) Extended blockly with `disable_web_preview` option
