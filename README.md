@@ -703,7 +703,7 @@ msg.payload = {
 -->
 
 ## Changelog
-### __WORK IN PROGRESS__
+### 1.11.1 (2022-01-27)
 * (bluefox) fixed the receiving files
 
 ### 1.11.0 (2022-01-26)
