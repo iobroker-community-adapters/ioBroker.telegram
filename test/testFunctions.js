@@ -50,7 +50,7 @@ describe('Test Telegram', function() {
         this.timeout(600000); // because of first install from npm
 
         setup.setupController(async function () {
-            var config = setup.getAdapterConfig();
+            var config = await setup.getAdapterConfig();
             // enable adapter
             config.common.enabled  = true;
             config.common.loglevel = 'debug';
