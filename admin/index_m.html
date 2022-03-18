@@ -188,6 +188,7 @@
                 return showMessage(_('Password confirmation is not equal with password'));
             }
             //obj.password = encrypt('Zgfr56gFe87jJON', obj.password);
+            delete obj.passwordRepeat;
 
             callback(obj);
         }

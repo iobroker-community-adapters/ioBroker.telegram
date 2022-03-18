@@ -75,7 +75,24 @@ const systemLang2CallMe = {
 
 function startAdapter(options) {
     options = options || {};
-    Object.assign(options, {name: adapterName});
+    Object.assign(options, {
+        name: adapterName,
+        /**
+         * If the JS-Controller catches an unhandled error, this will be called
+         * so we have a chance to handle it ourself.
+         * @param {Error} err
+         */
+        error: (err) => {
+            // Identify unhandled errors originating from callbacks in scripts
+            // These are not caught by wrapping the execution code in try-catch
+            if (err && typeof err.stack === 'string') {
+                if (err.includes('getaddrinfo') || err.includes('api.telegram.org') || err.includes('EAI_AGAIN')) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    });
 
     adapter = new utils.Adapter(options);
 
