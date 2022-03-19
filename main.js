@@ -300,6 +300,26 @@ function startAdapter(options) {
                     // Send to someone this message
                     sendMessage(state.val, null, null, {disable_notification: true})
                         .then(data => adapter.setState('communicate.responseSilent', state.val, true));
+                } else
+                if (id.endsWith('communicate.responseJson')) {
+                    try {
+                        const val = JSON.parse(state.val);
+                        // Send to someone this message
+                        sendMessage(val)
+                            .then(data => adapter.setState('communicate.responseJson', state.val, true));
+                    } catch (err) {
+                        adapter.log.error(`could not parse Json in responseJon state: ${err.message}`);
+                    }
+                } else
+                if (id.endsWith('communicate.responseSilentJson')) {
+                    try {
+                        const val = JSON.parse(state.val);
+                        // Send to someone this message
+                        sendMessage(val, null, null, {disable_notification: true})
+                            .then(data => adapter.setState('communicate.responseSilent', state.val, true));
+                    } catch (err) {
+                        adapter.log.error(`could not parse Json in responseSilentJon state: ${err.message}`);
+                    }
                 }
             } else {
                 if (commands[id] && commands[id].report) {
@@ -2117,11 +2137,15 @@ async function main() {
     await adapter.subscribeStatesAsync('communicate.request');
     await adapter.subscribeStatesAsync('communicate.response');
     await adapter.subscribeStatesAsync('communicate.responseSilent');
+    await adapter.subscribeStatesAsync('communicate.responseJson');
+    await adapter.subscribeStatesAsync('communicate.responseSilentJson');
 
     // clear states
     await adapter.setStateAsync('communicate.request',  '', true);
     await adapter.setStateAsync('communicate.response', '', true);
     await adapter.setStateAsync('communicate.responseSilent', '', true);
+    await adapter.setStateAsync('communicate.responseJson', '', true);
+    await adapter.setStateAsync('communicate.responseSilentJson', '', true);
     await adapter.setStateAsync('communicate.pathFile', '', true);
 
     adapter.config.password = adapter.config.password || '';

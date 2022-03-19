@@ -319,6 +319,30 @@
       "native": {}
     },
     {
+      "_id": "communicate.responseJson",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Send text through telegram with notification with json definition",
+        "type": "string",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.responseSilentJson",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Send text through telegram silently with json definition",
+        "type": "string",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
       "_id": "communicate.users",
       "type": "state",
       "common": {
