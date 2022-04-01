@@ -706,8 +706,7 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 -->
 
 ## Changelog
-
-### __WORK IN PROGRESS__
+### 1.12.1 (2022-04-01)
 * (Apollon77) Fix crash cases reported by Sentry
 
 ### 1.12.0 (2022-03-21)
