@@ -85,8 +85,9 @@ function startAdapter(options) {
         error: (err) => {
             // Identify unhandled errors originating from callbacks in scripts
             // These are not caught by wrapping the execution code in try-catch
-            if (err && typeof err.stack === 'string') {
-                if (err.includes('getaddrinfo') || err.includes('api.telegram.org') || err.includes('EAI_AGAIN')) {
+            if (err ) {
+                const errStr = err.toString();
+                if (errStr.includes('getaddrinfo') || errStr.includes('api.telegram.org') || errStr.includes('EAI_AGAIN')) {
                     return true;
                 }
             }
@@ -292,11 +293,19 @@ function startAdapter(options) {
         if (state) {
             if (!state.ack) {
                 if (id.endsWith('communicate.response')) {
+                    if (typeof state.val === 'object') {
+                        adapter.log.error(`communicate.response only supports passing a message to send as string. You provided ${JSON.stringofy(state.val)}. Please use "communicate.responseJson" instead with a stringified JSON object!`);
+                        return;
+                    }
                     // Send to someone this message
                     sendMessage(state.val)
                         .then(data => adapter.setState('communicate.response', state.val, true));
                 } else
                 if (id.endsWith('communicate.responseSilent')) {
+                    if (typeof state.val === 'object') {
+                        adapter.log.error(`communicate.responseSilent only supports passing a message to send as string. You provided ${JSON.stringofy(state.val)}. Please use "communicate.responseSilentJson" instead with a stringified JSON object!`);
+                        return;
+                    }
                     // Send to someone this message
                     sendMessage(state.val, null, null, {disable_notification: true})
                         .then(data => adapter.setState('communicate.responseSilent', state.val, true));
@@ -308,7 +317,7 @@ function startAdapter(options) {
                         sendMessage(val)
                             .then(data => adapter.setState('communicate.responseJson', state.val, true));
                     } catch (err) {
-                        adapter.log.error(`could not parse Json in responseJon state: ${err.message}`);
+                        adapter.log.error(`could not parse Json in communicate.responseJon state: ${err.message}`);
                     }
                 } else
                 if (id.endsWith('communicate.responseSilentJson')) {
@@ -318,7 +327,7 @@ function startAdapter(options) {
                         sendMessage(val, null, null, {disable_notification: true})
                             .then(data => adapter.setState('communicate.responseSilent', state.val, true));
                     } catch (err) {
-                        adapter.log.error(`could not parse Json in responseSilentJon state: ${err.message}`);
+                        adapter.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
                     }
                 }
             } else {
