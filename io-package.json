@@ -3,18 +3,6 @@
     "name": "telegram",
     "version": "1.12.1",
     "news": {
-      "1.12.1": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
       "1.12.0": {
         "en": "Add new JSON states communication.responseJson and communication.responseSilentJson to also accept json structures (stringified!) to send messages\nTry to prevent adapter crashes when internet is not available \nAdd Sentry for crash reporting",
         "de": "Fügen Sie die neuen JSON-Zustände communication.responseJson und communication.responseSilentJson hinzu, um auch JSON-Strukturen (stringifiziert!) zum Senden von Nachrichten zu akzeptieren\nVersuchen Sie, Adapterabstürze zu verhindern, wenn das Internet nicht verfügbar ist\nFügen Sie Sentry für Absturzberichte hinzu",
