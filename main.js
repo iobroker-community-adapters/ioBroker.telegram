@@ -383,6 +383,9 @@ function sendSystemMessage(text) {
 }
 
 function getStatus(id, state) {
+    if (!state) {
+        state = {val: 'State not set'};
+    }
     if (commands[id].type === 'boolean') {
         return `${commands[id].alias} => ${state.val ? commands[id].onStatus || _('ON-Status') : commands[id].offStatus || _('OFF-Status')}`;
     } else {
