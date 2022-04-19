@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.12.4",
+    "version": "1.12.5",
     "news": {
+      "1.12.5": {
+        "en": "Fix crash cases reported by Sentry",
+        "de": "Von Sentry gemeldete Absturzfälle beheben",
+        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
+        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
+        "nl": "Herstel crashgevallen gemeld door Sentry",
+        "fr": "Correction des cas de plantage signalés par Sentry",
+        "it": "Risolvi i casi di crash segnalati da Sentry",
+        "es": "Solucionar casos de fallas informados por Sentry",
+        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
+        "zh-cn": "修复 Sentry 报告的崩溃案例"
+      },
       "1.12.4": {
         "en": "Fix crash cases reported by Sentry",
         "de": "Von Sentry gemeldete Absturzfälle beheben",
@@ -74,18 +86,6 @@
         "es": "Protección de fuerza bruta agregada\nExtendido en bloques con la opción `disable_web_preview`\nSe agregó el estado `communicate.responseSilent` para responder en silencio.",
         "pl": "Dodano ochronę przed bruteforce\nRozszerzony blokowo z opcją `disable_web_preview`\ndodano stan `communicate.responseSilent` do cichej odpowiedzi",
         "zh-cn": "添加了蛮力保护\n使用 `disable_web_preview` 选项扩展块\n添加了`communicate.responseSilent`状态以静默回答"
-      },
-      "1.10.1": {
-        "en": "Updated telegram library",
-        "de": "Aktualisierte Telegrammbibliothek",
-        "ru": "Обновлена библиотека телеграмм.",
-        "pt": "Biblioteca de telegramas atualizada",
-        "nl": "Bijgewerkte telegrambibliotheek",
-        "fr": "Bibliothèque de télégrammes mise à jour",
-        "it": "Libreria di telegrammi aggiornata",
-        "es": "Biblioteca de telegramas actualizada",
-        "pl": "Zaktualizowana biblioteka telegramów",
-        "zh-cn": "更新的电报库"
       }
     },
     "title": "Telegram",
