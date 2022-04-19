@@ -706,8 +706,7 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 -->
 
 ## Changelog
-
-### __WORK IN PROGRESS__
+### 1.12.3 (2022-04-19)
 * (Apollon77) Make sure also not set states can be queried - will return "State not set" in this case!
 
 ### 1.12.2 (2022-04-01)
