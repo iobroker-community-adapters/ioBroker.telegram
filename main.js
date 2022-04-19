@@ -294,7 +294,7 @@ function startAdapter(options) {
             if (!state.ack) {
                 if (id.endsWith('communicate.response')) {
                     if (typeof state.val === 'object') {
-                        adapter.log.error(`communicate.response only supports passing a message to send as string. You provided ${JSON.stringofy(state.val)}. Please use "communicate.responseJson" instead with a stringified JSON object!`);
+                        adapter.log.error(`communicate.response only supports passing a message to send as string. You provided ${JSON.stringify(state.val)}. Please use "communicate.responseJson" instead with a stringified JSON object!`);
                         return;
                     }
                     // Send to someone this message
@@ -303,7 +303,7 @@ function startAdapter(options) {
                 } else
                 if (id.endsWith('communicate.responseSilent')) {
                     if (typeof state.val === 'object') {
-                        adapter.log.error(`communicate.responseSilent only supports passing a message to send as string. You provided ${JSON.stringofy(state.val)}. Please use "communicate.responseSilentJson" instead with a stringified JSON object!`);
+                        adapter.log.error(`communicate.responseSilent only supports passing a message to send as string. You provided ${JSON.stringify(state.val)}. Please use "communicate.responseSilentJson" instead with a stringified JSON object!`);
                         return;
                     }
                     // Send to someone this message
