@@ -224,7 +224,7 @@ function startAdapter(options) {
                                 `You can call in shell following scrip to allow it for node.js: "iobroker fix"`
                             );
                         } else {
-                            adapter.log.error(`Cannot start server on ${settings.bind || '0.0.0.0'}:${serverPort}: ${e}`);
+                            adapter.log.error(`Cannot start server on ${adapter.config.bind || '0.0.0.0'}:${serverPort}: ${e}`);
                         }
                         if (!serverListening) {
                             adapter.terminate ? adapter.terminate(utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION) : process.exit(utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
