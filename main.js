@@ -21,8 +21,8 @@ const utils       = require('@iobroker/adapter-core'); // Get common adapter uti
 const adapterName = require('./package.json').name.split('.').pop();
 const _           = require('./lib/words.js');
 const fs          = require('fs');
+const path        = require('path');
 const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
-const tools       = require(utils.controllerDir + '/lib/tools');
 const https       = require('https');
 const axios       = require("axios");
 
@@ -44,11 +44,6 @@ let gcInterval = null;
 
 const commands = {};
 const callbackQueryId = {};
-const configFile = tools.getConfigFileName();
-const tmp = configFile.split(/[\\\/]+/);
-tmp.pop();
-tmp.pop();
-const tmpDir = tmp.join('/') + '/iobroker-data/tmp';
 const mediaGroupExport = {};
 let tmpDirName;
 
@@ -179,8 +174,6 @@ function startAdapter(options) {
 
     adapter.on('ready', () => {
         adapter.config.server = adapter.config.server === 'true';
-
-        !fs.existsSync(tmpDir) && fs.mkdirSync(tmpDir);
 
         adapter._questions = [];
         adapter.garbageCollectorinterval = setInterval(() => {
@@ -369,7 +362,12 @@ function startAdapter(options) {
 
     server.settings = adapter.config;
 
-    tmpDirName = tmpDir + '/' + adapter.namespace.replace('.', '_');
+    tmpDirName = path.join(utils.getAbsoluteDefaultDataDir(), adapter.namespace.replace('.', '_'));
+    try {
+        !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
+    } catch (e) {
+        adapter.log.error('Cannot create tmp directory: ' + tmpDirName);
+    }
 
     return adapter;
 }
@@ -1094,15 +1092,16 @@ function saveFile(fileID, fileName, callback) {
                     const buf = [];
                     res.on('data', data => buf.push(data));
                     res.on('end', () => {
+                        const fileLocation = path.join(tmpDirName, fileName);
                         try {
-                            fs.writeFileSync(tmpDirName + fileName, Buffer.concat(buf));
+                            fs.writeFileSync(fileLocation, Buffer.concat(buf));
                         } catch (err) {
                             return callback({error: 'Error: ' + err});
                         }
 
                         callback({
-                            info: 'It\'s saved! : ' + tmpDirName + fileName,
-                            path: tmpDirName + fileName
+                            info: 'It\'s saved! : ' + fileLocation,
+                            path: fileLocation
                         });
                     });
 
@@ -1120,57 +1119,78 @@ function getMessage(msg) {
     const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
     adapter.log.debug('Received message: ' + JSON.stringify(msg));
 
-    !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
-
     if (msg.voice) {
-        !fs.existsSync(tmpDirName + '/voice') && fs.mkdirSync(tmpDirName + '/voice');
-        saveFile(msg.voice.file_id, adapter.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', res => {
-            if (!res.error) {
-                adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
-            } else {
-                adapter.log.debug(res.error);
-            }
-        })
-    } else if (adapter.config.saveFiles && msg.photo) {
-        !fs.existsSync(tmpDirName + '/photo') && fs.mkdirSync(tmpDirName + '/photo');
-
-        const qualityMap = {
-            0: 'low',
-            1: 'med',
-            2: 'high',
-            3: 'highdef'
-        };
-
-        msg.photo.forEach((item, i) => {
-            let quality = 'none';
-            if (qualityMap.hasOwnProperty(i)) {
-                quality = qualityMap[i];
-            }
-            let fileName = '';
-            if (msg.media_group_id) {
-                if (!mediaGroupExport.hasOwnProperty(msg.media_group_id)) {
-                    const id = Object.keys(mediaGroupExport).length;
-                    mediaGroupExport[msg.media_group_id] = {
-                        id,
-                        count: 0
-                    };
+        try {
+            const voiceFile = path.join(tmpDirName, 'voice');
+            !fs.existsSync(voiceFile) && fs.mkdirSync(voiceFile);
+            saveFile(msg.voice.file_id, adapter.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', res => {
+                if (!res.error) {
+                    adapter.log.info(res.info);
+                    adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
                 } else {
-                    mediaGroupExport[msg.media_group_id].count++;
+                    adapter.log.debug(res.error);
                 }
-                fileName = `/photo/${date}_grpID_${mediaGroupExport[msg.media_group_id].id}_${mediaGroupExport[msg.media_group_id].count}_${quality}.jpg`;
-            } else {
-                fileName = `/photo/${date}_${quality}.jpg`;
-                if (fs.existsSync(tmpDirName + fileName)) {
-                    let tIdx = 0;
-                    do {
-                        fileName = `/photo/${date}_${tIdx}_${quality}.jpg`;
-                        tIdx++;
-                    } while (fs.existsSync(tmpDirName + fileName));
-                }
-            }
+            })
+        } catch (err) {
+            adapter.log.error('Error saving voice file: ' + err);
+        }
+    } else if (adapter.config.saveFiles && msg.photo) {
+        try {
+            const photoFile = path.join(tmpDirName, 'photo');
+            !fs.existsSync(photoFile) && fs.mkdirSync(photoFile);
 
-            saveFile(item.file_id, fileName, res => {
+            const qualityMap = {
+                0: 'low',
+                1: 'med',
+                2: 'high',
+                3: 'highdef'
+            };
+
+            msg.photo.forEach((item, i) => {
+                let quality = 'none';
+                if (qualityMap.hasOwnProperty(i)) {
+                    quality = qualityMap[i];
+                }
+                let fileName = '';
+                if (msg.media_group_id) {
+                    if (!mediaGroupExport.hasOwnProperty(msg.media_group_id)) {
+                        const id = Object.keys(mediaGroupExport).length;
+                        mediaGroupExport[msg.media_group_id] = {
+                            id,
+                            count: 0
+                        };
+                    } else {
+                        mediaGroupExport[msg.media_group_id].count++;
+                    }
+                    fileName = `/photo/${date}_grpID_${mediaGroupExport[msg.media_group_id].id}_${mediaGroupExport[msg.media_group_id].count}_${quality}.jpg`;
+                } else {
+                    fileName = `/photo/${date}_${quality}.jpg`;
+                    if (fs.existsSync(path.join(tmpDirName, fileName))) {
+                        let tIdx = 0;
+                        do {
+                            fileName = `/photo/${date}_${tIdx}_${quality}.jpg`;
+                            tIdx++;
+                        } while (fs.existsSync(path.join(tmpDirName, fileName)));
+                    }
+                }
+
+                saveFile(item.file_id, fileName, res => {
+                    if (!res.error) {
+                        adapter.log.info(res.info);
+                        adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
+                    } else {
+                        adapter.log.debug(res.error);
+                    }
+                });
+            });
+        } catch (err) {
+            adapter.log.error('Error saving photo file: ' + err);
+        }
+    } else if (adapter.config.saveFiles && msg.video) {
+        try {
+            const videoFile = path.join(tmpDirName, 'video');
+            !fs.existsSync(videoFile) && fs.mkdirSync(videoFile);
+            saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
                     adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
@@ -1178,37 +1198,39 @@ function getMessage(msg) {
                     adapter.log.debug(res.error);
                 }
             });
-        });
-    } else if (adapter.config.saveFiles && msg.video) {
-        !fs.existsSync(tmpDirName + '/video') && fs.mkdirSync(tmpDirName + '/video');
-        saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
-            if (!res.error) {
-                adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
-            } else {
-                adapter.log.debug(res.error);
-            }
-        });
+        } catch (err) {
+            adapter.log.error('Error saving video file: ' + err);
+        }
     } else if (adapter.config.saveFiles && msg.audio) {
-        !fs.existsSync(tmpDirName + '/audio') && fs.mkdirSync(tmpDirName + '/audio');
-        saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
-            if (!res.error) {
-                adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
-            } else {
-                adapter.log.debug(res.error);
-            }
-        });
+        try {
+            const audioFile = path.join(tmpDirName, 'audio');
+            !fs.existsSync(audioFile) && fs.mkdirSync(audioFile);
+            saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
+                if (!res.error) {
+                    adapter.log.info(res.info);
+                    adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
+                } else {
+                    adapter.log.debug(res.error);
+                }
+            });
+        } catch (err) {
+            adapter.log.error('Error saving audio file: ' + err);
+        }
     } else if (adapter.config.saveFiles && msg.document) {
-        !fs.existsSync(tmpDirName + '/document') && fs.mkdirSync(tmpDirName + '/document');
-        saveFile(msg.document.file_id, '/document/' + msg.document.file_name, res => {
-            if (!res.error) {
-                adapter.log.info(res.info);
-                adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
-            } else {
-                adapter.log.debug(res.error);
-            }
-        });
+        try {
+            const documentFile = path.join(tmpDirName, 'document');
+            !fs.existsSync(documentFile) && fs.mkdirSync(documentFile);
+            saveFile(msg.document.file_id, '/document/' + msg.document.file_name, res => {
+                if (!res.error) {
+                    adapter.log.info(res.info);
+                    adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
+                } else {
+                    adapter.log.debug(res.error);
+                }
+            });
+        } catch (err) {
+            adapter.log.error('Error saving document file: ' + err);
+        }
     }
 }
 
@@ -1931,7 +1953,9 @@ function connect() {
             }
             adapter.log.debug(`Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`);
             bot = new TelegramBot(adapter.config.token, pollingOptions);
-            bot.setWebHook('');
+            bot.setWebHook('').catch(error => {
+                adapter.log.error('setWebHook Error:' + error)
+            });
         }
 
         // Check connection
