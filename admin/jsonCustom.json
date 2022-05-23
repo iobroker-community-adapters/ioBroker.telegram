@@ -60,17 +60,17 @@
       "pl": "Zgłoś zmiany",
       "zh-cn": "报告变更"
     },
-    "If the changes must be sent to telegram": {
-      "en": "If the changes must be sent to telegram",
-      "de": "Wenn die Änderungen an Telegramm gesendet werden müssen",
-      "ru": "Должны ли быть изменения отправлены в Telegram",
-      "pt": "Se as alterações devem ser enviadas para telegrama",
-      "nl": "Als de wijzigingen verzonden moeten worden naar telegram",
-      "fr": "Si les modifications doivent être envoyées au télégramme",
-      "it": "Se le modifiche devono essere inviate al telegramma",
-      "es": "Si los cambios deben enviarse a telegrama.",
-      "pl": "Jeśli zmiany muszą zostać wysłane do telegramu",
-      "zh-cn": "如果必须将更改发送给电报"
+    "Sends a new message if the value changes": {
+      "en": "Sends a new message if the value changes",
+      "de": "Sendet eine neue Nachricht, wenn sich der Wert ändert",
+      "ru": "Отправляет новое сообщение, если значение изменяется",
+      "pt": "Envia uma nova mensagem se o valor mudar",
+      "nl": "Stuurt een nieuw bericht als de waarde verandert",
+      "fr": "Envoie un nouveau message si la valeur change",
+      "it": "Invia un nuovo messaggio se il valore cambia",
+      "es": "Envía un nuevo mensaje si el valor cambia",
+      "pl": "Wysyła nową wiadomość, jeśli zmieni się wartość",
+      "zh-cn": "如果值更改，则发送新消息"
     },
     "OFF status": {
       "en": "Off text",
@@ -240,7 +240,7 @@
     "report": {
       "type": "checkbox",
       "label": "Report changes",
-      "help": "If the changes must be sent to telegram",
+      "help": "Sends a new message if the value changes",
       "defaultFunc": "customObj.common && customObj.common.read !== false",
       "sm": 6
     },
