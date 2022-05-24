@@ -47,7 +47,7 @@ For example: Recipient: "User1,User4,User5"
 
 You can send message over state too, just set state *"telegram.INSTANCE.communicate.response"* with value *"@userName Test message"* or with a JSON object:
 
-```
+```json
 {
     text: "Test message"
 }
@@ -55,7 +55,7 @@ You can send message over state too, just set state *"telegram.INSTANCE.communic
 
 The JSON syntax also allows the adding options from the [telegram bots API](https://core.telegram.org/bots/api), as well as setting the user or chatId:
 
-```
+```json
 {
     text: "Test message, but with *bold*",
     parse_mode: "Markdown",
@@ -79,7 +79,7 @@ To send a photo, just send a path to file instead of text or URL: `sendTo('teleg
 
 Example how to send a screenshot from web-cam to telegram:
 
-```
+```javascript
 var request = require('request');
 var fs      = require('fs');
 
@@ -123,7 +123,7 @@ In this case the action command will be sent.
 
 The description for telegram API can be found [here](https://core.telegram.org/bots/api) and you can use all options defined in this api, just by including that into send object. E.g.:
 
-```
+```javascript
 sendTo('telegram.0', {
     text:                   '/tmp/snap.jpg',
     caption:                'Snapshot',
@@ -146,7 +146,7 @@ Adapter tries to detect the type of message (photo, video, audio, document, stic
 
 Location will be detected on attribute latitude:
 
-```
+```javascript
 sendTo('telegram.0', {
     latitude:               52.522430,
     longitude:              13.372234,
@@ -159,7 +159,7 @@ You have the possibility to define extra the type of the message in case you wan
 
 Following types are possible: *sticker*, *video*, *document*, *audio*, *photo*.
 
-```
+```javascript
 sendTo('telegram.0', {
     text: fs.readFileSync('/opt/path/picture.png'),
     type: 'photo'
@@ -169,7 +169,7 @@ sendTo('telegram.0', {
 ### Keyboard
 You can show keyboard **ReplyKeyboardMarkup** in the client:
 
-```
+```javascript
 sendTo('telegram.0', {
     text:   'Press button',
     reply_markup: {
@@ -187,7 +187,7 @@ You can read more [here](https://core.telegram.org/bots/api#replykeyboardmarkup)
 
 You can show keyboard **InlineKeyboardMarkup** in the client:
 
-```
+```javascript
 sendTo('telegram', {
     user: user,
     text: 'Click the button',
@@ -207,8 +207,8 @@ You can read more [here](https://core.telegram.org/bots/api#inlinekeyboardmarkup
 ### answerCallbackQuery
 Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, *True* is returned.
 
-```
-if (command ==="1_2") {
+```javascript
+if (command === '1_2') {
     sendTo('telegram', {
         user: user,
         answerCallbackQuery: {
@@ -225,7 +225,7 @@ You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/rel
 You can send to telegram the message and the next answer will be returned in callback. 
 Timeout can be set in configuration and by default is 60 seconds.
 
-```
+```javascript
 sendTo('telegram.0', 'ask', {
     user: user, // optional
     text: 'Are you sure?',
@@ -244,7 +244,9 @@ sendTo('telegram.0', 'ask', {
 ## Chat ID
 From version 0.4.0 you can use chat ID to send messages to chat.
 
-`sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');`
+```javascript
+sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123');
+```
 
 ## Updating messages
 The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with *inline keyboards* using callback queries, but can also help reduce clutter in conversations with regular chat bots.
@@ -252,8 +254,8 @@ The following methods allow you to change an existing message in the message his
 ### editMessageText
 Use this method to edit text sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
 
-```
-if (command === "1_2") {
+```javascript
+if (command === '1_2') {
     sendTo('telegram', {
         user: user,
         text: 'New text before buttons',
@@ -275,8 +277,8 @@ if (command === "1_2") {
 
 *or new text for last message:*
 
-```
-if (command ==="1_2") {
+```javascript
+if (command === '1_2') {
     sendTo('telegram', {
         user: user,
         text: 'New text message',
@@ -296,8 +298,8 @@ You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/rel
 Use this method to edit caption of the message sent by the bot or via the bot (for inline bots). 
 On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
 
-```
-if (command === "1_2") {
+```javascript
+if (command === '1_2') {
     sendTo('telegram', {
         user, // optional
         text: 'New caption',
@@ -317,8 +319,8 @@ You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/rel
 Use this method to edit picture of the message sent by the bot or via the bot (for inline bots). 
 On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
 
-```
-if (command === "1_2") {
+```javascript
+if (command === '1_2') {
     sendTo('telegram', {
         user, // optional
         text: 'picture.jpg',
@@ -339,8 +341,8 @@ You can read more [here](https://core.telegram.org/bots/api#editmessagemedia).
 ### editMessageReplyMarkup
 Use this method to edit only the reply markup of messages sent by the bot or via the bot (for inline bots). On success, if edited message is sent by the bot, the edited Message is returned, otherwise *True* is returned.
 
-```
-if (command === "1_2") {
+```javascript
+if (command === '1_2') {
     sendTo('telegram', {
         user: user,
         text: 'New text before buttons',
@@ -367,8 +369,8 @@ Use this method to delete a message, including service messages, with the follow
 - A message can only be deleted if it was sent less than 48 hours ago.
 Returns *True* on success.
 
-```
-if (command === "delete") {
+```javascript
+if (command === 'delete') {
     sendTo('telegram', {
         user: user,
         deleteMessage: {
@@ -391,7 +393,7 @@ Suppose you are using only JavaScript without *text2command*. You already sent a
  - user is the user registered with you TelegramBot which sent the message
  - command is the command your TelegramBot received
 
-```
+```javascript
 on({id: 'telegram.0.communicate.request', change: 'any'}, function (obj) {
     var stateval = getState('telegram.0.communicate.request').val;              // save Statevalue received from your Bot
     var user = stateval.substring(1,stateval.indexOf("]"));                 // extract user from the message
@@ -462,13 +464,13 @@ Thanks to [callmebot](https://www.callmebot.com/) api, you can make a call to yo
 
 To do that from javascript adapter just call:
 
-```
+```javascript
 sendTo('telegram.0', 'call', 'Some text');
 ```
 
 or 
 
-```
+```javascript
 sendTo('telegram.0', 'call', {
     text: 'Some text',
     user: '@Username', // optional and the call will be done to the first user in telegram.0.communicate.users.
@@ -479,7 +481,7 @@ sendTo('telegram.0', 'call', {
 
 or 
 
-```
+```javascript
 sendTo('telegram.0', 'call', {
     text: 'Some text',
     users: ['@Username1', '+49xxxx'] // Array of `users' or telephone numbers.
@@ -488,7 +490,7 @@ sendTo('telegram.0', 'call', {
 
 or 
 
-```
+```javascript
 sendTo('telegram.0', 'call', {
     file: 'url of mp3 file that is accessible from internet',
     users: ['@Username1', '@Username2'] // Array of `users' or telephone numbers.
@@ -688,7 +690,8 @@ For simple text messages to all users, just put the text within the payload of t
 send it to the ioBroker state `telegram.INSTANCE.communicate.response`.
 
 If you want to set additional options, fill the payload with a JSON object, such as:
-```
+
+```javascript
 msg.payload = {
     // text is the only mandatory field here
     "text": "*bold _italic bold ~italic bold strikethrough~ __underline italic bold___ bold*",
@@ -698,14 +701,14 @@ msg.payload = {
     "parse_mode": "MarkdownV2"
 }
 ```
+
 Before sending it to `telegram.INSTANCE.communicate.responseJson you need to stringify the object!`
 
+## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### __WORK IN PROGRESS__
 -->
-
-## Changelog
 ### 1.12.6 (2022-04-23)
 * (Apollon77) Fix crash cases reported by Sentry
 
