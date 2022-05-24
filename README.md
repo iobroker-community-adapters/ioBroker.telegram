@@ -33,7 +33,7 @@ User must be authenticated before.
 
 You can specify user in that way too:
 
-```
+```javascript
 sendTo('telegram', {user: 'UserName', text: 'Test message'}, function (res) {
     console.log('Sent to ' + res + ' users');
 });
@@ -49,7 +49,7 @@ You can send message over state too, just set state *"telegram.INSTANCE.communic
 
 ```json
 {
-    text: "Test message"
+    "text": "Test message"
 }
 ```
 
@@ -57,10 +57,10 @@ The JSON syntax also allows the adding options from the [telegram bots API](http
 
 ```json
 {
-    text: "Test message, but with *bold*",
-    parse_mode: "Markdown",
-    chatId: "1234567890",
-    user: "UserName"
+    "text": "Test message, but with *bold*",
+    "parse_mode": "Markdown",
+    "chatId": "1234567890",
+    "user": "UserName"
 }
 ```
 
