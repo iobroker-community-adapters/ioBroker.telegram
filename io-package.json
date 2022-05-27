@@ -114,7 +114,6 @@
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
     "loglevel": "info",
     "icon": "telegram.png",
-    "materialize": true,
     "supportCustoms": true,
     "connectionType": "cloud",
     "dataSource": "poll",
@@ -141,7 +140,7 @@
     ],
     "globalDependencies": [
       {
-        "admin": ">=4.0.9"
+        "admin": ">=5.2.28"
       }
     ],
     "plugins": {
