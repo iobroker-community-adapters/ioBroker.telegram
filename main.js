@@ -1852,10 +1852,7 @@ function processTelegramText(msg) {
 }
 
 function connect() {
-    let proxy = false;
-    if (adapter.config && adapter.config.proxy !== undefined) {
-        proxy = adapter.config.proxy;
-    }
+    const proxy = adapter.config.proxy;
 
     if (bot) {
         if (!adapter.config.server) {

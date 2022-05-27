@@ -132,7 +132,7 @@
     "blockly": true,
     "adminUI": {
       "custom": "json",
-      "config": "materialize"
+      "config": "json"
     },
     "dependencies": [
       {
@@ -152,37 +152,48 @@
   },
   "protectedNative": [
     "token",
-    "password"
+    "password",
+    "proxyPassword"
   ],
   "encryptedNative": [
     "token",
-    "password"
+    "password",
+    "proxyPassword"
   ],
   "native": {
     "server": "false",
-    "port": 8443,
-    "bind": "0.0.0.0",
+    "pollingInterval": 300,
     "token": "",
     "baseApiUrl": "https://api.telegram.org",
     "password": "",
-    "text2command": "",
     "rememberUsers": true,
-    "allowStates": true,
-    "storeRawRequest": false,
-    "restarting": "_",
-    "restarted": "_",
     "doNotAcceptNewUsers": false,
-    "url": "",
     "useUsername": false,
+    "saveFiles": false,
+    "allowStates": true,
+    "proxy": false,
+    "proxyHost": "",
+    "proxyPort": 1234,
+    "proxyLogin": "",
+    "proxyPassword": "",
+
+    "restarted": "_",
+    "restarting": "_",
     "keyboard": "/cmds",
     "rooms": false,
+    "storeRawRequest": false,
+    "text2command": "",
+
+    "url": "",
+    "bind": "0.0.0.0",
+    "port": 8443,
     "certPublic": "",
     "certPrivate": "",
     "certChained": "",
+
     "leEnabled": false,
     "leUpdate": false,
-    "leCheckPort": 80,
-    "saveFiles": false
+    "leCheckPort": 80
   },
   "instanceObjects": [
     {

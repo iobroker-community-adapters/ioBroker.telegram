@@ -1,0 +1,305 @@
+{
+    "i18n": true,
+    "type": "tabs",
+    "items": {
+        "_options": {
+            "type": "panel",
+            "label": "Main settings",
+            "items": {
+                "server": {
+                    "type": "select",
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "options": [
+                        {
+                            "label": "Polling",
+                            "value": "false"
+                        },
+                        {
+                            "label": "Server",
+                            "value": "true"
+                        }
+                    ],
+                    "default": "false",
+                    "label": "type"
+                },
+                "pollingInterval": {
+                    "hidden": "data.server === 'true'",
+                    "type": "number",
+                    "sm": 12,
+                    "md": 5,
+                    "lg": 5,
+                    "label": "Polling interval (ms)"
+                },
+                "token": {
+                    "newLine": true,
+                    "type": "text",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "token",
+                    "help": "Read README.md how to get token",
+                    "helpLink": "https://github.com/iobroker-community-adapters/ioBroker.telegram#iobroker-telegram-adapter"
+                },
+                "baseApiUrl": {
+                    "newLine": true,
+                    "type": "text",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "API URL"
+                },
+                "password": {
+                    "newLine": true,
+                    "type": "password",
+                    "repeat": true,
+                    "visible": false,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "password",
+                    "help": "Leave it blank if no password desired"
+                },
+                "rememberUsers": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Remember authenticated users"
+                },
+                "doNotAcceptNewUsers": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Do not authenticate new users"
+                },
+                "useUsername": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Store username instead of firstname of remembered users"
+                },
+                "saveFiles": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Save media files"
+                },
+                "allowStates": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Allow state control"
+                },
+                "proxy": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Proxy Socks5 enable"
+                },
+                "proxyHost": {
+                    "newLine": true,
+                    "hidden": "!data.proxy",
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "proxy Host"
+                },
+                "proxyPort": {
+                    "hidden": "!data.proxy",
+                    "type": "number",
+                    "min": 1,
+                    "max": 65565,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "proxy Port"
+                },
+                "proxyLogin": {
+                    "newLine": true,
+                    "hidden": "!data.proxy",
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Login"
+                },
+                "proxyPassword": {
+                    "hidden": "!data.proxy",
+                    "type": "password",
+                    "repeat": false,
+                    "visible": false,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "password"
+                }
+            }
+        },
+        "_messages": {
+            "type": "panel",
+            "label": "Messages",
+            "items": {
+                "restarted": {
+                    "newLine": true,
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "restarted",
+                    "help": "restarted_help"
+                },
+                "restarting": {
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "restarting",
+                    "help": "restarting_help"
+                },
+                "keyboard": {
+                    "newLine": true,
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Keyboard command",
+                    "help": "Command to show the keyboard"
+                },
+                "rooms": {
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Use rooms in keyboard command",
+                    "help": "Show the list of rooms before the device selection"
+                },
+                "storeRawRequest": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Remember raw request data"
+                },
+                "text2command": {
+                    "type": "instance",
+                    "adapter": "text2command",
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 6,
+                    "label": "text2command instance",
+                    "help": "Text2Command info"
+                }
+            }
+        },
+        "_server": {
+            "hidden": "data.server === 'false'",
+            "hideOnlyControl": true,
+            "type": "panel",
+            "label": "Server settings",
+            "items": {
+                "url": {
+                    "newLine": true,
+                    "type": "text",
+                    "sm": 12,
+                    "md": 9,
+                    "lg": 9,
+                    "label": "url",
+                    "help": "url_help"
+                },
+                "bind": {
+                    "newLine": true,
+                    "type": "ip",
+                    "listenOnAllPorts": true,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 6,
+                    "label": "ip"
+                },
+                "port": {
+                    "type": "number",
+                    "min": 1,
+                    "max": 65565,
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "label": "port",
+                    "help": "port_help"
+                },
+                "certPublic": {
+                    "newLine": true,
+                    "type": "certificate",
+                    "certType": "public",
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "label": "public certificate"
+                },
+                "certPrivate": {
+                    "type": "certificate",
+                    "certType": "private",
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "label": "private certificate"
+                },
+                "certChained": {
+                    "type": "certificate",
+                    "certType": "chained",
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "label": "chained certificate"
+                }
+            }
+        },
+        "_letsencrypt": {
+            "hidden": "data.server === 'false'",
+            "hideOnlyControl": true,
+            "type": "panel",
+            "label": "Let's Encrypt settings",
+            "items": {
+                "leEnabled": {
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Use Lets Encrypt certificates:"
+                },
+                "leUpdate": {
+                    "newLine": true,
+                    "hidden": "!data.leEnabled",
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Use this instance for automatic update:"
+                },
+                "leCheckPort": {
+                    "hidden": "!data.leUpdate",
+                    "type": "number",
+                    "min": 1,
+                    "max": 65565,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Port to check the domain:"
+                }
+            }
+        }
+    }
+}
