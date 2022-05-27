@@ -75,5 +75,7 @@
     "url_help": "zoals \"https://mydomain.noip.com:8443\"",
     "value as boolean": "waarde als Boolean",
     "value as number": "waarde als nummer",
-    "value as string": "waarde als tekenreeks"
+    "value as string": "waarde als tekenreeks",
+    "Do not authenticate new users": "Authenticeer geen nieuwe gebruikers",
+    "Save media files": "Mediabestanden opslaan"
 }

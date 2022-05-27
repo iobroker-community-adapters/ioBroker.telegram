@@ -1,388 +1,394 @@
 {
-  "common": {
-    "name": "telegram",
-    "version": "1.12.6",
-    "news": {
-      "1.12.6": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.5": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.4": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.3": {
-        "en": "Make sure also not set states can be queried - will return \"State not set\" in this case!",
-        "de": "Stellen Sie sicher, dass auch nicht gesetzte Zustände abgefragt werden können - in diesem Fall wird \"Zustand nicht gesetzt\" zurückgegeben!",
-        "ru": "Убедитесь, что также можно запросить неустановленные состояния - в этом случае будет возвращено «Состояние не установлено»!",
-        "pt": "Certifique-se também de que os estados não definidos podem ser consultados - retornará \"Estado não definido\" neste caso!",
-        "nl": "Zorg ervoor dat ook niet-ingestelde staten kunnen worden opgevraagd - in dit geval wordt \"Status niet ingesteld\" geretourneerd!",
-        "fr": "Assurez-vous également que les états non définis peuvent être interrogés - renverra \"State not set\" dans ce cas !",
-        "it": "Assicurati che anche gli stati non impostati possano essere interrogati - in questo caso restituirà \"Stato non impostato\"!",
-        "es": "Asegúrese de que también se puedan consultar los estados no establecidos; ¡devolverá \"Estado no establecido\" en este caso!",
-        "pl": "Upewnij się, że również nieustawione stany mogą być odpytywane - w tym przypadku zwróci \"State not set\"!",
-        "zh-cn": "确保也可以查询未设置的状态 - 在这种情况下将返回“未设置状态”！"
-      },
-      "1.12.2": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.0": {
-        "en": "Add new JSON states communication.responseJson and communication.responseSilentJson to also accept json structures (stringified!) to send messages\nTry to prevent adapter crashes when internet is not available \nAdd Sentry for crash reporting",
-        "de": "Fügen Sie die neuen JSON-Zustände communication.responseJson und communication.responseSilentJson hinzu, um auch JSON-Strukturen (stringifiziert!) zum Senden von Nachrichten zu akzeptieren\nVersuchen Sie, Adapterabstürze zu verhindern, wenn das Internet nicht verfügbar ist\nFügen Sie Sentry für Absturzberichte hinzu",
-        "ru": "Добавьте новые состояния JSON Communication.responseJson и Communication.responseSilentJson, чтобы также принимать структуры json (строковые!) для отправки сообщений.\nПостарайтесь предотвратить сбои адаптера, когда интернет недоступен\nДобавьте Sentry для отчетов о сбоях",
-        "pt": "Adicione novos estados JSON communication.responseJson e communication.responseSilentJson para também aceitar estruturas json (stringified!) para enviar mensagens\nTente evitar falhas no adaptador quando a internet não estiver disponível\nAdicionar Sentinela para relatórios de falhas",
-        "nl": "Voeg nieuwe JSON-staten communication.responseJson en communication.responseSilentJson toe om ook json-structuren (stringified!) te accepteren om berichten te verzenden\nProbeer adaptercrashes te voorkomen wanneer internet niet beschikbaar is\nSentry toevoegen voor crashrapportage",
-        "fr": "Ajoutez de nouveaux états JSON communication.responseJson et communication.responseSilentJson pour accepter également les structures json (stringifiées !) Pour envoyer des messages\nEssayez d'éviter les plantages de l'adaptateur lorsque Internet n'est pas disponible\nAjouter Sentry pour les rapports de plantage",
-        "it": "Aggiungi nuovi stati JSON communication.responseJson e communication.responseSilentJson per accettare anche strutture json (stringate!) Per inviare messaggi\nCerca di evitare che l'adattatore si arresti in modo anomalo quando Internet non è disponibile\nAggiungi Sentinella per la segnalazione degli arresti anomali",
-        "es": "Agregue nuevos estados JSON communication.responseJson y communication.responseSilentJson para aceptar también estructuras json (¡en cadena!) para enviar mensajes\nIntente evitar fallas en el adaptador cuando no haya Internet disponible\nAgregar Sentry para informes de fallas",
-        "pl": "Dodaj nowe stany JSON communication.responseJson i communication.responseSilentJson, aby akceptować również struktury json (stringified!) do wysyłania wiadomości\nStaraj się zapobiegać awariom adaptera, gdy internet nie jest dostępny\nDodaj Sentry do zgłaszania awarii",
-        "zh-cn": "添加新的 JSON 状态communication.responseJson 和communication.responseSilentJson 也接受json 结构（字符串化！）发送消息\n尝试在互联网不可用时防止适配器崩溃\n添加 Sentry 以进行崩溃报告"
-      },
-      "1.11.1": {
-        "en": "fixed the receiving files",
-        "de": "die empfangenen Dateien repariert",
-        "ru": "исправлено получение файлов",
-        "pt": "corrigiu os arquivos de recebimento",
-        "nl": "de ontvangende bestanden gerepareerd",
-        "fr": "corrigé les fichiers de réception",
-        "it": "corretto i file di ricezione",
-        "es": "arregló los archivos de recepción",
-        "pl": "naprawiono odbieranie plików",
-        "zh-cn": "修复了接收文件"
-      }
+    "common": {
+        "name": "telegram",
+        "version": "1.12.6",
+        "news": {
+            "1.12.6": {
+                "en": "Fix crash cases reported by Sentry",
+                "de": "Von Sentry gemeldete Absturzfälle beheben",
+                "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
+                "pt": "Corrigir casos de travamento relatados pelo Sentinela",
+                "nl": "Herstel crashgevallen gemeld door Sentry",
+                "fr": "Correction des cas de plantage signalés par Sentry",
+                "it": "Risolvi i casi di crash segnalati da Sentry",
+                "es": "Solucionar casos de fallas informados por Sentry",
+                "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
+                "zh-cn": "修复 Sentry 报告的崩溃案例"
+            },
+            "1.12.5": {
+                "en": "Fix crash cases reported by Sentry",
+                "de": "Von Sentry gemeldete Absturzfälle beheben",
+                "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
+                "pt": "Corrigir casos de travamento relatados pelo Sentinela",
+                "nl": "Herstel crashgevallen gemeld door Sentry",
+                "fr": "Correction des cas de plantage signalés par Sentry",
+                "it": "Risolvi i casi di crash segnalati da Sentry",
+                "es": "Solucionar casos de fallas informados por Sentry",
+                "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
+                "zh-cn": "修复 Sentry 报告的崩溃案例"
+            },
+            "1.12.4": {
+                "en": "Fix crash cases reported by Sentry",
+                "de": "Von Sentry gemeldete Absturzfälle beheben",
+                "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
+                "pt": "Corrigir casos de travamento relatados pelo Sentinela",
+                "nl": "Herstel crashgevallen gemeld door Sentry",
+                "fr": "Correction des cas de plantage signalés par Sentry",
+                "it": "Risolvi i casi di crash segnalati da Sentry",
+                "es": "Solucionar casos de fallas informados por Sentry",
+                "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
+                "zh-cn": "修复 Sentry 报告的崩溃案例"
+            },
+            "1.12.3": {
+                "en": "Make sure also not set states can be queried - will return \"State not set\" in this case!",
+                "de": "Stellen Sie sicher, dass auch nicht gesetzte Zustände abgefragt werden können - in diesem Fall wird \"Zustand nicht gesetzt\" zurückgegeben!",
+                "ru": "Убедитесь, что также можно запросить неустановленные состояния - в этом случае будет возвращено «Состояние не установлено»!",
+                "pt": "Certifique-se também de que os estados não definidos podem ser consultados - retornará \"Estado não definido\" neste caso!",
+                "nl": "Zorg ervoor dat ook niet-ingestelde staten kunnen worden opgevraagd - in dit geval wordt \"Status niet ingesteld\" geretourneerd!",
+                "fr": "Assurez-vous également que les états non définis peuvent être interrogés - renverra \"State not set\" dans ce cas !",
+                "it": "Assicurati che anche gli stati non impostati possano essere interrogati - in questo caso restituirà \"Stato non impostato\"!",
+                "es": "Asegúrese de que también se puedan consultar los estados no establecidos; ¡devolverá \"Estado no establecido\" en este caso!",
+                "pl": "Upewnij się, że również nieustawione stany mogą być odpytywane - w tym przypadku zwróci \"State not set\"!",
+                "zh-cn": "确保也可以查询未设置的状态 - 在这种情况下将返回“未设置状态”！"
+            },
+            "1.12.2": {
+                "en": "Fix crash cases reported by Sentry",
+                "de": "Von Sentry gemeldete Absturzfälle beheben",
+                "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
+                "pt": "Corrigir casos de travamento relatados pelo Sentinela",
+                "nl": "Herstel crashgevallen gemeld door Sentry",
+                "fr": "Correction des cas de plantage signalés par Sentry",
+                "it": "Risolvi i casi di crash segnalati da Sentry",
+                "es": "Solucionar casos de fallas informados por Sentry",
+                "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
+                "zh-cn": "修复 Sentry 报告的崩溃案例"
+            },
+            "1.12.0": {
+                "en": "Add new JSON states communication.responseJson and communication.responseSilentJson to also accept json structures (stringified!) to send messages\nTry to prevent adapter crashes when internet is not available \nAdd Sentry for crash reporting",
+                "de": "Fügen Sie die neuen JSON-Zustände communication.responseJson und communication.responseSilentJson hinzu, um auch JSON-Strukturen (stringifiziert!) zum Senden von Nachrichten zu akzeptieren\nVersuchen Sie, Adapterabstürze zu verhindern, wenn das Internet nicht verfügbar ist\nFügen Sie Sentry für Absturzberichte hinzu",
+                "ru": "Добавьте новые состояния JSON Communication.responseJson и Communication.responseSilentJson, чтобы также принимать структуры json (строковые!) для отправки сообщений.\nПостарайтесь предотвратить сбои адаптера, когда интернет недоступен\nДобавьте Sentry для отчетов о сбоях",
+                "pt": "Adicione novos estados JSON communication.responseJson e communication.responseSilentJson para também aceitar estruturas json (stringified!) para enviar mensagens\nTente evitar falhas no adaptador quando a internet não estiver disponível\nAdicionar Sentinela para relatórios de falhas",
+                "nl": "Voeg nieuwe JSON-staten communication.responseJson en communication.responseSilentJson toe om ook json-structuren (stringified!) te accepteren om berichten te verzenden\nProbeer adaptercrashes te voorkomen wanneer internet niet beschikbaar is\nSentry toevoegen voor crashrapportage",
+                "fr": "Ajoutez de nouveaux états JSON communication.responseJson et communication.responseSilentJson pour accepter également les structures json (stringifiées !) Pour envoyer des messages\nEssayez d'éviter les plantages de l'adaptateur lorsque Internet n'est pas disponible\nAjouter Sentry pour les rapports de plantage",
+                "it": "Aggiungi nuovi stati JSON communication.responseJson e communication.responseSilentJson per accettare anche strutture json (stringate!) Per inviare messaggi\nCerca di evitare che l'adattatore si arresti in modo anomalo quando Internet non è disponibile\nAggiungi Sentinella per la segnalazione degli arresti anomali",
+                "es": "Agregue nuevos estados JSON communication.responseJson y communication.responseSilentJson para aceptar también estructuras json (¡en cadena!) para enviar mensajes\nIntente evitar fallas en el adaptador cuando no haya Internet disponible\nAgregar Sentry para informes de fallas",
+                "pl": "Dodaj nowe stany JSON communication.responseJson i communication.responseSilentJson, aby akceptować również struktury json (stringified!) do wysyłania wiadomości\nStaraj się zapobiegać awariom adaptera, gdy internet nie jest dostępny\nDodaj Sentry do zgłaszania awarii",
+                "zh-cn": "添加新的 JSON 状态communication.responseJson 和communication.responseSilentJson 也接受json 结构（字符串化！）发送消息\n尝试在互联网不可用时防止适配器崩溃\n添加 Sentry 以进行崩溃报告"
+            },
+            "1.11.1": {
+                "en": "fixed the receiving files",
+                "de": "die empfangenen Dateien repariert",
+                "ru": "исправлено получение файлов",
+                "pt": "corrigiu os arquivos de recebimento",
+                "nl": "de ontvangende bestanden gerepareerd",
+                "fr": "corrigé les fichiers de réception",
+                "it": "corretto i file di ricezione",
+                "es": "arregló los archivos de recepción",
+                "pl": "naprawiono odbieranie plików",
+                "zh-cn": "修复了接收文件"
+            }
+        },
+        "title": "Telegram",
+        "titleLang": {
+            "en": "Telegram",
+            "de": "Telegramm",
+            "ru": "Телеграмма",
+            "pt": "Telegrama",
+            "nl": "Telegram",
+            "fr": "Télégramme",
+            "it": "Telegramma",
+            "es": "Telegrama",
+            "pl": "Telegram",
+            "zh-cn": "电报"
+        },
+        "desc": {
+            "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
+            "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
+            "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через браузер",
+            "pt": "Este adaptador permite enviar e receber mensagens de telegramas de ioBroker e ser um bot",
+            "nl": "Met deze adapter kunt u telegramberichten van ioBroker verzenden en ontvangen en een bot zijn",
+            "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
+            "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
+            "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
+            "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem",
+            "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人"
+        },
+        "authors": [
+            "bluefox <dogafox@gmail.com>"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "messagebox": true,
+        "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
+        "loglevel": "info",
+        "icon": "telegram.png",
+        "supportCustoms": true,
+        "connectionType": "cloud",
+        "dataSource": "poll",
+        "compact": true,
+        "tier": 1,
+        "keywords": [
+            "notification",
+            "telegram",
+            "message"
+        ],
+        "restartSchedule": "4 5 * * *",
+        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.telegram/master/admin/telegram.png",
+        "type": "messaging",
+        "stopBeforeUpdate": true,
+        "blockly": true,
+        "adminUI": {
+            "custom": "json",
+            "config": "json"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.0"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.2.28"
+            }
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://ae1b374ffb5d40cbabe9bff369520972@sentry.iobroker.net/38"
+            }
+        }
     },
-    "title": "Telegram",
-    "titleLang": {
-      "en": "Telegram"
-    },
-    "desc": {
-      "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
-      "de": "Adapter ermöglicht eine Kommunikation mit dem telegram app und ist selbst ein bot",
-      "ru": "Драйвер запускает Telegram бот, с которым можно общаться по App или через браузер",
-      "pt": "Este adaptador permite enviar e receber mensagens de telegramas de ioBroker e ser um bot",
-      "nl": "Met deze adapter kunt u telegramberichten van ioBroker verzenden en ontvangen en een bot zijn",
-      "fr": "Cet adaptateur permet d'envoyer et de recevoir des messages de télégrammes d'ioBroker et d'être un bot",
-      "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
-      "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
-      "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem",
-      "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人"
-    },
-    "authors": [
-      "bluefox <dogafox@gmail.com>"
+    "protectedNative": [
+        "token",
+        "password",
+        "proxyPassword"
     ],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "mode": "daemon",
-    "messagebox": true,
-    "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
-    "loglevel": "info",
-    "icon": "telegram.png",
-    "supportCustoms": true,
-    "connectionType": "cloud",
-    "dataSource": "poll",
-    "compact": true,
-    "tier": 1,
-    "keywords": [
-      "notification",
-      "telegram",
-      "message"
+    "encryptedNative": [
+        "token",
+        "password",
+        "proxyPassword"
     ],
-    "restartSchedule": "4 5 * * *",
-    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.telegram/master/admin/telegram.png",
-    "type": "messaging",
-    "stopBeforeUpdate": true,
-    "blockly": true,
-    "adminUI": {
-      "custom": "json",
-      "config": "json"
+    "native": {
+        "server": "false",
+        "pollingInterval": 300,
+        "token": "",
+        "baseApiUrl": "https://api.telegram.org",
+        "password": "",
+        "rememberUsers": true,
+        "doNotAcceptNewUsers": false,
+        "useUsername": false,
+        "saveFiles": false,
+        "allowStates": true,
+        "proxy": false,
+        "proxyHost": "",
+        "proxyPort": 1234,
+        "proxyLogin": "",
+        "proxyPassword": "",
+        "restarted": "_",
+        "restarting": "_",
+        "keyboard": "/cmds",
+        "rooms": false,
+        "storeRawRequest": false,
+        "text2command": "",
+        "url": "",
+        "bind": "0.0.0.0",
+        "port": 8443,
+        "certPublic": "",
+        "certPrivate": "",
+        "certChained": "",
+        "leEnabled": false,
+        "leUpdate": false,
+        "leCheckPort": 80
     },
-    "dependencies": [
-      {
-        "js-controller": ">=3.3.0"
-      }
-    ],
-    "globalDependencies": [
-      {
-        "admin": ">=5.2.28"
-      }
-    ],
-    "plugins": {
-      "sentry": {
-        "dsn": "https://ae1b374ffb5d40cbabe9bff369520972@sentry.iobroker.net/38"
-      }
-    }
-  },
-  "protectedNative": [
-    "token",
-    "password",
-    "proxyPassword"
-  ],
-  "encryptedNative": [
-    "token",
-    "password",
-    "proxyPassword"
-  ],
-  "native": {
-    "server": "false",
-    "pollingInterval": 300,
-    "token": "",
-    "baseApiUrl": "https://api.telegram.org",
-    "password": "",
-    "rememberUsers": true,
-    "doNotAcceptNewUsers": false,
-    "useUsername": false,
-    "saveFiles": false,
-    "allowStates": true,
-    "proxy": false,
-    "proxyHost": "",
-    "proxyPort": 1234,
-    "proxyLogin": "",
-    "proxyPassword": "",
-
-    "restarted": "_",
-    "restarting": "_",
-    "keyboard": "/cmds",
-    "rooms": false,
-    "storeRawRequest": false,
-    "text2command": "",
-
-    "url": "",
-    "bind": "0.0.0.0",
-    "port": 8443,
-    "certPublic": "",
-    "certPrivate": "",
-    "certChained": "",
-
-    "leEnabled": false,
-    "leUpdate": false,
-    "leCheckPort": 80
-  },
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "If connected to Telegram server",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.request",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Last received request",
-        "type": "string",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.requestRaw",
-      "type": "state",
-      "common": {
-        "role": "json",
-        "name": "Raw Data of last received request",
-        "type": "string",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.requestChatId",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Chat ID of last received request",
-        "type": "number",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.requestMessageId",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Message ID of last received request",
-        "type": "number",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.botSendChatId",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Chat ID of last sent message by the bot",
-        "type": "number",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.botSendMessageId",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Message ID of last sent message by the bot",
-        "type": "number",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.botSendRaw",
-      "type": "state",
-      "common": {
-        "role": "json",
-        "name": "Raw Data of last sent message by the bot",
-        "type": "string",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.requestUserId",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "User ID of last received request",
-        "type": "string",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.response",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Send text through telegram with notification",
-        "type": "string",
-        "read": true,
-        "write": true
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.responseSilent",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Send text through telegram silently",
-        "type": "string",
-        "read": true,
-        "write": true
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.responseJson",
-      "type": "state",
-      "common": {
-        "role": "json",
-        "name": "Send text through telegram with notification with json definition",
-        "type": "string",
-        "read": true,
-        "write": true
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.responseSilentJson",
-      "type": "state",
-      "common": {
-        "role": "json",
-        "name": "Send text through telegram silently with json definition",
-        "type": "string",
-        "read": true,
-        "write": true
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.users",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "Users as json, which are constantly authenticated",
-        "type": "string",
-        "read": false,
-        "write": false
-      },
-      "native": {}
-    },
-    {
-      "_id": "communicate.pathFile",
-      "type": "state",
-      "common": {
-        "role": "text",
-        "name": "The path to the last file received",
-        "type": "string",
-        "read": true,
-        "write": false
-      },
-      "native": {}
-    }
-  ]
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to Telegram server",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.request",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Last received request",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.requestRaw",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Raw Data of last received request",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.requestChatId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Chat ID of last received request",
+                "type": "number",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.requestMessageId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Message ID of last received request",
+                "type": "number",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendChatId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Chat ID of last sent message by the bot",
+                "type": "number",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendMessageId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Message ID of last sent message by the bot",
+                "type": "number",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.botSendRaw",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Raw Data of last sent message by the bot",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.requestUserId",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "User ID of last received request",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.response",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Send text through telegram with notification",
+                "type": "string",
+                "read": true,
+                "write": true
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.responseSilent",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Send text through telegram silently",
+                "type": "string",
+                "read": true,
+                "write": true
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.responseJson",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Send text through telegram with notification with json definition",
+                "type": "string",
+                "read": true,
+                "write": true
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.responseSilentJson",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Send text through telegram silently with json definition",
+                "type": "string",
+                "read": true,
+                "write": true
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.users",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "Users as json, which are constantly authenticated",
+                "type": "string",
+                "read": false,
+                "write": false
+            },
+            "native": {}
+        },
+        {
+            "_id": "communicate.pathFile",
+            "type": "state",
+            "common": {
+                "role": "text",
+                "name": "The path to the last file received",
+                "type": "string",
+                "read": true,
+                "write": false
+            },
+            "native": {}
+        }
+    ]
 }

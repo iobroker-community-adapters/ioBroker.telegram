@@ -75,5 +75,7 @@
     "url_help": "like \"https://mydomain.noip.com:8443\"",
     "value as boolean": "value as boolean",
     "value as number": "value as number",
-    "value as string": "value as string"
+    "value as string": "value as string",
+    "Do not authenticate new users": "Do not authenticate new users",
+    "Save media files": "Save media files"
 }

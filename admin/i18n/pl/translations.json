@@ -75,5 +75,7 @@
     "url_help": "na przykład \"https://mydomain.noip.com:8443\"",
     "value as boolean": "wartość jako boolean",
     "value as number": "wartość jako liczba",
-    "value as string": "wartość jako ciąg"
+    "value as string": "wartość jako ciąg",
+    "Do not authenticate new users": "Nie uwierzytelniaj nowych użytkowników",
+    "Save media files": "Zapisz pliki multimedialne"
 }
