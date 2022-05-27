@@ -370,11 +370,12 @@
             "_id": "communicate.users",
             "type": "state",
             "common": {
-                "role": "text",
+                "role": "json",
                 "name": "Users as json, which are constantly authenticated",
                 "type": "string",
                 "read": false,
-                "write": false
+                "write": false,
+                "def": "{}"
             },
             "native": {}
         },

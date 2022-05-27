@@ -153,7 +153,7 @@ function startAdapter(options) {
                 });
             } else if (obj.command === 'delAllUser') {
                 try {
-                    adapter.setState('communicate.users', '', true, err => {
+                    adapter.setState('communicate.users', '{}', true, err => {
                         if (!err) {
                             adapter.sendTo(obj.from, obj.command, true, obj.callback);
                             updateUsers();
@@ -1384,10 +1384,10 @@ function callUsers(users, text, lang, file, repeats, cb) {
 function storeUser(id, firstName, userName) {
     if (!users[id] || users[id].firstName !== firstName || users[id].userName !== userName) {
         Object.keys(users).forEach(id => {
-           if (userName && users[id].userName === userName) {
+            if (userName && users[id].userName === userName) {
                 delete users[id];
             }
-           if (!userName && !users[id].userName && users[id].firstName === firstName) {
+            if (!userName && !users[id].userName && users[id].firstName === firstName) {
                 delete users[id];
             }
         });
