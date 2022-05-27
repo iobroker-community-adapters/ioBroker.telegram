@@ -24,9 +24,7 @@ const fs          = require('fs');
 const path        = require('path');
 const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
 const https       = require('https');
-const axios       = require("axios");
-
-const DEFAULT_SECRET = 'Zgfr56gFe87jJOM';
+const axios       = require('axios');
 
 let socks;
 
@@ -1383,22 +1381,6 @@ function callUsers(users, text, lang, file, repeats, cb) {
     }
 }
 
-function decrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
-
-function encrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
-
 function storeUser(id, firstName, userName) {
     if (!users[id] || users[id].firstName !== firstName || users[id].userName !== userName) {
         Object.keys(users).forEach(id => {
@@ -2141,28 +2123,6 @@ function readEnums(name) {
 async function main() {
     if (!adapter.config.token) {
         return adapter.log.error('Token is not set!');
-    }
-
-    // if old encoding detected
-    if (!adapter.config.token.includes(':') || adapter.config.token[0] < '0' || adapter.config.token[0] > '9') {
-        // decode password and token
-        const obj = await adapter.getForeignObjectAsync('system.adapter.' + adapter.namespace);
-        const data = await adapter.getForeignObjectAsync('system.config');
-        let systemSecret;
-        if (data && data.native) {
-            systemSecret = data.native.secret;
-        }
-        systemSecret = systemSecret || DEFAULT_SECRET;
-        if (obj.native.passwordRepeat) {
-            obj.native.password = encrypt(systemSecret, obj.native.passwordRepeat);
-            delete obj.native.passwordRepeat;
-        } else {
-            const password = decrypt('Zgfr56gFe87jJON', obj.native.password || '');
-            obj.native.password = encrypt(systemSecret, password);
-        }
-        obj.native.token = encrypt(systemSecret, obj.native.token);
-        await adapter.setForeignObjectAsync(obj._id, obj);
-        return;
     }
 
     await adapter.setStateAsync('info.connection', false, true);
