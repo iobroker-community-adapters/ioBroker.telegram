@@ -1,7 +1,7 @@
 {
     "name": "iobroker.telegram.rules",
     "private": true,
-    "version": "1.12.6",
+    "version": "1.13.0",
     "scripts": {
         "vite-dev": "vite",
         "vite-build": "vite build",

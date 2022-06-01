@@ -709,7 +709,7 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.13.0 (2022-06-01)
 * (klein0r) Added Admin 5 UI config
 * (bluefox) Added rule block for javascript as plugin
 
