@@ -707,10 +707,11 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
-	### __WORK IN PROGRESS__
+	### **WORK IN PROGRESS**
 -->
-### __WORK IN PROGRESS__
+### **WORK IN PROGRESS**
 * (klein0r) Added Admin 5 UI config
+* (bluefox) Added rule block for javascript as plugin
 
 ### 1.12.6 (2022-04-23)
 * (Apollon77) Fix crash cases reported by Sentry

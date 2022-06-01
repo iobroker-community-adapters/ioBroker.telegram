@@ -158,7 +158,7 @@
             }
         },
         "javascriptRules": {
-            "url": "rules.js",
+            "url": "rules/customRuleBlocks.js",
             "name": "ActionTelegram"
         }
     },
