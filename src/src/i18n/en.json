@@ -1,0 +1,8 @@
+{
+  "User:": "User:",
+  "Text:": "Text:",
+  "Instance:": "Instance:",
+  "Sends message via telegram": "Sends message via telegram",
+  "Telegram": "Telegram",
+  "You can use %s in the text to display current trigger value or %id to display the triggered object ID": "You can use %s in the text to display current trigger value or %id to display the triggered object ID"
+}
