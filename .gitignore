@@ -8,3 +8,6 @@ iob_npm.done
 
 # ioBroker dev-server
 .dev-server/
+/src/dist
+/src/node_modules
+/src/package-lock.json
