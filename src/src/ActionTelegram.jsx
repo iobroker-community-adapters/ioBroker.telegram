@@ -1,5 +1,5 @@
 import GenericBlock from './GenericBlock';
-// import I18n from '@iobroker/adapter-react-v5/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 class ActionTelegram extends GenericBlock {
     constructor(props) {
@@ -21,7 +21,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
     }
 
     renderDebug(debugMessage) {
-        // return `${I18n.t('Sent:')} ${debugMessage.data.text}`;
+        return `${I18n.t('Sent:')} ${debugMessage.data.text}`;
     }
 
     onValueChanged(value, attr) {
@@ -46,7 +46,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
                     {
                         nameRender: 'renderSelect',
                         attr: 'user',
-                        options: [{title: 'telegram.0', value: 'telegram.0'}],
+                        options: [{ title: 'telegram.0', value: 'telegram.0' }],
                         defaultValue: '',
                         frontText: 'User:',
                     },

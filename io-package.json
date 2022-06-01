@@ -158,6 +158,7 @@
             }
         },
         "javascriptRules": {
+            "i18n": true,
             "url": "rules/customRuleBlocks.js",
             "name": "ActionTelegram"
         }

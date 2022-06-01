@@ -1,5 +1,6 @@
 import {importShared} from './__federation_fn_import.js'
 const {default:GenericBlock} = await importShared('./src/GenericBlock.jsx')
+const {i18n:I18n} = await importShared('@iobroker/adapter-react-v5')
 
 class ActionTelegram extends GenericBlock {
   constructor(props) {
@@ -19,6 +20,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
     }
   }
   renderDebug(debugMessage) {
+    return `${I18n.t("Sent:")} ${debugMessage.data.text}`;
   }
   onValueChanged(value, attr) {
     if (attr === "instance") {

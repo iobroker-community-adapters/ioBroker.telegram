@@ -1,6 +1,6 @@
 import { _ as __vitePreload } from './preload-helper.1c052cf7.js';
 
-const moduleMap= {'react':{get:()=>()=>__federation_import('./__federation_shared_react.js'),import:true},'react-dom':{get:()=>()=>__federation_import('./__federation_shared_react-dom.js'),import:true},'prop-types':{get:()=>()=>__federation_import('./__federation_shared_prop-types.js'),import:true},'./src/GenericBlock.jsx':{get:()=>()=>__federation_import('./__federation_shared_SrcGenericBlockJsx.js'),import:true}};
+const moduleMap= {'react':{get:()=>()=>__federation_import('./__federation_shared_react.js'),import:true},'@iobroker/adapter-react-v5':{get:()=>()=>__federation_import('./__federation_shared_@iobrokerAdapter-react-v5.js'),import:true},'react-dom':{get:()=>()=>__federation_import('./__federation_shared_react-dom.js'),import:true},'prop-types':{get:()=>()=>__federation_import('./__federation_shared_prop-types.js'),import:true},'./src/GenericBlock.jsx':{get:()=>()=>__federation_import('./__federation_shared_SrcGenericBlockJsx.js'),import:true}};
       const moduleCache = Object.create(null);
       async function importShared(name,shareScope = 'default') {
         return moduleCache[name] ? new Promise((r) => r(moduleCache[name])) : getProviderSharedModule(name, shareScope);

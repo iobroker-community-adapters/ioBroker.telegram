@@ -12,6 +12,7 @@ export default defineConfig({
             },
             shared: {
                 'react': {},
+                '@iobroker/adapter-react-v5': {},
                 'react-dom': {},
                 'prop-types': {},
                 './src/GenericBlock.jsx': {

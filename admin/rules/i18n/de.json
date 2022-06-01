@@ -1,0 +1,8 @@
+{
+  "User:": "Benutzer:",
+  "Text:": "Text:",
+  "Instance:": "Instanz:",
+  "Sends message via telegram": "Sendet Nachricht per Telegramm",
+  "Telegram": "Telegram",
+  "You can use %s in the text to display current trigger value or %id to display the triggered object ID": "Sie können %s im Text verwenden, um den aktuellen Triggerwert anzuzeigen, oder %id, um die ID des ausgelösten Objekts anzuzeigen"
+}
