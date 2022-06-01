@@ -67,7 +67,7 @@
     "check": "tsc --noEmit -p tsconfig.check.json",
     "lint": "eslint",
     "translate": "translate-adapter",
-    "build": "gulp",
+    "build": "node node_modules/gulp/bin/gulp.js",
     "release": "release-script",
     "release-patch": "release-script patch --yes",
     "release-minor": "release-script minor --yes",
