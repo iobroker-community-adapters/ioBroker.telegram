@@ -1,5 +1,7 @@
-import GenericBlock from './GenericBlock';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import WidgetGenericBlock from './GenericBlock';
+import { I18n } from '@iobroker/adapter-react-v5';
+
+const GenericBlock = window.GenericBlock || WidgetGenericBlock;
 
 class ActionTelegram extends GenericBlock {
     constructor(props) {
