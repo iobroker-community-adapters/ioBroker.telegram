@@ -1,3 +1,3 @@
-import ExampleComponent from './ExampleComponent';
+import TelegramComponent from './TelegramComponent';
 
-export default { ExampleComponent };
+export default { TelegramComponent };

@@ -12,7 +12,7 @@ const makeShared = pkgs => {
 };
 
 module.exports = {
-    name: 'AdminComponentTemplateSet',
+    name: 'ConfigCustomTelegramSet',
     filename: 'customComponents.js',
     exposes: {
         './Components': './src/Components.jsx',

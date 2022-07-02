@@ -1,5 +1,5 @@
 {
-    "name": "iobroker-admin-component-easy-access",
+    "name": "iobroker-admin-component-telegram",
     "private": true,
     "version": "1.13.0",
     "scripts": {

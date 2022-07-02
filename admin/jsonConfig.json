@@ -203,6 +203,12 @@
                     "lg": 6,
                     "label": "text2command instance",
                     "help": "Text2Command info"
+                },
+                "_custom": {
+                    "type": "custom",
+                    "i18n": true,
+                    "url": "custom/customComponents.js",
+                    "name": "ConfigCustomTelegramSet/Components/TelegramComponent"
                 }
             }
         },

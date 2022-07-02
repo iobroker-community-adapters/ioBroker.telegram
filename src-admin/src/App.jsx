@@ -9,8 +9,7 @@ import GenericApp from '@iobroker/adapter-react-v5/GenericApp';
 import I18n from '@iobroker/adapter-react-v5/i18n';
 import Loader from '@iobroker/adapter-react-v5/Components/Loader';
 
-import ExampleComponent from './ExampleComponent';
-import { ConfigGeneric } from '@iobroker/adapter-react-v5';
+import TelegramComponent from './TelegramComponent';
 
 const styles = theme => ({
     app: {
@@ -50,7 +49,7 @@ class App extends GenericApp {
             <ThemeProvider theme={this.state.theme}>
                 <div className={this.props.classes.app}>
                     <div className={this.props.classes.item}>
-                        <ExampleComponent
+                        <TelegramComponent
                             socket={this.socket}
                             themeType={this.state.themeType}
                             themeName={this.state.themeName}
@@ -58,7 +57,7 @@ class App extends GenericApp {
                             data={this.state.data}
                             onError={() => {}}
                             schema={{
-                                name: 'ConfigCustomTemplateSet/Components/ExampleComponent',
+                                name: 'ConfigCustomTelegramSet/Components/TelegramComponent',
                                 type: 'custom',
                             }}
                             onChange={data => {

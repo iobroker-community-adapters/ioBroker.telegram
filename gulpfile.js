@@ -4,7 +4,36 @@ const cp = require('child_process');
 const del = require('del');
 const src = __dirname + '/src/';
 
-function build() {
+function npmInstallRules() {
+    return new Promise((resolve, reject) => {
+        // Install node modules
+        const cwd = src.replace(/\\/g, '/');
+
+        const cmd = `npm install -f`;
+        console.log(`"${cmd} in ${cwd}`);
+
+        // System call used for update of js-controller itself,
+        // because during installation npm packet will be deleted too, but some files must be loaded even during the install process.
+        const exec = cp.exec;
+        const child = exec(cmd, {cwd});
+
+        child.stderr.pipe(process.stderr);
+        child.stdout.pipe(process.stdout);
+
+        child.on('exit', (code /* , signal */) => {
+            // code 1 is strange error that cannot be explained. Everything is installed but error :(
+            if (code && code !== 1) {
+                reject('Cannot install: ' + code);
+            } else {
+                console.log(`"${cmd} in ${cwd} finished.`);
+                // command succeeded
+                resolve();
+            }
+        });
+    });
+}
+
+function buildRules() {
     const version = JSON.parse(fs.readFileSync(__dirname + '/package.json').toString('utf8')).version;
     const data    = JSON.parse(fs.readFileSync(src + 'package.json').toString('utf8'));
 
@@ -20,9 +49,9 @@ function build() {
 
         console.log(options.cwd);
 
-        let script = src + 'node_modules/vite/bin/vite.js';
+        let script = src + 'node_modules/@craco/craco/bin/craco.js';
         if (!fs.existsSync(script)) {
-            script = __dirname + '/node_modules/vite/bin/vite.js';
+            script = __dirname + '/node_modules/@craco/craco/bin/craco.js';
         }
         if (!fs.existsSync(script)) {
             console.error('Cannot find execution file: ' + script);
@@ -39,17 +68,19 @@ function build() {
     });
 }
 
-gulp.task('0-clean', () => del(['admin/rules/**/*', 'dist/**/*']));
+gulp.task('rules-0-clean', () => del(['admin/rules/**/*', 'dist/**/*']));
 
-gulp.task('1-compile', async () => build());
+gulp.task('rules-1-npm', async () => npmInstallRules());
 
-gulp.task('2-copy', () => Promise.all([
+gulp.task('rules-2-compile', async () => buildRules());
+
+gulp.task('rules-3-copy', () => Promise.all([
     gulp.src(['src/dist/assets/*.js', '!src/dist/assets/__federation_shared_*.js', '!src/dist/assets/__federation_lib_semver.js']).pipe(gulp.dest('admin/rules')),
     gulp.src(['src/dist/assets/*.map', '!src/dist/assets/__federation_shared_*.map', '!src/dist/assets/__federation_lib_semver.js.map']).pipe(gulp.dest('admin/rules')),
     gulp.src(['src/src/i18n/*.json']).pipe(gulp.dest('admin/rules/i18n')),
 ]));
 
-gulp.task('build', gulp.series(['0-clean', '1-compile', '2-copy']));
+gulp.task('rules-build', gulp.series(['rules-0-clean', 'rules-1-npm', 'rules-2-compile', 'rules-3-copy']));
 
 const srcAdmin = __dirname + '/src-admin/';
 
@@ -142,4 +173,4 @@ gulp.task('admin-3-copy', () => Promise.all([
 
 gulp.task('admin-build', gulp.series(['admin-0-clean', 'admin-1-npm', 'admin-2-compile', 'admin-3-copy']));
 
-gulp.task('default', gulp.series(['build', 'admin-build']));
+gulp.task('default', gulp.series(['rules-build', 'admin-build']));
