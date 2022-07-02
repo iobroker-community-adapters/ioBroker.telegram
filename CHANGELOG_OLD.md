@@ -1,4 +1,7 @@
 # Older changes
+## 1.12.3 (2022-04-19)
+* (Apollon77) Make sure also not set states can be queried - will return "State not set" in this case!
+
 ## 1.12.2 (2022-04-01)
 * (Apollon77) Fix crash cases reported by Sentry
 

@@ -709,7 +709,7 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.14.0 (2022-07-02)
 * (bluefox) Ported config Gui to Admin 6
 
 ### 1.13.0 (2022-06-01)
@@ -724,9 +724,6 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 
 ### 1.12.4 (2022-04-19)
 * (Apollon77) Fix crash cases reported by Sentry
-
-### 1.12.3 (2022-04-19)
-* (Apollon77) Make sure also not set states can be queried - will return "State not set" in this case!
 
 ## License
 

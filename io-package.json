@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.13.0",
+    "version": "1.14.0",
     "news": {
+      "1.14.0": {
+        "en": "Ported config Gui to Admin 6",
+        "de": "Ported config Gui zu Admin 6",
+        "ru": "Портированная конфиг Гуй админ 6",
+        "pt": "Configuração porno Gui para administrador 6",
+        "nl": "Beveiliging Gui tot Admin 6",
+        "fr": "Configuration portuaire Gui à l'administration 6",
+        "it": "Configurazione portata Gui a Admin 6",
+        "es": "Config de porte Gui a Admin 6",
+        "pl": "Strona internetowa Gui – Admin 6",
+        "zh-cn": "波 特 导 言6"
+      },
       "1.13.0": {
         "en": "Added Admin 5 UI config\nAdded rule block for javascript as plugin",
         "de": "Admin 5 UI-Konfiguration hinzugefügt\nRegelblock für Javascript als Plugin hinzugefügt",
@@ -74,18 +86,6 @@
         "es": "Solucionar casos de fallas informados por Sentry",
         "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
         "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.0": {
-        "en": "Add new JSON states communication.responseJson and communication.responseSilentJson to also accept json structures (stringified!) to send messages\nTry to prevent adapter crashes when internet is not available \nAdd Sentry for crash reporting",
-        "de": "Fügen Sie die neuen JSON-Zustände communication.responseJson und communication.responseSilentJson hinzu, um auch JSON-Strukturen (stringifiziert!) zum Senden von Nachrichten zu akzeptieren\nVersuchen Sie, Adapterabstürze zu verhindern, wenn das Internet nicht verfügbar ist\nFügen Sie Sentry für Absturzberichte hinzu",
-        "ru": "Добавьте новые состояния JSON Communication.responseJson и Communication.responseSilentJson, чтобы также принимать структуры json (строковые!) для отправки сообщений.\nПостарайтесь предотвратить сбои адаптера, когда интернет недоступен\nДобавьте Sentry для отчетов о сбоях",
-        "pt": "Adicione novos estados JSON communication.responseJson e communication.responseSilentJson para também aceitar estruturas json (stringified!) para enviar mensagens\nTente evitar falhas no adaptador quando a internet não estiver disponível\nAdicionar Sentinela para relatórios de falhas",
-        "nl": "Voeg nieuwe JSON-staten communication.responseJson en communication.responseSilentJson toe om ook json-structuren (stringified!) te accepteren om berichten te verzenden\nProbeer adaptercrashes te voorkomen wanneer internet niet beschikbaar is\nSentry toevoegen voor crashrapportage",
-        "fr": "Ajoutez de nouveaux états JSON communication.responseJson et communication.responseSilentJson pour accepter également les structures json (stringifiées !) Pour envoyer des messages\nEssayez d'éviter les plantages de l'adaptateur lorsque Internet n'est pas disponible\nAjouter Sentry pour les rapports de plantage",
-        "it": "Aggiungi nuovi stati JSON communication.responseJson e communication.responseSilentJson per accettare anche strutture json (stringate!) Per inviare messaggi\nCerca di evitare che l'adattatore si arresti in modo anomalo quando Internet non è disponibile\nAggiungi Sentinella per la segnalazione degli arresti anomali",
-        "es": "Agregue nuevos estados JSON communication.responseJson y communication.responseSilentJson para aceptar también estructuras json (¡en cadena!) para enviar mensajes\nIntente evitar fallas en el adaptador cuando no haya Internet disponible\nAgregar Sentry para informes de fallas",
-        "pl": "Dodaj nowe stany JSON communication.responseJson i communication.responseSilentJson, aby akceptować również struktury json (stringified!) do wysyłania wiadomości\nStaraj się zapobiegać awariom adaptera, gdy internet nie jest dostępny\nDodaj Sentry do zgłaszania awarii",
-        "zh-cn": "添加新的 JSON 状态communication.responseJson 和communication.responseSilentJson 也接受json 结构（字符串化！）发送消息\n尝试在互联网不可用时防止适配器崩溃\n添加 Sentry 以进行崩溃报告"
       }
     },
     "title": "Telegram",
