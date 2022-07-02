@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Instance",
-  "custom_easy_Config": "Config",
-  "custom_easy_Tab": "Tab"
+  "custom_telegram_not_alive": "Telegram instance is not alive",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Name",
+  "custom_telegram_sys_messages": "System messages",
+  "custom_telegram_title": "Authenticated Users"
 }

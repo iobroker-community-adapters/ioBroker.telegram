@@ -206,6 +206,9 @@
                 },
                 "_custom": {
                     "type": "custom",
+                    "sm": 6,
+                    "md": 4,
+                    "lg": 3,
                     "i18n": true,
                     "url": "custom/customComponents.js",
                     "name": "ConfigCustomTelegramSet/Components/TelegramComponent"

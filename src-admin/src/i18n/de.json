@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Beispiel",
-  "custom_easy_Config": "Konfigseite",
-  "custom_easy_Tab": "Tab"
+  "custom_telegram_not_alive": "Telegram-Instanz ist nicht am Leben",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Name",
+  "custom_telegram_sys_messages": "Systemmeldungen",
+  "custom_telegram_title": "Authentifizierte Benutzer"
 }

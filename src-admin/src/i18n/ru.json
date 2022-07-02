@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Экземпляр",
-  "custom_easy_Config": "Страница конфигурации",
-  "custom_easy_Tab": "Вкладка"
+  "custom_telegram_not_alive": "Экземпляр Telegram не работает",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Имя",
+  "custom_telegram_sys_messages": "Системные сообщения",
+  "custom_telegram_title": "Авторизованные пользователи"
 }

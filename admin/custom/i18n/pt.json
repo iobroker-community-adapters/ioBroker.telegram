@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Instância",
-  "custom_easy_Config": "Configuração",
-  "custom_easy_Tab": "Aba"
+  "custom_telegram_not_alive": "A instância do Telegram não está ativa",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Nome",
+  "custom_telegram_sys_messages": "Mensagens do sistema",
+  "custom_telegram_title": "Usuários autenticados"
 }

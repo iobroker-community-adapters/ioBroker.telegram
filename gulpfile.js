@@ -68,15 +68,17 @@ function buildRules() {
     });
 }
 
-gulp.task('rules-0-clean', () => del(['admin/rules/**/*', 'dist/**/*']));
+gulp.task('rules-0-clean', () => del(['admin/rules/**/*', 'src/build/**/*']));
 
 gulp.task('rules-1-npm', async () => npmInstallRules());
 
 gulp.task('rules-2-compile', async () => buildRules());
 
 gulp.task('rules-3-copy', () => Promise.all([
-    gulp.src(['src/dist/assets/*.js', '!src/dist/assets/__federation_shared_*.js', '!src/dist/assets/__federation_lib_semver.js']).pipe(gulp.dest('admin/rules')),
-    gulp.src(['src/dist/assets/*.map', '!src/dist/assets/__federation_shared_*.map', '!src/dist/assets/__federation_lib_semver.js.map']).pipe(gulp.dest('admin/rules')),
+    gulp.src(['src/build/*.js']).pipe(gulp.dest('admin/rules')),
+    gulp.src(['src/build/*.map']).pipe(gulp.dest('admin/rules')),
+    gulp.src(['src/build/asset-manifest.json']).pipe(gulp.dest('admin/rules')),
+    gulp.src(['src/build/static/**/*']).pipe(gulp.dest('admin/rules/static')),
     gulp.src(['src/src/i18n/*.json']).pipe(gulp.dest('admin/rules/i18n')),
 ]));
 

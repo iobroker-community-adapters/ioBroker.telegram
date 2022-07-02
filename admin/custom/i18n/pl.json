@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Instancja",
-  "custom_easy_Config": "Konfiguracja",
-  "custom_easy_Tab": "Patka"
+  "custom_telegram_not_alive": "Instancja telegramu nie żyje",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Nazwa",
+  "custom_telegram_sys_messages": "Komunikaty systemowe",
+  "custom_telegram_title": "Uwierzytelnieni użytkownicy"
 }

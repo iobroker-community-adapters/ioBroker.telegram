@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Esempio",
-  "custom_easy_Config": "Config",
-  "custom_easy_Tab": "Tab"
+  "custom_telegram_not_alive": "L'istanza di Telegram non è viva",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Nome",
+  "custom_telegram_sys_messages": "Messaggi di sistema",
+  "custom_telegram_title": "Utenti autenticati"
 }

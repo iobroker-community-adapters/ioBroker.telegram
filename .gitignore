@@ -12,3 +12,5 @@ iob_npm.done
 /src/node_modules
 /src/package-lock.json
 /src-admin/package-lock.json
+/src-admin/build
+/src/build

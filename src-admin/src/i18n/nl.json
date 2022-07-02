@@ -1,5 +1,7 @@
 {
-  "custom_easy_Instance": "Voorbeeld",
-  "custom_easy_Config": "Configuratie",
-  "custom_easy_Tab": "Tab"
+  "custom_telegram_not_alive": "Telegram-instantie leeft niet",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Naam",
+  "custom_telegram_sys_messages": "Systeemberichten",
+  "custom_telegram_title": "Geverifieerde gebruikers"
 }

@@ -32,7 +32,20 @@ class App extends GenericApp {
             data: { myCustomAttribute: 'red' },
             theme: this.createTheme(),
         };
+        const translations = {
+            'en': require('./i18n/en'),
+            'de': require('./i18n/de'),
+            'ru': require('./i18n/ru'),
+            'pt': require('./i18n/pt'),
+            'nl': require('./i18n/nl'),
+            'fr': require('./i18n/fr'),
+            'it': require('./i18n/it'),
+            'es': require('./i18n/es'),
+            'pl': require('./i18n/pl'),
+            'zh-cn': require('./i18n/zh-cn'),
+        };
 
+        I18n.setTranslations(translations);
         I18n.setLanguage((navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase());
     }
 
@@ -56,6 +69,7 @@ class App extends GenericApp {
                             attr='myCustomAttribute'
                             data={this.state.data}
                             onError={() => {}}
+                            instance={0}
                             schema={{
                                 name: 'ConfigCustomTelegramSet/Components/TelegramComponent',
                                 type: 'custom',
