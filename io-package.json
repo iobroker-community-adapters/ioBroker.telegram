@@ -91,15 +91,15 @@
     "title": "Telegram",
     "titleLang": {
       "en": "Telegram",
-      "de": "Telegramm",
-      "ru": "Телеграмма",
-      "pt": "Telegrama",
+      "de": "Telegram",
+      "ru": "Telegram",
+      "pt": "Telegram",
       "nl": "Telegram",
-      "fr": "Télégramme",
-      "it": "Telegramma",
-      "es": "Telegrama",
+      "fr": "Telegram",
+      "it": "Telegram",
+      "es": "Telegram",
       "pl": "Telegram",
-      "zh-cn": "电报"
+      "zh-cn": "Telegram"
     },
     "desc": {
       "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
