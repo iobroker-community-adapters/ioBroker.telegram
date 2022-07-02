@@ -281,7 +281,7 @@
       "common": {
         "role": "text",
         "name": "Chat ID of last sent message by the bot",
-        "type": "number",
+        "type": "string",
         "read": true,
         "write": false
       },
