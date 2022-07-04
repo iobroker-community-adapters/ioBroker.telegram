@@ -512,7 +512,7 @@ function saveSendRequest(msg) {
     }
 
     if (msg && msg.chat && msg.chat.id) {
-        adapter.setState('communicate.botSendChatId', msg.chat.id, true, err =>
+        adapter.setState('communicate.botSendChatId', msg.chat.id.toString(), true, err =>
             err && adapter.log.error(err));
     }
 }
