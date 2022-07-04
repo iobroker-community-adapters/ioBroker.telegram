@@ -709,7 +709,7 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.14.1 (2022-07-04)
 * (bluefox) Fixed warnings for `botSendChatId`
 
 ### 1.14.0 (2022-07-02)
@@ -723,9 +723,6 @@ Before sending it to `telegram.INSTANCE.communicate.responseJson you need to str
 * (Apollon77) Fixed crash cases reported by Sentry
 
 ### 1.12.5 (2022-04-19)
-* (Apollon77) Fix crash cases reported by Sentry
-
-### 1.12.4 (2022-04-19)
 * (Apollon77) Fix crash cases reported by Sentry
 
 ## License
