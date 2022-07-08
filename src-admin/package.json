@@ -17,7 +17,7 @@
         "prop-types": "^15.8.1",
         "react": "^18.1.0",
         "react-ace": "^10.1.0",
-        "react-dom": "^18.1.0",
+        "react-dom": "^18.2.0",
         "react-scripts": "^5.0.1",
         "react-refresh": "^0.14.0",
         "@originjs/vite-plugin-federation": "^1.1.6",
