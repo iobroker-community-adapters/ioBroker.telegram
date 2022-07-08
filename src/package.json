@@ -39,7 +39,7 @@
         "extends": "react-app"
     },
     "devDependencies": {
-        "@craco/craco": "^6.4.3",
+        "@craco/craco": "^6.4.5",
         "craco-esbuild": "^0.5.1",
         "craco-module-federation": "^1.1.0"
     },
