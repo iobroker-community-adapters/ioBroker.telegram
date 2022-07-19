@@ -142,6 +142,14 @@
       "custom": "json",
       "config": "json"
     },
+    "docs": {
+      "en": [
+        "docs/en/README.md"
+      ],
+      "de": [
+        "docs/de/README.md"
+      ]
+    },
     "dependencies": [
       {
         "js-controller": ">=3.3.0"
