@@ -56,7 +56,7 @@ class TelegramComponent extends ConfigGeneric {
                     obj[id].firstName && names.push(obj[id].firstName);
                     users.push({
                         id,
-                        name: names.join(' / '),
+                        names: names.join(' / '),
                         sysMessages: obj[id].sysMessages,
                     });
                 }

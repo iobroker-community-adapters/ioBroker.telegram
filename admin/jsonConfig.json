@@ -196,19 +196,21 @@
                     "label": "Remember raw request data"
                 },
                 "text2command": {
+                    "newLine": true,
                     "type": "instance",
                     "adapter": "text2command",
                     "sm": 12,
-                    "md": 6,
-                    "lg": 6,
+                    "md": 4,
+                    "lg": 4,
                     "label": "text2command instance",
                     "help": "Text2Command info"
                 },
                 "_custom": {
+                    "newLine": true,
                     "type": "custom",
-                    "sm": 6,
-                    "md": 4,
-                    "lg": 3,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 6,
                     "i18n": true,
                     "url": "custom/customComponents.js",
                     "name": "ConfigCustomTelegramSet/Components/TelegramComponent"

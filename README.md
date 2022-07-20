@@ -26,6 +26,10 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Fixed custom component (user name was missing)
+* (klein0r) Translated all objects
+
 ### 1.14.1 (2022-07-04)
 * (bluefox) Fixed warnings for `botSendChatId`
 
