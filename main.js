@@ -1392,7 +1392,7 @@ function storeUser(id, firstName, userName) {
             }
         });
 
-        users[id] = {firstName, userName};
+        users[id] = {firstName, userName, sysMessages: false};
 
         if (adapter.config.rememberUsers) {
             adapter.setState('communicate.users', JSON.stringify(users), true);

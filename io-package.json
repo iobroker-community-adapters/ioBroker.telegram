@@ -553,7 +553,7 @@
         },
         "type": "string",
         "role": "json",
-        "read": false,
+        "read": true,
         "write": false,
         "def": "{}"
       },
