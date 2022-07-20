@@ -220,7 +220,18 @@
       "_id": "info",
       "type": "channel",
       "common": {
-        "name": "Information"
+        "name": {
+          "en": "Information",
+          "de": "Informationen",
+          "ru": "Информация",
+          "pt": "Informação",
+          "nl": "Informatie",
+          "fr": "Information",
+          "it": "Informazioni",
+          "es": "Información",
+          "pl": "Informacja",
+          "zh-cn": "信息"
+        }
       },
       "native": {}
     },
@@ -228,9 +239,20 @@
       "_id": "info.connection",
       "type": "state",
       "common": {
-        "role": "indicator.connected",
-        "name": "If connected to Telegram server",
+        "name": {
+          "en": "Connected to Telegram server",
+          "de": "Verbindung mit Telegram Server",
+          "ru": "Подключен к серверу Telegram",
+          "pt": "Conectado ao servidor Telegram",
+          "nl": "Verbinding met Telegram server",
+          "fr": "Connecté au serveur Telegram",
+          "it": "Collegato al server Telegram",
+          "es": "Conectado al servidor Telegram",
+          "pl": "Łączy się z serwerem Telegram",
+          "zh-cn": "电报服务器"
+        },
         "type": "boolean",
+        "role": "indicator.connected",
         "read": true,
         "write": false,
         "def": false
@@ -241,9 +263,20 @@
       "_id": "communicate.request",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Last received request",
+        "name": {
+          "en": "Last received request",
+          "de": "Letzte empfangene Anfrage",
+          "ru": "Последний полученный запрос",
+          "pt": "Última solicitação recebida",
+          "nl": "Vertaling:",
+          "fr": "Dernière demande reçue",
+          "it": "Ultima richiesta",
+          "es": "Última solicitud recibida",
+          "pl": "Żądanie",
+          "zh-cn": "上次收到的请求"
+        },
         "type": "string",
+        "role": "text",
         "read": true,
         "write": false
       },
@@ -253,9 +286,20 @@
       "_id": "communicate.requestRaw",
       "type": "state",
       "common": {
-        "role": "json",
-        "name": "Raw Data of last received request",
+        "name": {
+          "en": "Raw data of last received request",
+          "de": "Rohdaten der letzten eingegangenen Anfrage",
+          "ru": "Сырье последнего полученного запроса",
+          "pt": "Dados brutos do último pedido recebido",
+          "nl": "Rauw gegevens van het laatste verzoek",
+          "fr": "Données brutes de la dernière demande reçue",
+          "it": "Dati grezzi dell'ultima richiesta ricevuta",
+          "es": "Datos brutos de la última solicitud recibida",
+          "pl": "Informacja o naniesionych żądaniach",
+          "zh-cn": "最后一次收到请求的数据"
+        },
         "type": "string",
+        "role": "json",
         "read": true,
         "write": false
       },
@@ -265,9 +309,20 @@
       "_id": "communicate.requestChatId",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Chat ID of last received request",
+        "name": {
+          "en": "Chat ID of last received request",
+          "de": "Chat ID der letzten empfangenen Anfrage",
+          "ru": "Chat ID последнего полученного запроса",
+          "pt": "ID de bate-papo do último pedido recebido",
+          "nl": "Chat ID van het laatste verzoek",
+          "fr": "Chat ID de la dernière demande reçue",
+          "it": "Chat ID dell'ultima richiesta ricevuta",
+          "es": "Chat ID of last received request",
+          "pl": "Wywiad z ostatnią otrzymał żądanie",
+          "zh-cn": "最后一次收到请求的国际组织"
+        },
         "type": "number",
+        "role": "text",
         "read": true,
         "write": false
       },
@@ -277,9 +332,20 @@
       "_id": "communicate.requestMessageId",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Message ID of last received request",
+        "name": {
+          "en": "Message ID of last received request",
+          "de": "Nachrichten-ID der letzten empfangenen Anfrage",
+          "ru": "Сообщение ID последнего полученного запроса",
+          "pt": "ID de mensagem do último pedido recebido",
+          "nl": "Bericht van het laatste verzoek",
+          "fr": "Message ID de la dernière demande reçue",
+          "it": "Messaggio ID dell'ultima richiesta ricevuta",
+          "es": "ID del mensaje de última solicitud recibida",
+          "pl": "Message ID of last otrzymało żądanie",
+          "zh-cn": "上一次收到请求的邮件"
+        },
         "type": "number",
+        "role": "text",
         "read": true,
         "write": false
       },
@@ -289,9 +355,20 @@
       "_id": "communicate.botSendChatId",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Chat ID of last sent message by the bot",
+        "name": {
+          "en": "Chat ID of last sent message by the bot",
+          "de": "Chat ID der letzten gesendeten Nachricht durch den Bot",
+          "ru": "Chat ID последнего отправленного сообщения ботом",
+          "pt": "ID de bate-papo da última mensagem enviada pelo bot",
+          "nl": "Chat ID van het laatste bericht van de bot",
+          "fr": "Chat ID du dernier message envoyé par le bot",
+          "it": "Chat ID dell'ultimo messaggio inviato dal bot",
+          "es": "ID de chat del último mensaje enviado por el bot",
+          "pl": "Chat ID z ostatnią przesłaną przez bota",
+          "zh-cn": "黑客最后发出的讯息"
+        },
         "type": "string",
+        "role": "text",
         "read": true,
         "write": false
       },
@@ -301,9 +378,20 @@
       "_id": "communicate.botSendMessageId",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Message ID of last sent message by the bot",
+        "name": {
+          "en": "Message ID of last sent message by the bot",
+          "de": "Nachrichten-ID der letzten gesendeten Nachricht durch den Bot",
+          "ru": "Сообщение ID последнего отправленного сообщения ботом",
+          "pt": "ID de mensagem da última mensagem enviada pelo bot",
+          "nl": "Vertaling:",
+          "fr": "Message ID du dernier message envoyé par le bot",
+          "it": "Messaggio ID dell'ultimo messaggio inviato dal bot",
+          "es": "ID del mensaje enviado por el bot",
+          "pl": "Message ID z ostatniej wiadomości wysyłanej przez bota",
+          "zh-cn": "黑客最后发出的讯"
+        },
         "type": "number",
+        "role": "text",
         "read": true,
         "write": false
       },
@@ -313,9 +401,20 @@
       "_id": "communicate.botSendRaw",
       "type": "state",
       "common": {
-        "role": "json",
-        "name": "Raw Data of last sent message by the bot",
+        "name": {
+          "en": "Raw data of last sent message by the bot",
+          "de": "Rohdaten der letzten gesendeten Nachricht durch den Bot",
+          "ru": "Сырье последнего отправленного сообщения ботом",
+          "pt": "Dados brutos da última mensagem enviada pelo bot",
+          "nl": "Rauwe gegevens van het laatste bericht van de bot",
+          "fr": "Données brutes du dernier message envoyé par le bot",
+          "it": "Dati grezzi dell'ultimo messaggio inviato dal bot",
+          "es": "Datos brutos del último mensaje enviado por el bot",
+          "pl": "Rezultaty z ostatniej wiadomości przez bota",
+          "zh-cn": "黑白人最后发送的信息数据"
+        },
         "type": "string",
+        "role": "json",
         "read": true,
         "write": false
       },
@@ -325,9 +424,20 @@
       "_id": "communicate.requestUserId",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "User ID of last received request",
+        "name": {
+          "en": "User ID of last received request",
+          "de": "Benutzer-ID der letzten empfangenen Anfrage",
+          "ru": "ID пользователя последнего полученного запроса",
+          "pt": "ID do usuário do último pedido recebido",
+          "nl": "User ID van het laatste verzoek",
+          "fr": "ID utilisateur de la dernière demande reçue",
+          "it": "ID utente dell'ultima richiesta ricevuta",
+          "es": "ID de usuario de la última solicitud recibida",
+          "pl": "Użytkownik po raz ostatni otrzymał żądanie",
+          "zh-cn": "上一次收到请求的用户"
+        },
         "type": "string",
+        "role": "text",
         "read": true,
         "write": false
       },
@@ -337,9 +447,20 @@
       "_id": "communicate.response",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Send text through telegram with notification",
+        "name": {
+          "en": "Send text through Telegram with notification",
+          "de": "Text per Telegram senden mit Benachrichtigung",
+          "ru": "Отправить текст через телеграм с уведомлением",
+          "pt": "Enviar texto através do Telegram com notificação",
+          "nl": "Stuur een sms door Telegram met kennisgeving",
+          "fr": "Envoyer le texte par Telegram avec notification",
+          "it": "Invia testo tramite Telegram con notifica",
+          "es": "Enviar texto a través del Telegram con notificación",
+          "pl": "Tekst poprzez Telegram z powiadomieniem",
+          "zh-cn": "通过电报复制件"
+        },
         "type": "string",
+        "role": "text",
         "read": true,
         "write": true
       },
@@ -349,9 +470,20 @@
       "_id": "communicate.responseSilent",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Send text through telegram silently",
+        "name": {
+          "en": "Send text through Telegram silently",
+          "de": "Text per Telegram leise senden",
+          "ru": "Отправить текст через телеграм молча",
+          "pt": "Enviar texto através do Telegram silenciosamente",
+          "nl": "Stuur een sms door Telegram",
+          "fr": "Envoyer le texte par Telegram en silence",
+          "it": "Invia testo tramite Telegram silenziosamente",
+          "es": "Enviar texto a través del Telegram en silencio",
+          "pl": "Tekst poprzez Telegram milczeć",
+          "zh-cn": "通过电线静态文本"
+        },
         "type": "string",
+        "role": "text",
         "read": true,
         "write": true
       },
@@ -361,9 +493,20 @@
       "_id": "communicate.responseJson",
       "type": "state",
       "common": {
-        "role": "json",
-        "name": "Send text through telegram with notification with json definition",
+        "name": {
+          "en": "Send text through Telegram with notification with JSON definition",
+          "de": "Text per Telegram mit Benachrichtigung mit JSON-Definition senden",
+          "ru": "Отправить текст через телеграм с уведомлением с определением JSON",
+          "pt": "Enviar texto através do Telegram com notificação com definição JSON",
+          "nl": "Stuur bericht door Telegram met definitie van JSON",
+          "fr": "Envoyer le texte par Telegram avec notification avec définition JSON",
+          "it": "Invia testo tramite Telegram con notifica con definizione JSON",
+          "es": "Enviar texto a través del Telegram con notificación con definición JSON",
+          "pl": "Tekst poprzez Telegram z notyfikacją z definicją JSON",
+          "zh-cn": "通过电线传送的通知"
+        },
         "type": "string",
+        "role": "json",
         "read": true,
         "write": true
       },
@@ -373,9 +516,20 @@
       "_id": "communicate.responseSilentJson",
       "type": "state",
       "common": {
-        "role": "json",
-        "name": "Send text through telegram silently with json definition",
+        "name": {
+          "en": "Send text through Telegram silently with JSON definition",
+          "de": "Text per Telegram still mit JSON-Definition senden",
+          "ru": "Отправить текст через телеграм молча с JSON определением",
+          "pt": "Enviar texto através do Telegram silenciosamente com a definição JSON",
+          "nl": "Stuur een sms door Telegram stilletjes met JSON definitie",
+          "fr": "Envoyer le texte par Telegram en silence avec la définition JSON",
+          "it": "Invia testo tramite Telegram in silenzio con la definizione JSON",
+          "es": "Enviar texto a través del Telegram en silencio con la definición JSON",
+          "pl": "Tekst minuskułowy milczy z definicją JSON",
+          "zh-cn": "通过与联合执行委员会的定义保持沉默的电报案文"
+        },
         "type": "string",
+        "role": "json",
         "read": true,
         "write": true
       },
@@ -385,9 +539,20 @@
       "_id": "communicate.users",
       "type": "state",
       "common": {
-        "role": "json",
-        "name": "Users as json, which are constantly authenticated",
+        "name": {
+          "en": "Users as JSON, which are constantly authenticated",
+          "de": "Benutzer als JSON, die ständig authentifiziert werden",
+          "ru": "Пользователи как JSON, которые постоянно аутентифицируются",
+          "pt": "Usuários como JSON, que são constantemente autenticados",
+          "nl": "Gebruikers als JSON, die constant geverifieerd worden",
+          "fr": "Utilisateurs comme JSON, qui sont constamment authentifiés",
+          "it": "Utenti come JSON, che sono costantemente autenticati",
+          "es": "Usuarios como JSON, que son constantemente autenticados",
+          "pl": "Użytkownicy JSON, którzy są stale autentyczni",
+          "zh-cn": "经常核证的作为联合执行机构的用户"
+        },
         "type": "string",
+        "role": "json",
         "read": false,
         "write": false,
         "def": "{}"
@@ -398,9 +563,20 @@
       "_id": "communicate.pathFile",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "The path to the last file received",
+        "name": {
+          "en": "Path to the last received file",
+          "de": "Pfad zur letzten empfangenen Datei",
+          "ru": "Путь к последнему полученному файлу",
+          "pt": "Caminho para o último arquivo recebido",
+          "nl": "Path naar het laatste bestand",
+          "fr": "Sentier du dernier fichier reçu",
+          "it": "Percorso all'ultimo file ricevuto",
+          "es": "Send to the last received file",
+          "pl": "Path to the ostatni otrzymał plik plików",
+          "zh-cn": "最后一次收到的档案"
+        },
         "type": "string",
+        "role": "text",
         "read": true,
         "write": false
       },
