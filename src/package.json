@@ -26,7 +26,7 @@
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "react-scripts": "^5.0.1",
-        "@types/react": "^18.0.9",
+        "@types/react": "^18.0.18",
         "@types/react-dom": "^18.0.5",
         "@originjs/vite-plugin-federation": "^1.1.6",
         "@rollup/plugin-babel": "^5.3.1",
