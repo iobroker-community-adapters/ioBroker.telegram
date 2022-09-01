@@ -13,7 +13,7 @@
         "@iobroker/adapter-react-v5": "^3.0.14",
         "@mui/material": "^5.8.1",
         "@mui/styles": "^5.8.0",
-        "@mui/icons-material": "^5.8.4",
+        "@mui/icons-material": "^5.10.3",
         "prop-types": "^15.8.1",
         "react": "^18.1.0",
         "react-ace": "^10.1.0",
