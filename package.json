@@ -62,7 +62,7 @@
     "sinon-chai": "^3.7.0",
     "typescript": "^4.8.4",
     "gulp": "^4.0.2",
-    "del": "^6.1.1"
+    "del": "^7.0.0"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
