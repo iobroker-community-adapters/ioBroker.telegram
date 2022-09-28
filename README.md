@@ -29,6 +29,7 @@ Use Telegram service to communicate with ioBroker
 ### **WORK IN PROGRESS**
 * (klein0r) Fixed custom component (user name was missing)
 * (klein0r) Translated all objects
+* (bluefox) Updated GUI packages and corrected build process
 
 ### 1.14.1 (2022-07-04)
 * (bluefox) Fixed warnings for `botSendChatId`

@@ -150,17 +150,7 @@ function buildAdmin() {
     });
 }
 
-gulp.task('admin-0-clean', () => del([
-    'admin/**/*',
-    '!admin/telegram.png',
-    '!admin/i18n/*',
-    '!admin/blockly.js',
-    '!admin/words.js',
-    '!admin/jsonCustom.json',
-    '!admin/jsonConfig.json',
-    '!admin/rules/**/*',
-    '!admin/rules/*',
-    'src-admin/build/**/*']));
+gulp.task('admin-0-clean', () => del(['admin/custom/**/*', 'src-admin/build/**/*']));
 
 gulp.task('admin-1-npm', async () => npmInstallAdmin());
 gulp.task('admin-2-compile', async () => buildAdmin());
@@ -175,4 +165,4 @@ gulp.task('admin-3-copy', () => Promise.all([
 
 gulp.task('admin-build', gulp.series(['admin-0-clean', 'admin-1-npm', 'admin-2-compile', 'admin-3-copy']));
 
-gulp.task('default', gulp.series(['rules-build', 'admin-build']));
+gulp.task('default', gulp.series(['admin-build', 'rules-build']));
