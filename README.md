@@ -26,7 +26,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.15.0 (2022-09-28)
 * (klein0r) Fixed custom component (user name was missing)
 * (klein0r) Translated all objects
 * (bluefox) Updated GUI packages and corrected build process
@@ -43,9 +43,6 @@ Use Telegram service to communicate with ioBroker
 
 ### 1.12.6 (2022-04-23)
 * (Apollon77) Fixed crash cases reported by Sentry
-
-### 1.12.5 (2022-04-19)
-* (Apollon77) Fix crash cases reported by Sentry
 
 ## License
 

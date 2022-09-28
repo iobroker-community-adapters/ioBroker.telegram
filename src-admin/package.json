@@ -1,7 +1,7 @@
 {
     "name": "iobroker-admin-component-telegram",
     "private": true,
-    "version": "1.14.1",
+    "version": "1.15.0",
     "scripts": {
         "start": "set PORT=4173 && craco start",
         "build": "craco build"

@@ -1,4 +1,7 @@
 # Older changes
+## 1.12.5 (2022-04-19)
+* (Apollon77) Fix crash cases reported by Sentry
+
 ## 1.12.4 (2022-04-19)
 * (Apollon77) Fix crash cases reported by Sentry
 

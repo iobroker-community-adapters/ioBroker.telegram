@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.14.1",
+    "version": "1.15.0",
     "news": {
+      "1.15.0": {
+        "en": "Fixed custom component (user name was missing)\nTranslated all objects\nUpdated GUI packages and corrected build process",
+        "de": "Feste benutzerdefinierte Komponente (Benutzername wurde vermisst)\nÜbersetzt alle Objekte\nAktualisierte GUI-Pakete und korrigierter Build-Prozess",
+        "ru": "Фиксированный пользовательский компонент (имя пользователя отсутствует)\nПереведено все объекты\nОбновленные пакеты GUI и исправленный процесс сборки",
+        "pt": "Componente personalizado fixo (o nome do usuário estava faltando)\nTraduzido todos os objetos\nPacotes GUI atualizados e processo de compilação corrigido",
+        "nl": "Gerepareerd gebruikscomonent (zuster naam werd vermist)\nVertaald alle objecten\nUpdate GUI pakketten en gecorrigeerde bouwprocedure",
+        "fr": "Élément personnalisé fixe (nom d'utilisateur manquant)\nTraduit tous les objets\nMise à jour des paquets GUI et processus de construction corrigé",
+        "it": "Componente personalizzato fisso (nome utente mancante)\nTradotto tutti gli oggetti\nPacchetti GUI aggiornati e processo di compilazione corretto",
+        "es": "Componente fijo personalizado (nombre del usuario faltaba)\nTraducidos todos los objetos\nPaquetes GUI actualizados y proceso de construcción corregido",
+        "pl": "Zaginiony skład (user name) nie został oznaczony\nWszystkie obiekty translacyjne\nZmodernizowane pakiety GUI i poprawione procesy budowlane",
+        "zh-cn": "固定的习俗部分(遗属名称失踪)\n适用于所有物体\nA. 更新的《古伊一揽子计划》和经纠正的建设进程"
+      },
       "1.14.1": {
         "en": "Fixed warnings for `botSendChatId`",
         "de": "Feste Warnungen für botSend ChatId",
@@ -74,18 +86,6 @@
         "es": "Solucionar casos de fallas informados por Sentry",
         "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
         "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.3": {
-        "en": "Make sure also not set states can be queried - will return \"State not set\" in this case!",
-        "de": "Stellen Sie sicher, dass auch nicht gesetzte Zustände abgefragt werden können - in diesem Fall wird \"Zustand nicht gesetzt\" zurückgegeben!",
-        "ru": "Убедитесь, что также можно запросить неустановленные состояния - в этом случае будет возвращено «Состояние не установлено»!",
-        "pt": "Certifique-se também de que os estados não definidos podem ser consultados - retornará \"Estado não definido\" neste caso!",
-        "nl": "Zorg ervoor dat ook niet-ingestelde staten kunnen worden opgevraagd - in dit geval wordt \"Status niet ingesteld\" geretourneerd!",
-        "fr": "Assurez-vous également que les états non définis peuvent être interrogés - renverra \"State not set\" dans ce cas !",
-        "it": "Assicurati che anche gli stati non impostati possano essere interrogati - in questo caso restituirà \"Stato non impostato\"!",
-        "es": "Asegúrese de que también se puedan consultar los estados no establecidos; ¡devolverá \"Estado no establecido\" en este caso!",
-        "pl": "Upewnij się, że również nieustawione stany mogą być odpytywane - w tym przypadku zwróci \"State not set\"!",
-        "zh-cn": "确保也可以查询未设置的状态 - 在这种情况下将返回“未设置状态”！"
       }
     },
     "title": "Telegram",
