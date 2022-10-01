@@ -1829,7 +1829,7 @@ function processTelegramText(msg) {
 
     adapter.setState('communicate.requestChatId', msg.chat.id, true, err => err && adapter.log.error(err));
     adapter.setState('communicate.requestMessageId', msg.message_id, true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestUserId', msg.from ? msg.from.id : '', true, err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestUserId', msg.from && msg.from.id !== undefined && msg.from.id !== null ? msg.from.id.toString() : '', true, err => err && adapter.log.error(err));
     adapter.setState('communicate.request', `[${user}]${msg.text}`, true, err => err && adapter.log.error(err));
 }
 
