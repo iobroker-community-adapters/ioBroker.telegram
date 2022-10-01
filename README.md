@@ -26,6 +26,11 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### __WORK IN PROGRESS__
+* (Steff42) Make sure the userid is a string to revent warnings in the log
+* 
+
 ### 1.15.0 (2022-09-28)
 * (klein0r) Fixed custom component (user name was missing)
 * (klein0r) Translated all objects

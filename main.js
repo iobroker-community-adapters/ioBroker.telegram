@@ -22,7 +22,7 @@ const adapterName = require('./package.json').name.split('.').pop();
 const _           = require('./lib/words.js');
 const fs          = require('fs');
 const path        = require('path');
-const LE          = require(utils.controllerDir + '/lib/letsencrypt.js');
+const LE          = utils.commonTools.letsEncrypt;
 const https       = require('https');
 const axios       = require('axios');
 
