@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.15.0",
+    "version": "1.15.1",
     "news": {
+      "1.15.1": {
+        "en": "Make sure the userid is a string to show warnings in the log\nAdded ukrainian language",
+        "de": "Stellen Sie sicher, dass das Userid ein String ist, um Warnungen im Protokoll anzuzeigen\nUkrainische Sprache hinzugefügt",
+        "ru": "Убедитесь, что userid является строкой, чтобы показать предупреждения в журнале\nДобавлен украинский язык",
+        "pt": "Certifique-se de que o userid é uma string para mostrar avisos no log\nAdicionado idioma ukrainian",
+        "nl": "Zorg ervoor dat de gebruiker een string is om waarschuwingen in het logboek te laten zien\nToegevoegd Oekraïense taal",
+        "fr": "Assurez-vous que le userid est une chaîne pour montrer les avertissements dans le journal\nAjout de la langue ukrainienne",
+        "it": "Assicurarsi che l'utenteid sia una stringa per mostrare avvisi nel registro\nAggiunto lingua ucraino",
+        "es": "Asegúrese de que el usuario es una cadena para mostrar advertencias en el registro\nAñadido el idioma ucraniano",
+        "pl": "Make sure the userid to smycz do pokazania ostrzeżeń w logu\nJęzyk ukrainowski",
+        "uk": "Переконайтеся, що користувач є рядок, щоб показати попередження в журналі\nДодано українську мову",
+        "zh-cn": "保证使用rid是在逻辑中发出警告的一个条件。\n增 编"
+      },
       "1.15.0": {
         "en": "Fixed custom component (user name was missing)\nTranslated all objects\nUpdated GUI packages and corrected build process",
         "de": "Feste benutzerdefinierte Komponente (Benutzername wurde vermisst)\nÜbersetzt alle Objekte\nAktualisierte GUI-Pakete und korrigierter Build-Prozess",
@@ -64,18 +77,6 @@
         "zh-cn": "修复 Sentry 报告的崩溃案例"
       },
       "1.12.5": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
-      },
-      "1.12.4": {
         "en": "Fix crash cases reported by Sentry",
         "de": "Von Sentry gemeldete Absturzfälle beheben",
         "ru": "Исправить случаи сбоев, о которых сообщил Sentry",

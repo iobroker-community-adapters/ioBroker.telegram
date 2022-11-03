@@ -26,8 +26,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### __WORK IN PROGRESS__
+### 1.15.1 (2022-11-03)
 * (Steff42) Make sure the userid is a string to show warnings in the log
 * (bluefox) Added ukrainian language
 
@@ -45,9 +44,6 @@ Use Telegram service to communicate with ioBroker
 ### 1.13.0 (2022-06-01)
 * (klein0r) Added Admin 5 UI config
 * (bluefox) Added rule block for javascript as plugin
-
-### 1.12.6 (2022-04-23)
-* (Apollon77) Fixed crash cases reported by Sentry
 
 ## License
 
