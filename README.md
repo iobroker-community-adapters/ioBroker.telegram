@@ -28,11 +28,11 @@ Use Telegram service to communicate with ioBroker
 -->
 
 ### __WORK IN PROGRESS__
-* (Steff42) Make sure the userid is a string to revent warnings in the log
-* 
+* (Steff42) Make sure the userid is a string to show warnings in the log
+* (bluefox) Added ukrainian language
 
 ### 1.15.0 (2022-09-28)
-* (klein0r) Fixed custom component (user name was missing)
+* (klein0r) Fixed custom component (username was missing)
 * (klein0r) Translated all objects
 * (bluefox) Updated GUI packages and corrected build process
 

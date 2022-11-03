@@ -2,19 +2,8 @@
 
 if (typeof goog !== 'undefined') {
     goog.provide('Blockly.JavaScript.Sendto');
-
     goog.require('Blockly.JavaScript');
 }
-
-// remove it somewhere, because it defined in javascript=>blocks_words.js from javascript>=4.6.0
-Blockly.Translate = Blockly.Translate || function (word, lang) {
-    lang = lang || systemLang;
-    if (Blockly.Words && Blockly.Words[word]) {
-        return Blockly.Words[word][lang] || Blockly.Words[word].en;
-    } else {
-        return word;
-    }
-};
 
 // --- SendTo telegram --------------------------------------------------
 Blockly.Words['telegram']               = {'en': 'telegram',                        'pt': 'telegram',                       'pl': 'telegram',                           'nl': 'telegram',                       'it': 'telegram',                       'es': 'telegram',                       'fr': 'telegram',                           'de': 'telegram',                           'ru': 'telegram'};
