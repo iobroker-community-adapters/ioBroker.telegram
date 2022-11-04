@@ -26,7 +26,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 1.15.1 (2022-11-03)
+### __WORK IN PROGRESS__
 * (Steff42) Make sure the userid is a string to show warnings in the log
 * (bluefox) Added ukrainian language
 
