@@ -229,9 +229,8 @@ function startAdapter(options) {
                         }
                         serverPort = port;
 
-                        server.server.listen(port, (!adapter.config.bind || adapter.config.bind === '0.0.0.0') ? undefined : adapter.config.bind || undefined, () => {
-                            serverListening = true;
-                        });
+                        server.server.listen(port, (!adapter.config.bind || adapter.config.bind === '0.0.0.0') ? undefined : adapter.config.bind || undefined, () =>
+                            serverListening = true);
                         adapter.log.info(`https server listening on port ${port}`);
 
                         main()
@@ -272,7 +271,7 @@ function startAdapter(options) {
                     server.server.close();
                 }
             } catch (e) {
-                console.error('Cannot close server: ' + e);
+                console.error(`Cannot close server: ${e}`);
             }
         }
         isConnected && adapter && adapter.setState && adapter.setState('info.connection', false, true);
@@ -335,7 +334,7 @@ function startAdapter(options) {
         ) {
             const alias = getName(obj);
             if (!commands[id]) {
-                adapter.log.info('enabled logging of ' + id + ', Alias=' + alias);
+                adapter.log.info(`enabled logging of ${id}, Alias=${alias}`);
                 setImmediate(() => adapter.subscribeForeignStates(id));
             }
             commands[id]        = obj.common.custom[adapter.namespace];
@@ -346,7 +345,7 @@ function startAdapter(options) {
             commands[id].max    = obj.common && obj.common.max;
             commands[id].alias  = alias;
         } else if (commands[id]) {
-            adapter.log.debug('Removed command: ' + id);
+            adapter.log.debug(`Removed command: ${id}`);
             delete commands[id];
             setImmediate(() => adapter.unsubscribeForeignStates(id));
         } else if (id.startsWith('enum.rooms') && adapter.config.rooms) {
@@ -364,7 +363,7 @@ function startAdapter(options) {
     try {
         !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
     } catch (e) {
-        adapter.log.error('Cannot create tmp directory: ' + tmpDirName);
+        adapter.log.error(`Cannot create tmp directory: ${tmpDirName}`);
     }
 
     return adapter;
@@ -399,11 +398,11 @@ function connectionState(connected, logSuccess) {
         pollConnectionStatus = null;
         bot && bot.getMe && bot.getMe()
             .then(data => {
-                adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
+                adapter.log.debug(`getMe (reconnect): ${JSON.stringify(data)}`);
                 connectionState(true, errorCounter > 0);
             })
             .catch(error => {
-                (errorCounter % 10 === 0) && adapter.log.error('getMe (reconnect #' + errorCounter + ') Error:' + error);
+                (errorCounter % 10 === 0) && adapter.log.error(`getMe (reconnect #${errorCounter}) Error:${error}`);
                 errorCounter++;
                 pollConnectionStatus && clearTimeout(pollConnectionStatus);
                 pollConnectionStatus = setTimeout(checkConnection, 1000);
@@ -447,7 +446,7 @@ const actions = [
 ];
 
 function handleWebHook(req, res) {
-    if (req.method === 'POST' && req.url === '/' + adapter.config.token) {
+    if (req.method === 'POST' && req.url === `/${adapter.config.token}`) {
         //
         //{
         //    "update_id":10000,
@@ -484,7 +483,7 @@ function handleWebHook(req, res) {
             try {
                 msg = JSON.parse(body);
             } catch (e) {
-                adapter.log.error('Cannot parse webhook response!: ' + e);
+                adapter.log.error(`Cannot parse webhook response!: ${e}`);
                 return;
             }
             res.end('OK');
@@ -499,7 +498,7 @@ function handleWebHook(req, res) {
 }
 
 function saveSendRequest(msg) {
-    adapter.log.debug('Request: ' + JSON.stringify(msg));
+    adapter.log.debug(`Request: ${JSON.stringify(msg)}`);
 
     if (msg && adapter.config.storeRawRequest) {
         adapter.setState('communicate.botSendRaw', JSON.stringify(msg), true, err =>
@@ -717,12 +716,16 @@ function _sendMessageHelper(dest, name, text, options) {
                                         try {
                                             return {type: 'photo', media: fs.readFileSync(element)}
                                         } catch (error) {
-                                            adapter.log.error('Cannot read file' + element);
+                                            adapter.log.error(`Cannot read file${element}`);
                                             return undefined;
                                         }
                                     })
                                     .filter(element => element !== undefined);
-                                const size = filesAsArray.map((element) => element.media.length).reduce((acc, val) => acc + val);
+
+                                const size = filesAsArray
+                                    .map(element => element.media.length)
+                                    .reduce((acc, val) => acc + val);
+
                                 adapter.log.info(`Send media group to "${name}": ${size} bytes`);
                                 if (filesAsArray.length > 0) {
                                     bot.sendMediaGroup(dest, filesAsArray)
@@ -750,7 +753,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             }
                         })
                         .catch(error => {
-                            adapter.log.error('upload Error:' + error);
+                            adapter.log.error(`upload Error:${error}`);
                         });
                 } else {
                     adapter.log.debug('option media should be an array');
@@ -1047,7 +1050,7 @@ function sendMessage(text, user, chatId, options) {
 
     if (m) {
         text = (text || '').toString();
-        text = text.replace('@' + m[1], '').trim().replace(/\s\s/g, ' ');
+        text = text.replace(`@${m[1]}`, '').trim().replace(/\s\s/g, ' ');
         const re = new RegExp(m[1], 'i');
         let id = '';
         for (const id_t in users) {
@@ -1084,7 +1087,7 @@ function sendMessage(text, user, chatId, options) {
 function saveFile(fileID, fileName, callback) {
     bot.getFileLink(fileID)
         .then(url => {
-            adapter.log.debug('Received message: ' + url);
+            adapter.log.debug(`Received message: ${url}`);
             https.get(url, res => {
                 if (res.statusCode === 200) {
                     const buf = [];
@@ -1094,28 +1097,28 @@ function saveFile(fileID, fileName, callback) {
                         try {
                             fs.writeFileSync(fileLocation, Buffer.concat(buf));
                         } catch (err) {
-                            return callback({error: 'Error: ' + err});
+                            return callback({error: `Error: ${err}`});
                         }
 
                         callback({
-                            info: 'It\'s saved! : ' + fileLocation,
+                            info: `It's saved! : ${fileLocation}`,
                             path: fileLocation
                         });
                     });
 
                     res.on('error', err =>
-                        callback({error: 'Error: ' + err}));
+                        callback({error: `Error: ${err}`}));
                 } else {
                     callback({error: 'Error: statusCode !== 200'});
                 }
             });
         })
-        .catch(err => callback({error: 'Error bot.getFileLink: ' + err}));
+        .catch(err => callback({error: `Error bot.getFileLink: ${err}`}));
 }
 
 function getMessage(msg) {
     const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
-    adapter.log.debug('Received message: ' + JSON.stringify(msg));
+    adapter.log.debug(`Received message: ${JSON.stringify(msg)}`);
 
     if (msg.voice) {
         try {
@@ -1130,7 +1133,7 @@ function getMessage(msg) {
                 }
             })
         } catch (err) {
-            adapter.log.error('Error saving voice file: ' + err);
+            adapter.log.error(`Error saving voice file: ${err}`);
         }
     } else if (adapter.config.saveFiles && msg.photo) {
         try {
@@ -1182,7 +1185,7 @@ function getMessage(msg) {
                 });
             });
         } catch (err) {
-            adapter.log.error('Error saving photo file: ' + err);
+            adapter.log.error(`Error saving photo file: ${err}`);
         }
     } else if (adapter.config.saveFiles && msg.video) {
         try {
@@ -1197,7 +1200,7 @@ function getMessage(msg) {
                 }
             });
         } catch (err) {
-            adapter.log.error('Error saving video file: ' + err);
+            adapter.log.error(`Error saving video file: ${err}`);
         }
     } else if (adapter.config.saveFiles && msg.audio) {
         try {
@@ -1212,13 +1215,13 @@ function getMessage(msg) {
                 }
             });
         } catch (err) {
-            adapter.log.error('Error saving audio file: ' + err);
+            adapter.log.error(`Error saving audio file: ${err}`);
         }
     } else if (adapter.config.saveFiles && msg.document) {
         try {
             const documentFile = path.join(tmpDirName, 'document');
             !fs.existsSync(documentFile) && fs.mkdirSync(documentFile);
-            saveFile(msg.document.file_id, '/document/' + msg.document.file_name, res => {
+            saveFile(msg.document.file_id, `/document/${msg.document.file_name}`, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
                     adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
@@ -1227,7 +1230,7 @@ function getMessage(msg) {
                 }
             });
         } catch (err) {
-            adapter.log.error('Error saving document file: ' + err);
+            adapter.log.error(`Error saving document file: ${err}`);
         }
     }
 }
@@ -1264,7 +1267,7 @@ function processMessage(obj) {
 
                 tPromise
                     .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback))
-                    .catch(e => adapter.log.error('Cannot send command: ' + e));
+                    .catch(e => adapter.log.error(`Cannot send command: ${e}`));
             }
             break;
 
@@ -1315,7 +1318,7 @@ function processMessage(obj) {
                 if (!call.users && !call.user) {
                     call.users = Object.keys(users)
                         .filter(id => users[id] && users[id].userName)
-                        .map(id => users[id].userName.startsWith('@') ? users[id].userName : ('@' + users[id].userName));
+                        .map(id => users[id].userName.startsWith('@') ? users[id].userName : (`@${users[id].userName}`));
                 }
                 if (!(call.users instanceof Array)) {
                     call.users = [call.users];
@@ -1346,23 +1349,23 @@ function callUsers(users, text, lang, file, repeats, cb) {
     } else {
         let user = users.shift();
         if (!user.startsWith('@') && !user.startsWith('+') && !user.startsWith('00')) {
-            user = '@' + user;
+            user = `@${user}`;
         }
 
         let url = 'http://api.callmebot.com/start.php?source=iobroker&';
-        const params = ['user=' + encodeURIComponent(user)];
+        const params = [`user=${encodeURIComponent(user)}`];
         if (file) {
-            params.push('file=' + encodeURIComponent(file));
+            params.push(`file=${encodeURIComponent(file)}`);
         } else {
-            params.push('text=' + encodeURIComponent(text));
+            params.push(`text=${encodeURIComponent(text)}`);
         }
         if (repeats !== undefined) {
-            params.push('rpt=' + (parseInt(repeats, 10) || 0));
+            params.push(`rpt=${parseInt(repeats, 10) || 0}`);
         }
 
-        params.push('lang=' + (lang || systemLang2CallMe[systemLang]));
+        params.push(`lang=${lang || systemLang2CallMe[systemLang]}`);
         url += params.join('&');
-        adapter.log.debug('CALL: ' + url);
+        adapter.log.debug(`CALL: ${url}`);
 
         axios.get(url)
             .then(response => {
@@ -1414,9 +1417,9 @@ function getListOfCommands() {
                 }
             } else {
                 if (commands[id].writeOnly) {
-                    lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}`);
+                    lines.push(`${commands[id].alias} ${_(`value as ${commands[id].type}`)}`);
                 } else {
-                    lines.push(`${commands[id].alias} ${_('value as ' + commands[id].type)}|?`);
+                    lines.push(`${commands[id].alias} ${_(`value as ${commands[id].type}`)}|?`);
                 }
             }
         }
@@ -1518,7 +1521,7 @@ function getCommandsKeyboard(chatId) {
             adapter.log.debug('Message sent');
         })
         .catch(error => {
-            adapter.log.error('Send message error: ' + error);
+            adapter.log.error(`Send message error: ${error}`);
         });
 }
 
@@ -1590,7 +1593,7 @@ function processTelegramText(msg) {
     if (now - msg.date * 1000 > pollingInterval + 30000) {
         adapter.log.warn(`Message from ${msg.from.name} ignored, because too old: (${pollingInterval + 30000}) ${msg.text}`);
         return bot.sendMessage(msg.from.id, _('Message ignored: ', systemLang) + msg.text)
-            .catch(error => adapter.log.error('send Message Error: ' + error));
+            .catch(error => adapter.log.error(`send Message Error: ${error}`));
 
     }
 
@@ -1604,7 +1607,7 @@ function processTelegramText(msg) {
 
     if (msg.text === '/password' && !adapter.config.doNotAcceptNewUser) {
         return bot.sendMessage(msg.from.id, _('Please enter password in form "/password phrase"', systemLang))
-            .catch(error => adapter.log.error('send Message Error:' + error));
+            .catch(error => adapter.log.error(`send Message Error:${error}`));
     }
 
     if (adapter.config.password && !adapter.config.doNotAcceptNewUsers) {
@@ -1616,8 +1619,8 @@ function processTelegramText(msg) {
             garbageCollector();
 
             if (protection[user] && protection[user].length >= 5) {
-                return bot.sendMessage(msg.from.id, _('Too many attempts. Blocked for', systemLang) + ' ' + Math.round((now - protection[user][protection[user].length - 1]) / 1000) + ' ' + _('seconds', systemLang))
-                    .catch(error => adapter.log.error('send Message Error: ' + error));
+                return bot.sendMessage(msg.from.id, `${_('Too many attempts. Blocked for', systemLang)} ${Math.round((now - protection[user][protection[user].length - 1]) / 1000)} ${_('seconds', systemLang)}`)
+                    .catch(error => adapter.log.error(`send Message Error: ${error}`));
             }
 
             if (adapter.config.password === m[1]) {
@@ -1631,7 +1634,7 @@ function processTelegramText(msg) {
                 }
 
                 return bot.sendMessage(msg.from.id, _('Welcome ', systemLang) + user)
-                    .catch(error => adapter.log.error('send Message Error: ' + error));
+                    .catch(error => adapter.log.error(`send Message Error: ${error}`));
             } else {
                 protection[user] = protection[user] || [];
                 protection[user].push(Date.now());
@@ -1641,7 +1644,7 @@ function processTelegramText(msg) {
                 adapter.log.warn(`Got invalid password from ${user}: ${m[1]}`);
 
                 bot.sendMessage(msg.from.id, _('Invalid password', systemLang))
-                    .catch(error => adapter.log.error('send Message Error: ' + error));
+                    .catch(error => adapter.log.error(`send Message Error: ${error}`));
 
                 if (users[msg.from.id]) {
                     delete users[msg.from.id];
@@ -1655,12 +1658,12 @@ function processTelegramText(msg) {
     // If user is not in the trusted list
     if ((adapter.config.password || adapter.config.doNotAcceptNewUsers) && !users[msg.from.id]) {
         return bot.sendMessage(msg.from.id, _(adapter.config.doNotAcceptNewUsers ? 'User is not in the list' : 'Please enter password in form "/password phrase"', systemLang))
-            .catch(error => adapter.log.error('send Message Error: ' + error));
+            .catch(error => adapter.log.error(`send Message Error: ${error}`));
     }
 
     if (msg.text === '/help') {
         return bot.sendMessage(msg.from.id, getListOfCommands())
-            .catch(error => adapter.log.error('send Message Error: ' + error));
+            .catch(error => adapter.log.error(`send Message Error: ${error}`));
     }
 
     isAnswerForQuestion(adapter, msg);
@@ -1690,7 +1693,7 @@ function processTelegramText(msg) {
                 if (sValue === '?') {
                     adapter.getForeignState(id, (err, state) =>
                         bot.sendMessage(msg.chat.id, getStatus(id, state))
-                            .catch(error => adapter.log.error('send Message Error: ' + error)));
+                            .catch(error => adapter.log.error(`send Message Error: ${error}`)));
                 } else {
                     let value;
                     if (commands[id].states) {
@@ -1708,7 +1711,7 @@ function processTelegramText(msg) {
                         value = parseFloat(sValue);
                         if (sValue !== value.toString()) {
                             bot.sendMessage(msg.chat.id, _('Invalid number %s', sValue))
-                                .catch(error => adapter.log.error('send Message Error: ' + error));
+                                .catch(error => adapter.log.error(`send Message Error: ${error}`));
                             continue;
                         }
                     } else {
@@ -1717,7 +1720,7 @@ function processTelegramText(msg) {
 
                     adapter.setForeignState(id, value, false, err =>
                         bot.sendMessage(msg.chat.id, _('Done')))
-                        .catch(error => adapter.log.error('send Message Error: ' + error));
+                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
                 }
             }
         }
@@ -1755,22 +1758,22 @@ function processTelegramText(msg) {
                 }
                 if (msg) {
                     if (err) bot.sendMessage(msg.from.id, err)
-                        .catch(error => adapter.log.error('send Message Error: ' + error));
+                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
                     if (state) {
                         adapter.setForeignState(id1, val1, false, err => {
                             if (msg) {
                                 if (err) {
                                     bot.sendMessage(msg.from.id, err)
-                                        .catch(error => adapter.log.error('send Message Error: ' + error));
+                                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
                                 } else {
                                     bot.sendMessage(msg.from.id, _('Done', systemLang))
-                                        .catch(error => adapter.log.error('send Message Error: ' + error));
+                                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
                                 }
                             }
                         });
                     } else {
                         bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id1))
-                            .catch(error => adapter.log.error('send Message Error: ' + error));
+                            .catch(error => adapter.log.error(`send Message Error: ${error}`));
                     }
                 }
             });
@@ -1797,13 +1800,13 @@ function processTelegramText(msg) {
                 }
                 if (msg) {
                     if (err) bot.sendMessage(msg.from.id, err)
-                        .catch(error => adapter.log.error('send Message Error: ' + error));
+                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
                     if (state) {
                         bot.sendMessage(msg.from.id, state.val.toString())
-                            .catch(error => adapter.log.error('send Message Error: ' + error));
+                            .catch(error => adapter.log.error(`send Message Error: ${error}`));
                     } else {
                         bot.sendMessage(msg.from.id, _('ID "%s" not found.', systemLang).replace('%s', id2))
-                            .catch(error => adapter.log.error('send Message Error: ' + error));
+                            .catch(error => adapter.log.error(`send Message Error: ${error}`));
                     }
                 }
             });
@@ -1821,8 +1824,8 @@ function processTelegramText(msg) {
             user
         }, response => {
             if (response && response.response) {
-                adapter.log.debug('Send response: ' + response.response);
-                bot.sendMessage(response.id, response.response).catch(error => adapter.log.error('send Message Error: ' + error));
+                adapter.log.debug(`Send response: ${response.response}`);
+                bot.sendMessage(response.id, response.response).catch(error => adapter.log.error(`send Message Error: ${error}`));
             }
         });
     }
@@ -1849,7 +1852,7 @@ function connect() {
                             bot.startPolling();
                         },
                         error => {
-                            adapter.log.error('Error stop polling: ' + error);
+                            adapter.log.error(`Error stop polling: ${error}`);
                         }
                     );
                 }
@@ -1860,10 +1863,10 @@ function connect() {
         // Check connection
         bot.getMe()
             .then(data => {
-                adapter.log.debug('getMe (reconnect): ' + JSON.stringify(data));
+                adapter.log.debug(`getMe (reconnect): ${JSON.stringify(data)}`);
                 connectionState(true);
             })
-            .catch(error => adapter.log.error('getMe (reconnect) Error:' + error));
+            .catch(error => adapter.log.error(`getMe (reconnect) Error:${error}`));
     } else {
         let agent;
         if (proxy === true) {
@@ -1871,22 +1874,22 @@ function connect() {
             let proxyHost = '';
             if (adapter.config && adapter.config.proxyHost !== undefined) {
                 proxyHost = adapter.config.proxyHost;
-                adapter.log.debug('proxyHost: ' + proxyHost);
+                adapter.log.debug(`proxyHost: ${proxyHost}`);
             }
             let proxyPort = 1080;
             if (adapter.config && adapter.config.proxyPort !== undefined) {
                 proxyPort = parseInt(adapter.config.proxyPort, 10) || 0;
-                adapter.log.debug('proxyPort: ' + proxyPort);
+                adapter.log.debug(`proxyPort: ${proxyPort}`);
             }
             let proxyLogin = '';
             if (adapter.config && adapter.config.proxyLogin !== undefined) {
                 proxyLogin = adapter.config.proxyLogin;
-                adapter.log.debug('proxyLogin: ' + proxyLogin);
+                adapter.log.debug(`proxyLogin: ${proxyLogin}`);
             }
             let proxyPassword = '';
             if (adapter.config && adapter.config.proxyPassword !== undefined) {
                 proxyPassword = adapter.config.proxyPassword;
-                adapter.log.debug('proxyPassword: ' + proxyPassword);
+                adapter.log.debug(`proxyPassword: ${proxyPassword}`);
             }
             const socksConfig = {
                 proxyHost: proxyHost,
@@ -1917,7 +1920,7 @@ function connect() {
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
             }
-            bot.setWebHook(adapter.config.url + '/' + adapter.config.token);
+            bot.setWebHook(`${adapter.config.url}/${adapter.config.token}`);
         } else {
             // Setup polling way
             const pollingOptions = {
@@ -1933,13 +1936,13 @@ function connect() {
             adapter.log.debug(`Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`);
             bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('').catch(error => {
-                adapter.log.error('setWebHook Error:' + error)
+                adapter.log.error(`setWebHook Error:${error}`)
             });
         }
 
         // Check connection
         bot.getMe().then(data => {
-            adapter.log.debug('getMe: ' + JSON.stringify(data));
+            adapter.log.debug(`getMe: ${JSON.stringify(data)}`);
             connectionState(true);
 
             if (adapter.config.restarted !== '') {
@@ -1951,7 +1954,7 @@ function connect() {
                 }
             }
         }).catch(error => {
-            adapter.log.error('getMe Error:' + error)
+            adapter.log.error(`getMe Error:${error}`)
             connectionState(false);
         });
 
@@ -1973,7 +1976,7 @@ function connect() {
             connectionState(true);
 
             // write received answer into variable
-            adapter.log.debug('callback_query: ' + JSON.stringify(callbackQuery));
+            adapter.log.debug(`callback_query: ${JSON.stringify(callbackQuery)}`);
             callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
             if (adapter.config.storeRawRequest) {
                 adapter.setState('communicate.requestRaw', JSON.stringify(callbackQuery), true, err =>
@@ -1981,10 +1984,9 @@ function connect() {
             }
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, true, err => err && adapter.log.error(err));
             adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, true, err => err && adapter.log.error(err));
-            adapter.setState('communicate.request', '[' + (
-                !adapter.config.useUsername ? callbackQuery.from.first_name :
-                    !callbackQuery.from.username ? callbackQuery.from.first_name :
-                        callbackQuery.from.username) + ']' + callbackQuery.data, true, err => err && adapter.log.error(err));
+            adapter.setState('communicate.request', `[${!adapter.config.useUsername ? callbackQuery.from.first_name :
+                !callbackQuery.from.username ? callbackQuery.from.first_name :
+                    callbackQuery.from.username}]${callbackQuery.data}`, true, err => err && adapter.log.error(err));
 
             isAnswerForQuestion(adapter, callbackQuery);
 
@@ -2017,7 +2019,7 @@ function connect() {
                     bot.startPolling();
                 },
                 error => {
-                    adapter.log.error('Error stop polling: ' + error);
+                    adapter.log.error(`Error stop polling: ${error}`);
                 }
             );
         });
@@ -2103,7 +2105,7 @@ function readEnums(name) {
     return new Promise(resolve => {
         name = name || 'rooms';
         enums[name] = {};
-        adapter.getObjectView('system', 'enum', {startkey: 'enum.' + name + '.', endkey: 'enum.' + name + '.\u9999'}, (err, doc) => {
+        adapter.getObjectView('system', 'enum', {startkey: `enum.${name}.`, endkey: `enum.${name}.\u9999`}, (err, doc) => {
             if (doc && doc.rows) {
                 for (let i = 0, l = doc.rows.length; i < l; i++) {
                     if (doc.rows[i].value) {
