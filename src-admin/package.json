@@ -26,7 +26,7 @@
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-replace": "^5.0.1",
         "@types/react": "^18.0.24",
-        "@types/react-dom": "^18.0.8",
+        "@types/react-dom": "^18.0.9",
         "@craco/craco": "^6.4.5",
         "craco-esbuild": "^0.5.2",
         "craco-module-federation": "^1.1.0"
