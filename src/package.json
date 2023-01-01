@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "react-ace": "^10.1.0",
-        "ace-builds": "^1.12.5",
+        "ace-builds": "^1.14.0",
         "@iobroker/adapter-react-v5": "^3.2.3",
         "@mui/material": "^5.10.12",
         "@mui/styles": "^5.10.10",
