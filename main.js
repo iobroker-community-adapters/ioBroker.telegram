@@ -947,17 +947,20 @@ function _sendMessageHelper(dest, name, text, options) {
             }
         } else {
             adapter.log.debug(`Send message to "${name}": ${text}`);
-            if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+            if (text && text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
                 options = options || {};
                 options.parse_mode = 'MarkdownV2';
+                text = text.substring(12, text.length - 13);
             } else
-            if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+            if (text && text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
                 options = options || {};
                 options.parse_mode = 'HTML';
+                text = text.substring(6, text.length - 7);
             } else
-            if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+            if (text && text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
                 options = options || {};
                 options.parse_mode = 'Markdown';
+                text = text.substring(10, text.length - 11);
             }
 
             bot && bot.sendMessage(dest, text || '', options)
@@ -1812,8 +1815,10 @@ function processTelegramText(msg) {
                     m = null;
                 }
                 if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err)
-                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
+                    if (err) {
+                        bot.sendMessage(msg.from.id, err)
+                            .catch(error => adapter.log.error(`send Message Error: ${error}`));
+                    }
                     if (state) {
                         bot.sendMessage(msg.from.id, state.val.toString())
                             .catch(error => adapter.log.error(`send Message Error: ${error}`));
@@ -1837,8 +1842,24 @@ function processTelegramText(msg) {
             user
         }, response => {
             if (response && response.response) {
-                adapter.log.debug(`Send response: ${response.response}`);
-                bot.sendMessage(response.id, response.response).catch(error => adapter.log.error(`send Message Error: ${error}`));
+                let text = response.response;
+                let options;
+                if (text && text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+                    options = {parse_mode: 'MarkdownV2'};
+                    text = text.substring(12, text.length - 13);
+                } else
+                if (text && text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+                    options = {parse_mode: 'HTML'};
+                    text = text.substring(6, text.length - 7);
+                } else
+                if (text && text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+                    options = {parse_mode: 'Markdown'};
+                    text = text.substring(10, text.length - 11);
+                }
+
+                adapter.log.debug(`Send response: ${text}`);
+                bot.sendMessage(response.id, text, options)
+                    .catch(error => adapter.log.error(`send Message Error: ${error}`));
             }
         });
     }

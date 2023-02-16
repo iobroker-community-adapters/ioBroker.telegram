@@ -26,7 +26,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 1.15.3 (2023-02-16)
+### **WORK IN PROGRESS**
 * (bluefox) Added possibility to set `parse_mode` in the text message
 
 ### 1.15.2 (2022-11-04)
