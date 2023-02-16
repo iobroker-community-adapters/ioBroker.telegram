@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.15.4",
+    "version": "1.15.5",
     "news": {
+      "1.15.5": {
+        "en": "Added possibility to set `parse_mode` in the text message",
+        "de": "Möglichkeit zur Einstellung parse_mode in der Textnachricht",
+        "ru": "Добавлена возможность установки parse_mode в текстовом сообщении",
+        "pt": "Adicionado possibilidade de definir parse_mode na mensagem de texto",
+        "nl": "Toegevoegd mogelijk om parsemode in de sms te zetten",
+        "fr": "Ajout de la possibilité de définir parse_mode dans le message texte",
+        "it": "Aggiunta possibilità di impostare parse_mode nel messaggio di testo",
+        "es": "Añadido posibilidad de establecer parse_mode en el mensaje de texto",
+        "pl": "Wstępna możliwość ugruntowania parse_mode w wiadomości tekstowej",
+        "uk": "Додано можливість встановити parse_mode в текстовому повідомленні",
+        "zh-cn": "增加可能在案文中规定稀释。"
+      },
       "1.15.2": {
         "en": "Make sure the userid is a string to show warnings in the log\nAdded ukrainian language",
         "de": "Stellen Sie sicher, dass das Userid ein String ist, um Warnungen im Protokoll anzuzeigen\nUkrainische Sprache hinzugefügt",
