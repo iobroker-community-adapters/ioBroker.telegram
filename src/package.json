@@ -32,16 +32,15 @@
         "@rollup/plugin-babel": "^6.0.3",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-node-resolve": "^15.0.1",
-        "@rollup/plugin-replace": "^5.0.2"
+        "@rollup/plugin-replace": "^5.0.2",
+        "@craco/craco": "^7.0.0",
+        "craco-esbuild": "^0.5.2",
+        "craco-module-federation": "^1.1.0"
     },
     "eslintConfig": {
         "extends": "react-app"
     },
-    "devDependencies": {
-        "@craco/craco": "^6.4.5",
-        "craco-esbuild": "^0.5.2",
-        "craco-module-federation": "^1.1.0"
-    },
+    "devDependencies": {},
     "browserslist": {
         "production": [
             ">0.2%",

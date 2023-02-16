@@ -41,7 +41,7 @@ function npmInstallRules() {
         child.on('exit', (code /* , signal */) => {
             // code 1 is strange error that cannot be explained. Everything is installed but error :(
             if (code && code !== 1) {
-                reject('Cannot install: ' + code);
+                reject(`Cannot install: ${code}`);
             } else {
                 console.log(`"${cmd} in ${cwd} finished.`);
                 // command succeeded
@@ -67,20 +67,20 @@ function buildRules() {
 
         console.log(options.cwd);
 
-        let script = src + 'node_modules/@craco/craco/bin/craco.js';
+        let script = `${src}node_modules/@craco/craco/dist/bin/craco.js`;
         if (!fs.existsSync(script)) {
-            script = __dirname + '/node_modules/@craco/craco/bin/craco.js';
+            script = `${__dirname}/node_modules/@craco/craco/dist/bin/craco.js`;
         }
         if (!fs.existsSync(script)) {
-            console.error('Cannot find execution file: ' + script);
-            reject('Cannot find execution file: ' + script);
+            console.error(`Cannot find execution file: ${script}`);
+            reject(`Cannot find execution file: ${script}`);
         } else {
             const child = cp.fork(script, ['build'], options);
             child.stdout.on('data', data => console.log(data.toString()));
             child.stderr.on('data', data => console.log(data.toString()));
             child.on('close', code => {
                 console.log(`child process exited with code ${code}`);
-                code ? reject('Exit code: ' + code) : resolve();
+                code ? reject(`Exit code: ${code}`) : resolve();
             });
         }
     });
@@ -100,7 +100,7 @@ gulp.task('rules-3-copy', () => Promise.all([
     gulp.src(['src/build/*.js']).pipe(gulp.dest('admin/rules')),
     gulp.src(['src/build/*.map']).pipe(gulp.dest('admin/rules')),
     gulp.src(['src/build/asset-manifest.json']).pipe(gulp.dest('admin/rules')),
-    gulp.src(['src/build/static/**/*']).pipe(gulp.dest('admin/rules/static')),
+    gulp.src(['src/build/static/**/*', '!src/build/static/media/*.svg', '!src/build/static/media/*.txt', '!src/build/static/js/vendors*.js', '!src/build/static/js/vendors*.map']).pipe(gulp.dest('admin/rules/static')),
     gulp.src(['src/src/i18n/*.json']).pipe(gulp.dest('admin/rules/i18n')),
 ]));
 
@@ -127,7 +127,7 @@ function npmInstallAdmin() {
         child.on('exit', (code /* , signal */) => {
             // code 1 is strange error that cannot be explained. Everything is installed but error :(
             if (code && code !== 1) {
-                reject('Cannot install: ' + code);
+                reject(`Cannot install: ${code}`);
             } else {
                 console.log(`"${cmd} in ${cwd} finished.`);
                 // command succeeded
@@ -138,12 +138,12 @@ function npmInstallAdmin() {
 }
 
 function buildAdmin() {
-    const version = JSON.parse(fs.readFileSync(__dirname + '/package.json').toString('utf8')).version;
-    const data    = JSON.parse(fs.readFileSync(srcAdmin + 'package.json').toString('utf8'));
+    const version = JSON.parse(fs.readFileSync(`${__dirname}/package.json`).toString('utf8')).version;
+    const data    = JSON.parse(fs.readFileSync(`${srcAdmin}package.json`).toString('utf8'));
 
     data.version = version;
 
-    fs.writeFileSync(srcAdmin + 'package.json', JSON.stringify(data, null, 4));
+    fs.writeFileSync(`${srcAdmin}package.json`, JSON.stringify(data, null, 4));
 
     return new Promise((resolve, reject) => {
         const options = {
@@ -153,20 +153,20 @@ function buildAdmin() {
 
         console.log(options.cwd);
 
-        let script = srcAdmin + 'node_modules/@craco/craco/bin/craco.js';
+        let script = `${srcAdmin}node_modules/@craco/craco/dist/bin/craco.js`;
         if (!fs.existsSync(script)) {
-            script = __dirname + '/node_modules/@craco/craco/bin/craco.js';
+            script = `${__dirname}/node_modules/@craco/craco/dist/bin/craco.js`;
         }
         if (!fs.existsSync(script)) {
-            console.error('Cannot find execution file: ' + script);
-            reject('Cannot find execution file: ' + script);
+            console.error(`Cannot find execution file: ${script}`);
+            reject(`Cannot find execution file: ${script}`);
         } else {
             const child = cp.fork(script, ['build'], options);
             child.stdout.on('data', data => console.log(data.toString()));
             child.stderr.on('data', data => console.log(data.toString()));
             child.on('close', code => {
                 console.log(`child process exited with code ${code}`);
-                code ? reject('Exit code: ' + code) : resolve();
+                code ? reject(`Exit code: ${code}`) : resolve();
             });
         }
     });
@@ -182,8 +182,8 @@ gulp.task('admin-1-npm', async () => npmInstallAdmin());
 gulp.task('admin-2-compile', async () => buildAdmin());
 
 gulp.task('admin-3-copy', () => Promise.all([
-    gulp.src(['src-admin/build/static/js/*.js']).pipe(gulp.dest('admin/custom/static/js')),
-    gulp.src(['src-admin/build/static/js/*.map']).pipe(gulp.dest('admin/custom/static/js')),
+    gulp.src(['src-admin/build/static/js/*.js', '!src-admin/build/static/js/vendors*.js']).pipe(gulp.dest('admin/custom/static/js')),
+    gulp.src(['src-admin/build/static/js/*.map', '!src-admin/build/static/js/vendors*.map']).pipe(gulp.dest('admin/custom/static/js')),
     gulp.src(['src-admin/build/customComponents.js']).pipe(gulp.dest('admin/custom')),
     gulp.src(['src-admin/build/customComponents.js.map']).pipe(gulp.dest('admin/custom')),
     gulp.src(['src-admin/src/i18n/*.json']).pipe(gulp.dest('admin/custom/i18n')),
