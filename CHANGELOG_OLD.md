@@ -1,4 +1,8 @@
 # Older changes
+## 1.13.0 (2022-06-01)
+* (klein0r) Added Admin 5 UI config
+* (bluefox) Added rule block for javascript as plugin
+
 ## 1.12.6 (2022-04-23)
 * (Apollon77) Fixed crash cases reported by Sentry
 
