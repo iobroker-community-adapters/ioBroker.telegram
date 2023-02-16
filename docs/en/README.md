@@ -56,6 +56,19 @@ The JSON syntax also allows the adding options from the [telegram bots API](http
 }
 ```
 
+You can set the `parse_mode` in the text too: 
+
+```
+sendTo('telegram', {user: 'UserName', text: '<MarkdownV2>Test message, but with *bold*</MarkdownV2>'}, function (res) {
+   console.log('Sent to ' + res + ' users');
+});
+``` 
+
+or 
+```
+setState('telegram.0.communicate.response', '<MarkdownV2>Test message, but with *bold*</MarkdownV2>');
+``` 
+
 In order to send messages to the groups, you have to invite the bot to the group you want the bot to post in. 
 By providing the `chat_id` to the JSON message payload you can actually send messages to those groups. 
 
@@ -65,11 +78,11 @@ Make sure you put a `/` in front of the message in order for the bot to see the 
 The iobroker log will then show you the chat id in the logs.
 
 ## Usage
-You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema and you can command to you home in text form.
+You can use telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There are predefined communication schema, and you can command to you home in text form.
 
 To send a photo, just send a path to file instead of text or URL: `sendTo('telegram', 'absolute/path/file.png')` or `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
-Example how to send a screenshot from web-cam to telegram:
+Example how to send a screenshot from webcam to telegram:
 
 ```javascript
 var request = require('request');
@@ -77,7 +90,7 @@ var fs      = require('fs');
 
 function sendImage() {
     request.get({url: 'http://login:pass@ipaddress/web/tmpfs/snap.jpg', encoding: 'binary'}, function (err, response, body) {
-        fs.writeFile("/tmp/snap.jpg", body, 'binary', function(err) {
+        fs.writeFile('/tmp/snap.jpg', body, 'binary', function (err) {
 
         if (err) {
             console.error(err);
@@ -89,7 +102,7 @@ function sendImage() {
       });
     });
 }
-on("someState", function (obj) {
+on('someState', function (obj) {
     if (obj.state.val) {
         // send 4 images: immediately, in 5, 15 and 30 seconds
         sendImage();
@@ -113,7 +126,7 @@ Following messages are reserved for actions:
 
 In this case the action command will be sent.
 
-The description for telegram API can be found [here](https://core.telegram.org/bots/api) and you can use all options defined in this api, just by including that into send object. E.g.:
+The description for telegram API can be found [here](https://core.telegram.org/bots/api), and you can use all options defined in this api, just by including that into send object. E.g.:
 
 ```javascript
 sendTo('telegram.0', {
@@ -204,7 +217,7 @@ if (command === '1_2') {
     sendTo('telegram', {
         user: user,
         answerCallbackQuery: {
-            text: "Pressed!",
+            text: 'Pressed!',
             showAlert: false // Optional parameter
         }
    });
@@ -253,8 +266,8 @@ if (command === '1_2') {
         text: 'New text before buttons',
         editMessageText: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val,
-                message_id: getState("telegram.0.communicate.requestMessageId").val,
+                chat_id: getState('telegram.0.communicate.requestChatId').val,
+                message_id: getState('telegram.0.communicate.requestMessageId').val,
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: 'Button 1', callback_data: '2_1' }],
@@ -276,8 +289,8 @@ if (command === '1_2') {
         text: 'New text message',
         editMessageText: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val,
-                message_id: getState("telegram.0.communicate.requestMessageId").val,
+                chat_id: getState('telegram.0.communicate.requestChatId').val,
+                message_id: getState('telegram.0.communicate.requestMessageId').val,
             }
         }
     });
@@ -297,8 +310,8 @@ if (command === '1_2') {
         text: 'New caption',
         editMessageCaption: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val,
-                message_id: getState("telegram.0.communicate.requestMessageId").val
+                chat_id: getState('telegram.0.communicate.requestChatId').val,
+                message_id: getState('telegram.0.communicate.requestMessageId').val
             }
         }
     });
@@ -340,8 +353,8 @@ if (command === '1_2') {
         text: 'New text before buttons',
         editMessageReplyMarkup: {
             options: {
-                chat_id: getState("telegram.0.communicate.botSendChatId").val,
-                message_id: getState("telegram.0.communicate.botSendMessageId").val,
+                chat_id: (await getStateAsync('telegram.0.communicate.botSendChatId')).val,
+                message_id: (await getStateAsync('telegram.0.communicate.botSendMessageId')).val,
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: 'Button 1', callback_data: '2_1' }],
@@ -367,8 +380,8 @@ if (command === 'delete') {
         user: user,
         deleteMessage: {
             options: {
-                chat_id: getState("telegram.0.communicate.requestChatId").val,
-                message_id: getState("telegram.0.communicate.requestMessageId").val
+                chat_id: getState('telegram.0.communicate.requestChatId').val,
+                message_id: getState('telegram.0.communicate.requestMessageId').val
             }
         }
     });
@@ -378,7 +391,6 @@ if (command === 'delete') {
 You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/master/doc/api.md#TelegramBot+deleteMessage).
 
 ## Reacting to user replies / messages
-
 Suppose you are using only JavaScript without *text2command*. You already sent a message/question to your user using *sendTo()* as described above. The user replies to that by pushing a button or writing a message. You can extract the command and give feedback to your user, execute commands or switch states in iobroker.
 
  - telegram.0 is your iobroker Telegram instance you want to use
@@ -388,14 +400,14 @@ Suppose you are using only JavaScript without *text2command*. You already sent a
 ```javascript
 on({id: 'telegram.0.communicate.request', change: 'any'}, function (obj) {
     var stateval = getState('telegram.0.communicate.request').val;              // save Statevalue received from your Bot
-    var user = stateval.substring(1,stateval.indexOf("]"));                 // extract user from the message
-    var command = stateval.substring(stateval.indexOf("]")+1,stateval.length);   // extract command/text from the message
+    var user = stateval.substring(1,stateval.indexOf(']'));                 // extract user from the message
+    var command = stateval.substring(stateval.indexOf(']') + 1,stateval.length);   // extract command/text from the message
 
     switch (command) {
-        case "1_2":
+        case '1_2':
             //... see example above ...
             break;
-        case "delete":
+        case 'delete':
             //... see example above
             break;
         //.... and so on ...

@@ -26,6 +26,9 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Added possibility to set `parse_mode` in the text message
+
 ### 1.15.2 (2022-11-04)
 * (Steff42) Make sure the userid is a string to show warnings in the log
 * (bluefox) Added ukrainian language
@@ -49,7 +52,7 @@ Use Telegram service to communicate with ioBroker
 
 The MIT License (MIT)
 
-Copyright (c) 2016-2022, bluefox <dogafox@gmail.com>
+Copyright (c) 2016-2023, bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

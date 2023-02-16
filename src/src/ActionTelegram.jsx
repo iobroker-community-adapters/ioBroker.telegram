@@ -34,7 +34,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
 
     _setUsers(instance) {
         instance = instance || this.state.settings.instance || 'telegram.0';
-        this.cachePromises[instance] = this.cachePromises[instance] || this.props.socket.getState(instance + '.communicate.users');
+        this.cachePromises[instance] = this.cachePromises[instance] || this.props.socket.getState(`${instance}.communicate.users`);
         if (!this.state.settings._id) {
             return this.setState({
                 inputs: [

@@ -947,6 +947,19 @@ function _sendMessageHelper(dest, name, text, options) {
             }
         } else {
             adapter.log.debug(`Send message to "${name}": ${text}`);
+            if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+                options = options || {};
+                options.parse_mode = 'MarkdownV2';
+            } else
+            if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+                options = options || {};
+                options.parse_mode = 'HTML';
+            } else
+            if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+                options = options || {};
+                options.parse_mode = 'Markdown';
+            }
+
             bot && bot.sendMessage(dest, text || '', options)
                 .then(response => saveSendRequest(response))
                 .then(() => {
@@ -1244,7 +1257,7 @@ function processMessage(obj) {
         return;
     }
 
-    // filter out double messages
+    // filter out the double messages
     const json = JSON.stringify(obj);
     if (lastMessageTime && lastMessageText === JSON.stringify(obj) && Date.now() - lastMessageTime < 1200) {
         return adapter.log.debug(`Filter out double message [first was for ${Date.now() - lastMessageTime}ms]: ${json}`);

@@ -47,7 +47,7 @@ class TelegramComponent extends ConfigGeneric {
     }
 
     readData() {
-        this.props.socket.sendTo('telegram.' + this.props.instance, 'adminuser', null)
+        this.props.socket.sendTo(`telegram.${this.props.instance}`, 'adminuser', null)
             .then(obj => {  // get admin user
                 const users = [];
                 for (const id in obj) {
@@ -84,7 +84,7 @@ class TelegramComponent extends ConfigGeneric {
         if (pos !== -1) {
             const checked = !this.state.users[pos].sysMessages;
 
-            this.props.socket.sendTo('telegram.' + this.props.instance, 'systemMessages', { itemId: id, checked })
+            this.props.socket.sendTo(`telegram.${this.props.instance}`, 'systemMessages', { itemId: id, checked })
                 .then(obj => {
                     if (obj === id) {
                         const users = JSON.parse(JSON.stringify(this.state.users));
@@ -99,7 +99,7 @@ class TelegramComponent extends ConfigGeneric {
     }
 
     onDelete(id) {
-        this.props.socket.sendTo('telegram.' + this.props.instance, 'delUser', id)
+        this.props.socket.sendTo(`telegram.${this.props.instance}`, 'delUser', id)
             .then(obj => {
                 if (obj === id) {
                     const users = JSON.parse(JSON.stringify(this.state.users));

@@ -1,9 +1,27 @@
 const gulp = require('gulp');
 const fs = require('fs');
 const cp = require('child_process');
-const del = require('del');
-const src = __dirname + '/src/';
+const src = `${__dirname}/src/`;
 
+function deleteFoldersRecursive(path, exceptions) {
+    if (fs.existsSync(path)) {
+        const files = fs.readdirSync(path);
+        for (const file of files) {
+            const curPath = `${path}/${file}`;
+            if (exceptions && exceptions.find(e => curPath.endsWith(e))) {
+                continue;
+            }
+
+            const stat = fs.statSync(curPath);
+            if (stat.isDirectory()) {
+                deleteFoldersRecursive(curPath);
+                fs.rmdirSync(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        }
+    }
+}
 function npmInstallRules() {
     return new Promise((resolve, reject) => {
         // Install node modules
@@ -68,7 +86,11 @@ function buildRules() {
     });
 }
 
-gulp.task('rules-0-clean', () => del(['admin/rules/**/*', 'src/build/**/*']));
+gulp.task('rules-0-clean', done => {
+    deleteFoldersRecursive(`${__dirname}/admin/rules`);
+    deleteFoldersRecursive(`${__dirname}/src/build`);
+    done();
+});
 
 gulp.task('rules-1-npm', async () => npmInstallRules());
 
@@ -84,7 +106,7 @@ gulp.task('rules-3-copy', () => Promise.all([
 
 gulp.task('rules-build', gulp.series(['rules-0-clean', 'rules-1-npm', 'rules-2-compile', 'rules-3-copy']));
 
-const srcAdmin = __dirname + '/src-admin/';
+const srcAdmin = `${__dirname}/src-admin/`;
 
 function npmInstallAdmin() {
     return new Promise((resolve, reject) => {
@@ -150,7 +172,11 @@ function buildAdmin() {
     });
 }
 
-gulp.task('admin-0-clean', () => del(['admin/custom/**/*', 'src-admin/build/**/*']));
+gulp.task('admin-0-clean', done => {
+    deleteFoldersRecursive(`${__dirname}/admin/custom`);
+    deleteFoldersRecursive(`${__dirname}/src-admin/build`);
+    done();
+});
 
 gulp.task('admin-1-npm', async () => npmInstallAdmin());
 gulp.task('admin-2-compile', async () => buildAdmin());

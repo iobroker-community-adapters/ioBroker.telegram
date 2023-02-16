@@ -18,21 +18,21 @@
     },
     "dependencies": {
         "react-ace": "^10.1.0",
-        "ace-builds": "^1.12.5",
-        "@iobroker/adapter-react-v5": "^3.2.3",
-        "@mui/material": "^5.10.12",
-        "@mui/styles": "^5.10.10",
+        "ace-builds": "^1.15.2",
+        "@iobroker/adapter-react-v5": "^4.0.13",
+        "@mui/material": "^5.11.9",
+        "@mui/styles": "^5.11.9",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-scripts": "^5.0.1",
-        "@types/react": "^18.0.24",
-        "@types/react-dom": "^18.0.8",
-        "@originjs/vite-plugin-federation": "^1.1.11",
-        "@rollup/plugin-babel": "^6.0.2",
-        "@rollup/plugin-commonjs": "^23.0.2",
+        "@types/react": "^18.0.28",
+        "@types/react-dom": "^18.0.11",
+        "@originjs/vite-plugin-federation": "^1.2.0",
+        "@rollup/plugin-babel": "^6.0.3",
+        "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-node-resolve": "^15.0.1",
-        "@rollup/plugin-replace": "^5.0.1"
+        "@rollup/plugin-replace": "^5.0.2"
     },
     "eslintConfig": {
         "extends": "react-app"
