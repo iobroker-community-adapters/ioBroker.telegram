@@ -2,7 +2,7 @@
  *
  *      ioBroker telegram Adapter
  *
- *      Copyright (c) 2016-2022 bluefox <dogafox@gmail.com>
+ *      Copyright (c) 2016-2023 bluefox <dogafox@gmail.com>
  *
  *      MIT License
  *
@@ -946,21 +946,21 @@ function _sendMessageHelper(dest, name, text, options) {
                     });
             }
         } else {
-            adapter.log.debug(`Send message to "${name}": ${text}`);
-            if (text && text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
-                options = options || {};
-                options.parse_mode = 'MarkdownV2';
-                text = text.substring(12, text.length - 13);
-            } else
-            if (text && text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
-                options = options || {};
-                options.parse_mode = 'HTML';
-                text = text.substring(6, text.length - 7);
-            } else
-            if (text && text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
-                options = options || {};
-                options.parse_mode = 'Markdown';
-                text = text.substring(10, text.length - 11);
+            adapter.log.debug(`Send message to [${name}]: "${text}"`);
+            if (text && typeof text === 'string') {
+                if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+                    options = options || {};
+                    options.parse_mode = 'MarkdownV2';
+                    text = text.substring(12, text.length - 13);
+                } else if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+                    options = options || {};
+                    options.parse_mode = 'HTML';
+                    text = text.substring(6, text.length - 7);
+                } else if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+                    options = options || {};
+                    options.parse_mode = 'Markdown';
+                    text = text.substring(10, text.length - 11);
+                }
             }
 
             bot && bot.sendMessage(dest, text || '', options)
@@ -1016,6 +1016,21 @@ function sendMessage(text, user, chatId, options) {
 
     options = options || {};
 
+    if (text && typeof text === 'string') {
+        if (text && text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+            options.parse_mode = 'MarkdownV2';
+            text = text.substring(12, text.length - 13);
+        } else
+        if (text && text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+            options.parse_mode = 'HTML';
+            text = text.substring(6, text.length - 7);
+        } else
+        if (text && text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+            options.parse_mode = 'Markdown';
+            text = text.substring(10, text.length - 11);
+        }
+    }
+
     let tPromiseList = [];
     // convert
     if (text !== undefined && text !== null && typeof text !== 'object') {
@@ -1027,8 +1042,7 @@ function sendMessage(text, user, chatId, options) {
             .then(results =>
                 results.reduce((e, acc) => acc + e, 0))
             .catch(e => e);
-    }
-    else if (user) {
+    } else if (user) {
         if (typeof user !== 'string' && !(user instanceof Array)) {
             adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
         }
@@ -1844,17 +1858,17 @@ function processTelegramText(msg) {
             if (response && response.response) {
                 let text = response.response;
                 let options;
-                if (text && text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
-                    options = {parse_mode: 'MarkdownV2'};
-                    text = text.substring(12, text.length - 13);
-                } else
-                if (text && text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
-                    options = {parse_mode: 'HTML'};
-                    text = text.substring(6, text.length - 7);
-                } else
-                if (text && text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
-                    options = {parse_mode: 'Markdown'};
-                    text = text.substring(10, text.length - 11);
+                if (text && typeof text === 'string') {
+                    if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+                        options = {parse_mode: 'MarkdownV2'};
+                        text = text.substring(12, text.length - 13);
+                    } else if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+                        options = {parse_mode: 'HTML'};
+                        text = text.substring(6, text.length - 7);
+                    } else if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+                        options = {parse_mode: 'Markdown'};
+                        text = text.substring(10, text.length - 11);
+                    }
                 }
 
                 adapter.log.debug(`Send response: ${text}`);
