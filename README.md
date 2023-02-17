@@ -13,9 +13,9 @@ Use Telegram service to communicate with ioBroker
 
 ## Documentation
 
-[🇺🇸 Documentation](./docs/en/README.md)
+[en Documentation](./docs/en/README.md)
 
-[🇩🇪 Dokumentation](./docs/de/README.md)
+<!-- [🇩🇪 Dokumentation](./docs/de/README.md) -->
 
 ## Sentry
 
