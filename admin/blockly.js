@@ -20,7 +20,8 @@ Blockly.Words['telegram_log_warn']      = {'en': 'warning',                     
 Blockly.Words['telegram_log_error']     = {'en': 'error',                           'pt': 'erro',                           'pl': 'błąd',                               'nl': 'fout',                           'it': 'errore',                         'es': 'error',                          'fr': 'Erreur',                             'de': 'error',                              'ru': 'ошибка'};
 Blockly.Words['telegram_help']          = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md'};
 Blockly.Words['telegram_silent']        = {'en': 'without notification',        'de': 'ohne Benachrichtigung',          'ru': 'без уведомления',                    'pt': 'sem notificação',                'nl': 'zonder kennisgeving',            'fr': 'sans notification',              'it': 'senza notifica',                     'es': 'sin notificación',                   'pl': 'bez powiadomienia'};
-Blockly.Words['telegram_disable_web_preview'] = {'en': 'disable web preview', 'de': 'Deaktivieren Sie die Webvorschau', 'ru': 'отключить предварительный просмотр в Интернете', 'pt': 'desativar a visualização da web', 'nl': 'webvoorbeeld uitschakelen', 'fr': 'désactiver l\'aperçu Web','it': 'disabilitare l\'anteprima web', 'es': 'deshabilitar la vista previa web', 'pl': 'wyłącz podgląd internetowy', 'zh-cn': '禁用网页预览'};
+Blockly.Words['telegram_escaping']      = {'en': 'escape chars',                'de': 'escape chars',                   'ru': 'escape chars',                       'pt': 'escape chars',                   'nl': 'escape chars',                    'fr': 'escape chars',                  'it': 'escape chars',                        'es': 'escape chars',                      'pl': 'escape chars', 'zh-cn': 'escape chars'};
+Blockly.Words['telegram_disable_web_preview'] = {'en': 'disable web preview',   'de': 'Webvorschau deaktivieren', 'ru': 'отключить предварительный просмотр в Интернете', 'pt': 'desativar a visualização da web', 'nl': 'webvoorbeeld uitschakelen', 'fr': 'désactiver l\'aperçu Web','it': 'disabilitare l\'anteprima web', 'es': 'deshabilitar la vista previa web', 'pl': 'wyłącz podgląd internetowy', 'zh-cn': '禁用网页预览'};
 Blockly.Sendto.blocks['telegram'] =
     '<block type="telegram">'
     + '     <value name="INSTANCE">'
@@ -39,6 +40,8 @@ Blockly.Sendto.blocks['telegram'] =
     + '     <value name="SILENT">'
     + '     </value>'
     + '     <value name="PARSEMODE">'
+    + '     </value>'
+    + '     <value name="ESCAPING">'
     + '     </value>'
     + '     <value name="DISABLE_WEB_PAGE_PREVIEW">'
     + '     </value>'
@@ -99,6 +102,10 @@ Blockly.Blocks['telegram'] = {
             .appendField('Parsemode')
             .appendField(new Blockly.FieldDropdown([['default', 'default'], ['HTML', 'HTML'], ['MarkdownV2', 'MarkdownV2']]), 'PARSEMODE');
 
+        this.appendDummyInput('ESCAPING')
+            .appendField(Blockly.Translate('telegram_escaping'))
+            .appendField(new Blockly.FieldCheckbox('FALSE'), 'ESCAPING');
+
         this.appendDummyInput('DISABLE_WEB_PAGE_PREVIEW')
             .appendField(Blockly.Translate('telegram_disable_web_preview'))
             .appendField(new Blockly.FieldCheckbox('FALSE'), 'DISABLE_WEB_PAGE_PREVIEW');
@@ -127,6 +134,7 @@ Blockly.JavaScript['telegram'] = function(block) {
     var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
     var value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
     var silent = block.getFieldValue('SILENT');
+    var escaping = block.getFieldValue('ESCAPING')
     var disable_web_page_preview = block.getFieldValue('DISABLE_WEB_PAGE_PREVIEW');
     var parsemode = block.getFieldValue('PARSEMODE');
 
@@ -135,6 +143,11 @@ Blockly.JavaScript['telegram'] = function(block) {
         logText = 'console.' + logLevel + '("telegram' + (value_username ? '[' + value_username + ']' : '') + ': " + ' + value_message + ');\n'
     } else {
         logText = '';
+    }
+
+    if (escaping === 'TRUE') {
+        // escape following characters: "_*[]()~`>#+-=|{}.!"
+        value_message += '.replace(/([-_*\\[\\]()~`>#+=|{}.!])/g, "\\\\$1")';
     }
 
     return 'sendTo("telegram' + dropdown_instance + '", "send", {\n    text: ' +
@@ -150,7 +163,7 @@ Blockly.JavaScript['telegram'] = function(block) {
 // --- SendTo call telegram --------------------------------------------------
 Blockly.Words['telegram_call']          = {'en': 'call via Telegram', 'de': 'per Telegramm anrufen', 'ru': 'звонок через Telegram', 'pt': 'chamada via Telegram', 'nl': 'bellen via Telegram', 'fr': 'appeler par Telegram', 'it': 'chiama via Telegram',    'es': 'llamar por Telegram', 'pl': 'połączenie za Telegram', 'zh-cn': '通过电报电话'};
 Blockly.Words['telegram_call_system']   = {'en': 'System language', 'de': 'Systemsprache', 'ru': 'Системный язык', 'pt': 'Idioma do sistema', 'nl': 'Systeem taal', 'fr': 'Langue du système', 'it': 'Linguaggio di sistema', 'es': 'Lenguaje del sistema', 'pl': 'Język systemowy', 'zh-cn': '系统语言'};
-Blockly.Words['telegram_call_tooltip']  = {'en': 'Call via Telegram and say some text', 'de': 'Rufen Sie per Telegram an und sagen Sie etwas Text','ru': 'Звоните через Telegram и произносите текст',    'pt': 'Ligue por Telegram e diga algum texto',    'nl': 'Bel via Telegram en zeg wat tekst',    'fr': 'Appelez par Telegram et dites du texte',    'it': 'Chiama via Telegram e pronuncia un messaggio',    'es': 'Llama por Telegram y di algo de texto',    'pl': 'Zadzwoń za pośrednictwem Telegram i powiedz tekst',    'zh-cn': '通过电报呼叫并说一些文字'};
+Blockly.Words['telegram_call_tooltip']  = {'en': 'Call via Telegram and say some text', 'de': 'per Telegram anrufen und einen Text sagen','ru': 'Звоните через Telegram и скажите какой-нибудь текст',    'pt': 'Ligue por Telegram e diga algum texto',    'nl': 'Bel via Telegram en zeg wat tekst',    'fr': 'Appelez par Telegram et dites du texte',    'it': 'Chiama via Telegram e pronuncia un messaggio',    'es': 'Llama por Telegram y di algo de texto',    'pl': 'Zadzwoń za pośrednictwem Telegram i powiedz tekst',    'zh-cn': '通过电报呼叫并说一些文字'};
 Blockly.Words['telegram_call_help']     = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram'};
 Blockly.Words['telegram_call_repeats']  = {'en': 'Repeats', 'de': 'Wiederholungen', 'ru': 'Повторить', 'pt': 'Repete', 'nl': 'Herhaalt', 'fr': 'Répète', 'it': 'Si ripete', 'es': 'Repite', 'pl': 'Powtarza się', 'zh-cn': '重复'};
 
