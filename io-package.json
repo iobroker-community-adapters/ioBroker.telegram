@@ -178,7 +178,8 @@
   "protectedNative": [
     "token",
     "password",
-    "proxyPassword"
+    "proxyPassword",
+    "passwordRepeat"
   ],
   "encryptedNative": [
     "token",
@@ -195,6 +196,7 @@
     "doNotAcceptNewUsers": false,
     "useUsername": false,
     "saveFiles": false,
+    "saveFilesQuality": "",
     "allowStates": true,
     "proxy": false,
     "proxyHost": "",

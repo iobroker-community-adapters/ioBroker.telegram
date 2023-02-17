@@ -93,6 +93,36 @@
                     "lg": 8,
                     "label": "Save media files"
                 },
+                "saveFilesQuality": {
+                    "type": "select",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Quality of media files",
+                    "default": "0",
+                    "options": [
+                        {
+                            "label": "All received files",
+                            "value": ""
+                        },
+                        {
+                            "label": "Low",
+                            "value": "0"
+                        },
+                        {
+                            "label": "Medium",
+                            "value": "1"
+                        },
+                        {
+                            "label": "High",
+                            "value": "2"
+                        },
+                        {
+                            "label": "High definition",
+                            "value": "3"
+                        }
+                    ]
+                },
                 "allowStates": {
                     "newLine": true,
                     "type": "checkbox",

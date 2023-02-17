@@ -77,5 +77,10 @@
   "value as number": "значение в виде число",
   "value as string": "значение в виде строки",
   "Do not authenticate new users": "Не аутентифицировать новых пользователей",
-  "Save media files": "Сохраняйте медиафайлы"
+  "Save media files": "Сохраняйте медиафайлы",
+  "All received files": "Все полученные файлы",
+  "Low": "Низкое качество",
+  "Medium": "Среднее качество",
+  "High": "Высокое качество",
+  "High definition": "Качество высокой четкости"
 }

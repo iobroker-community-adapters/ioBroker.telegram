@@ -77,5 +77,10 @@
   "value as number": "waarde als nummer",
   "value as string": "waarde als tekenreeks",
   "Do not authenticate new users": "Authenticeer geen nieuwe gebruikers",
-  "Save media files": "Mediabestanden opslaan"
+  "Save media files": "Mediabestanden opslaan",
+  "All received files": "Alle ontvangen bestanden",
+  "Low": "Lage kwaliteit",
+  "Medium": "Gemiddelde kwaliteit",
+  "High": "Hoge kwaliteit",
+  "High definition": "High-definition kwaliteit"
 }

@@ -77,5 +77,10 @@
   "value as number": "价值作为数字",
   "value as string": "值作为字符串",
   "Do not authenticate new users": "不对新用户进行身份验证",
-  "Save media files": "保存媒体文件"
+  "Save media files": "保存媒体文件",
+  "All received files": "所有收到的文件",
+  "Low": "低质量",
+  "Medium": "中等质量",
+  "High": "高质量",
+  "High definition": "高清画质"
 }

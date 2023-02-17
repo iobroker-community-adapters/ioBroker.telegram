@@ -1184,11 +1184,23 @@ function getMessage(msg) {
                 3: 'highdef'
             };
 
-            msg.photo.forEach((item, i) => {
-                let quality = 'none';
-                if (qualityMap.hasOwnProperty(i)) {
-                    quality = qualityMap[i];
+            let saveOnlyQuality = adapter.config.saveFilesQuality;
+            if (saveOnlyQuality) {
+                saveOnlyQuality = parseInt(saveOnlyQuality, 10);
+                if (msg.photo.length <= saveOnlyQuality) {
+                    saveOnlyQuality = null;
+                } else {
+                    saveOnlyQuality = saveOnlyQuality.toString();
                 }
+            }
+
+            msg.photo.forEach((item, i) => {
+                // skip if quality is set and not equal
+                if (saveOnlyQuality && i.toString() !== saveOnlyQuality) {
+                    return;
+                }
+                const quality = qualityMap[i] || 'none';
+
                 let fileName = '';
                 if (msg.media_group_id) {
                     if (!mediaGroupExport.hasOwnProperty(msg.media_group_id)) {

@@ -77,5 +77,10 @@
   "url_help": "наприклад \"https://mydomain.noip.com:8443\"",
   "value as boolean": "значення як логічне",
   "value as number": "значення як число",
-  "value as string": "значення як рядок"
+  "value as string": "значення як рядок",
+  "All received files": "Всі отримані файли",
+  "Low": "Низька якість",
+  "Medium": "Середня якість",
+  "High": "Висока якість",
+  "High definition": "Висока якість"
 }

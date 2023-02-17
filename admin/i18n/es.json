@@ -77,5 +77,10 @@
   "value as number": "valor como numero",
   "value as string": "valor como cadena",
   "Do not authenticate new users": "No autenticar nuevos usuarios",
-  "Save media files": "Guardar archivos multimedia"
+  "Save media files": "Guardar archivos multimedia",
+  "All received files": "Todos los archivos recibidos",
+  "Low": "Baja calidad",
+  "Medium": "Calidad media",
+  "High": "Alta calidad",
+  "High definition": "calidad de alta definición"
 }
