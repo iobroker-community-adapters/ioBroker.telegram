@@ -65,7 +65,7 @@ class TelegramComponent extends ConfigGeneric {
     }
 
     async componentWillUnmount() {
-        await this.props.socket.subscribeState(`system.adapter.telegram.${this.props.instance}.alive`, this.onAliveChanged);
+        await this.props.socket.unsubscribeState(`system.adapter.telegram.${this.props.instance}.alive`, this.onAliveChanged);
     }
 
     onAliveChanged = (id, state) => {
