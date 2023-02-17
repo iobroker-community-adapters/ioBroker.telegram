@@ -1,4 +1,7 @@
 # Older changes
+## 1.14.0 (2022-07-02)
+* (bluefox) Ported config Gui to Admin 6
+
 ## 1.13.0 (2022-06-01)
 * (klein0r) Added Admin 5 UI config
 * (bluefox) Added rule block for javascript as plugin

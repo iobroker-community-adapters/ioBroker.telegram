@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.15.5",
+    "version": "1.15.6",
     "news": {
+      "1.15.6": {
+        "en": "Implemented the optional escaping of characters in blockly\nAdded the possibility to send updates of states only by changes\nAdded option to select the quality of stored images",
+        "de": "Ergänzt das optionale Entweichen von Zeichen in blockweise\nHinzugefügt die Möglichkeit, Updates von Zuständen nur durch Änderungen zu senden\nOption hinzugefügt, um die Qualität der gespeicherten Bilder auszuwählen",
+        "ru": "Реализована факультативная эскалация персонажей в блокно\nДобавлена возможность отправки обновлений государств только по изменениям\nДобавлена возможность выбора качества сохраненных изображений",
+        "pt": "Implementou a fuga opcional de caracteres em bloco\nAdicionado a possibilidade de enviar atualizações de estados apenas por mudanças\nOpção adicionada para selecionar a qualidade de imagens armazenadas",
+        "nl": "Implementeer de optionele ontsnapping van personages in blok\nVermeldde de mogelijkheid om updates van de staat te sturen alleen door veranderingen\nDe optie om de kwaliteit van opgeslagen beelden te selecteren",
+        "fr": "Mise en œuvre de l'échappement optionnel des caractères en bloc\nAjout de la possibilité d'envoyer des mises à jour des états seulement par des changements\nOption supplémentaire pour sélectionner la qualité des images stockées",
+        "it": "Implementato l'eliminazione facoltativa di caratteri in blocco\nAggiunto la possibilità di inviare aggiornamenti di stati solo da modifiche\nAggiunta opzione per selezionare la qualità delle immagini memorizzate",
+        "es": "Implementado el escape opcional de caracteres en bloque\nSe agregó la posibilidad de enviar actualizaciones de estados sólo por cambios\nOpción agregada para seleccionar la calidad de las imágenes almacenadas",
+        "pl": "Umożliwia to opcjonalną ucieczkę postaci w bloku\nDostarczanie możliwości wysyłania aktualizacji stanów tylko poprzez zmiany\nWstępna opcja do wyboru jakości przechowywanych obrazów",
+        "uk": "Впроваджено необов’язкове позначення символів в блоклі\nДодана можливість надсилати оновлення стану тільки за змінами\nДодано варіант вибрати якість збережених зображень",
+        "zh-cn": "B. 执行阻碍性质的选择\n增加只有改变才有可能派遣最新国家\n选择储存图像质量的增选办法"
+      },
       "1.15.5": {
         "en": "Added possibility to set `parse_mode` in the text message",
         "de": "Möglichkeit zur Einstellung parse_mode in der Textnachricht",
@@ -76,18 +89,6 @@
         "es": "Se agregó la configuración de la interfaz de usuario de Admin 5\nBloque de reglas agregado para javascript como complemento",
         "pl": "Dodano konfigurację interfejsu użytkownika Admin 5\nDodano blokadę reguł dla javascript jako wtyczki",
         "zh-cn": "添加了 Admin 5 UI 配置\n为 javascript 添加了规则块作为插件"
-      },
-      "1.12.6": {
-        "en": "Fix crash cases reported by Sentry",
-        "de": "Von Sentry gemeldete Absturzfälle beheben",
-        "ru": "Исправить случаи сбоев, о которых сообщил Sentry",
-        "pt": "Corrigir casos de travamento relatados pelo Sentinela",
-        "nl": "Herstel crashgevallen gemeld door Sentry",
-        "fr": "Correction des cas de plantage signalés par Sentry",
-        "it": "Risolvi i casi di crash segnalati da Sentry",
-        "es": "Solucionar casos de fallas informados por Sentry",
-        "pl": "Napraw przypadki awarii zgłoszone przez Sentry",
-        "zh-cn": "修复 Sentry 报告的崩溃案例"
       }
     },
     "title": "Telegram",

@@ -26,7 +26,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.15.6 (2023-02-17)
 * (bluefox) Implemented the optional escaping of characters in blockly
 * (bluefox) Added the possibility to send updates of states only by changes
 * (bluefox) Added option to select the quality of stored images
@@ -45,9 +45,6 @@ Use Telegram service to communicate with ioBroker
 
 ### 1.14.1 (2022-07-04)
 * (bluefox) Fixed warnings for `botSendChatId`
-
-### 1.14.0 (2022-07-02)
-* (bluefox) Ported config Gui to Admin 6
 
 ## License
 
