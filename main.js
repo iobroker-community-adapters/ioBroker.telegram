@@ -322,7 +322,14 @@ function startAdapter(options) {
                 }
             } else {
                 if (commands[id] && commands[id].report) {
-                    sendMessage(getStatus(id, state));
+                    if (commands[id].reportChanges) {
+                        if (state.val !== commands[id].lastState) {
+                            commands[id].lastState = state.val;
+                            sendMessage(getStatus(id, state));
+                        }
+                    } else {
+                        sendMessage(getStatus(id, state));
+                    }
                 }
             }
         }
@@ -1787,8 +1794,10 @@ function processTelegramText(msg) {
                     m = null;
                 }
                 if (msg) {
-                    if (err) bot.sendMessage(msg.from.id, err)
-                        .catch(error => adapter.log.error(`send Message Error: ${error}`));
+                    if (err) {
+                        bot.sendMessage(msg.from.id, err)
+                            .catch(error => adapter.log.error(`send Message Error: ${error}`));
+                    }
                     if (state) {
                         adapter.setForeignState(id1, val1, false, err => {
                             if (msg) {
@@ -2104,70 +2113,70 @@ async function updateUsers() {
 }
 
 // Read all Object names sequentially, that do not have aliases
-function readAllNames(ids, cb) {
-    if (!ids || !ids.length) {
-        cb && cb();
-    } else {
-        const id = ids.shift();
-        adapter.getForeignObject(id, (err, obj) => {
+async function readAllNames(ids) {
+    for (let i = 0; i < ids.length; i++) {
+        try {
+            const obj = await adapter.getForeignObjectAsync(ids[i]);
             if (obj) {
-                commands[id].alias  = getName(obj);
-                commands[id].type   = obj.common && obj.common.type;
-                commands[id].states = obj.common && parseStates(obj.common.states || undefined);
-                commands[id].unit   = obj.common && obj.common.unit;
-                commands[id].min    = obj.common && obj.common.min;
-                commands[id].max    = obj.common && obj.common.max;
-                adapter.subscribeForeignStates(id, () =>
-                    setImmediate(readAllNames, ids, cb));
-            } else {
-                setImmediate(readAllNames, ids, cb);
+                commands[ids[i]].alias  = getName(obj);
+                commands[ids[i]].type   = obj.common && obj.common.type;
+                commands[ids[i]].states = obj.common && parseStates(obj.common.states || undefined);
+                commands[ids[i]].unit   = obj.common && obj.common.unit;
+                commands[ids[i]].min    = obj.common && obj.common.min;
+                commands[ids[i]].max    = obj.common && obj.common.max;
+                // read actual state to detect changes
+                if (commands[ids[i]].reportChanges) {
+                    const state = await adapter.getForeignStateAsync(ids[i]);
+                    commands[ids[i]].lastState = state ? state.val : undefined;
+                }
+                await adapter.subscribeForeignStatesAsync(ids[i]);
             }
-        });
+        } catch (err) {
+            adapter.log.error(`Cannot process object "${ids[i]}": ${err}`);
+        }
     }
 }
 
-function readStatesCommands() {
-    return new Promise((resolve, reject) => {
-        adapter.getObjectView('system', 'custom', {}, (err, doc) => {
-            const readNames = [];
-            if (doc && doc.rows) {
-                for (let i = 0, l = doc.rows.length; i < l; i++) {
-                    if (doc.rows[i].value) {
-                        let id = doc.rows[i].id;
-                        let obj = doc.rows[i].value;
-                        if (obj[adapter.namespace] && obj[adapter.namespace].enabled) {
-                            commands[id] = obj[adapter.namespace];
-                            readNames.push(id)
-                        }
-                    }
+async function readStatesCommands() {
+    const doc = await adapter.getObjectViewAsync('system', 'custom', {});
+    const readNames = [];
+    if (doc && doc.rows) {
+        for (let i = 0, l = doc.rows.length; i < l; i++) {
+            if (doc.rows[i].value) {
+                let id = doc.rows[i].id;
+                let obj = doc.rows[i].value;
+                if (obj[adapter.namespace] && obj[adapter.namespace].enabled) {
+                    commands[id] = obj[adapter.namespace];
+                    readNames.push(id)
                 }
             }
+        }
+    }
 
-            readAllNames(JSON.parse(JSON.stringify(readNames)), () =>
-                resolve());
-        });
-    });
+    await readAllNames(readNames);
 }
 
-function readEnums(name) {
-    return new Promise(resolve => {
-        name = name || 'rooms';
-        enums[name] = {};
-        adapter.getObjectView('system', 'enum', {startkey: `enum.${name}.`, endkey: `enum.${name}.\u9999`}, (err, doc) => {
-            if (doc && doc.rows) {
-                for (let i = 0, l = doc.rows.length; i < l; i++) {
-                    if (doc.rows[i].value) {
-                        let id = doc.rows[i].id;
-                        let obj = doc.rows[i].value;
-                        if (obj && obj.common && obj.common.members && obj.common.members.length) {
-                            enums[name][id] = obj.common;
-                        }
+async function readEnums(name) {
+    name = name || 'rooms';
+    enums[name] = {};
+    try {
+        const doc = await adapter.getObjectViewAsync('system', 'enum', {startkey: `enum.${name}.`, endkey: `enum.${name}.\u9999`});
+        if (doc && doc.rows) {
+            for (let i = 0, l = doc.rows.length; i < l; i++) {
+                if (doc.rows[i].value) {
+                    let id = doc.rows[i].id;
+                    let obj = doc.rows[i].value;
+                    if (obj && obj.common && obj.common.members && obj.common.members.length) {
+                        enums[name][id] = obj.common;
                     }
                 }
             }
-            resolve(enums);
-        });
-    });
+        }
+    } catch (err) {
+        adapter.log.error(`Cannot read enum ${name}: ${err}`);
+    }
+
+    return enums;
 }
 
 async function main() {

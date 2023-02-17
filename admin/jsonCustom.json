@@ -48,17 +48,31 @@
       "pl": "Dostarcza tylko zmiany",
       "zh-cn": "仅交付更改"
     },
-    "Report changes": {
-      "en": "Report changes",
-      "de": "Änderungen melden",
-      "ru": "Отчет об изменениях",
-      "pt": "Comunicar alterações",
-      "nl": "Wijzigingen doorgeven",
-      "fr": "Signaler les modifications",
-      "it": "Segnala cambiamenti",
-      "es": "Informe de cambios",
-      "pl": "Zgłoś zmiany",
-      "zh-cn": "报告变更"
+    "Report updates": {
+      "en": "Report updates",
+      "de": "Aktualisierungen berichten",
+      "ru": "Сообщение при обновлении",
+      "pt": "Atualizações de relatórios",
+      "nl": "Verslaggevers",
+      "fr": "Mises à jour du rapport",
+      "it": "Segnala aggiornamenti",
+      "es": "Actualizaciones de informes",
+      "pl": "Aktualizacja",
+      "uk": "Новини",
+      "zh-cn": "报告更新"
+    },
+    "Report changes only": {
+      "en": "Report changes only",
+      "de": "Änderungen berichten",
+      "ru": "Сообщение только при изменении",
+      "pt": "Relatar apenas alterações",
+      "nl": "Meld alleen wijzigingen",
+      "fr": "Signaler uniquement les modifications",
+      "it": "Segnala solo le modifiche",
+      "es": "Reportar solo cambios",
+      "pl": "Zgłoś tylko zmiany",
+      "uk": "Повідомляти тільки про зміни",
+      "zh-cn": "仅报告更改"
     },
     "Sends a new message if the value changes": {
       "en": "Sends a new message if the value changes",
@@ -71,6 +85,18 @@
       "es": "Envía un nuevo mensaje si el valor cambia",
       "pl": "Wysyła nową wiadomość, jeśli zmieni się wartość",
       "zh-cn": "如果值更改，则发送新消息"
+    },
+    "Sends a new message if the value updates": {
+      "en": "Sends a new message if the value updates",
+      "de": "Sendet eine neue Nachricht, wenn sich der Wert aktualisiert",
+      "ru": "Отправляет новое сообщение, если значение обновляется",
+      "pt": "Envia uma nova mensagem se o valor for atualizado",
+      "nl": "Stuurt een nieuw bericht als de waarde wordt bijgewerkt",
+      "fr": "Envoie un nouveau message si la valeur est mise à jour",
+      "it": "Invia un nuovo messaggio se il valore viene aggiornato",
+      "es": "Envía un nuevo mensaje si el valor se actualiza",
+      "pl": "Wysyła nową wiadomość, jeśli wartość zostanie zaktualizowana",
+      "zh-cn": "如果值更新，则发送新消息"
     },
     "OFF status": {
       "en": "Off text",
@@ -238,10 +264,18 @@
       "sm": 6
     },
     "report": {
+      "newLine": true,
       "type": "checkbox",
-      "label": "Report changes",
-      "help": "Sends a new message if the value changes",
+      "label": "Report updates",
+      "help": "Sends a new message if the value updates",
       "defaultFunc": "customObj.common && customObj.common.read !== false",
+      "sm": 6
+    },
+    "reportChanges": {
+      "type": "checkbox",
+      "label": "Report changes only",
+      "help": "Sends a new message if the value changes",
+      "hidden": "data.report !== true",
       "sm": 6
     },
     "buttons": {
