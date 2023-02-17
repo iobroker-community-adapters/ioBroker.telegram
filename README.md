@@ -26,6 +26,11 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Implemented the optional escaping of characters in blockly
+* (bluefox) Added the possibility to send updates of states only by changes
+* (bluefox) Added option to select the quality of stored images
+
 ### 1.15.5 (2023-02-16)
 * (bluefox) Added possibility to set `parse_mode` in the text message
 
