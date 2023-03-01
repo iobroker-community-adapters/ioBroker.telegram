@@ -20,7 +20,7 @@
         "react-dom": "^18.2.0",
         "react-scripts": "^5.0.1",
         "react-refresh": "^0.14.0",
-        "@originjs/vite-plugin-federation": "^1.2.0",
+        "@originjs/vite-plugin-federation": "^1.2.1",
         "@rollup/plugin-babel": "^6.0.3",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-node-resolve": "^15.0.1",
