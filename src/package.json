@@ -20,7 +20,7 @@
         "react-ace": "^10.1.0",
         "ace-builds": "^1.15.2",
         "@iobroker/adapter-react-v5": "^4.0.13",
-        "@mui/material": "^5.11.9",
+        "@mui/material": "^5.11.15",
         "@mui/styles": "^5.11.9",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
