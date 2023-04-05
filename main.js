@@ -351,6 +351,12 @@ function startAdapter(options) {
             commands[id].min    = obj.common && obj.common.min;
             commands[id].max    = obj.common && obj.common.max;
             commands[id].alias  = alias;
+             // read actual state to detect changes
+            if (commands[id].reportChanges) {
+                adapter.getForeignStateAsync(id).then(state => {
+                    commands[id].lastState = state ? state.val : undefined;
+                });
+            }
         } else if (commands[id]) {
             adapter.log.debug(`Removed command: ${id}`);
             delete commands[id];
