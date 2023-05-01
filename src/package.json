@@ -30,7 +30,7 @@
         "@types/react-dom": "^18.0.11",
         "@originjs/vite-plugin-federation": "^1.2.2",
         "@rollup/plugin-babel": "^6.0.3",
-        "@rollup/plugin-commonjs": "^24.0.1",
+        "@rollup/plugin-commonjs": "^24.1.0",
         "@rollup/plugin-node-resolve": "^15.0.2",
         "@rollup/plugin-replace": "^5.0.2",
         "@craco/craco": "^7.1.0",
