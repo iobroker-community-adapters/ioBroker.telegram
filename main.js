@@ -353,9 +353,8 @@ function startAdapter(options) {
             commands[id].alias  = alias;
              // read actual state to detect changes
             if (commands[id].reportChanges) {
-                adapter.getForeignStateAsync(id).then(state => {
-                    commands[id].lastState = state ? state.val : undefined;
-                });
+                adapter.getForeignStateAsync(id)
+                    .then(state => commands[id].lastState = state ? state.val : undefined);
             }
         } else if (commands[id]) {
             adapter.log.debug(`Removed command: ${id}`);
