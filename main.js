@@ -164,7 +164,9 @@ function startAdapter(options) {
                     err && adapter.log.error(err);
                     adapter.log.error('Cannot wipe list of saved users!');
                 }
-            } else {
+            } else if(obj.command === 'sendNotification') {
+                processNotification(obj);
+            } else{
                 processMessage(obj);
             }
         }
@@ -351,7 +353,7 @@ function startAdapter(options) {
             commands[id].min    = obj.common && obj.common.min;
             commands[id].max    = obj.common && obj.common.max;
             commands[id].alias  = alias;
-             // read actual state to detect changes
+            // read actual state to detect changes
             if (commands[id].reportChanges) {
                 adapter.getForeignStateAsync(id)
                     .then(state => commands[id].lastState = state ? state.val : undefined);
@@ -381,12 +383,19 @@ function startAdapter(options) {
     return adapter;
 }
 
-function sendSystemMessage(text) {
+/**
+ * Send message to all system users
+ *
+ * @param {string} text text to send
+ * @param {Record<string, any>} options additional options, e.g. parse_mode
+ * @returns {Promise<void>}
+ */
+async function sendSystemMessage(text, options= {}) {
     const _users = Object.keys(users)
         .filter(id => users[id].sysMessages !== false)
         .map(id => adapter.config.useUsername ? users[id].userName : users[id].firstName);
 
-    sendMessage(text, _users, null, {disable_notification: true});
+    await sendMessage(text, _users, null, {...options, disable_notification: true});
 }
 
 function getStatus(id, state) {
@@ -483,7 +492,7 @@ function handleWebHook(req, res) {
         let body = '';
         req.on('data', data => {
             body += data;
-            if (body.length > 100000) {
+            if (body.length > 100_000) {
                 res.writeHead(413, 'Request Entity Too Large', {
                     'Content-Type': 'text/html'
                 });
@@ -726,7 +735,7 @@ function _sendMessageHelper(dest, name, text, options) {
                                 const filesAsArray = fileNames
                                     .map(element => {
                                         try {
-                                            return {type: 'photo', media: fs.readFileSync(element)}
+                                            return {type: 'photo', media: fs.readFileSync(element)};
                                         } catch (error) {
                                             adapter.log.error(`Cannot read file${element}`);
                                             return undefined;
@@ -999,8 +1008,8 @@ function _sendMessageHelper(dest, name, text, options) {
 
 function sendMessage(text, user, chatId, options) {
     if (!text && typeof options !== 'object' && text !== 0 && (!options || !options.latitude)) {
-       adapter.log.warn('Invalid text: null');
-       return Promise.resolve(0);
+        adapter.log.warn('Invalid text: null');
+        return Promise.resolve(0);
     }
 
     if (text && typeof text === 'object' && text.text !== undefined && typeof text.text === 'string' && options === undefined) {
@@ -1043,7 +1052,7 @@ function sendMessage(text, user, chatId, options) {
         }
     }
 
-    let tPromiseList = [];
+    const tPromiseList = [];
     // convert
     if (text !== undefined && text !== null && typeof text !== 'object') {
         text = text.toString();
@@ -1100,7 +1109,7 @@ function sendMessage(text, user, chatId, options) {
                 continue;
             }
             if ((adapter.config.useUsername && users[id_t].userName.match(re)) || (!adapter.config.useUsername && users[id_t].firstName.match(re))) {
-                id = id_t
+                id = id_t;
                 break;
             }
         }
@@ -1173,7 +1182,7 @@ function getMessage(msg) {
                 } else {
                     adapter.log.debug(res.error);
                 }
-            })
+            });
         } catch (err) {
             adapter.log.error(`Error saving voice file: ${err}`);
         }
@@ -1769,7 +1778,7 @@ function processTelegramText(msg) {
                             continue;
                         }
                     } else {
-                        value = sValue
+                        value = sValue;
                     }
 
                     adapter.setForeignState(id, value, false, err =>
@@ -2010,7 +2019,7 @@ function connect() {
             adapter.log.debug(`Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`);
             bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('').catch(error => {
-                adapter.log.error(`setWebHook Error:${error}`)
+                adapter.log.error(`setWebHook Error:${error}`);
             });
         }
 
@@ -2028,7 +2037,7 @@ function connect() {
                 }
             }
         }).catch(error => {
-            adapter.log.error(`getMe Error:${error}`)
+            adapter.log.error(`getMe Error:${error}`);
             connectionState(false);
         });
 
@@ -2160,11 +2169,11 @@ async function readStatesCommands() {
     if (doc && doc.rows) {
         for (let i = 0, l = doc.rows.length; i < l; i++) {
             if (doc.rows[i].value) {
-                let id = doc.rows[i].id;
-                let obj = doc.rows[i].value;
+                const id = doc.rows[i].id;
+                const obj = doc.rows[i].value;
                 if (obj[adapter.namespace] && obj[adapter.namespace].enabled) {
                     commands[id] = obj[adapter.namespace];
-                    readNames.push(id)
+                    readNames.push(id);
                 }
             }
         }
@@ -2181,8 +2190,8 @@ async function readEnums(name) {
         if (doc && doc.rows) {
             for (let i = 0, l = doc.rows.length; i < l; i++) {
                 if (doc.rows[i].value) {
-                    let id = doc.rows[i].id;
-                    let obj = doc.rows[i].value;
+                    const id = doc.rows[i].id;
+                    const obj = doc.rows[i].value;
                     if (obj && obj.common && obj.common.members && obj.common.members.length) {
                         enums[name][id] = obj.common;
                     }
@@ -2235,7 +2244,7 @@ async function main() {
             systemLang = obj.common.language || 'en';
         }
 
-        await readStatesCommands()
+        await readStatesCommands();
         if (adapter.config.rooms) {
             await readEnums();
         }
@@ -2249,6 +2258,71 @@ async function main() {
     } catch (err) {
         adapter.log.error(err);
     }
+}
+
+
+/**
+ * Process a `sendNotification` request
+ *
+ * @param {ioBroker.Message} obj
+ */
+async function processNotification( obj) {
+    adapter.log.info(`New notification received from ${obj.from}`);
+
+    const notificationMessage = buildMessageFromNotification(obj.message);
+    try {
+        await sendSystemMessage(notificationMessage, { parse_mode: 'MarkdownV2' });
+        if (obj.callback) {
+            adapter.sendTo(obj.from, 'sendNotification', { sent: true }, obj.callback);
+        }
+    } catch {
+        if (obj.callback) {
+            adapter.sendTo(obj.from, 'sendNotification', { sent: false }, obj.callback);
+        }
+    }
+
+}
+
+/**
+ * Build up a mail object from the notification message
+ *
+ * @param {Record<string, any>} message
+ * @returns {string}
+ */
+function buildMessageFromNotification(message) {
+    const subject = message.category.name;
+    const { instances } = message.category;
+
+    const readableInstances = Object.entries(instances).map(([instance, entry]) => `${instance.substring('system.adapter.'.length)}: ${getNewestDate(entry.messages)}`);
+
+    const text = `${message.category.description}
+${message.host}:   
+${readableInstances.join('\n')}
+    `;
+
+    return replaceReservedCharacters(`*${subject}*\n\n${text}`);
+}
+
+/**
+ * Replace reserved characters in outgoing message
+ *
+ * @param {string} text string to sanitize
+ * @returns {string}
+ */
+function replaceReservedCharacters(text) {
+    return text.replace(/\./g, '\\.').replace(/-/g, '\\-');
+}
+
+/**
+ * Extract the newest date out of a notification messages array as local date
+ *
+ * @param {{ ts: number, message: string }[]} messages
+ * @return string
+ */
+function getNewestDate(messages) {
+    const newestTs = messages.sort((a, b) => a.ts < b.ts ? 1 : -1)[0].ts;
+
+    return new Date(newestTs).toLocaleString();
 }
 
 // If started as allInOne/compact mode => return function to create instance

@@ -125,6 +125,10 @@
     "platform": "Javascript/Node.js",
     "mode": "daemon",
     "messagebox": true,
+    "supportedMessages": {
+      "custom": true,
+      "notifications": true
+    },
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
     "loglevel": "info",
     "icon": "telegram.png",
