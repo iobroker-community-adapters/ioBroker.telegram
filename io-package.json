@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.15.6",
+    "version": "1.16.0",
     "news": {
+      "1.16.0": {
+        "en": "We have added support for the `notification-manager` adapter",
+        "de": "Wir haben Unterstützung für den Benachrichtigungsmanager-Adapter hinzugefügt",
+        "ru": "Мы добавили поддержку адаптера уведомлений-менеджера",
+        "pt": "Adicionamos suporte para o adaptador de gerenciamento de notificações",
+        "nl": "We hebben ondersteuning toegevoegd voor de manager",
+        "fr": "Nous avons ajouté un support pour l'adaptateur notification-manager",
+        "it": "Abbiamo aggiunto il supporto per l'adattatore di notifica-manager",
+        "es": "Hemos añadido soporte para el adaptador de gestión de notificación",
+        "pl": "Dodano wsparcie dla adaptatora powiadomienia-managera",
+        "uk": "Ми додали підтримку адаптера повідомлення-менеджера",
+        "zh-cn": "我们进一步支持通知manager的适应者。"
+      },
       "1.15.6": {
         "en": "Implemented the optional escaping of characters in blockly\nAdded the possibility to send updates of states only by changes\nAdded option to select the quality of stored images",
         "de": "Ergänzt das optionale Entweichen von Zeichen in blockweise\nHinzugefügt die Möglichkeit, Updates von Zuständen nur durch Änderungen zu senden\nOption hinzugefügt, um die Qualität der gespeicherten Bilder auszuwählen",
@@ -77,18 +90,6 @@
         "es": "Config de porte Gui a Admin 6",
         "pl": "Strona internetowa Gui – Admin 6",
         "zh-cn": "波 特 导 言6"
-      },
-      "1.13.0": {
-        "en": "Added Admin 5 UI config\nAdded rule block for javascript as plugin",
-        "de": "Admin 5 UI-Konfiguration hinzugefügt\nRegelblock für Javascript als Plugin hinzugefügt",
-        "ru": "Добавлена конфигурация пользовательского интерфейса администратора 5.\nДобавлен блок правил для javascript в качестве плагина",
-        "pt": "Adicionada configuração de interface do usuário do Admin 5\nAdicionado bloco de regras para javascript como plugin",
-        "nl": "Admin 5 UI-configuratie toegevoegd\nRegelblok toegevoegd voor javascript als plug-in",
-        "fr": "Ajout de la configuration de l'interface utilisateur Admin 5\nBloc de règles ajouté pour javascript en tant que plugin",
-        "it": "Aggiunta la configurazione dell'interfaccia utente di Admin 5\nAggiunto blocco di regole per javascript come plug-in",
-        "es": "Se agregó la configuración de la interfaz de usuario de Admin 5\nBloque de reglas agregado para javascript como complemento",
-        "pl": "Dodano konfigurację interfejsu użytkownika Admin 5\nDodano blokadę reguł dla javascript jako wtyczki",
-        "zh-cn": "添加了 Admin 5 UI 配置\n为 javascript 添加了规则块作为插件"
       }
     },
     "title": "Telegram",

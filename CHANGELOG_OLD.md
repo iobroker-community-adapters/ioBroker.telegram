@@ -1,4 +1,7 @@
 # Older changes
+## 1.14.1 (2022-07-04)
+* (bluefox) Fixed warnings for `botSendChatId`
+
 ## 1.14.0 (2022-07-02)
 * (bluefox) Ported config Gui to Admin 6
 
