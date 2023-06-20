@@ -14,7 +14,7 @@ module.exports = {
             '/session': 'http://localhost:8081',
             '/log': 'http://localhost:8081',
             '/lib': 'http://localhost:8081',
-        }
+        },
     },
     webpack: {
         output: {

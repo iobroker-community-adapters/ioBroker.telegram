@@ -21,11 +21,18 @@ Use Telegram service to communicate with ioBroker
 
 **This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
 
+## Todo
+- GUI tests for admin config
+- GUI tests for rules
+
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Packets were updated
+
 ### 1.16.0 (2023-06-16)
 * (foxriver76) We have added support for the `notification-manager` adapter
 

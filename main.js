@@ -48,7 +48,7 @@ let tmpDirName;
 const server = {
     app: null,
     server: null,
-    settings: null
+    settings: null,
 };
 
 let adapter;
@@ -63,7 +63,7 @@ const systemLang2CallMe = {
     it: 'it-IT-Standard-A',
     es: 'es-ES-Standard-A',
     pl: 'pl-PL-Standard-A',
-    'zh-cn': 'en-GB-Standard-A'
+    'zh-cn': 'en-GB-Standard-A',
 };
 
 function startAdapter(options) {
@@ -236,13 +236,13 @@ function startAdapter(options) {
                         adapter.log.info(`https server listening on port ${port}`);
 
                         main()
-                            .then(() => {});
+                            .catch(e => adapter.log.error(`Cannot start adapter: ${e}`));
                     });
                 }
             });
         } else {
             main()
-                .then(() => {});
+                .catch(e => adapter.log.error(`Cannot start adapter: ${e}`));
         }
     });
 
@@ -463,7 +463,7 @@ function getName(obj) {
 }
 
 const actions = [
-    'typing', 'upload_photo', 'upload_video', 'record_video', 'record_audio', 'upload_document', 'find_location'
+    'typing', 'upload_photo', 'upload_video', 'record_video', 'record_audio', 'upload_document', 'find_location',
 ];
 
 function handleWebHook(req, res) {
@@ -512,7 +512,7 @@ function handleWebHook(req, res) {
         });
     } else {
         res.writeHead(404, 'Resource Not Found', {
-            'Content-Type': 'text/html'
+            'Content-Type': 'text/html',
         });
         res.end('<!doctype html><html><head><title>404</title></head><body>404: Resource Not Found</body></html>');
     }
@@ -587,31 +587,31 @@ function _sendMessageHelper(dest, name, text, options) {
                 if ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo')) {
                     mediaInput = {
                         type: 'photo',
-                        media: text
+                        media: text,
                     };
                 } else
                 if ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation')) {
                     mediaInput = {
                         type: 'animation',
-                        media: text
+                        media: text,
                     };
                 } else
                 if ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video')) {
                     mediaInput = {
                         type: 'video',
-                        media: text
+                        media: text,
                     };
                 } else
                 if ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio')) {
                     mediaInput = {
                         type: 'audio',
-                        media: text
+                        media: text,
                     };
                 } else
                 if ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document')) {
                     mediaInput = {
                         type: 'document',
-                        media: text
+                        media: text,
                     };
                 }
 
@@ -896,7 +896,16 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                     resolve(count);
                 });
-        } else if (text && ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio'))) {
+        } else if (
+            text &&
+            (
+                (typeof text === 'string' &&
+                    text.match(/\.(wav|mp3|ogg)$/i) &&
+                    fs.existsSync(text)
+                ) ||
+                (options && options?.type === 'audio')
+            )
+        ) {
             if (typeof text === 'string') {
                 adapter.log.debug(`Send audio to "${name}": ${text}`);
             } else {
@@ -919,7 +928,17 @@ function _sendMessageHelper(dest, name, text, options) {
                     options = null;
                     resolve(count);
                 });
-        } else if (text && ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo'))) {
+        } else if (
+            text &&
+            (
+                (
+                    typeof text === 'string' && // if the message is a string, and it is a path to file or URL
+                    text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) &&
+                    (fs.existsSync(text) || text.match(/^(https|http)/i))
+                ) ||
+                (options && options.type === 'photo') // if the type of message is photo
+            )
+        ) {
             if (typeof text === 'string') {
                 adapter.log.debug(`Send photo to "${name}": ${text}`);
             } else {
