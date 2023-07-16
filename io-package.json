@@ -174,11 +174,6 @@
       "sentry": {
         "dsn": "https://ae1b374ffb5d40cbabe9bff369520972@sentry.iobroker.net/38"
       }
-    },
-    "javascriptRules": {
-      "i18n": true,
-      "url": "rules/customRuleBlocks.js",
-      "name": "ActionTelegram"
     }
   },
   "protectedNative": [
