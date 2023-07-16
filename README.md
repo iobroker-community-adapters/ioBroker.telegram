@@ -32,7 +32,6 @@ Use Telegram service to communicate with ioBroker
 -->
 ### **WORK IN PROGRESS**
 * (bluefox) Packets were updated.
-* (mcm1957) Configuration for rules has been removed as no rules code is available.
 
 ### 1.16.0 (2023-06-16)
 * (foxriver76) We have added support for the `notification-manager` adapter
