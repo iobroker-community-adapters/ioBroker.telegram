@@ -21,7 +21,7 @@
         "ace-builds": "^1.22.1",
         "@iobroker/adapter-react-v5": "^4.1.2",
         "@mui/material": "^5.13.6",
-        "@mui/styles": "^5.13.2",
+        "@mui/styles": "^5.14.1",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
