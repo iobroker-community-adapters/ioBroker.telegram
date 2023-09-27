@@ -1028,29 +1028,55 @@ function _sendMessageHelper(dest, name, text, options) {
                     }
                 }
 
-                bot && bot.sendMessage(dest, text || '', options)
-                    .then(response => {
-                        messageIds[options.chat_id] = response.message_id;
-                        saveSendRequest(response);
-                    })
-                    .then(() => {
-                        adapter.log.debug('Message sent');
-                        options = null;
-                        adapter.log.info(JSON.stringify(messageIds))
-                        resolve(JSON.stringify(messageIds));
-                    })
-                    .catch(error => {
-                        if (options && options.chatId) {
-                            adapter.log.error(`Cannot send message [chatId - ${options.chatId}]: ${error}`);
-                        } else {
-                            adapter.log.error(`Cannot send message [user - ${options && options.user}]: ${error}`);
-                        }
-                        options = null;
-                        resolve(JSON.stringify(messageIds));
-                    });
+                if(bot){
+                    handleRequest(() => bot.sendMessage(dest, text || '', options), options, resolve);
+                }
+                // bot && bot.sendMessage(dest, text || '', options)
+                //     .then(response => {
+                //         messageIds[options.chat_id] = response.message_id;
+                //         saveSendRequest(response);
+                //     })
+                //     .then(() => {
+                //         adapter.log.debug('Message sent');
+                //         options = null;
+                //         adapter.log.info(JSON.stringify(messageIds));
+                //         resolve(JSON.stringify(messageIds));
+                //     })
+                //     .catch(error => {
+                //         if (options && options.chatId) {
+                //             adapter.log.error(`Cannot send message [chatId - ${options.chatId}]: ${error}`);
+                //         } else {
+                //             adapter.log.error(`Cannot send message [user - ${options && options.user}]: ${error}`);
+                //         }
+                //         options = null;
+                //         resolve(JSON.stringify(messageIds));
+                //     });
 
             }
     });
+}
+
+function handleRequest(promise, options, resolve){
+    const messageIds = {};
+    promise().then(response => {
+        messageIds[options.chat_id] = response.message_id;
+        saveSendRequest(response);
+    })
+        .then(() => {
+            adapter.log.debug('Message sent');
+            options = null;
+            adapter.log.info(JSON.stringify(messageIds));
+            resolve(JSON.stringify(messageIds));
+        })
+        .catch(error => {
+            if (options && options.chatId) {
+                adapter.log.error(`Failed message [chatId - ${options.chatId}]: ${error}`);
+            } else {
+                adapter.log.error(`Cannot send message [user - ${options && options.user}]: ${error}`);
+            }
+            options = null;
+            resolve(JSON.stringify(messageIds));
+        });
 }
 
 function sendMessage(text, user, chatId, options) {
