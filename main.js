@@ -539,7 +539,7 @@ function saveSendRequest(msg) {
 
 function _sendMessageHelper(dest, name, text, options) {
     return new Promise((resolve, reject) => {
-        let messageIds = {};
+        const messageIds = {};
         if (options && options.chatId !== undefined && options.user === undefined) {
             options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
         }
@@ -562,7 +562,7 @@ function _sendMessageHelper(dest, name, text, options) {
                         adapter.log.error(`Cannot send editMessageReplyMarkup [user - ${options.user}]: ${error}`);
                     }
                     options = null;
-                    resolve([0]);
+                    resolve(JSON.stringify(messageIds));
                 });
         } else if (options && options.editMessageText !== undefined) {
             adapter.log.debug(`Send editMessageText to "${name}"`);
@@ -582,7 +582,7 @@ function _sendMessageHelper(dest, name, text, options) {
                         adapter.log.error(`Cannot send editMessageText [user - ${options.user}]: ${error}`);
                     }
                     options = null;
-                    resolve([0]);
+                    resolve(JSON.stringify(messageIds));
                 });
         } else if (options && options.editMessageMedia !== undefined) {
             adapter.log.debug(`Send editMessageMedia to "${name}"`);
@@ -660,17 +660,17 @@ function _sendMessageHelper(dest, name, text, options) {
                                 adapter.log.error(`Cannot send editMessageMedia [user - ${options.user}]: ${error}`);
                             }
                             options = null;
-                            resolve([0]);
+                            resolve(JSON.stringify(messageIds));
                         });
                 } else {
                     adapter.log.error(`Cannot send editMessageMedia [chatId - ${options.chatId}]: unsupported media type`);
                     options = null;
-                    resolve([0]);
+                    resolve(JSON.stringify(messageIds));
                 }
             } else {
                 adapter.log.error(`Cannot send editMessageMedia [chatId - ${options.chatId}]: no media found. "text" may not be empty`);
                 options = null;
-                resolve([0]);
+                resolve(JSON.stringify(messageIds));
             }
         } else if (options && options.editMessageCaption !== undefined) {
             adapter.log.debug(`Send editMessageCaption to "${name}"`);
@@ -690,7 +690,7 @@ function _sendMessageHelper(dest, name, text, options) {
                         adapter.log.error(`Cannot send editMessageCaption [user - ${options.user}]: ${error}`);
                     }
                     options = null;
-                    resolve([0]);
+                    resolve(JSON.stringify(messageIds));
                 });
         } else if (options && options.deleteMessage !== undefined) {
             adapter.log.debug(`Send deleteMessage to "${name}"`);
@@ -710,7 +710,7 @@ function _sendMessageHelper(dest, name, text, options) {
                         adapter.log.error(`Cannot send deleteMessage [user - ${options.user}]: ${error}`);
                     }
                     options = null;
-                    resolve([0]);
+                    resolve(JSON.stringify(messageIds));
                 });
         } else
             if (options && options.latitude !== undefined) {
@@ -778,13 +778,13 @@ function _sendMessageHelper(dest, name, text, options) {
                                                     adapter.log.error(`Cannot send media group [user - ${options.user}]: ${error}`);
                                                 }
                                                 options = null;
-                                                resolve([0]);
+                                                resolve(JSON.stringify(messageIds));
                                             });
                                     }
                                 } else {
                                     adapter.log.debug('files must exists');
                                     options = null;
-                                    resolve([0]);
+                                    resolve(JSON.stringify(messageIds));
                                 }
                             })
                             .catch(error => {
@@ -792,12 +792,12 @@ function _sendMessageHelper(dest, name, text, options) {
                             });
                     } else {
                         adapter.log.debug('option media should be an array');
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     }
                 } else {
                     adapter.log.debug('no files added!');
                     options = null;
-                    resolve([0]);
+                    resolve(JSON.stringify(messageIds));
                 }
             } else if (text && typeof text === 'string' && actions.includes(text)) {
                 adapter.log.debug(`Send action to "${name}": ${text}`);
@@ -818,7 +818,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send action [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
                 if (typeof text === 'string') {
@@ -843,7 +843,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send sticker [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))) {
                 if (typeof text === 'string') {
@@ -868,7 +868,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send animation [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
                 if (typeof text === 'string') {
@@ -893,7 +893,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send video [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
                 if (typeof text === 'string') {
@@ -918,7 +918,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send document [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (
                 text &&
@@ -952,7 +952,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send audio [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (
                 text &&
@@ -987,7 +987,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send photo [user - ${options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
             } else if (options && options.answerCallbackQuery !== undefined) {
                 adapter.log.debug(`Send answerCallbackQuery to "${name}"`);
@@ -1009,22 +1009,20 @@ function _sendMessageHelper(dest, name, text, options) {
                                 adapter.log.error(`Cannot send answerCallbackQuery [user - ${options.user}]: ${error}`);
                             }
                             options = null;
-                            resolve([0]);
+                            resolve(JSON.stringify(messageIds));
                         });
                 }
             } else {
                 adapter.log.debug(`Send message to [${name}]: "${text}"`);
                 if (text && typeof text === 'string') {
+                    options = options || {};
                     if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
-                        options = options || {};
                         options.parse_mode = 'MarkdownV2';
                         text = text.substring(12, text.length - 13);
                     } else if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
-                        options = options || {};
                         options.parse_mode = 'HTML';
                         text = text.substring(6, text.length - 7);
                     } else if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
-                        options = options || {};
                         options.parse_mode = 'Markdown';
                         text = text.substring(10, text.length - 11);
                     }
@@ -1038,6 +1036,7 @@ function _sendMessageHelper(dest, name, text, options) {
                     .then(() => {
                         adapter.log.debug('Message sent');
                         options = null;
+                        adapter.log.info(JSON.stringify(messageIds))
                         resolve(JSON.stringify(messageIds));
                     })
                     .catch(error => {
@@ -1047,7 +1046,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             adapter.log.error(`Cannot send message [user - ${options && options.user}]: ${error}`);
                         }
                         options = null;
-                        resolve([0]);
+                        resolve(JSON.stringify(messageIds));
                     });
 
             }
@@ -1057,7 +1056,7 @@ function _sendMessageHelper(dest, name, text, options) {
 function sendMessage(text, user, chatId, options) {
     if (!text && typeof options !== 'object' && text !== 0 && (!options || !options.latitude)) {
         adapter.log.warn('Invalid text: null');
-        return Promise.resolve(0);
+        return Promise.resolve({});
     }
 
     if (text && typeof text === 'object' && text.text !== undefined && typeof text.text === 'string' && options === undefined) {
