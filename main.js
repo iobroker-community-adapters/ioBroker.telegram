@@ -758,7 +758,9 @@ function _sendMessageHelper(dest, name, text, options) {
     });
 }
 
-// executes the method and handles, what to do next
+/**
+ * executes the given method and handles, what to do next
+ */
 function executeSending(action, options, resolve){
     // create an empty object, to store chat id and message id of successfully sent messages
     const messageIds = {};
