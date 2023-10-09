@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "1.16.0",
+    "version": "2.0.0",
     "news": {
+      "2.0.0": {
+        "en": "Packets were updated.\nBREAKING CHANGE: The minimal node.js version is 16\nBREAKING CHANGE: Return an object with chatId and messageId instead of the message count",
+        "de": "Pakete wurden aktualisiert.\nBREAKING CHANGE: Die minimal node.js Version ist 16\nBREAKING CHANGE: Gibt ein Objekt mit chatId und messageId anstelle der Nachrichtenzahl zurück",
+        "ru": "Пакеты были обновлены.\nИЗМЕНЕНИЕ ЗАВТРА: Минимальная версия node.js 16\nИЗМЕНЕНИЕ ЗАВТРА: Возвращение объекта с chatId и messageId вместо подсчета сообщения",
+        "pt": "Os pacotes foram atualizados.\nMuita coisa: A versão node.js mínima é 16\nMuita coisa: Retornar um objeto com chatId e messageId em vez da contagem de mensagens",
+        "nl": "Packets zijn geüpdateerd.\nBREAKING CHANGE: De minimale node is 16\nBREAKING CHANGE: Geef een object terug met chatId en bericht in plaats van de boodschap te tellen",
+        "fr": "Les paquets ont été mis à jour.\nMerci. La version minimale node.js est 16\nMerci. Retourner un objet avec chatId et messageId au lieu du nombre de messages",
+        "it": "I pacchetti sono stati aggiornati.\nCAMBIO DI BREAKING: La versione minimal node.js è 16\nCAMBIO DI BREAKING: Restituisce un oggetto con chatId e messageId invece del conteggio messaggi",
+        "es": "Los paquetes se actualizaron.\nCambiando: La versión mínima node.js es 16\nCambiando: Devuelve un objeto con chatId y messageId en lugar del recuento del mensaje",
+        "pl": "Pakiety zostały zaktualizowane.\nBREAKING CHANGE: (ang.). Wersja minimalna jest 16\nBREAKING CHANGE: (ang.). Powrócony obiekt z czatami i wiadomością, zamiast licznika wiadomości",
+        "uk": "Пакети були оновлено.\nБРЕАКІНГ ЗМІН: Версія Mini node.js 16\nБРЕАКІНГ ЗМІН: Повернути об'єкт через чатІд і повідомленняІд замість підрахунку повідомлення",
+        "zh-cn": "已更新包装。.\nBREAKREANGE: 最小的字样为16。\nBREAKREANGE: F. 背井离乡的物体"
+      },
       "1.16.0": {
         "en": "We have added support for the `notification-manager` adapter",
         "de": "Wir haben Unterstützung für den Benachrichtigungsmanager-Adapter hinzugefügt",
@@ -78,18 +91,6 @@
         "es": "Advertencias fijas para botSend ChatId",
         "pl": "Informacje o botSend ChatId",
         "zh-cn": "防止恐怖主义的预警 Chat Id"
-      },
-      "1.14.0": {
-        "en": "Ported config Gui to Admin 6",
-        "de": "Ported config Gui zu Admin 6",
-        "ru": "Портированная конфиг Гуй админ 6",
-        "pt": "Configuração porno Gui para administrador 6",
-        "nl": "Beveiliging Gui tot Admin 6",
-        "fr": "Configuration portuaire Gui à l'administration 6",
-        "it": "Configurazione portata Gui a Admin 6",
-        "es": "Config de porte Gui a Admin 6",
-        "pl": "Strona internetowa Gui – Admin 6",
-        "zh-cn": "波 特 导 言6"
       }
     },
     "title": "Telegram",

@@ -30,7 +30,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.0.0 (2023-10-09)
 * (bluefox) Packets were updated.
 * (bluefox) BREAKING CHANGE: The minimal node.js version is 16
 * (boergegrunicke) BREAKING CHANGE: Return an object with chatId and messageId instead of the message count
@@ -49,11 +49,6 @@ Use Telegram service to communicate with ioBroker
 ### 1.15.2 (2022-11-04)
 * (Steff42) Make sure the userid is a string to show warnings in the log
 * (bluefox) Added ukrainian language
-
-### 1.15.0 (2022-09-28)
-* (klein0r) Fixed custom component (username was missing)
-* (klein0r) Translated all objects
-* (bluefox) Updated GUI packages and corrected build process
 
 ## License
 
