@@ -554,27 +554,45 @@ function _sendMessageHelper(dest, name, text, options) {
             adapter.log.debug(`Send editMessageMedia to "${name}"`);
             if (text) {
                 let mediaInput;
-                if ((typeof text === 'string' && text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) && (fs.existsSync(text) || text.match(/^(https|http)/i))) || (options && options.type === 'photo')) {
+                if (
+                    (typeof text === 'string' &&
+                        text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) &&
+                        (fs.existsSync(text) || text.match(/^(https|http)/i))
+                    ) ||
+                    (options && options.type === 'photo')
+                ) {
                     mediaInput = {
                         type: 'photo',
                         media: text,
                     };
-                } else if ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation')) {
+                } else if (
+                    (typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) ||
+                    (options && options.type === 'animation')
+                ) {
                     mediaInput = {
                         type: 'animation',
                         media: text,
                     };
-                } else if ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video')) {
+                } else if (
+                    (typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) ||
+                    (options && options.type === 'video')
+                ) {
                     mediaInput = {
                         type: 'video',
                         media: text,
                     };
-                } else if ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) || (options && options.type === 'audio')) {
+                } else if (
+                    (typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && fs.existsSync(text)) ||
+                    (options && options.type === 'audio')
+                ) {
                     mediaInput = {
                         type: 'audio',
                         media: text,
                     };
-                } else if ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document')) {
+                } else if (
+                    (typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) ||
+                    (options && options.type === 'document')
+                ) {
                     mediaInput = {
                         type: 'document',
                         media: text,
@@ -583,7 +601,7 @@ function _sendMessageHelper(dest, name, text, options) {
 
                 if (mediaInput) {
                     const opts = {
-                        qs:  options.editMessageMedia.options,
+                        qs: options.editMessageMedia.options,
                     };
                     opts.formData = {};
 
@@ -753,7 +771,6 @@ function _sendMessageHelper(dest, name, text, options) {
                     }
                 }
                 bot && executeSending(() => bot.sendMessage(dest, text || '', options), options, resolve);
-
             }
     });
 }

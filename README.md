@@ -32,7 +32,8 @@ Use Telegram service to communicate with ioBroker
 -->
 ### **WORK IN PROGRESS**
 * (bluefox) Packets were updated.
-* (boergegrunicke) Return object with chatId and messageId instead of the message count
+* (bluefox) BREAKING CHANGE: The minimal node.js version is 16
+* (boergegrunicke) BREAKING CHANGE: Return an object with chatId and messageId instead of the message count
 
 ### 1.16.0 (2023-06-16)
 * (foxriver76) We have added support for the `notification-manager` adapter
