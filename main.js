@@ -853,10 +853,7 @@ function sendMessage(text, user, chatId, options) {
     }
     if (chatId) {
         tPromiseList.push(_sendMessageHelper(chatId, 'chat', text, options));
-        return Promise.all(tPromiseList)
-            .then(results =>
-                results.reduce((e, acc) => acc + e, 0))
-            .catch(e => e);
+        return Promise.all(tPromiseList).catch(e => e);
     } else if (user) {
         if (typeof user !== 'string' && !(user instanceof Array)) {
             adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
@@ -886,9 +883,7 @@ function sendMessage(text, user, chatId, options) {
             adapter.log.warn(`${userArray.length - matches} of ${userArray.length} recipients are unknown!`);
         }
 
-        return Promise.all(tPromiseList)
-            .then(results => results.reduce((e, acc) => acc + e, 0))
-            .catch(e => e);
+        return Promise.all(tPromiseList).catch(e => e);
     }
 
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
@@ -923,10 +918,7 @@ function sendMessage(text, user, chatId, options) {
         });
     }
 
-    return Promise.all(tPromiseList)
-        .then(results =>
-            results.reduce((e, acc) => acc + e, 0))
-        .catch(e => -1);
+    return Promise.all(tPromiseList).catch(e => e);
 }
 
 function saveFile(fileID, fileName, callback) {
