@@ -30,6 +30,9 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (boergegrunicke) Incorrect trailing zero in callback of sendTo() has been fixed. [#680]
+
 ### 2.0.0 (2023-10-09)
 * (bluefox) Packets were updated.
 * (bluefox) BREAKING CHANGE: The minimal node.js version is 16
