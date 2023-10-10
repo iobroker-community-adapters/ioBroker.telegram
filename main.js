@@ -520,25 +520,26 @@ function handleWebHook(req, res) {
 
 function saveSendRequest(msg) {
     adapter.log.debug(`Request: ${JSON.stringify(msg)}`);
+    if  (typeof msg === 'object'){
+        if (adapter.config.storeRawRequest) {
+            adapter.setState('communicate.botSendRaw', JSON.stringify(msg), true, err =>
+                err && adapter.log.error(err));
+        }
 
-    if (msg && adapter.config.storeRawRequest) {
-        adapter.setState('communicate.botSendRaw', JSON.stringify(msg), true, err =>
-            err && adapter.log.error(err));
-    }
+        if (msg.message_id) {
+            adapter.setState('communicate.botSendMessageId', msg.message_id, true, err =>
+                err && adapter.log.error(err));
+        }
 
-    if (msg && msg.message_id) {
-        adapter.setState('communicate.botSendMessageId', msg.message_id, true, err =>
-            err && adapter.log.error(err));
-    }
-
-    if (msg && msg.chat && msg.chat.id) {
-        adapter.setState('communicate.botSendChatId', msg.chat.id.toString(), true, err =>
-            err && adapter.log.error(err));
+        if (msg.chat && msg.chat.id) {
+            adapter.setState('communicate.botSendChatId', msg.chat.id.toString(), true, err =>
+                err && adapter.log.error(err));
+        }
     }
 }
 
 function _sendMessageHelper(dest, name, text, options) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const messageIds = {};
         if (options && options.chatId !== undefined && options.user === undefined) {
             options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
@@ -853,10 +854,7 @@ function sendMessage(text, user, chatId, options) {
     }
     if (chatId) {
         tPromiseList.push(_sendMessageHelper(chatId, 'chat', text, options));
-        return Promise.all(tPromiseList)
-            .then(results =>
-                results.reduce((e, acc) => acc + e, 0))
-            .catch(e => e);
+        return Promise.all(tPromiseList).catch(e => e);
     } else if (user) {
         if (typeof user !== 'string' && !(user instanceof Array)) {
             adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
@@ -886,9 +884,7 @@ function sendMessage(text, user, chatId, options) {
             adapter.log.warn(`${userArray.length - matches} of ${userArray.length} recipients are unknown!`);
         }
 
-        return Promise.all(tPromiseList)
-            .then(results => results.reduce((e, acc) => acc + e, 0))
-            .catch(e => e);
+        return Promise.all(tPromiseList).catch(e => e);
     }
 
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
@@ -923,10 +919,7 @@ function sendMessage(text, user, chatId, options) {
         });
     }
 
-    return Promise.all(tPromiseList)
-        .then(results =>
-            results.reduce((e, acc) => acc + e, 0))
-        .catch(e => -1);
+    return Promise.all(tPromiseList).catch(e => e);
 }
 
 function saveFile(fileID, fileName, callback) {
