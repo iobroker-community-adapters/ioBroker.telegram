@@ -1,4 +1,8 @@
 # Older changes
+## 1.15.2 (2022-11-04)
+* (Steff42) Make sure the userid is a string to show warnings in the log
+* (bluefox) Added ukrainian language
+
 ## 1.15.0 (2022-09-28)
 * (klein0r) Fixed custom component (username was missing)
 * (klein0r) Translated all objects

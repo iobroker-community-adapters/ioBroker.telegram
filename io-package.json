@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "news": {
+      "2.0.1": {
+        "en": "Incorrect trailing zero in callback of sendTo() has been fixed. [#680]\nDependencies have been updated.",
+        "de": "Falsche Spur Null im Rückruf von sendTo)( wurde behoben. #[680]\nAbhängigkeiten wurden aktualisiert.",
+        "ru": "Неправильный нулевой след в обратном звонке SendTo)( был зафиксирован. #[680]\nОбновлены зависимости.",
+        "pt": "Incorreto rastreando zero na chamada de sendTo)( foi corrigido. #[680]\nAs dependências foram atualizadas.",
+        "nl": "Onjuist volgt nul in oproep van verzending. _\nAfhankelijkheid is geüpdateerd.",
+        "fr": "Incorrect trailing zero in callback of sendTo)( has been fixed. #[680]\nLes dépendances ont été mises à jour.",
+        "it": "Non corretto trailing zero in callback di sendTo)( è stato fissato. #[680]\nLe dipendenze sono state aggiornate.",
+        "es": "Incorrect trailing cero in callback of sendTo)( has been fixed. #[680]\nSe han actualizado las dependencias.",
+        "pl": "Niepoprawne spływanie zera w callback of sendTo (pol.). (680 tys.)\nW zależności zostały zaktualizowane.",
+        "uk": "Некоректний причіпний нульовий у зворотному зв'язку відправника #[680]\nОновлено залежність.",
+        "zh-cn": "已确定不正确地跟踪发送的呼吁的零() 行动[680]\n情况已经更新。."
+      },
       "2.0.0": {
         "en": "Packets were updated.\nBREAKING CHANGE: The minimal node.js version is 16\nBREAKING CHANGE: Return an object with chatId and messageId instead of the message count",
         "de": "Pakete wurden aktualisiert.\nBREAKING CHANGE: Die minimal node.js Version ist 16\nBREAKING CHANGE: Gibt ein Objekt mit chatId und messageId anstelle der Nachrichtenzahl zurück",
@@ -79,18 +92,6 @@
         "es": "Componente fijo personalizado (nombre del usuario faltaba)\nTraducidos todos los objetos\nPaquetes GUI actualizados y proceso de construcción corregido",
         "pl": "Zaginiony skład (user name) nie został oznaczony\nWszystkie obiekty translacyjne\nZmodernizowane pakiety GUI i poprawione procesy budowlane",
         "zh-cn": "固定的习俗部分(遗属名称失踪)\n适用于所有物体\nA. 更新的《古伊一揽子计划》和经纠正的建设进程"
-      },
-      "1.14.1": {
-        "en": "Fixed warnings for `botSendChatId`",
-        "de": "Feste Warnungen für botSend ChatId",
-        "ru": "Фиксированные предупреждения для botSend ЧатId",
-        "pt": "Avisos fixos para botSend ChatId",
-        "nl": "Vertaling: Chat",
-        "fr": "Avertissements fixes pour botSend ChatId",
-        "it": "Avvertenza fissa per botSend Chat",
-        "es": "Advertencias fijas para botSend ChatId",
-        "pl": "Informacje o botSend ChatId",
-        "zh-cn": "防止恐怖主义的预警 Chat Id"
       }
     },
     "title": "Telegram",
