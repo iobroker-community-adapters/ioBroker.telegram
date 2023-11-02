@@ -31,17 +31,13 @@
     "telegram",
     "message"
   ],
-  "socksv5description": "Taken from https://github.com/christophgysin/socksv5/commits/fix-normailzeargs",
-  "optionalDependencies": {
-    "socksv5": "https://github.com/christophgysin/socksv5/tarball/7b4eba5b30ecdb6d9e656dcfede1e6884dc7c6d9"
-  },
   "engines": {
     "node": ">=16"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.0.4",
     "axios": "^1.5.1",
-    "node-telegram-bot-api": "^0.63.0"
+    "node-telegram-bot-api": "^0.64.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.6.0",
