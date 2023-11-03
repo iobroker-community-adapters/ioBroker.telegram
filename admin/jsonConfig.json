@@ -131,6 +131,52 @@
                     "md": 8,
                     "lg": 8,
                     "label": "Allow state control"
+                },
+                "proxy": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "label": "Proxy Socks5 enable"
+                },
+                "proxyHost": {
+                    "newLine": true,
+                    "hidden": "!data.proxy",
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "proxy Host"
+                },
+                "proxyPort": {
+                    "hidden": "!data.proxy",
+                    "type": "number",
+                    "min": 1,
+                    "max": 65565,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "proxy Port"
+                },
+                "proxyLogin": {
+                    "newLine": true,
+                    "hidden": "!data.proxy",
+                    "type": "text",
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "Login"
+                },
+                "proxyPassword": {
+                    "hidden": "!data.proxy",
+                    "type": "password",
+                    "repeat": false,
+                    "visible": false,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "label": "password"
                 }
             }
         },
