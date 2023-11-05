@@ -18,8 +18,8 @@
     },
     "dependencies": {
         "react-ace": "^10.1.0",
-        "ace-builds": "^1.29.0",
-        "@iobroker/adapter-react-v5": "^4.6.3",
+        "ace-builds": "^1.31.1",
+        "@iobroker/adapter-react-v5": "^4.7.2",
         "@mui/material": "^5.14.16",
         "@mui/styles": "^5.14.16",
         "prop-types": "^15.8.1",
@@ -32,7 +32,7 @@
         "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-commonjs": "^25.0.7",
         "@rollup/plugin-node-resolve": "^15.2.3",
-        "@rollup/plugin-replace": "^5.0.3",
+        "@rollup/plugin-replace": "^5.0.5",
         "@craco/craco": "^7.1.0",
         "craco-esbuild": "^0.5.2",
         "craco-module-federation": "^1.1.0"
