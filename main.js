@@ -544,7 +544,10 @@ function _sendMessageHelper(dest, name, text, options) {
         if (options && options.chatId !== undefined && options.user === undefined) {
             options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
         }
-
+        //to push chatId value for the group chats - useful to process the errors, and list of processed messages.
+        if(options.chatId === undefined && options.user === undefined && name === "chat" && dest) {
+            options.chatId = dest
+        }
         if (options && options.editMessageReplyMarkup !== undefined) {
             adapter.log.debug(`Send editMessageReplyMarkup to "${name}"`);
             bot && executeSending(() => bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options), options, resolve);
