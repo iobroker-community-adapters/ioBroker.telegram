@@ -1,4 +1,7 @@
 # Older changes
+## 1.15.5 (2023-02-16)
+* (bluefox) Added possibility to set `parse_mode` in the text message
+
 ## 1.15.2 (2022-11-04)
 * (Steff42) Make sure the userid is a string to show warnings in the log
 * (bluefox) Added ukrainian language

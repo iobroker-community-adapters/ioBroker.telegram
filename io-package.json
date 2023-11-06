@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "news": {
+      "2.0.2": {
+        "en": "Dependencies have been updated.",
+        "de": "Abhängigkeiten wurden aktualisiert.",
+        "ru": "Обновлены зависимости.",
+        "pt": "As dependências foram atualizadas.",
+        "nl": "Afhankelijkheid is geüpdateerd.",
+        "fr": "Les dépendances ont été mises à jour.",
+        "it": "Le dipendenze sono state aggiornate.",
+        "es": "Se han actualizado las dependencias.",
+        "pl": "W zależności zostały zaktualizowane.",
+        "uk": "Оновлено залежність.",
+        "zh-cn": "情况已经更新。."
+      },
       "2.0.1": {
         "en": "Incorrect trailing zero in callback of sendTo() has been fixed. [#680]\nDependencies have been updated.",
         "de": "Falsche Spur Null im Rückruf von sendTo)( wurde behoben. #[680]\nAbhängigkeiten wurden aktualisiert.",
@@ -80,18 +93,6 @@
         "pl": "Make sure the userid to smycz do pokazania ostrzeżeń w logu\nJęzyk ukrainowski",
         "uk": "Переконайтеся, що користувач є рядок, щоб показати попередження в журналі\nДодано українську мову",
         "zh-cn": "保证使用rid是在逻辑中发出警告的一个条件。\n增 编"
-      },
-      "1.15.0": {
-        "en": "Fixed custom component (user name was missing)\nTranslated all objects\nUpdated GUI packages and corrected build process",
-        "de": "Feste benutzerdefinierte Komponente (Benutzername wurde vermisst)\nÜbersetzt alle Objekte\nAktualisierte GUI-Pakete und korrigierter Build-Prozess",
-        "ru": "Фиксированный пользовательский компонент (имя пользователя отсутствует)\nПереведено все объекты\nОбновленные пакеты GUI и исправленный процесс сборки",
-        "pt": "Componente personalizado fixo (o nome do usuário estava faltando)\nTraduzido todos os objetos\nPacotes GUI atualizados e processo de compilação corrigido",
-        "nl": "Gerepareerd gebruikscomonent (zuster naam werd vermist)\nVertaald alle objecten\nUpdate GUI pakketten en gecorrigeerde bouwprocedure",
-        "fr": "Élément personnalisé fixe (nom d'utilisateur manquant)\nTraduit tous les objets\nMise à jour des paquets GUI et processus de construction corrigé",
-        "it": "Componente personalizzato fisso (nome utente mancante)\nTradotto tutti gli oggetti\nPacchetti GUI aggiornati e processo di compilazione corretto",
-        "es": "Componente fijo personalizado (nombre del usuario faltaba)\nTraducidos todos los objetos\nPaquetes GUI actualizados y proceso de construcción corregido",
-        "pl": "Zaginiony skład (user name) nie został oznaczony\nWszystkie obiekty translacyjne\nZmodernizowane pakiety GUI i poprawione procesy budowlane",
-        "zh-cn": "固定的习俗部分(遗属名称失踪)\n适用于所有物体\nA. 更新的《古伊一揽子计划》和经纠正的建设进程"
       }
     },
     "title": "Telegram",
