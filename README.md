@@ -26,7 +26,7 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.1.0 (2023-11-06)
 * (boergegrunicke) Removed deprecated Socks5 library (Breaking change)
 * (PeterVoronov ) Extended and improved the returned list of processed messages
 
@@ -44,11 +44,6 @@ Use Telegram service to communicate with ioBroker
 
 ### 1.16.0 (2023-06-16)
 * (foxriver76) We have added support for the `notification-manager` adapter
-
-### 1.15.6 (2023-02-17)
-* (bluefox) Implemented the optional escaping of characters in blockly
-* (bluefox) Added the possibility to send updates of states only by changes
-* (bluefox) Added option to select the quality of stored images
 
 ## License
 

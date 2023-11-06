@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "news": {
+      "2.1.0": {
+        "en": "Removed deprecated Socks5 library (Breaking change)\nExtended and improved the returned list of processed messages",
+        "de": "Entfernen deprecated Socks5 Bibliothek (Breaking change)\nErweiterte und verbesserte die zurückgegebene Liste der verarbeiteten Nachrichten",
+        "ru": "Удалены дефисированные носки5 библиотека (Breaking change)\nРасширенный и улучшенный возвращенный список обработанных сообщений",
+        "pt": "Removido deprecated biblioteca Socks5 (Breaking change)\nEstendido e melhorado a lista retornada de mensagens processadas",
+        "nl": "Verwijderde deprecatie Socks5 bibliotheek (Breaking verandering)\nVerlengde en verbeterde de lijst van verwerkte berichten",
+        "fr": "Bibliothèque désagrégée de Chaussettes5 (changement de traçage)\nÉtendu et amélioré la liste des messages traités retournés",
+        "it": "Rimuoveto deprecated Socks5 library (Breaking change)\nEsteso e migliorato l'elenco restituito dei messaggi elaborati",
+        "es": "Quitar deprecated Socks5 biblioteca (Breaking change)\nAmpliación y mejora de la lista de mensajes procesados",
+        "pl": "Przewiduje się, że biblioteka Socks5 (zmiana banku)\nPociągnął i poprawił listę przesyłanych wiadomości",
+        "uk": "Русский EnglishРусскийУкраїнськаPolskiItalianoEspañol汉语Bahasa Indonesiaहिन्दीPortuguês日本語DeutschFrançaisภาษาไทยελληνικά اللغة العربية\nРозширений та покращений список оновлених повідомлень",
+        "zh-cn": "取消预制图5图书馆\n处理信息清单的扩大和改进"
+      },
       "2.0.2": {
         "en": "Dependencies have been updated.",
         "de": "Abhängigkeiten wurden aktualisiert.",
@@ -80,19 +93,6 @@
         "pl": "Wstępna możliwość ugruntowania parse_mode w wiadomości tekstowej",
         "uk": "Додано можливість встановити parse_mode в текстовому повідомленні",
         "zh-cn": "增加可能在案文中规定稀释。"
-      },
-      "1.15.2": {
-        "en": "Make sure the userid is a string to show warnings in the log\nAdded ukrainian language",
-        "de": "Stellen Sie sicher, dass das Userid ein String ist, um Warnungen im Protokoll anzuzeigen\nUkrainische Sprache hinzugefügt",
-        "ru": "Убедитесь, что userid является строкой, чтобы показать предупреждения в журнале\nДобавлен украинский язык",
-        "pt": "Certifique-se de que o userid é uma string para mostrar avisos no log\nAdicionado idioma ukrainian",
-        "nl": "Zorg ervoor dat de gebruiker een string is om waarschuwingen in het logboek te laten zien\nToegevoegd Oekraïense taal",
-        "fr": "Assurez-vous que le userid est une chaîne pour montrer les avertissements dans le journal\nAjout de la langue ukrainienne",
-        "it": "Assicurarsi che l'utenteid sia una stringa per mostrare avvisi nel registro\nAggiunto lingua ucraino",
-        "es": "Asegúrese de que el usuario es una cadena para mostrar advertencias en el registro\nAñadido el idioma ucraniano",
-        "pl": "Make sure the userid to smycz do pokazania ostrzeżeń w logu\nJęzyk ukrainowski",
-        "uk": "Переконайтеся, що користувач є рядок, щоб показати попередження в журналі\nДодано українську мову",
-        "zh-cn": "保证使用rid是在逻辑中发出警告的一个条件。\n增 编"
       }
     },
     "title": "Telegram",

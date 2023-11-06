@@ -1,4 +1,9 @@
 # Older changes
+## 1.15.6 (2023-02-17)
+* (bluefox) Implemented the optional escaping of characters in blockly
+* (bluefox) Added the possibility to send updates of states only by changes
+* (bluefox) Added option to select the quality of stored images
+
 ## 1.15.5 (2023-02-16)
 * (bluefox) Added possibility to set `parse_mode` in the text message
 
