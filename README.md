@@ -1,15 +1,28 @@
 ![Logo](admin/telegram.png)
-# ioBroker telegram Adapter
 
-![Number of Installations](http://iobroker.live/badges/telegram-installed.svg)
-![Number of Installations](http://iobroker.live/badges/telegram-stable.svg)
-[![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
+# ioBroker.telegram
 
-![Test and Release](https://github.com/iobroker-community-adapters/iobroker.telegram/workflows/Test%20and%20Release/badge.svg)
-[![Translation status](https://weblate.iobroker.net/widgets/adapters/-/telegram/svg-badge.svg)](https://weblate.iobroker.net/engage/adapters/?utm_source=widget)
+[![GitHub license](https://img.shields.io/github/license/iobroker-community-adapters/ioBroker.telegram)](https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
+![GitHub repo size](https://img.shields.io/github/repo-size/iobroker-community-adapters/ioBroker.telegram)
+[![Translation status](https://weblate.iobroker.net/widgets/adapters/-/telegram/svg-badge.svg)](https://weblate.iobroker.net/engage/adapters/?utm_source=widget)</br>
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/iobroker-community-adapters/ioBroker.telegram)
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/iobroker-community-adapters/ioBroker.telegram/latest)
+![GitHub last commit](https://img.shields.io/github/last-commit/iobroker-community-adapters/ioBroker.telegram)
+![GitHub issues](https://img.shields.io/github/issues/iobroker-community-adapters/ioBroker.telegram)
+</br>
+**Version:** </br>
+[![NPM version](http://img.shields.io/npm/v/iobroker.telegram.svg)](https://www.npmjs.com/package/iobroker.telegram)
+![Current version in stable repository](https://iobroker.live/badges/telegram-stable.svg)
+![Number of Installations](https://iobroker.live/badges/telegram-installed.svg)
+</br>
+**Tests:** </br>
+[![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/test-and-release.yml)
+[![CodeQL](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/codeql.yml/badge.svg)](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/codeql.yml)
 
-Use Telegram service to communicate with ioBroker
+## ioBroker telegram adapter
+
+Use telegram service to communicate with ioBroker
 
 ## Documentation
 
@@ -26,9 +39,9 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 2.1.0 (2023-11-06)
-* (boergegrunicke) Removed deprecated Socks5 library (Breaking change)
-* (PeterVoronov ) Extended and improved the returned list of processed messages
+### **WORK IN PROGRESS**
+* (boergegrunicke) BREAKING CHANGE: Socks5 support has been removed.
+* (PeterVoronov ) Extended and improved the returned list of processed messages.
 
 ### 2.0.2 (2023-11-06)
 * (mcm1957) Dependencies have been updated.
