@@ -26,6 +26,10 @@ Use Telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (boergegrunicke) Removed deprecated Socks5 library (Breaking change)
+* (PeterVoronov ) Extended and improved the returned list of processed messages
+
 ### 2.0.2 (2023-11-06)
 * (mcm1957) Dependencies have been updated.
 
