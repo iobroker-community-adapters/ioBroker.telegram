@@ -95,6 +95,62 @@
         "zh-cn": "增加可能在案文中规定稀释。"
       }
     },
+    "messages": [
+        {
+          "condition": {
+            "operand": "and",
+            "rules": [
+              "oldVersion<3.0.0",
+              "newVersion>=3.0.0"
+            ]
+          },
+          "title": {
+            "en": "Important notice!",
+            "de": "Wichtiger Hinweis!",
+            "ru": "Важное замечание!",
+            "pt": "Notícia importante!",
+            "nl": "Belangrijke mededeling!",
+            "fr": "Avis important!",
+            "it": "Avviso IMPORTANTE!",
+            "es": "Noticia importante!",
+            "pl": "Ważna uwaga!",
+            "zh-cn": "重要通知!",
+            "uk": "Важливе повідомлення!"
+          },
+          "text": {
+            "en": "SOCKS-5 proxy support has been removed with release 3.0.0.",
+            "de": "SOCKS-5 Proxy-Unterstützung wurde mit Release 3.0.0 entfernt.",
+            "ru": "SOCKS-5 прокси поддержка была удалена с выпуском 3.0.0.",
+            "pt": "O suporte proxy SOCKS-5 foi removido com versão 3.0.0.",
+            "nl": "Quality over Quantity (QoQ) Releases Vertaling:.",
+            "fr": "Le support de proxy SOCKS-5 a été retiré avec la sortie 3.0.0.",
+            "it": "Il supporto proxy SOCKS-5 è stato rimosso con il rilascio 3.0.0.",
+            "es": "El soporte proxy SOCKS-5 ha sido eliminado con la versión 3.0.0.",
+            "pl": "Obsługa protokołu SOCKS-5 została usunięta z wydaniem 3.0.0.",
+            "uk": "SOCKS-5 Проксі-підтримка була вилучена з релізом 3.0.0.",
+            "zh-cn": "SOCKS-5传票后,释放了3 000人。."
+          },
+          "link": "https://github.com/iobroker-community-adapters/ioBroker.telegram#changelog",
+          "level": "warn",
+          "linkText": {
+            "en": "Changelog",
+            "de": "Änderungsprotokoll",
+            "ru": "Список изменений",
+            "pt": "Registro de alterações",
+            "nl": "Wijzigingslog",
+            "fr": "Journal des modifications",
+            "it": "Registro delle modifiche",
+            "es": "registro de cambios",
+            "pl": "Dziennik zmian",
+            "zh-cn": "变更日志",
+            "uk": "Журнал змін"
+          },
+          "buttons": [
+            "agree",
+            "cancel"
+          ]
+        }
+    ],
     "title": "Telegram",
     "titleLang": {
       "en": "Telegram",
