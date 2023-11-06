@@ -543,7 +543,10 @@ function _sendMessageHelper(dest, name, text, options) {
         if (options && options.chatId !== undefined && options.user === undefined) {
             options.user = adapter.config.useUsername ? users[options.chatId].userName : users[options.chatId].firstName;
         }
-
+        // to push chatId value for the group chats - useful to process the errors, and list of processed messages.
+        if (options.chatId === undefined && options.user === undefined && name === 'chat' && dest) {
+            options.chatId = dest;
+        }
         if (options && options.editMessageReplyMarkup !== undefined) {
             adapter.log.debug(`Send editMessageReplyMarkup to "${name}"`);
             bot && executeSending(() => bot.editMessageReplyMarkup(options.editMessageReplyMarkup.reply_markup, options.editMessageReplyMarkup.options), options, resolve);
@@ -784,7 +787,14 @@ function executeSending(action, options, resolve){
     action()
         .then(response => {
             // put chat id and message id to the object, that will be returned
-            messageIds[options.chat_id] = response.message_id;
+            // delete message command return only true in response, 
+            // to return deleted message id and chat id the next if construction is used:
+            if (response?.message_id) {
+                // The chatId is mostly used in code, instead of chat_id. 
+                messageIds[options.chat_id ? options.chat_id : options.chatId] = response.message_id;
+            } else if (typeof response === 'boolean' && options?.deleteMessage?.options?.chat_id && options?.deleteMessage?.options?.message_id) {
+                messageIds[options.deleteMessage.options.chat_id] = options.deleteMessage.options.message_id;
+            }
             // puts ids to the ioBroker database
             saveSendRequest(response);
         })
