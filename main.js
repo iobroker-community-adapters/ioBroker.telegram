@@ -26,7 +26,6 @@ const LE          = utils.commonTools.letsEncrypt;
 const https       = require('https');
 const axios       = require('axios');
 
-let socks;
 
 let bot;
 let users = {};
@@ -1707,8 +1706,6 @@ function processTelegramText(msg) {
 }
 
 function connect() {
-    const proxy = adapter.config.proxy;
-
     if (bot) {
         if (!adapter.config.server) {
             try {
@@ -1738,44 +1735,6 @@ function connect() {
             })
             .catch(error => adapter.log.error(`getMe (reconnect) Error:${error}`));
     } else {
-        let agent;
-        if (proxy === true) {
-            adapter.log.debug('proxy enabled');
-            let proxyHost = '';
-            if (adapter.config && adapter.config.proxyHost !== undefined) {
-                proxyHost = adapter.config.proxyHost;
-                adapter.log.debug(`proxyHost: ${proxyHost}`);
-            }
-            let proxyPort = 1080;
-            if (adapter.config && adapter.config.proxyPort !== undefined) {
-                proxyPort = parseInt(adapter.config.proxyPort, 10) || 0;
-                adapter.log.debug(`proxyPort: ${proxyPort}`);
-            }
-            let proxyLogin = '';
-            if (adapter.config && adapter.config.proxyLogin !== undefined) {
-                proxyLogin = adapter.config.proxyLogin;
-                adapter.log.debug(`proxyLogin: ${proxyLogin}`);
-            }
-            let proxyPassword = '';
-            if (adapter.config && adapter.config.proxyPassword !== undefined) {
-                proxyPassword = adapter.config.proxyPassword;
-                adapter.log.debug(`proxyPassword: ${proxyPassword}`);
-            }
-            const socksConfig = {
-                proxyHost: proxyHost,
-                proxyPort: proxyPort,
-                auths: []
-            };
-            socks = socks || require('socksv5');
-
-            if (proxyLogin) {
-                socksConfig.auths.push(socks.auth.UserPassword(proxyLogin, proxyPassword));
-            } else {
-                socksConfig.auths.push(socks.auth.None());
-            }
-            agent = new socks.HttpsAgent(socksConfig);
-        }
-
         if (adapter.config.server) {
             // Setup server way
             const serverOptions = {
@@ -1783,9 +1742,6 @@ function connect() {
                 filepath: true,
                 baseApiUrl: adapter.config.baseApiUrl
             };
-            if (agent) {
-                serverOptions.request = { agent: agent };
-            }
             bot = new TelegramBot(adapter.config.token, serverOptions);
             if (adapter.config.url[adapter.config.url.length - 1] === '/') {
                 adapter.config.url = adapter.config.url.substring(0, adapter.config.url.length - 1);
@@ -1800,9 +1756,6 @@ function connect() {
                 filepath: true,
                 baseApiUrl: adapter.config.baseApiUrl
             };
-            if (agent) {
-                pollingOptions.request = { agent };
-            }
             adapter.log.debug(`Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`);
             bot = new TelegramBot(adapter.config.token, pollingOptions);
             bot.setWebHook('').catch(error => {
@@ -1859,17 +1812,6 @@ function connect() {
                     callbackQuery.from.username}]${callbackQuery.data}`, true, err => err && adapter.log.error(err));
 
             isAnswerForQuestion(adapter, callbackQuery);
-
-            // following code should be deleted: BF 2020.02.23
-            //const action = callbackQuery.data;
-            /* const msg    = callbackQuery.message;
-            const opts = {
-                chat_id: msg.chat.id,
-                message_id: msg.message_id,
-            };
-            let text = 'Ok';// = 'You hit button ' + action;
-
-            bot.editMessageText(text, opts); */
         });
 
         bot.on('polling_error', error => {
