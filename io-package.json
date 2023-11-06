@@ -1,20 +1,20 @@
 {
   "common": {
     "name": "telegram",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "news": {
-      "2.1.0": {
-        "en": "Removed deprecated Socks5 library (Breaking change)\nExtended and improved the returned list of processed messages",
-        "de": "Entfernen deprecated Socks5 Bibliothek (Breaking change)\nErweiterte und verbesserte die zurückgegebene Liste der verarbeiteten Nachrichten",
-        "ru": "Удалены дефисированные носки5 библиотека (Breaking change)\nРасширенный и улучшенный возвращенный список обработанных сообщений",
-        "pt": "Removido deprecated biblioteca Socks5 (Breaking change)\nEstendido e melhorado a lista retornada de mensagens processadas",
-        "nl": "Verwijderde deprecatie Socks5 bibliotheek (Breaking verandering)\nVerlengde en verbeterde de lijst van verwerkte berichten",
-        "fr": "Bibliothèque désagrégée de Chaussettes5 (changement de traçage)\nÉtendu et amélioré la liste des messages traités retournés",
-        "it": "Rimuoveto deprecated Socks5 library (Breaking change)\nEsteso e migliorato l'elenco restituito dei messaggi elaborati",
-        "es": "Quitar deprecated Socks5 biblioteca (Breaking change)\nAmpliación y mejora de la lista de mensajes procesados",
-        "pl": "Przewiduje się, że biblioteka Socks5 (zmiana banku)\nPociągnął i poprawił listę przesyłanych wiadomości",
-        "uk": "Русский EnglishРусскийУкраїнськаPolskiItalianoEspañol汉语Bahasa Indonesiaहिन्दीPortuguês日本語DeutschFrançaisภาษาไทยελληνικά اللغة العربية\nРозширений та покращений список оновлених повідомлень",
-        "zh-cn": "取消预制图5图书馆\n处理信息清单的扩大和改进"
+      "3.0.0": {
+        "en": "BREAKING CHANGE: Socks5 support has been removed.\nExtended and improved the returned list of processed messages.",
+        "de": "BREAKING CHANGE: Socks5 Unterstützung wurde entfernt.\nDie retournierte Liste der verarbeiteten Nachrichten wurde erweitert und verbessert.",
+        "ru": "ИЗМЕНЕНИЕ ЗАВТРА: Поддержка Socks5 была удалена.\nРасширенный и улучшенный возвращенный список обработанных сообщений.",
+        "pt": "BREAKING CHANGE: O suporte do Socks5 foi removido.\nEstendido e melhorado a lista retornada de mensagens processadas.",
+        "nl": "Socks5 steun is verwijderd.\nVerlengd en verbeterde de lijst met verwerkte berichten.",
+        "fr": "GÉNÉRAL : Le support Socks5 a été supprimé.\nÉtendu et amélioré la liste retournée des messages traités.",
+        "it": "Il supporto di calzini5 è stato rimosso.\nEsteso e migliorato l'elenco restituito dei messaggi elaborati.",
+        "es": "Cambio de aire: Se ha eliminado el apoyo de los calcetines 5.\nExtendió y mejoró la lista de mensajes procesados.",
+        "pl": "BREAKING CHANGE: Posługa Socks5 została usunięta.\nPociągnął i poprawił listę przetworzonych wiadomości.",
+        "uk": "Видалено підтримку Socks5.\nРозширений та покращений список отриманих повідомлень.",
+        "zh-cn": "消除了吉卜赛网:苏斯5号支助。.\n处理信息清单的扩大和改进。."
       },
       "2.0.2": {
         "en": "Dependencies have been updated.",
@@ -80,76 +80,63 @@
         "pl": "Umożliwia to opcjonalną ucieczkę postaci w bloku\nDostarczanie możliwości wysyłania aktualizacji stanów tylko poprzez zmiany\nWstępna opcja do wyboru jakości przechowywanych obrazów",
         "uk": "Впроваджено необов’язкове позначення символів в блоклі\nДодана можливість надсилати оновлення стану тільки за змінами\nДодано варіант вибрати якість збережених зображень",
         "zh-cn": "B. 执行阻碍性质的选择\n增加只有改变才有可能派遣最新国家\n选择储存图像质量的增选办法"
-      },
-      "1.15.5": {
-        "en": "Added possibility to set `parse_mode` in the text message",
-        "de": "Möglichkeit zur Einstellung parse_mode in der Textnachricht",
-        "ru": "Добавлена возможность установки parse_mode в текстовом сообщении",
-        "pt": "Adicionado possibilidade de definir parse_mode na mensagem de texto",
-        "nl": "Toegevoegd mogelijk om parsemode in de sms te zetten",
-        "fr": "Ajout de la possibilité de définir parse_mode dans le message texte",
-        "it": "Aggiunta possibilità di impostare parse_mode nel messaggio di testo",
-        "es": "Añadido posibilidad de establecer parse_mode en el mensaje de texto",
-        "pl": "Wstępna możliwość ugruntowania parse_mode w wiadomości tekstowej",
-        "uk": "Додано можливість встановити parse_mode в текстовому повідомленні",
-        "zh-cn": "增加可能在案文中规定稀释。"
       }
     },
     "messages": [
-        {
-          "condition": {
-            "operand": "and",
-            "rules": [
-              "oldVersion<3.0.0",
-              "newVersion>=3.0.0"
-            ]
-          },
-          "title": {
-            "en": "Important notice!",
-            "de": "Wichtiger Hinweis!",
-            "ru": "Важное замечание!",
-            "pt": "Notícia importante!",
-            "nl": "Belangrijke mededeling!",
-            "fr": "Avis important!",
-            "it": "Avviso IMPORTANTE!",
-            "es": "Noticia importante!",
-            "pl": "Ważna uwaga!",
-            "zh-cn": "重要通知!",
-            "uk": "Важливе повідомлення!"
-          },
-          "text": {
-            "en": "SOCKS-5 proxy support has been removed with release 3.0.0.",
-            "de": "SOCKS-5 Proxy-Unterstützung wurde mit Release 3.0.0 entfernt.",
-            "ru": "SOCKS-5 прокси поддержка была удалена с выпуском 3.0.0.",
-            "pt": "O suporte proxy SOCKS-5 foi removido com versão 3.0.0.",
-            "nl": "Quality over Quantity (QoQ) Releases Vertaling:.",
-            "fr": "Le support de proxy SOCKS-5 a été retiré avec la sortie 3.0.0.",
-            "it": "Il supporto proxy SOCKS-5 è stato rimosso con il rilascio 3.0.0.",
-            "es": "El soporte proxy SOCKS-5 ha sido eliminado con la versión 3.0.0.",
-            "pl": "Obsługa protokołu SOCKS-5 została usunięta z wydaniem 3.0.0.",
-            "uk": "SOCKS-5 Проксі-підтримка була вилучена з релізом 3.0.0.",
-            "zh-cn": "SOCKS-5传票后,释放了3 000人。."
-          },
-          "link": "https://github.com/iobroker-community-adapters/ioBroker.telegram#changelog",
-          "level": "warn",
-          "linkText": {
-            "en": "Changelog",
-            "de": "Änderungsprotokoll",
-            "ru": "Список изменений",
-            "pt": "Registro de alterações",
-            "nl": "Wijzigingslog",
-            "fr": "Journal des modifications",
-            "it": "Registro delle modifiche",
-            "es": "registro de cambios",
-            "pl": "Dziennik zmian",
-            "zh-cn": "变更日志",
-            "uk": "Журнал змін"
-          },
-          "buttons": [
-            "agree",
-            "cancel"
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<3.0.0",
+            "newVersion>=3.0.0"
           ]
-        }
+        },
+        "title": {
+          "en": "Important notice!",
+          "de": "Wichtiger Hinweis!",
+          "ru": "Важное замечание!",
+          "pt": "Notícia importante!",
+          "nl": "Belangrijke mededeling!",
+          "fr": "Avis important!",
+          "it": "Avviso IMPORTANTE!",
+          "es": "Noticia importante!",
+          "pl": "Ważna uwaga!",
+          "zh-cn": "重要通知!",
+          "uk": "Важливе повідомлення!"
+        },
+        "text": {
+          "en": "SOCKS-5 proxy support has been removed with release 3.0.0.",
+          "de": "SOCKS-5 Proxy-Unterstützung wurde mit Release 3.0.0 entfernt.",
+          "ru": "SOCKS-5 прокси поддержка была удалена с выпуском 3.0.0.",
+          "pt": "O suporte proxy SOCKS-5 foi removido com versão 3.0.0.",
+          "nl": "Quality over Quantity (QoQ) Releases Vertaling:.",
+          "fr": "Le support de proxy SOCKS-5 a été retiré avec la sortie 3.0.0.",
+          "it": "Il supporto proxy SOCKS-5 è stato rimosso con il rilascio 3.0.0.",
+          "es": "El soporte proxy SOCKS-5 ha sido eliminado con la versión 3.0.0.",
+          "pl": "Obsługa protokołu SOCKS-5 została usunięta z wydaniem 3.0.0.",
+          "uk": "SOCKS-5 Проксі-підтримка була вилучена з релізом 3.0.0.",
+          "zh-cn": "SOCKS-5传票后,释放了3 000人。."
+        },
+        "link": "https://github.com/iobroker-community-adapters/ioBroker.telegram#changelog",
+        "level": "warn",
+        "linkText": {
+          "en": "Changelog",
+          "de": "Änderungsprotokoll",
+          "ru": "Список изменений",
+          "pt": "Registro de alterações",
+          "nl": "Wijzigingslog",
+          "fr": "Journal des modifications",
+          "it": "Registro delle modifiche",
+          "es": "registro de cambios",
+          "pl": "Dziennik zmian",
+          "zh-cn": "变更日志",
+          "uk": "Журнал змін"
+        },
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
     ],
     "title": "Telegram",
     "titleLang": {
