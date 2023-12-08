@@ -1,4 +1,7 @@
 # Older changes
+## 1.16.0 (2023-06-16)
+* (foxriver76) We have added support for the `notification-manager` adapter
+
 ## 1.15.6 (2023-02-17)
 * (bluefox) Implemented the optional escaping of characters in blockly
 * (bluefox) Added the possibility to send updates of states only by changes

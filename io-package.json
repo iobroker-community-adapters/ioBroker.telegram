@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "news": {
+      "3.0.1": {
+        "en": "send the actual message too via notification-manager",
+        "de": "die eigentliche nachricht auch über benachrichtigungsmanager senden",
+        "ru": "отправить фактическое сообщение также через менеджер уведомлений",
+        "pt": "enviar a mensagem real também através de notificação-manager",
+        "nl": "stuur de boodschap ook door via de manager",
+        "fr": "envoyer le message réel aussi via notification-manager",
+        "it": "inviare il messaggio effettivo anche tramite notifica-manager",
+        "es": "enviar el mensaje real también a través del administrador de notificación",
+        "pl": "wysłać rzeczywistą wiadomość poprzez powiadomienie-managera",
+        "uk": "надсилання фактичного повідомлення через повідомлення-менеджер",
+        "zh-cn": "通过通知-manager发送实际信息"
+      },
       "3.0.0": {
         "en": "BREAKING CHANGE: Socks5 support has been removed.\nExtended and improved the returned list of processed messages.",
         "de": "BREAKING CHANGE: Socks5 Unterstützung wurde entfernt.\nDie retournierte Liste der verarbeiteten Nachrichten wurde erweitert und verbessert.",
