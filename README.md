@@ -39,6 +39,10 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+* (foxriver76) send the actual message too via notification-manager
+
 ### 3.0.0 (2023-11-06)
 * (boergegrunicke) BREAKING CHANGE: Socks5 support has been removed.
 * (PeterVoronov ) Extended and improved the returned list of processed messages.
