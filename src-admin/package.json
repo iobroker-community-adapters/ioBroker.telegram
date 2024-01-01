@@ -8,7 +8,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "@emotion/react": "^11.11.1",
+        "@emotion/react": "^11.11.3",
         "@emotion/styled": "^11.11.0",
         "@iobroker/adapter-react-v5": "^4.7.6",
         "@mui/material": "^5.14.19",
