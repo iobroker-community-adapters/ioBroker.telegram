@@ -323,13 +323,14 @@ function startAdapter(options) {
                 }
             } else {
                 if (commands[id] && commands[id].report) {
+                    const options = commands[id].reportSilent == true ? {disable_notification: true} : { };
                     if (commands[id].reportChanges) {
                         if (state.val !== commands[id].lastState) {
                             commands[id].lastState = state.val;
-                            sendMessage(getStatus(id, state));
+                            sendMessage(getStatus(id, state), null, null, options);
                         }
                     } else {
-                        sendMessage(getStatus(id, state));
+                        sendMessage(getStatus(id, state), null, null, options);
                     }
                 }
             }
