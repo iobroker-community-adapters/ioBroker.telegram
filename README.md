@@ -41,7 +41,8 @@ Use telegram service to communicate with ioBroker
 -->
 
 ### **WORK IN PROGRESS**
-* (theknut) add option to send state updates without notification sound [#793]
+* (theknut) Option to send state updates without notification sound has been added. [#793]
+* (mcm1957) Dependencies have been updated.
 
 ### 3.0.1 (2023-12-08)
 * (foxriver76) send the actual message too via notification-manager
@@ -66,6 +67,7 @@ Use telegram service to communicate with ioBroker
 
 The MIT License (MIT)
 
+Copyright (c) 2024 iobroker-community-adapters <iobroker-community-adapters@gmx.de>  
 Copyright (c) 2016-2023, bluefox <dogafox@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
