@@ -39,6 +39,10 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+* (theknut) add option to send state updates without notification sound [#793]
+
 ### 3.0.1 (2023-12-08)
 * (foxriver76) send the actual message too via notification-manager
 

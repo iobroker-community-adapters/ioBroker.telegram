@@ -74,6 +74,32 @@
       "uk": "Повідомляти тільки про зміни",
       "zh-cn": "仅报告更改"
     },
+    "Silent": {
+      "en": "Silent",
+      "de": "Silent",
+      "ru": "Молчание",
+      "pt": "Silencioso",
+      "nl": "Stil",
+      "fr": "Silencieux",
+      "it": "Silente",
+      "es": "Silent",
+      "pl": "Cichy",
+      "uk": "Сидіння",
+      "zh-cn": "安静"
+    },
+    "Send without notification sound": {
+      "en": "Send without notification sound",
+      "de": "Senden ohne Benachrichtigungston",
+      "ru": "Отправить без уведомления",
+      "pt": "Enviar sem aviso de som",
+      "nl": "Verzend zonder meldingsgeluid",
+      "fr": "Envoyer sans notification sonore",
+      "it": "Invia senza registrazione suono",
+      "es": "Enviar sin notificación de sonido",
+      "pl": "Wyślij dźwięk bez powiadomienia",
+      "uk": "Відправити повідомлення",
+      "zh-cn": "无通知声音发送"
+    },
     "Sends a new message if the value changes": {
       "en": "Sends a new message if the value changes",
       "de": "Sendet eine neue Nachricht, wenn sich der Wert ändert",
@@ -269,14 +295,21 @@
       "label": "Report updates",
       "help": "Sends a new message if the value updates",
       "defaultFunc": "customObj.common && customObj.common.read !== false",
-      "sm": 6
+      "sm": 5
     },
     "reportChanges": {
       "type": "checkbox",
       "label": "Report changes only",
       "help": "Sends a new message if the value changes",
       "hidden": "data.report !== true",
-      "sm": 6
+      "sm": 4
+    },
+    "reportSilent": {
+      "type": "checkbox",
+      "label": "Silent",
+      "help": "Send without notification sound",
+      "hidden": "data.report !== true",
+      "sm": 3
     },
     "buttons": {
       "newLine": true,
