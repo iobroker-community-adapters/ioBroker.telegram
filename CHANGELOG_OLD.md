@@ -1,4 +1,9 @@
 # Older changes
+## 2.0.0 (2023-10-09)
+* (bluefox) Packets were updated.
+* (bluefox) BREAKING CHANGE: The minimal node.js version is 16
+* (boergegrunicke) BREAKING CHANGE: Return an object with chatId and messageId instead of the message count
+
 ## 1.16.0 (2023-06-16)
 * (foxriver76) We have added support for the `notification-manager` adapter
 

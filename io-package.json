@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.0.1",
+    "version": "3.1.0",
     "news": {
+      "3.1.0": {
+        "en": "Option to send state updates without notification sound has been added. [#793]\nDependencies have been updated.",
+        "de": "Option zum Senden von Zustandsaktualisierungen ohne Benachrichtigungsschall wurde hinzugefügt. (#793)\nAbhängigkeiten wurden aktualisiert.",
+        "ru": "Добавлена возможность отправки обновлений состояния без звука уведомления. [#793]\nЗависимость была обновлена.",
+        "pt": "Opção para enviar atualizações de estado sem som de notificação foi adicionada. [#793]\nAs dependências foram atualizadas.",
+        "nl": "Optie om status-updates te versturen zonder meldingsgeluid is toegevoegd. [#793]\nAfhankelijkheden zijn bijgewerkt.",
+        "fr": "L'option d'envoyer des mises à jour d'état sans notification sonore a été ajoutée. [#793]\nLes dépendances ont été actualisées.",
+        "it": "È stata aggiunta l'opzione di inviare aggiornamenti di stato senza suono di notifica. [#793]\nLe dipendenze sono state aggiornate.",
+        "es": "Se ha añadido la opción de enviar actualizaciones estatales sin el sonido de notificación. [#793]\nSe han actualizado las dependencias.",
+        "pl": "Dodano opcję wysyłania aktualizacji stanu bez dźwięku powiadomienia. [# 793]\nZaktualizowano zależność.",
+        "uk": "Додана можливість надсилати оновлення стану без сповіщення. [#793]\nОновлено залежність.",
+        "zh-cn": "添加了在没有通知声音的情况下发送状态更新的选项 。 [#793]\n附属关系已经更新."
+      },
       "3.0.1": {
         "en": "send the actual message too via notification-manager",
         "de": "die eigentliche nachricht auch über benachrichtigungsmanager senden",
@@ -80,19 +93,6 @@
         "pl": "Dodano wsparcie dla adaptatora powiadomienia-managera",
         "uk": "Ми додали підтримку адаптера повідомлення-менеджера",
         "zh-cn": "我们进一步支持通知manager的适应者。"
-      },
-      "1.15.6": {
-        "en": "Implemented the optional escaping of characters in blockly\nAdded the possibility to send updates of states only by changes\nAdded option to select the quality of stored images",
-        "de": "Ergänzt das optionale Entweichen von Zeichen in blockweise\nHinzugefügt die Möglichkeit, Updates von Zuständen nur durch Änderungen zu senden\nOption hinzugefügt, um die Qualität der gespeicherten Bilder auszuwählen",
-        "ru": "Реализована факультативная эскалация персонажей в блокно\nДобавлена возможность отправки обновлений государств только по изменениям\nДобавлена возможность выбора качества сохраненных изображений",
-        "pt": "Implementou a fuga opcional de caracteres em bloco\nAdicionado a possibilidade de enviar atualizações de estados apenas por mudanças\nOpção adicionada para selecionar a qualidade de imagens armazenadas",
-        "nl": "Implementeer de optionele ontsnapping van personages in blok\nVermeldde de mogelijkheid om updates van de staat te sturen alleen door veranderingen\nDe optie om de kwaliteit van opgeslagen beelden te selecteren",
-        "fr": "Mise en œuvre de l'échappement optionnel des caractères en bloc\nAjout de la possibilité d'envoyer des mises à jour des états seulement par des changements\nOption supplémentaire pour sélectionner la qualité des images stockées",
-        "it": "Implementato l'eliminazione facoltativa di caratteri in blocco\nAggiunto la possibilità di inviare aggiornamenti di stati solo da modifiche\nAggiunta opzione per selezionare la qualità delle immagini memorizzate",
-        "es": "Implementado el escape opcional de caracteres en bloque\nSe agregó la posibilidad de enviar actualizaciones de estados sólo por cambios\nOpción agregada para seleccionar la calidad de las imágenes almacenadas",
-        "pl": "Umożliwia to opcjonalną ucieczkę postaci w bloku\nDostarczanie możliwości wysyłania aktualizacji stanów tylko poprzez zmiany\nWstępna opcja do wyboru jakości przechowywanych obrazów",
-        "uk": "Впроваджено необов’язкове позначення символів в блоклі\nДодана можливість надсилати оновлення стану тільки за змінами\nДодано варіант вибрати якість збережених зображень",
-        "zh-cn": "B. 执行阻碍性质的选择\n增加只有改变才有可能派遣最新国家\n选择储存图像质量的增选办法"
       }
     },
     "messages": [
