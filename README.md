@@ -39,9 +39,10 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.1.1 (2024-03-20)
 * (theknut) Added units to responses
-* 
+*
+
 ### 3.1.0 (2024-02-17)
 * (theknut) Option to send state updates without notification sound has been added. [#793]
 * (mcm1957) Dependencies have been updated.
@@ -54,10 +55,6 @@ Use telegram service to communicate with ioBroker
 * (PeterVoronov ) Extended and improved the returned list of processed messages.
 
 ### 2.0.2 (2023-11-06)
-* (mcm1957) Dependencies have been updated.
-
-### 2.0.1 (2023-10-10)
-* (boergegrunicke) Incorrect trailing zero in callback of sendTo() has been fixed. [#680]
 * (mcm1957) Dependencies have been updated.
 
 ## License

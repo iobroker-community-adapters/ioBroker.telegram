@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "news": {
+      "3.1.1": {
+        "en": "Added units to responses\n",
+        "de": "Einheiten zu Antworten hinzugefügt\n",
+        "ru": "Добавленные единицы к ответам\n",
+        "pt": "Unidades adicionadas a respostas\n",
+        "nl": "Toegevoegde eenheden aan antwoorden\n",
+        "fr": "Ajout d'unités aux réponses\n",
+        "it": "Unità aggiunte alle risposte\n",
+        "es": "Unidades adicionales a respuestas\n",
+        "pl": "Dodano jednostki do odpowiedzi\n",
+        "uk": "Додано блоки для відповіді\n",
+        "zh-cn": "答复中增加的单位\n"
+      },
       "3.1.0": {
         "en": "Option to send state updates without notification sound has been added. [#793]\nDependencies have been updated.",
         "de": "Option zum Senden von Zustandsaktualisierungen ohne Benachrichtigungsschall wurde hinzugefügt. (#793)\nAbhängigkeiten wurden aktualisiert.",
@@ -80,19 +93,6 @@
         "pl": "Pakiety zostały zaktualizowane.\nBREAKING CHANGE: (ang.). Wersja minimalna jest 16\nBREAKING CHANGE: (ang.). Powrócony obiekt z czatami i wiadomością, zamiast licznika wiadomości",
         "uk": "Пакети були оновлено.\nБРЕАКІНГ ЗМІН: Версія Mini node.js 16\nБРЕАКІНГ ЗМІН: Повернути об'єкт через чатІд і повідомленняІд замість підрахунку повідомлення",
         "zh-cn": "已更新包装。.\nBREAKREANGE: 最小的字样为16。\nBREAKREANGE: F. 背井离乡的物体"
-      },
-      "1.16.0": {
-        "en": "We have added support for the `notification-manager` adapter",
-        "de": "Wir haben Unterstützung für den Benachrichtigungsmanager-Adapter hinzugefügt",
-        "ru": "Мы добавили поддержку адаптера уведомлений-менеджера",
-        "pt": "Adicionamos suporte para o adaptador de gerenciamento de notificações",
-        "nl": "We hebben ondersteuning toegevoegd voor de manager",
-        "fr": "Nous avons ajouté un support pour l'adaptateur notification-manager",
-        "it": "Abbiamo aggiunto il supporto per l'adattatore di notifica-manager",
-        "es": "Hemos añadido soporte para el adaptador de gestión de notificación",
-        "pl": "Dodano wsparcie dla adaptatora powiadomienia-managera",
-        "uk": "Ми додали підтримку адаптера повідомлення-менеджера",
-        "zh-cn": "我们进一步支持通知manager的适应者。"
       }
     },
     "messages": [

@@ -1,4 +1,8 @@
 # Older changes
+## 2.0.1 (2023-10-10)
+* (boergegrunicke) Incorrect trailing zero in callback of sendTo() has been fixed. [#680]
+* (mcm1957) Dependencies have been updated.
+
 ## 2.0.0 (2023-10-09)
 * (bluefox) Packets were updated.
 * (bluefox) BREAKING CHANGE: The minimal node.js version is 16
