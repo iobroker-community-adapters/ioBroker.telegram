@@ -408,7 +408,7 @@ function getStatus(id, state) {
         if (commands[id].states && commands[id].states[state.val] !== undefined) {
             state.val = commands[id].states[state.val];
         }
-        return `${commands[id].alias} => ${state.val}`;
+        return `${commands[id].alias} => ${state.val}${commands[id].unit ? ` ${commands[id].unit}` : ''}`;
     }
 }
 
@@ -1515,7 +1515,7 @@ function processTelegramText(msg) {
 
     // todo support commands: instances, running, restart
 
-    // If user is not in the trusted list
+    // If a user is not in the trusted list
     if ((adapter.config.password || adapter.config.doNotAcceptNewUsers) && !users[msg.from.id]) {
         return bot.sendMessage(msg.from.id, _(adapter.config.doNotAcceptNewUsers ? 'User is not in the list' : 'Please enter password in form "/password phrase"', systemLang))
             .catch(error => adapter.log.error(`send Message Error: ${error}`));
@@ -1547,7 +1547,7 @@ function processTelegramText(msg) {
     let found = false;
     for (const id in commands) {
         if (commands.hasOwnProperty(id)) {
-            if (msg.text.startsWith(commands[id].alias + ' ')) {
+            if (msg.text.startsWith(`${commands[id].alias} `)) {
                 let sValue = msg.text.substring(commands[id].alias.length + 1);
                 found = true;
                 if (sValue === '?') {

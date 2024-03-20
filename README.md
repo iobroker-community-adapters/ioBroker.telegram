@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (theknut) Added units to responses
+* 
 ### 3.1.0 (2024-02-17)
 * (theknut) Option to send state updates without notification sound has been added. [#793]
 * (mcm1957) Dependencies have been updated.
