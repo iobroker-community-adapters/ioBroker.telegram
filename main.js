@@ -1,13 +1,3 @@
-/**
- *
- *      ioBroker telegram Adapter
- *
- *      Copyright (c) 2016-2023 bluefox <dogafox@gmail.com>
- *
- *      MIT License
- *
- */
-
 /* jshint -W097 */
 /* jshint strict: false */
 /* jslint node: true */
@@ -20,12 +10,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const utils       = require('@iobroker/adapter-core'); // Get common adapter utils
 const adapterName = require('./package.json').name.split('.').pop();
 const _           = require('./lib/words.js');
-const fs          = require('fs');
-const path        = require('path');
+const fs          = require('node:fs');
+const path        = require('node:path');
 const LE          = utils.commonTools.letsEncrypt;
-const https       = require('https');
+const https       = require('node:https');
 const axios       = require('axios');
-
 
 let bot;
 let users = {};
