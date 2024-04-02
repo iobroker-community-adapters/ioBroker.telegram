@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.1.1",
+    "version": "3.2.0",
     "news": {
+      "3.2.0": {
+        "en": "Adapter requires node.js 18 and js-controller >= 5 now\nThe current error is added as a separate property error to the response object (messageId) now.\nAdded units to responses\nDependencies have been updated0",
+        "de": "Adapter benötigt node.js 18 und js-controller >= 5 jetzt\nDer aktuelle Fehler wird nun als separate Eigenschaft error zum Antwortobjekt (messageId) hinzugefügt.\nEinheiten zu Antworten hinzugefügt\nAbhängigkeiten wurden aktualisiert0",
+        "ru": "Адаптер требует node.js 18 и js-controller >= 5 сейчас\nТекущая ошибка добавляется как отдельная ошибка свойства объекту ответа (messageId) сейчас.\nДобавленные единицы к ответам\nЗависимость обновлена0",
+        "pt": "Adapter requer node.js 18 e js-controller >= 5 agora\nO erro atual é adicionado como um erro de propriedade separado ao objeto de resposta (messageId) agora.\nUnidades adicionadas a respostas\nAs dependências foram atualizadas0",
+        "nl": "Adapter vereist node.js 18 en js-controller Nu 5\nDe huidige fout wordt toegevoegd als een aparte eigenschap fout aan het antwoord object (messageId) nu.\nToegevoegde eenheden aan antwoorden\nAfhankelijkheden zijn bijgewerkt0",
+        "fr": "Adaptateur nécessite node.js 18 et js-controller >= 5 maintenant\nL'erreur courante est ajoutée comme une erreur de propriété séparée à l'objet response (messageId) maintenant.\nAjout d'unités aux réponses\nLes dépendances ont été mises à jour0",
+        "it": "Adattatore richiede node.js 18 e js-controller >= 5 ora\nL'errore corrente viene aggiunto come errore di proprietà separato all'oggetto di risposta (messageId) ora.\nUnità aggiunte alle risposte\nLe dipendenze sono state aggiornate0",
+        "es": "Adaptador requiere node.js 18 y js-controller √= 5 ahora\nEl error actual se añade como un error de propiedad separado al objeto de respuesta (messageId) ahora.\nUnidades adicionales a respuestas\nSe han actualizado las dependencias0",
+        "pl": "Adapter wymaga node.js 18 i sterownika js- > = 5 teraz\nBieżący błąd jest dodawany jako osobny błąd właściwości do obiektu odpowiedzi (messageId).\nDodano jednostki do odpowiedzi\nUaktualniono zależności0",
+        "uk": "Адаптер вимагає node.js 18 і js-controller >= 5 тепер\nПоточна помилка додана як окрема помилка власності на об'єкт відповіді (messageId) тепер.\nДодано блоки для відповіді\nЗалежність було оновлено0",
+        "zh-cn": "适配器需要节点.js 18和js控制器 QQ 现在5号\n当前错误作为单独属性错误添加到现在的响应对象(messageId)中.\n答复中增加的单位\n依赖关系已更新0"
+      },
       "3.1.1": {
         "en": "Added units to responses\n",
         "de": "Einheiten zu Antworten hinzugefügt\n",
@@ -80,19 +93,6 @@
         "pl": "Niepoprawne spływanie zera w callback of sendTo (pol.). (680 tys.)\nW zależności zostały zaktualizowane.",
         "uk": "Некоректний причіпний нульовий у зворотному зв'язку відправника #[680]\nОновлено залежність.",
         "zh-cn": "已确定不正确地跟踪发送的呼吁的零() 行动[680]\n情况已经更新。."
-      },
-      "2.0.0": {
-        "en": "Packets were updated.\nBREAKING CHANGE: The minimal node.js version is 16\nBREAKING CHANGE: Return an object with chatId and messageId instead of the message count",
-        "de": "Pakete wurden aktualisiert.\nBREAKING CHANGE: Die minimal node.js Version ist 16\nBREAKING CHANGE: Gibt ein Objekt mit chatId und messageId anstelle der Nachrichtenzahl zurück",
-        "ru": "Пакеты были обновлены.\nИЗМЕНЕНИЕ ЗАВТРА: Минимальная версия node.js 16\nИЗМЕНЕНИЕ ЗАВТРА: Возвращение объекта с chatId и messageId вместо подсчета сообщения",
-        "pt": "Os pacotes foram atualizados.\nMuita coisa: A versão node.js mínima é 16\nMuita coisa: Retornar um objeto com chatId e messageId em vez da contagem de mensagens",
-        "nl": "Packets zijn geüpdateerd.\nBREAKING CHANGE: De minimale node is 16\nBREAKING CHANGE: Geef een object terug met chatId en bericht in plaats van de boodschap te tellen",
-        "fr": "Les paquets ont été mis à jour.\nMerci. La version minimale node.js est 16\nMerci. Retourner un objet avec chatId et messageId au lieu du nombre de messages",
-        "it": "I pacchetti sono stati aggiornati.\nCAMBIO DI BREAKING: La versione minimal node.js è 16\nCAMBIO DI BREAKING: Restituisce un oggetto con chatId e messageId invece del conteggio messaggi",
-        "es": "Los paquetes se actualizaron.\nCambiando: La versión mínima node.js es 16\nCambiando: Devuelve un objeto con chatId y messageId en lugar del recuento del mensaje",
-        "pl": "Pakiety zostały zaktualizowane.\nBREAKING CHANGE: (ang.). Wersja minimalna jest 16\nBREAKING CHANGE: (ang.). Powrócony obiekt z czatami i wiadomością, zamiast licznika wiadomości",
-        "uk": "Пакети були оновлено.\nБРЕАКІНГ ЗМІН: Версія Mini node.js 16\nБРЕАКІНГ ЗМІН: Повернути об'єкт через чатІд і повідомленняІд замість підрахунку повідомлення",
-        "zh-cn": "已更新包装。.\nBREAKREANGE: 最小的字样为16。\nBREAKREANGE: F. 背井离乡的物体"
       }
     },
     "messages": [
