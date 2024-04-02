@@ -41,6 +41,7 @@ Use telegram service to communicate with ioBroker
 -->
 ### **WORK IN PROGRESS**
 * (mcm1957) Adapter requires node.js 18 and js-controller >= 5 now
+* (PeterVoronov) The current error is added as a separate property error to the response object (messageId) now.
 * (theknut) Added units to responses
 * (mcm1957) Dependencies have been updated0
 
