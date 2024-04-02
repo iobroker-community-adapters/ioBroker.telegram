@@ -3,7 +3,7 @@
 /* jslint node: true */
 'use strict';
 
-// https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird)
+// https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird) 
 process.env.NTBA_FIX_319 = 1;
 
 const TelegramBot = require('node-telegram-bot-api');
