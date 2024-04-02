@@ -45,7 +45,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.1.1 (2024-03-20)
 * (theknut) Added units to responses
-*
 
 ### 3.1.0 (2024-02-17)
 * (theknut) Option to send state updates without notification sound has been added. [#793]
