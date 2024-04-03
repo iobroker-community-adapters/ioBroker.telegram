@@ -3,7 +3,7 @@
 /* jslint node: true */
 'use strict';
 
-// https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird) 
+// https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird)
 process.env.NTBA_FIX_319 = 1;
 
 const TelegramBot = require('node-telegram-bot-api');
@@ -794,11 +794,11 @@ function executeSending(action, options, resolve){
             // return all the collected message ids to the callback
             resolve(JSON.stringify(messageIds));
         }).catch(error => {
+            // add the error to the message ids object
+            messageIds.error = {[options.chat_id ? options.chat_id : options.chatId] : error};
             // log error to the system
             adapter.log.error(`Failed sending [${options.chatId ? 'chatId' : 'user'} - ${options.chatId ? options.chatId : options.user}]: ${error}`);
             options = null;
-            // add the error to the message ids object
-            messageIds.error = {[options.chat_id ? options.chat_id : options.chatId] : error};
             // send the succesfully send messages as callback
             resolve(JSON.stringify(messageIds));
         });
