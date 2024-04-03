@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.2.1 (2024-04-03)
 * (PeterVoronov) An error at providing error information has been fixed.
 
 ### 3.2.0 (2024-04-02)
@@ -58,9 +58,6 @@ Use telegram service to communicate with ioBroker
 ### 3.0.0 (2023-11-06)
 * (boergegrunicke) BREAKING CHANGE: Socks5 support has been removed.
 * (PeterVoronov ) Extended and improved the returned list of processed messages.
-
-### 2.0.2 (2023-11-06)
-* (mcm1957) Dependencies have been updated.
 
 ## License
 

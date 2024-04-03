@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "news": {
+      "3.2.1": {
+        "en": "An error at providing error information has been fixed.",
+        "de": "Es wurde ein Fehler bei der Bereitstellung von Fehlerinformationen behoben.",
+        "ru": "Установлена ошибка в предоставлении информации об ошибках.",
+        "pt": "Foi corrigido um erro ao fornecer informações de erro.",
+        "nl": "Er is een fout opgetreden bij het verstrekken van foutinformatie.",
+        "fr": "Une erreur a été corrigée pour fournir des informations sur les erreurs.",
+        "it": "È stato corretto un errore nel fornire informazioni di errore.",
+        "es": "Se ha corregido un error al proporcionar información de error.",
+        "pl": "Ustalono błąd w przekazywaniu informacji o błędzie.",
+        "uk": "Виправлено помилку при наданні інформації про помилки.",
+        "zh-cn": "提供错误信息时的错误已被修正 ."
+      },
       "3.2.0": {
         "en": "Adapter requires node.js 18 and js-controller >= 5 now\nThe current error is added as a separate property error to the response object (messageId) now.\nAdded units to responses\nDependencies have been updated0",
         "de": "Adapter benötigt node.js 18 und js-controller >= 5 jetzt\nDer aktuelle Fehler wird nun als separate Eigenschaft error zum Antwortobjekt (messageId) hinzugefügt.\nEinheiten zu Antworten hinzugefügt\nAbhängigkeiten wurden aktualisiert0",
@@ -80,19 +93,6 @@
         "pl": "W zależności zostały zaktualizowane.",
         "uk": "Оновлено залежність.",
         "zh-cn": "情况已经更新。."
-      },
-      "2.0.1": {
-        "en": "Incorrect trailing zero in callback of sendTo() has been fixed. [#680]\nDependencies have been updated.",
-        "de": "Falsche Spur Null im Rückruf von sendTo)( wurde behoben. #[680]\nAbhängigkeiten wurden aktualisiert.",
-        "ru": "Неправильный нулевой след в обратном звонке SendTo)( был зафиксирован. #[680]\nОбновлены зависимости.",
-        "pt": "Incorreto rastreando zero na chamada de sendTo)( foi corrigido. #[680]\nAs dependências foram atualizadas.",
-        "nl": "Onjuist volgt nul in oproep van verzending. _\nAfhankelijkheid is geüpdateerd.",
-        "fr": "Incorrect trailing zero in callback of sendTo)( has been fixed. #[680]\nLes dépendances ont été mises à jour.",
-        "it": "Non corretto trailing zero in callback di sendTo)( è stato fissato. #[680]\nLe dipendenze sono state aggiornate.",
-        "es": "Incorrect trailing cero in callback of sendTo)( has been fixed. #[680]\nSe han actualizado las dependencias.",
-        "pl": "Niepoprawne spływanie zera w callback of sendTo (pol.). (680 tys.)\nW zależności zostały zaktualizowane.",
-        "uk": "Некоректний причіпний нульовий у зворотному зв'язку відправника #[680]\nОновлено залежність.",
-        "zh-cn": "已确定不正确地跟踪发送的呼吁的零() 行动[680]\n情况已经更新。."
       }
     },
     "messages": [
