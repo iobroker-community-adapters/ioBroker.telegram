@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (foxriver76) migrate to `@iobroker/webserver`
+
 ### 3.2.1 (2024-04-03)
 * (PeterVoronov) An error at providing error information has been fixed.
 

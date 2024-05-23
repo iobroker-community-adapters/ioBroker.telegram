@@ -263,39 +263,5 @@
         }
       }
     },
-    "_letsencrypt": {
-      "hidden": "data.server === 'false'",
-      "hideOnlyControl": true,
-      "type": "panel",
-      "label": "Let's Encrypt settings",
-      "items": {
-        "leEnabled": {
-          "type": "checkbox",
-          "sm": 12,
-          "md": 4,
-          "lg": 4,
-          "label": "Use Lets Encrypt certificates:"
-        },
-        "leUpdate": {
-          "newLine": true,
-          "hidden": "!data.leEnabled",
-          "type": "checkbox",
-          "sm": 12,
-          "md": 4,
-          "lg": 4,
-          "label": "Use this instance for automatic update:"
-        },
-        "leCheckPort": {
-          "hidden": "!data.leUpdate",
-          "type": "number",
-          "min": 1,
-          "max": 65565,
-          "sm": 12,
-          "md": 4,
-          "lg": 4,
-          "label": "Port to check the domain:"
-        }
-      }
-    }
   }
 }
