@@ -39,6 +39,10 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (mcm1957) Dependencies have been updated - especially 'node-telegram-bot-api'
+* (mcm1957) see https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md
+
 ### 3.3.0 (2024-05-25)
 * (foxriver76) Adapter has been migrated to `@iobroker/webserver`
 * (foxriver76) Adapter supports js-controller 6 now
