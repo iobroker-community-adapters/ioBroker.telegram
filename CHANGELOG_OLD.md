@@ -1,4 +1,7 @@
 # Older changes
+## 3.0.1 (2023-12-08)
+* (foxriver76) send the actual message too via notification-manager
+
 ## 3.0.0 (2023-11-06)
 * (boergegrunicke) BREAKING CHANGE: Socks5 support has been removed.
 * (PeterVoronov ) Extended and improved the returned list of processed messages.

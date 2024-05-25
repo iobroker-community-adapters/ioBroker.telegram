@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "news": {
+      "3.3.1": {
+        "en": "Dependencies have been updated - especially 'node-telegram-bot-api'\nsee https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "de": "Die Abhängigkeiten wurden aktualisiert - insbesondere 'node-telegram-bot-api '\nsiehe https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "ru": "Зависимости были обновлены - особенно «node-telegram-bot-api \"\nhttps://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "pt": "As dependências foram atualizadas - especialmente \"node-telegram-bot-api '\nver https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "nl": "Afhankelijkheden zijn bijgewerkt - vooral 'node-telegram-bot-api' '\nzie https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGLOG.md",
+        "fr": "Les dépendances ont été mises à jour - notamment 'node-telegram-bot-api '\nvoir https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "it": "Le dipendenze sono state aggiornate - soprattutto 'node-telegram-bot-api '\nvedi https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "es": "Las dependencias se han actualizado - especialmente 'node-telegram-bot-api '\nvéase https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "pl": "Zaktualizowano zależności - szczególnie \"node- telegram - bot- api '\nzob. https: / / github.com / yagop / node- telegram- bot- api / blob / master / CHANGELOG.md",
+        "uk": "Оновлено залежність - особливо 'node-telegram-bot-api Р\nhttps://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
+        "zh-cn": "依赖关系已经更新 - 特别是“ node- telegram- bot- api ”  '\n见https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md"
+      },
       "3.3.0": {
         "en": "Adapter has been migrated to `@iobroker/webserver`\nAdapter supports js-controller 6 now\nDependencies have been updated",
         "de": "Adapter wurde auf `@iobroker/webserver migriert `\nAdapter unterstützt jetzt js-controller 6\nAbhängigkeiten wurden aktualisiert",
@@ -80,19 +93,6 @@
         "pl": "wysłać rzeczywistą wiadomość poprzez powiadomienie-managera",
         "uk": "надсилання фактичного повідомлення через повідомлення-менеджер",
         "zh-cn": "通过通知-manager发送实际信息"
-      },
-      "3.0.0": {
-        "en": "BREAKING CHANGE: Socks5 support has been removed.\nExtended and improved the returned list of processed messages.",
-        "de": "BREAKING CHANGE: Socks5 Unterstützung wurde entfernt.\nDie retournierte Liste der verarbeiteten Nachrichten wurde erweitert und verbessert.",
-        "ru": "ИЗМЕНЕНИЕ ЗАВТРА: Поддержка Socks5 была удалена.\nРасширенный и улучшенный возвращенный список обработанных сообщений.",
-        "pt": "BREAKING CHANGE: O suporte do Socks5 foi removido.\nEstendido e melhorado a lista retornada de mensagens processadas.",
-        "nl": "Socks5 steun is verwijderd.\nVerlengd en verbeterde de lijst met verwerkte berichten.",
-        "fr": "GÉNÉRAL : Le support Socks5 a été supprimé.\nÉtendu et amélioré la liste retournée des messages traités.",
-        "it": "Il supporto di calzini5 è stato rimosso.\nEsteso e migliorato l'elenco restituito dei messaggi elaborati.",
-        "es": "Cambio de aire: Se ha eliminado el apoyo de los calcetines 5.\nExtendió y mejoró la lista de mensajes procesados.",
-        "pl": "BREAKING CHANGE: Posługa Socks5 została usunięta.\nPociągnął i poprawił listę przetworzonych wiadomości.",
-        "uk": "Видалено підтримку Socks5.\nРозширений та покращений список отриманих повідомлень.",
-        "zh-cn": "消除了吉卜赛网:苏斯5号支助。.\n处理信息清单的扩大和改进。."
       }
     },
     "messages": [

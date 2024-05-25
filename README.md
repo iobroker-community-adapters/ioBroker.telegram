@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.3.1 (2024-05-25)
 * (mcm1957) Dependencies have been updated - especially 'node-telegram-bot-api'
 * (mcm1957) see https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md
 
@@ -60,9 +60,6 @@ Use telegram service to communicate with ioBroker
 ### 3.1.0 (2024-02-17)
 * (theknut) Option to send state updates without notification sound has been added. [#793]
 * (mcm1957) Dependencies have been updated.
-
-### 3.0.1 (2023-12-08)
-* (foxriver76) send the actual message too via notification-manager
 
 ## License
 
