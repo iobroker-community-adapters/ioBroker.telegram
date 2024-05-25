@@ -40,7 +40,9 @@ Use telegram service to communicate with ioBroker
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
-* (foxriver76) migrate to `@iobroker/webserver`
+* (foxriver76) Adapter has been migrated to `@iobroker/webserver`
+* (foxriver76) Adapter supports js-controller 6 now
+* (mcm1957) Dependencies have been updated
 
 ### 3.2.1 (2024-04-03)
 * (PeterVoronov) An error at providing error information has been fixed.
@@ -49,7 +51,7 @@ Use telegram service to communicate with ioBroker
 * (mcm1957) Adapter requires node.js 18 and js-controller >= 5 now
 * (PeterVoronov) The current error is added as a separate property error to the response object (messageId) now.
 * (theknut) Added units to responses
-* (mcm1957) Dependencies have been updated0
+* (mcm1957) Dependencies have been updated
 
 ### 3.1.0 (2024-02-17)
 * (theknut) Option to send state updates without notification sound has been added. [#793]
