@@ -38,7 +38,7 @@
     "@iobroker/adapter-core": "^3.1.4",
     "@iobroker/webserver": "^1.0.3",
     "axios": "^1.7.2",
-    "node-telegram-bot-api": "^0.65.1"
+    "node-telegram-bot-api": "^0.66.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.7.0",
