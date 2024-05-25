@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.3.0 (2024-05-25)
 * (foxriver76) Adapter has been migrated to `@iobroker/webserver`
 * (foxriver76) Adapter supports js-controller 6 now
 * (mcm1957) Dependencies have been updated
@@ -59,10 +59,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.0.1 (2023-12-08)
 * (foxriver76) send the actual message too via notification-manager
-
-### 3.0.0 (2023-11-06)
-* (boergegrunicke) BREAKING CHANGE: Socks5 support has been removed.
-* (PeterVoronov ) Extended and improved the returned list of processed messages.
 
 ## License
 

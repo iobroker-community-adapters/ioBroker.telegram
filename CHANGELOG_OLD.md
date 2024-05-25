@@ -1,4 +1,8 @@
 # Older changes
+## 3.0.0 (2023-11-06)
+* (boergegrunicke) BREAKING CHANGE: Socks5 support has been removed.
+* (PeterVoronov ) Extended and improved the returned list of processed messages.
+
 ## 2.0.2 (2023-11-06)
 * (mcm1957) Dependencies have been updated.
 

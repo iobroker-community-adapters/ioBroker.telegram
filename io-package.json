@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.2.1",
+    "version": "3.3.0",
     "news": {
+      "3.3.0": {
+        "en": "Adapter has been migrated to `@iobroker/webserver`\nAdapter supports js-controller 6 now\nDependencies have been updated",
+        "de": "Adapter wurde auf `@iobroker/webserver migriert `\nAdapter unterstützt jetzt js-controller 6\nAbhängigkeiten wurden aktualisiert",
+        "ru": "Адаптер был перенесен на `@iobroker/webserver \"\nАдаптер поддерживает js-контроллер 6\nЗависимость обновлена",
+        "pt": "Adapter foi migrado para `@iobroker/webserver \"\nAdaptador suporta js-controller 6 agora\nAs dependências foram atualizadas",
+        "nl": "Adapter is gemigreerd naar  Wat\nAdapter ondersteunt js-controller 6 nu\nAfhankelijkheden zijn bijgewerkt",
+        "fr": "Adaptateur a été migré vers `@iobroker/webserver \"\nAdaptateur prend en charge js-controller 6 maintenant\nLes dépendances ont été actualisées",
+        "it": "L'adattatore è stato migrato a `@iobroker/webserver #\nAdattatore supporta js-controller 6 ora\nLe dipendenze sono state aggiornate",
+        "es": "Adapter has been migrated to `@iobroker/webserver `\nAdaptador compatible con js-controller 6 ahora\nSe han actualizado las dependencias",
+        "pl": "Adapter został przeniesiony na '@ iobroker / webserver'\nAdapter obsługuje kontroler js- 6 teraz\nZaktualizowano zależności",
+        "uk": "Адаптер мігрований до `@iobroker/webserver й\nАдаптер підтримує js-controller 6 тепер\nЗалежність було оновлено",
+        "zh-cn": "适配器已迁移到 XQio 经纪人/网络服务器 `\n适配器支持 js 控制器 6 现在\n依赖关系已更新"
+      },
       "3.2.1": {
         "en": "An error at providing error information has been fixed.",
         "de": "Es wurde ein Fehler bei der Bereitstellung von Fehlerinformationen behoben.",
@@ -80,19 +93,6 @@
         "pl": "BREAKING CHANGE: Posługa Socks5 została usunięta.\nPociągnął i poprawił listę przetworzonych wiadomości.",
         "uk": "Видалено підтримку Socks5.\nРозширений та покращений список отриманих повідомлень.",
         "zh-cn": "消除了吉卜赛网:苏斯5号支助。.\n处理信息清单的扩大和改进。."
-      },
-      "2.0.2": {
-        "en": "Dependencies have been updated.",
-        "de": "Abhängigkeiten wurden aktualisiert.",
-        "ru": "Обновлены зависимости.",
-        "pt": "As dependências foram atualizadas.",
-        "nl": "Afhankelijkheid is geüpdateerd.",
-        "fr": "Les dépendances ont été mises à jour.",
-        "it": "Le dipendenze sono state aggiornate.",
-        "es": "Se han actualizado las dependencias.",
-        "pl": "W zależności zostały zaktualizowane.",
-        "uk": "Оновлено залежність.",
-        "zh-cn": "情况已经更新。."
       }
     },
     "messages": [
