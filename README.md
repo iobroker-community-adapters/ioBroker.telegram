@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (foxriver76) fixed problem with webserver handling
+
 ### 3.3.1 (2024-05-25)
 * (mcm1957) Dependencies have been updated - especially 'node-telegram-bot-api'
 * (mcm1957) see https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md

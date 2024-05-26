@@ -184,7 +184,7 @@ function startAdapter(options) {
 
                 try {
                     const webserver = new WebServer({
-                        app: server.app,
+                        app: handleWebHook,
                         adapter,
                         secure: adapter.config.secure
                     });
