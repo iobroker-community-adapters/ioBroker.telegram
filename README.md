@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.3.2 (2024-05-26)
 * (foxriver76) fixed problem with webserver handling
 
 ### 3.3.1 (2024-05-25)
@@ -59,10 +59,6 @@ Use telegram service to communicate with ioBroker
 * (PeterVoronov) The current error is added as a separate property error to the response object (messageId) now.
 * (theknut) Added units to responses
 * (mcm1957) Dependencies have been updated
-
-### 3.1.0 (2024-02-17)
-* (theknut) Option to send state updates without notification sound has been added. [#793]
-* (mcm1957) Dependencies have been updated.
 
 ## License
 

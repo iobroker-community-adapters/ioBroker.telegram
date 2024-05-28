@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.3.1",
+    "version": "3.3.2",
     "news": {
+      "3.3.2": {
+        "en": "fixed problem with webserver handling",
+        "de": "problem mit webserver-handling behoben",
+        "ru": "фиксированная проблема с обработкой веб-сервера",
+        "pt": "problema fixo com manuseio webserver",
+        "nl": "vast probleem met webserver behandeling",
+        "fr": "problème corrigé avec la gestion du serveur web",
+        "it": "problema fisso con gestione webserver",
+        "es": "problema fijo con el manejo del servidor web",
+        "pl": "stały problem z obsługą serwera www",
+        "uk": "виправлена проблема з використанням вебсервера",
+        "zh-cn": "处理 web 服务器的固定问题"
+      },
       "3.3.1": {
         "en": "Dependencies have been updated - especially 'node-telegram-bot-api'\nsee https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
         "de": "Die Abhängigkeiten wurden aktualisiert - insbesondere 'node-telegram-bot-api '\nsiehe https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
@@ -80,19 +93,6 @@
         "pl": "Dodano opcję wysyłania aktualizacji stanu bez dźwięku powiadomienia. [# 793]\nZaktualizowano zależność.",
         "uk": "Додана можливість надсилати оновлення стану без сповіщення. [#793]\nОновлено залежність.",
         "zh-cn": "添加了在没有通知声音的情况下发送状态更新的选项 。 [#793]\n附属关系已经更新."
-      },
-      "3.0.1": {
-        "en": "send the actual message too via notification-manager",
-        "de": "die eigentliche nachricht auch über benachrichtigungsmanager senden",
-        "ru": "отправить фактическое сообщение также через менеджер уведомлений",
-        "pt": "enviar a mensagem real também através de notificação-manager",
-        "nl": "stuur de boodschap ook door via de manager",
-        "fr": "envoyer le message réel aussi via notification-manager",
-        "it": "inviare il messaggio effettivo anche tramite notifica-manager",
-        "es": "enviar el mensaje real también a través del administrador de notificación",
-        "pl": "wysłać rzeczywistą wiadomość poprzez powiadomienie-managera",
-        "uk": "надсилання фактичного повідомлення через повідомлення-менеджер",
-        "zh-cn": "通过通知-manager发送实际信息"
       }
     },
     "messages": [

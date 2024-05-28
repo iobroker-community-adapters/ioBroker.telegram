@@ -1,4 +1,8 @@
 # Older changes
+## 3.1.0 (2024-02-17)
+* (theknut) Option to send state updates without notification sound has been added. [#793]
+* (mcm1957) Dependencies have been updated.
+
 ## 3.0.1 (2023-12-08)
 * (foxriver76) send the actual message too via notification-manager
 
