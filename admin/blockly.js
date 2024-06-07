@@ -361,3 +361,319 @@ Blockly.JavaScript['telegram_call'] = function(block) {
         `  repeats: ${parseInt(repeats, 10) || 1},\n` +
         `});\n${logText}`;
 };
+
+// --- SendTo ask telegram --------------------------------------------------
+Blockly.Sendto.blocks['telegram_ask'] =
+    '<block type="telegram_ask">' +
+    '  <field name="INSTANCE"></field>' +
+    '  <field name="LOG"></field>' +
+    '  <value name="QUESTION">' +
+    '    <shadow type="text">' +
+    '      <field name="TEXT">text</field>' +
+    '    </shadow>' +
+    '  </value>' +
+    '  <value name="USERNAME">' +
+    '    <shadow type="text">' +
+    '      <field name="TEXT"></field>' +
+    '    </shadow>' +
+    '  </value>' +
+    '</block>';
+
+Blockly.Blocks['telegram_ask_container'] = {
+    /**
+     * Mutator block for container.
+     * @this Blockly.Block
+     */
+    init: function() {
+        this.setColour(Blockly.Object.HUE);
+
+        this.appendDummyInput()
+            .appendField(Blockly.Translate('telegram_ask_answers'));
+
+        this.appendStatementInput('STACK');
+        this.setTooltip(Blockly.Translate('object_new_tooltip'));
+
+        this.contextMenu = false;
+    },
+};
+
+Blockly.Blocks['telegram_ask_mutator'] = {
+    /**
+     * Mutator block for add items.
+     * @this Blockly.Block
+     */
+    init: function() {
+        this.setColour(Blockly.Sendto.HUE);
+
+        this.appendDummyInput('ANSWER')
+            .appendField(Blockly.Translate('telegram_ask_answer'))
+            .appendField(new Blockly.FieldTextInput('okay'), 'ANSWER');
+
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+
+        this.setTooltip(Blockly.Translate('telegram_ask_tooltip'));
+
+        this.contextMenu = false;
+    },
+};
+
+Blockly.Blocks['telegram_ask'] = {
+    init: function() {
+        this.answers_ = [];
+        this.itemCount_ = 0;
+        if (typeof Blockly.icons === 'object') {
+            this.setMutator(new Blockly.icons.MutatorIcon(['telegram_ask_mutator'], this));
+        } else {
+            // Blockly 9.x
+            this.setMutator(new Blockly.Mutator(['telegram_ask_mutator'], this));
+        }
+
+        const options = [[Blockly.Translate('telegram_anyInstance'), '']];
+        if (typeof main !== 'undefined' && main.instances) {
+            for (let i = 0; i < main.instances.length; i++) {
+                const m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
+                if (m) {
+                    const k = parseInt(m[1], 10);
+                    options.push(['telegram.' + k, '.' + k]);
+                }
+            }
+            if (options.length === 0) {
+                for (let u = 0; u <= 4; u++) {
+                    options.push(['telegram.' + u, '.' + u]);
+                }
+            }
+        } else {
+            for (let n = 0; n <= 4; n++) {
+                options.push(['telegram.' + n, '.' + n]);
+            }
+        }
+
+        this.appendDummyInput('INSTANCE')
+            .appendField(Blockly.Translate('telegram_ask'))
+            .appendField(new Blockly.FieldDropdown(options), 'INSTANCE');
+
+        this.appendValueInput('QUESTION')
+            .appendField(Blockly.Translate('telegram_ask_question'));
+
+        const inputUser = this.appendValueInput('USERNAME')
+            .setCheck('String')
+            .appendField(Blockly.Translate('telegram_username'));
+        if (inputUser.connection) {
+            inputUser.connection._optional = true;
+        }
+
+        const inputChat = this.appendValueInput('CHATID')
+            .setCheck('String')
+            .appendField(Blockly.Translate('telegram_chatid'));
+        if (inputChat.connection) {
+            inputChat.connection._optional = true;
+        }
+
+        this.appendDummyInput('LOG')
+            .appendField(Blockly.Translate('telegram_log'))
+            .appendField(new Blockly.FieldDropdown([
+                [Blockly.Translate('telegram_log_none'),  ''],
+                [Blockly.Translate('telegram_log_debug'), 'debug'],
+                [Blockly.Translate('telegram_log_info'),  'log'],
+                [Blockly.Translate('telegram_log_warn'),  'warn'],
+                [Blockly.Translate('telegram_log_error'), 'error'],
+            ]), 'LOG');
+
+        this.setInputsInline(false);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+
+        this.setColour(Blockly.Sendto.HUE);
+        this.setTooltip(Blockly.Translate('telegram_tooltip'));
+        this.setHelpUrl(Blockly.Translate('telegram_help'));
+    },
+    /**
+     * Create XML to represent number of text inputs.
+     * @return {!Element} XML storage element.
+     * @this Blockly.Block
+     */
+    mutationToDom: function () {
+        const container = document.createElement('mutation');
+
+        for (let i = 0; i < this.answers_.length; i++) {
+            const parameter = document.createElement('answer');
+            parameter.setAttribute('id', 'ANSWER_' + i);
+            parameter.setAttribute('name', this.answers_[i]);
+            container.appendChild(parameter);
+        }
+
+        return container;
+    },
+    /**
+     * Parse XML to restore the text inputs.
+     * @param {!Element} xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation: function (xmlElement) {
+        this.answers_ = [];
+
+        for (let i = 0, childNode; (childNode = xmlElement.childNodes[i]); i++) {
+            if (childNode.nodeName.toLowerCase() === 'answer') {
+                this.answers_.push(childNode.getAttribute('name'));
+            }
+        }
+
+        this.itemCount_ = this.answers_.length;
+        this.updateShape_();
+    },
+    /**
+     * Populate the mutator's dialog with this block's components.
+     * @param {!Blockly.Workspace} workspace Mutator's workspace.
+     * @return {!Blockly.Block} Root block in mutator.
+     * @this Blockly.Block
+     */
+    decompose: function (workspace) {
+        const containerBlock = workspace.newBlock('telegram_ask_container');
+        containerBlock.initSvg();
+
+        let connection = containerBlock.getInput('STACK').connection;
+        for (let i = 0; i < this.itemCount_; i++) {
+            const itemBlock = workspace.newBlock('telegram_ask_mutator');
+            itemBlock.setFieldValue(this.answers_[i], 'ANSWER');
+            itemBlock.initSvg();
+            connection.connect(itemBlock.previousConnection);
+            connection = itemBlock.nextConnection;
+        }
+
+        return containerBlock;
+    },
+    /**
+     * Reconfigure this block based on the mutator dialog's components.
+     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * @this Blockly.Block
+     */
+    compose: function (containerBlock) {
+        this.answers_ = [];
+
+        let itemBlock = containerBlock.getInputTargetBlock('STACK');
+        // Count number of inputs.
+        const connections = [];
+        while (itemBlock) {
+            const attrName = itemBlock.getFieldValue('ANSWER');
+            this.answers_.push(attrName);
+
+            connections.push(itemBlock.valueConnection_);
+            itemBlock = itemBlock.nextConnection &&
+                itemBlock.nextConnection.targetBlock();
+        }
+
+        // Disconnect any children that don't belong.
+        for (let k = 0; k < this.itemCount_; k++) {
+            const connection = this.getInput('ANSWER_' + k).connection.targetConnection;
+            if (connection && !connections.includes(connection)) {
+                connection.disconnect();
+            }
+        }
+
+        this.itemCount_ = connections.length;
+        if (this.itemCount_ < 0) {
+            this.itemCount_ = 0;
+        }
+        this.updateShape_();
+
+        // Reconnect any child blocks.
+        for (let i = 0; i < this.itemCount_; i++) {
+            Blockly.icons.MutatorIcon.reconnect(connections[i], this, 'ANSWER_' + i);
+        }
+    },
+    /**
+     * Store pointers to any connected child blocks.
+     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * @this Blockly.Block
+     */
+    saveConnections: function(containerBlock) {
+        let itemBlock = containerBlock.getInputTargetBlock('STACK');
+        let i = 0;
+
+        while (itemBlock) {
+            const input = this.getInput('ANSWER_' + i);
+            itemBlock.valueConnection_ = input && input.connection.targetConnection;
+            i++;
+            itemBlock = itemBlock.nextConnection &&
+                itemBlock.nextConnection.targetBlock();
+        }
+    },
+    /**
+     * Modify this block to have the correct number of inputs.
+     * @private
+     * @this Blockly.Block
+     */
+    updateShape_: function() {
+        const workspace = this.workspace;
+
+        // Add new inputs.
+        for (let i = 0; i < this.itemCount_; i++) {
+            let input = this.getInput('ANSWER_' + i);
+
+            if (!input) {
+                input = this.appendValueInput('ANSWER_' + i).setAlign(Blockly.ALIGN_RIGHT);
+                input.appendField(this.answers_[i]);
+            } else {
+                input.fieldRow[0].setValue(this.answers_[i]);
+            }
+
+            let statement = this.getInput('STATEMENT_' + i);
+            if (!statement) {
+                statement = this.appendStatementInput('STATEMENT_' + i);
+            }
+
+            setTimeout(__input => {
+                if (!__input.connection.isConnected()) {
+                    const _shadow = workspace.newBlock('text');
+                    _shadow.setShadow(true);
+                    _shadow.initSvg();
+                    _shadow.render();
+                    _shadow.outputConnection.connect(__input.connection);
+                }
+            }, 100, input);
+        }
+
+        // Remove deleted inputs.
+        for (let i = this.itemCount_; this.getInput('ANSWER_' + i); i++) {
+            this.removeInput('ANSWER_' + i);
+            this.removeInput('STATEMENT_' + i);
+        }
+    },
+};
+
+Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
+    const answers = [];
+    for (let n = 0; n < block.itemCount_; n++) {
+        const val = Blockly.JavaScript.valueToCode(block, 'ANSWER_' + n, Blockly.JavaScript.ORDER_COMMA);
+        if (val) {
+            answers.push(`'${String(block.answers_[n]).replaceAll(`'`, `\\'`)}': ${val}`);
+        }
+    }
+
+    const dropdown_instance = block.getFieldValue('INSTANCE');
+    const logLevel = block.getFieldValue('LOG');
+    const value_question = Blockly.JavaScript.valueToCode(block, 'QUESTION', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
+
+    let logText = '';
+    if (logLevel) {
+        const logUsername = value_username ? `[' + ${value_username} + ']` : '';
+        logText = `console.${logLevel}('telegramAsk${logUsername}: ' + ${value_question});\n`;
+    }
+
+    return `sendTo('telegram${dropdown_instance}', 'ask', {\n` +
+        `  text: ${value_question},\n` +
+        (value_username ? `  user: ${value_username},\n` : '') +
+        (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
+        `  reply_markup: {\n` +
+        `    inline_keyboard: [\n` +
+        `      [{ text: 'Yes!',  callback_data: '1' }],\n` +
+        `      [{ text: 'No...', callback_data: '0' }],\n` +
+        `    ],\n` +
+        `  }\n` +
+        `}, msg => {\n` +
+        `  console.log('user says ' + msg.data);\n` +
+        `});\n${logText}`;
+};
