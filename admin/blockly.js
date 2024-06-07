@@ -22,49 +22,40 @@ Blockly.Words['telegram_help']          = {'en': 'https://github.com/ioBroker/io
 Blockly.Words['telegram_silent']        = {'en': 'without notification',        'de': 'ohne Benachrichtigung',          'ru': 'без уведомления',                    'pt': 'sem notificação',                'nl': 'zonder kennisgeving',            'fr': 'sans notification',              'it': 'senza notifica',                     'es': 'sin notificación',                   'pl': 'bez powiadomienia'};
 Blockly.Words['telegram_escaping']      = {'en': 'Escape chars',                'de': 'Escapezeichen verwenden',                   'ru': 'Escape',                       'pt': 'escape chars',                   'nl': 'escape chars',                    'fr': 'escape chars',                  'it': 'escape chars',                        'es': 'escape chars',                      'pl': 'escape chars', 'zh-cn': 'escape chars'};
 Blockly.Words['telegram_disable_web_preview'] = {'en': 'disable web preview',   'de': 'Webvorschau deaktivieren', 'ru': 'отключить предварительный просмотр в Интернете', 'pt': 'desativar a visualização da web', 'nl': 'webvoorbeeld uitschakelen', 'fr': 'désactiver l\'aperçu Web','it': 'disabilitare l\'anteprima web', 'es': 'deshabilitar la vista previa web', 'pl': 'wyłącz podgląd internetowy', 'zh-cn': '禁用网页预览'};
+
 Blockly.Sendto.blocks['telegram'] =
-    '<block type="telegram">'
-    + '     <value name="INSTANCE">'
-    + '     </value>'
-    + '     <value name="MESSAGE">'
-    + '         <shadow type="text">'
-    + '             <field name="TEXT">text</field>'
-    + '         </shadow>'
-    + '     </value>'
-    + '     <value name="USERNAME">'
-    + '     </value>'
-    + '     <value name="CHATID">'
-    + '     </value>'
-    + '     <value name="LOG">'
-    + '     </value>'
-    + '     <value name="SILENT">'
-    + '     </value>'
-    + '     <value name="PARSEMODE">'
-    + '     </value>'
-    + '     <value name="ESCAPING">'
-    + '     </value>'
-    + '     <value name="DISABLE_WEB_PAGE_PREVIEW">'
-    + '     </value>'
-    + '</block>';
+    '<block type="telegram">' +
+    '  <field name="INSTANCE"></field>' +
+    '  <field name="LOG"></field>' +
+    '  <field name="SILENT">FALSE</field>' +
+    '  <field name="PARSEMODE">default</field>' +
+    '  <field name="ESCAPING">FALSE</field>' +
+    '  <field name="DISABLE_WEB_PAGE_PREVIEW">FALSE</field>' +
+    '  <value name="MESSAGE">' +
+    '    <shadow type="text">' +
+    '      <field name="TEXT">text</field>' +
+    '    </shadow>' +
+    '  </value>' +
+    '</block>';
 
 Blockly.Blocks['telegram'] = {
     init: function() {
-        var options = [[Blockly.Translate('telegram_anyInstance'), '']];
+        const options = [[Blockly.Translate('telegram_anyInstance'), '']];
         if (typeof main !== 'undefined' && main.instances) {
-            for (var i = 0; i < main.instances.length; i++) {
-                var m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
+            for (let i = 0; i < main.instances.length; i++) {
+                const m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
                 if (m) {
-                    var k = parseInt(m[1], 10);
+                    const k = parseInt(m[1], 10);
                     options.push(['telegram.' + k, '.' + k]);
                 }
             }
             if (options.length === 0) {
-                for (var u = 0; u <= 4; u++) {
+                for (let u = 0; u <= 4; u++) {
                     options.push(['telegram.' + u, '.' + u]);
                 }
             }
         } else {
-            for (var n = 0; n <= 4; n++) {
+            for (let n = 0; n <= 4; n++) {
                 options.push(['telegram.' + n, '.' + n]);
             }
         }
@@ -76,22 +67,28 @@ Blockly.Blocks['telegram'] = {
         this.appendValueInput('MESSAGE')
             .appendField(Blockly.Translate('telegram_message'));
 
-        var input = this.appendValueInput('USERNAME')
+        const inputUser = this.appendValueInput('USERNAME')
             .setCheck('String')
             .appendField(Blockly.Translate('telegram_username'));
+        if (inputUser.connection) {
+            inputUser.connection._optional = true;
+        }
 
-        var input1 = this.appendValueInput('CHATID')
+        const inputChat = this.appendValueInput('CHATID')
             .setCheck('String')
             .appendField(Blockly.Translate('telegram_chatid'));
+        if (inputChat.connection) {
+            inputChat.connection._optional = true;
+        }
 
         this.appendDummyInput('LOG')
             .appendField(Blockly.Translate('telegram_log'))
             .appendField(new Blockly.FieldDropdown([
                 [Blockly.Translate('telegram_log_none'),  ''],
-                [Blockly.Translate('telegram_log_info'),  'log'],
                 [Blockly.Translate('telegram_log_debug'), 'debug'],
+                [Blockly.Translate('telegram_log_info'),  'log'],
                 [Blockly.Translate('telegram_log_warn'),  'warn'],
-                [Blockly.Translate('telegram_log_error'), 'error']
+                [Blockly.Translate('telegram_log_error'), 'error'],
             ]), 'LOG');
 
         this.appendDummyInput('SILENT')
@@ -110,13 +107,6 @@ Blockly.Blocks['telegram'] = {
             .appendField(Blockly.Translate('telegram_disable_web_preview'))
             .appendField(new Blockly.FieldCheckbox('FALSE'), 'DISABLE_WEB_PAGE_PREVIEW');
 
-        if (input.connection) {
-            input.connection._optional = true;
-        }
-        if (input1.connection) {
-            input1.connection._optional = true;
-        }
-
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
@@ -124,40 +114,39 @@ Blockly.Blocks['telegram'] = {
         this.setColour(Blockly.Sendto.HUE);
         this.setTooltip(Blockly.Translate('telegram_tooltip'));
         this.setHelpUrl(Blockly.Translate('telegram_help'));
-    }
+    },
 };
 
 Blockly.JavaScript['telegram'] = function(block) {
-    var dropdown_instance = block.getFieldValue('INSTANCE');
-    var logLevel = block.getFieldValue('LOG');
-    var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
-    var silent = block.getFieldValue('SILENT');
-    var escaping = block.getFieldValue('ESCAPING')
-    var disable_web_page_preview = block.getFieldValue('DISABLE_WEB_PAGE_PREVIEW');
-    var parsemode = block.getFieldValue('PARSEMODE');
+    const dropdown_instance = block.getFieldValue('INSTANCE');
+    const logLevel = block.getFieldValue('LOG');
+    let value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
+    const silent = block.getFieldValue('SILENT');
+    const escaping = block.getFieldValue('ESCAPING');
+    const disable_web_page_preview = block.getFieldValue('DISABLE_WEB_PAGE_PREVIEW');
+    const parsemode = block.getFieldValue('PARSEMODE');
 
-    var logText;
+    let logText = '';
     if (logLevel) {
-        logText = 'console.' + logLevel + '("telegram' + (value_username ? '[' + value_username + ']' : '') + ': " + ' + value_message + ');\n'
-    } else {
-        logText = '';
+        const logUsername = value_username ? `[' + ${value_username} + ']` : '';
+        logText = `console.${logLevel}('telegram${logUsername}: ' + ${value_message});\n`;
     }
 
     if (escaping === 'TRUE') {
         // escape following characters: "_*[]()~`>#+-=|{}.!"
-        value_message += '.replace(/([-_*\\[\\]()~`>#+=|{}.!])/g, "\\\\$1")';
+        value_message += ".replace(/([-_*\\[\\]()~`>#+=|{}.!])/g, '\\\\$1')";
     }
 
-    return 'sendTo("telegram' + dropdown_instance + '", "send", {\n    text: ' +
-        value_message + (value_username ? ', \n    user: ' + value_username : '') +
-        (value_chatid ? ', \n    chatId: ' + value_chatid : '') +
-        (silent === 'TRUE' ? ', \n    disable_notification: true' : '') +
-        (disable_web_page_preview === 'TRUE' ? ', \n    disable_web_page_preview: true' : '') +
-        (parsemode !== 'default' ? ', \n    parse_mode: "' + parsemode + '"': '') +
-        '\n});\n' +
-        logText;
+    return `sendTo('telegram${dropdown_instance}', 'send', {\n` +
+        `  text: ${value_message},\n` +
+        (value_username ? `  user: ${value_username},\n` : '') +
+        (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
+        (silent === 'TRUE' ? '  disable_notification: true,\n' : '') +
+        (disable_web_page_preview === 'TRUE' ? '  disable_web_page_preview: true,\n' : '') +
+        (parsemode !== 'default' ? `  parse_mode: '${parsemode}',\n` : '') +
+        `});\n${logText}`;
 };
 
 // --- SendTo call telegram --------------------------------------------------
@@ -168,45 +157,41 @@ Blockly.Words['telegram_call_help']     = {'en': 'https://github.com/ioBroker/io
 Blockly.Words['telegram_call_repeats']  = {'en': 'Repeats', 'de': 'Wiederholungen', 'ru': 'Повторить', 'pt': 'Repete', 'nl': 'Herhaalt', 'fr': 'Répète', 'it': 'Si ripete', 'es': 'Repite', 'pl': 'Powtarza się', 'zh-cn': '重复'};
 
 Blockly.Sendto.blocks['telegram_call'] =
-    '<block type="telegram_call">'
-    + '     <value name="INSTANCE">'
-    + '     </value>'
-    + '     <value name="MESSAGE">'
-    + '         <shadow type="text">'
-    + '             <field name="TEXT">text</field>'
-    + '         </shadow>'
-    + '     </value>'
-    + '     <value name="USERNAME">'
-    + '          <shadow type="text">'
-    + '             <field name="TEXT"></field>'
-    + '         </shadow>'
-    + '     </value>'
-    + '     <value name="LANGUAGE">'
-    + '     </value>'
-    + '     <value name="REPEATS">'
-    + '     </value>'
-    + '     <value name="LOG">'
-    + '     </value>'
-    + '</block>';
+    '<block type="telegram_call">' +
+    '  <field name="INSTANCE"></field>' +
+    '  <field name="LANGUAGE"></field>' +
+    '  <field name="REPEATS">1</field>' +
+    '  <field name="LOG"></field>' +
+    '  <value name="MESSAGE">' +
+    '    <shadow type="text">' +
+    '      <field name="TEXT">text</field>' +
+    '    </shadow>' +
+    '  </value>' +
+    '  <value name="USERNAME">' +
+    '    <shadow type="text">' +
+    '      <field name="TEXT"></field>' +
+    '    </shadow>' +
+    '  </value>' +
+    '</block>';
 
 Blockly.Blocks['telegram_call'] = {
     init: function() {
-        var options = [[Blockly.Translate('telegram_anyInstance'), '']];
+        const options = [[Blockly.Translate('telegram_anyInstance'), '']];
         if (typeof main !== 'undefined' && main.instances) {
-            for (var i = 0; i < main.instances.length; i++) {
-                var m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
+            for (let i = 0; i < main.instances.length; i++) {
+                const m = main.instances[i].match(/^system.adapter.telegram.(\d+)$/);
                 if (m) {
-                    var k = parseInt(m[1], 10);
+                    const k = parseInt(m[1], 10);
                     options.push(['telegram.' + k, '.' + k]);
                 }
             }
             if (options.length === 0) {
-                for (var u = 0; u <= 4; u++) {
+                for (let u = 0; u <= 4; u++) {
                     options.push(['telegram.' + u, '.' + u]);
                 }
             }
         } else {
-            for (var n = 0; n <= 4; n++) {
+            for (let n = 0; n <= 4; n++) {
                 options.push(['telegram.' + n, '.' + n]);
             }
         }
@@ -218,11 +203,14 @@ Blockly.Blocks['telegram_call'] = {
         this.appendValueInput('MESSAGE')
             .appendField(Blockly.Translate('telegram_message'));
 
-        var input = this.appendValueInput('USERNAME')
+        const inputUsername = this.appendValueInput('USERNAME')
             .setCheck('String')
             .appendField(Blockly.Translate('telegram_username'));
+        if (inputUsername.connection) {
+            inputUsername.connection._optional = true;
+        }
 
-        var languages = [
+        const languages = [
             [Blockly.Translate('telegram_call_system'), ''],
             ['German (Germany) (Female)', 'de-DE-Standard-A'],
             ['German (Germany) (Male)', 'de-DE-Standard-B'],
@@ -329,22 +317,18 @@ Blockly.Blocks['telegram_call'] = {
                 ['2', '2'],
                 ['3', '3'],
                 ['4', '4'],
-                ['5', '5']
+                ['5', '5'],
             ]), 'REPEATS');
 
         this.appendDummyInput('LOG')
             .appendField(Blockly.Translate('telegram_log'))
             .appendField(new Blockly.FieldDropdown([
                 [Blockly.Translate('telegram_log_none'),  ''],
-                [Blockly.Translate('telegram_log_info'),  'log'],
                 [Blockly.Translate('telegram_log_debug'), 'debug'],
+                [Blockly.Translate('telegram_log_info'),  'log'],
                 [Blockly.Translate('telegram_log_warn'),  'warn'],
-                [Blockly.Translate('telegram_log_error'), 'error']
+                [Blockly.Translate('telegram_log_error'), 'error'],
             ]), 'LOG');
-
-        if (input.connection) {
-            input.connection._optional = true;
-        }
 
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
@@ -353,31 +337,27 @@ Blockly.Blocks['telegram_call'] = {
         this.setColour(Blockly.Sendto.HUE);
         this.setTooltip(Blockly.Translate('telegram_call_tooltip'));
         this.setHelpUrl(Blockly.Translate('telegram_call_help'));
-    }
+    },
 };
 
 Blockly.JavaScript['telegram_call'] = function(block) {
-    var dropdown_instance = block.getFieldValue('INSTANCE');
-    var dropdown_language = block.getFieldValue('LANGUAGE');
-    var repeats = block.getFieldValue('REPEATS');
-    var logLevel = block.getFieldValue('LOG');
-    var value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
+    const dropdown_instance = block.getFieldValue('INSTANCE');
+    const dropdown_language = block.getFieldValue('LANGUAGE');
+    const repeats = block.getFieldValue('REPEATS');
+    const logLevel = block.getFieldValue('LOG');
+    const value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
 
-    var logText;
+    let logText = '';
     if (logLevel) {
-        logText = 'console.' + logLevel + '("telegramCall' + (value_username ? '[' + value_username + ']' : '') + ': " + ' + value_message + ');\n'
-    } else {
-        logText = '';
+        const logUsername = value_username ? `[' + ${value_username} + ']` : '';
+        logText = `console.${logLevel}('telegramCall${logUsername}: ' + ${value_message});\n`;
     }
 
-    return 'sendTo("telegram' + dropdown_instance + '", "call", {' +
-        '\n    text: ' + value_message +
-        (value_username ? ',\n    ' + 'user: ' + value_username : '') +
-        ',\n    lang: "' + dropdown_language + '"' +
-        ',\n    repeats: "' + (parseInt(repeats, 10) || 1) + '"' +
-        '\n});\n' +
-        logText;
+    return `sendTo('telegram${dropdown_instance}', 'call', {\n` +
+        `  text: ${value_message},\n` +
+        (value_username ? `  user: ${value_username},\n` : '') +
+        `  lang: '${dropdown_language}',\n` +
+        `  repeats: ${parseInt(repeats, 10) || 1},\n` +
+        `});\n${logText}`;
 };
-

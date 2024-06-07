@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Updated Blockly definitions
+
 ### 3.3.2 (2024-05-26)
 * (foxriver76) fixed problem with webserver handling
 
