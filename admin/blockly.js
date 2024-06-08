@@ -680,7 +680,7 @@ Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
 
     let logAnswer = '';
     if (logLevel) {
-        logAnswer = `  console.${logLevel}('telegramAsk answer: ' + (msg.data ?? '[no answer]'));\n`;
+        logAnswer = `  console.${logLevel}('telegramAsk answer: ' + (msg?.data ?? '[no answer]'));\n`;
     }
 
     return `sendTo('telegram${dropdown_instance}', 'ask', {\n` +
@@ -689,10 +689,10 @@ Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
         (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
         `  reply_markup: {\n` +
         `    inline_keyboard: [\n` +
-        answers.map(a => `      [{ text: ${a.answer}, callback_data: '${a.id}' }],\n`).join('\n') +
+        answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],\n`).join('\n') +
         `    ],\n` +
         `  }\n` +
         `}, msg => {\n${logAnswer}` +
-        answers.map(a => `  if (msg.data == '${a.id}') {\n${Blockly.JavaScript.prefixLines(a.statement, Blockly.JavaScript.INDENT)}  }`).join('\n') +
+        answers.map(a => `  if (msg?.data && msg.data == '${a.id}') {\n${Blockly.JavaScript.prefixLines(a.statement, Blockly.JavaScript.INDENT)}  }`).join('\n') +
         `\n});\n${logText}`;
 };
