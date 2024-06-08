@@ -363,8 +363,16 @@ Blockly.JavaScript['telegram_call'] = function(block) {
 };
 
 // --- SendTo ask telegram --------------------------------------------------
+Blockly.Words['telegram_ask']          = { 'en': 'ask via Telegram', 'de': 'fragen per Telegramm', 'ru': 'спрос через Telegram', 'pt': 'perguntar via Telegram', 'nl': 'vragen via Telegram', 'fr': 'demander via Telegram', 'it': 'chiedere via Telegram', 'es': 'pregunte por Telegram', 'pl': 'pytaj przez Telegram', 'uk': 'подати заявку', 'zh-cn': '通过Telegram 查询' };
+Blockly.Words['telegram_ask_question'] = { 'en': 'Question', 'de': 'Frage', 'ru': 'Вопрос', 'pt': 'Pergunta', 'nl': 'Vraag', 'fr': 'Question', 'it': 'Domanda', 'es': 'Pregunta', 'pl': 'Pytanie', 'uk': 'Питання', 'zh-cn': '问题' };
+Blockly.Words['telegram_ask_answers']  = { 'en': 'Answers', 'de': 'Antworten', 'ru': 'Ответы', 'pt': 'Respostas', 'nl': 'Antwoorden', 'fr': 'Réponses', 'it': 'Risposte', 'es': 'Respuestas', 'pl': 'Odpowiedzi', 'uk': 'Відповідей', 'zh-cn': '答复' };
+Blockly.Words['telegram_ask_answer']   = { 'en': 'Answer', 'de': 'Antwort', 'ru': 'Ответ', 'pt': 'Resposta', 'nl': 'Antwoord', 'fr': 'Réponse', 'it': 'Risposta', 'es': 'Respuesta', 'pl': 'Odpowiedź', 'uk': 'Відправити', 'zh-cn': '答复' };
+
 Blockly.Sendto.blocks['telegram_ask'] =
     '<block type="telegram_ask">' +
+    '  <mutation>' +
+    '    <answer id="ANSWER_0" name="yes"></answer>' +
+    '  </mutation>' +
     '  <field name="INSTANCE"></field>' +
     '  <field name="LOG"></field>' +
     '  <value name="QUESTION">' +
@@ -375,6 +383,11 @@ Blockly.Sendto.blocks['telegram_ask'] =
     '  <value name="USERNAME">' +
     '    <shadow type="text">' +
     '      <field name="TEXT"></field>' +
+    '    </shadow>' +
+    '  </value>' +
+    '  <value name="ANSWER_0">' +
+    '    <shadow type="text">' +
+    '      <field name="TEXT">Yes, please</field>' +
     '    </shadow>' +
     '  </value>' +
     '</block>';
@@ -627,6 +640,7 @@ Blockly.Blocks['telegram_ask'] = {
                 if (!__input.connection.isConnected()) {
                     const _shadow = workspace.newBlock('text');
                     _shadow.setShadow(true);
+                    _shadow.setFieldValue('text', 'TEXT');
                     _shadow.initSvg();
                     _shadow.render();
                     _shadow.outputConnection.connect(__input.connection);
@@ -644,10 +658,11 @@ Blockly.Blocks['telegram_ask'] = {
 
 Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
     const answers = [];
-    for (let n = 0; n < block.itemCount_; n++) {
-        const val = Blockly.JavaScript.valueToCode(block, 'ANSWER_' + n, Blockly.JavaScript.ORDER_COMMA);
-        if (val) {
-            answers.push(`'${String(block.answers_[n]).replaceAll(`'`, `\\'`)}': ${val}`);
+    for (let id = 0; id < block.itemCount_; id++) {
+        const answer = Blockly.JavaScript.valueToCode(block, 'ANSWER_' + id, Blockly.JavaScript.ORDER_ATOMIC);
+        const statement = Blockly.JavaScript.statementToCode(block, 'STATEMENT_' + id);
+        if (answer && statement) {
+            answers.push({ id, answer, statement });
         }
     }
 
@@ -663,17 +678,21 @@ Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
         logText = `console.${logLevel}('telegramAsk${logUsername}: ' + ${value_question});\n`;
     }
 
+    let logAnswer = '';
+    if (logLevel) {
+        logAnswer = `  console.${logLevel}('telegramAsk answer: ' + (msg.data ?? '[no answer]'));\n`;
+    }
+
     return `sendTo('telegram${dropdown_instance}', 'ask', {\n` +
         `  text: ${value_question},\n` +
         (value_username ? `  user: ${value_username},\n` : '') +
         (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
         `  reply_markup: {\n` +
         `    inline_keyboard: [\n` +
-        `      [{ text: 'Yes!',  callback_data: '1' }],\n` +
-        `      [{ text: 'No...', callback_data: '0' }],\n` +
+        answers.map(a => `      [{ text: ${a.answer}, callback_data: '${a.id}' }],\n`).join('\n') +
         `    ],\n` +
         `  }\n` +
-        `}, msg => {\n` +
-        `  console.log('user says ' + msg.data);\n` +
-        `});\n${logText}`;
+        `}, msg => {\n${logAnswer}` +
+        answers.map(a => `  if (msg.data == '${a.id}') {\n${Blockly.JavaScript.prefixLines(a.statement, Blockly.JavaScript.INDENT)}  }`).join('\n') +
+        `\n});\n${logText}`;
 };
