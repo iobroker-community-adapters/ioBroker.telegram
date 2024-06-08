@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.3.2",
+    "version": "3.4.0",
     "news": {
+      "3.4.0": {
+        "en": "Updated Blockly definitions\nAdded Blockly block to ask questions\nRemove keyboard on answer (or timeout)",
+        "de": "Aktualisierte Blockly Definitionen\nBlockly Block hinzugefügt, um Fragen zu stellen\nEntfernen Sie die Tastatur auf der Antwort (oder Timeout)",
+        "ru": "Обновленные детальные определения\nДобавлена блокировка, чтобы задать вопросы\nУдалить клавиатуру на ответ (или таймаут)",
+        "pt": "Definições Blockly atualizadas\nAdicionado Blockly bloco para fazer perguntas\nRemover teclado na resposta (ou timeout)",
+        "nl": "Bijgewerkte blokdefinities\nBlockly blok toegevoegd om vragen te stellen\nVerwijder toetsenbord op antwoord (of timeout)",
+        "fr": "Mise à jour des définitions par blocs\nAjouté Blocage bloc pour poser des questions\nSupprimer le clavier sur la réponse (ou timeout)",
+        "it": "Aggiornate definizioni Blockly\nAggiunto Blockly per fare domande\nRimuovere la tastiera sulla risposta (o timeout)",
+        "es": "Definiciones bloqueadas actualizadas\nBloqueo agregado para hacer preguntas\nQuitar el teclado en la respuesta (o el tiempo fuera)",
+        "pl": "Aktualizacja definicji blockly\nDodano Blockly bloku zadawać pytania\nUsuń klawiaturę na odpowiedź (lub timeout)",
+        "uk": "Оновлено блочні визначення\nДодано блокнот для запитань\nВидалити клавіатуру на відповідь (або час)",
+        "zh-cn": "更新的块状定义\n添加块块以询问问题\n删除答题上的键盘( 或超时)"
+      },
       "3.3.2": {
         "en": "fixed problem with webserver handling",
         "de": "problem mit webserver-handling behoben",
@@ -80,19 +93,6 @@
         "pl": "Dodano jednostki do odpowiedzi\n",
         "uk": "Додано блоки для відповіді\n",
         "zh-cn": "答复中增加的单位\n"
-      },
-      "3.1.0": {
-        "en": "Option to send state updates without notification sound has been added. [#793]\nDependencies have been updated.",
-        "de": "Option zum Senden von Zustandsaktualisierungen ohne Benachrichtigungsschall wurde hinzugefügt. (#793)\nAbhängigkeiten wurden aktualisiert.",
-        "ru": "Добавлена возможность отправки обновлений состояния без звука уведомления. [#793]\nЗависимость была обновлена.",
-        "pt": "Opção para enviar atualizações de estado sem som de notificação foi adicionada. [#793]\nAs dependências foram atualizadas.",
-        "nl": "Optie om status-updates te versturen zonder meldingsgeluid is toegevoegd. [#793]\nAfhankelijkheden zijn bijgewerkt.",
-        "fr": "L'option d'envoyer des mises à jour d'état sans notification sonore a été ajoutée. [#793]\nLes dépendances ont été actualisées.",
-        "it": "È stata aggiunta l'opzione di inviare aggiornamenti di stato senza suono di notifica. [#793]\nLe dipendenze sono state aggiornate.",
-        "es": "Se ha añadido la opción de enviar actualizaciones estatales sin el sonido de notificación. [#793]\nSe han actualizado las dependencias.",
-        "pl": "Dodano opcję wysyłania aktualizacji stanu bez dźwięku powiadomienia. [# 793]\nZaktualizowano zależność.",
-        "uk": "Додана можливість надсилати оновлення стану без сповіщення. [#793]\nОновлено залежність.",
-        "zh-cn": "添加了在没有通知声音的情况下发送状态更新的选项 。 [#793]\n附属关系已经更新."
       }
     },
     "messages": [

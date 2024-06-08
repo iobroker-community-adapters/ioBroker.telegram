@@ -1,4 +1,10 @@
 # Older changes
+## 3.2.0 (2024-04-02)
+* (mcm1957) Adapter requires node.js 18 and js-controller >= 5 now
+* (PeterVoronov) The current error is added as a separate property error to the response object (messageId) now.
+* (theknut) Added units to responses
+* (mcm1957) Dependencies have been updated
+
 ## 3.1.0 (2024-02-17)
 * (theknut) Option to send state updates without notification sound has been added. [#793]
 * (mcm1957) Dependencies have been updated.
