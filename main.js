@@ -1088,7 +1088,7 @@ function getMessage(msg) {
     }
 }
 
-function processMessage(obj) {
+async function processMessage(obj) {
     if (!obj || !obj.command) {
         return;
     }
@@ -1131,20 +1131,33 @@ function processMessage(obj) {
                     from: obj.from,
                     ts:   Date.now(),
                 };
+
                 if (typeof obj.message === 'object') {
-                    sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    const messages = await sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    const msgIds = messages.length > 0 ? messages.map(JSON.parse)[0] : {};
+
                     question.chatId = obj.message.chatId;
                     question.user = obj.message.user;
+                    question.msgId = msgIds?.[question.chatId];
                 } else {
                     sendMessage(obj.message);
                 }
 
                 if (obj.callback) {
                     adapter._questions.push(question);
+                    adapter.log.debug(`added question: ${JSON.stringify(question)}`);
 
                     question.timeout = setTimeout(q => {
                         q.timeout = null;
                         adapter.sendTo(q.from, 'ask', '__timeout__', q.callback);
+
+                        adapter.log.info(`question timeout for: ${JSON.stringify(q)}`);
+
+                        // Remove keyboard
+                        if (bot && q?.chatId && q?.msgId) {
+                            bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: q.chatId, message_id: q.msgId });
+                            adapter.log.debug(`removed inline_keyboard for msg ${q.msgId}: ${JSON.stringify(q)}`);
+                        }
 
                         const pos = adapter._questions.indexOf(q);
                         pos !== -1 && adapter._questions.splice(pos);
@@ -1382,6 +1395,7 @@ function isAnswerForQuestion(adapter, msg) {
     if (adapter._questions && adapter._questions.length) {
         const now = Date.now();
         const chatId = msg.chat && msg.chat.id;
+
         let question = chatId && adapter._questions.find(q => q.chatId === chatId && q.user === msg.from.id && now - q.ts < adapter.config.answerTimeoutSec);
         question = question || (chatId && adapter._questions.find(q => q.chatId === chatId && now - q.ts < adapter.config.answerTimeoutSec));
         question = question || adapter._questions.find(q => now - q.ts < adapter.config.answerTimeoutSec);
@@ -1392,6 +1406,12 @@ function isAnswerForQuestion(adapter, msg) {
                 clearTimeout(question.timeout);
                 question.timeout = null;
                 adapter.sendTo(question.from, 'ask', msg, question.cb);
+
+                // Remove keyboard
+                if (bot && question?.chatId && question?.msgId) {
+                    bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: question.chatId, message_id: question.msgId });
+                    adapter.log.debug(`removed inline_keyboard for msg ${question.msgId}: ${JSON.stringify(question)}`);
+                }
             }
             adapter._questions.splice(adapter._questions.indexOf(question), 1);
         }
@@ -1804,11 +1824,13 @@ function connect() {
 
             // write received answer into variable
             adapter.log.debug(`callback_query: ${JSON.stringify(callbackQuery)}`);
-            callbackQueryId[callbackQuery.from.id] = {id: callbackQuery.id, ts: Date.now()};
+            callbackQueryId[callbackQuery.from.id] = { id: callbackQuery.id, ts: Date.now() };
+
             if (adapter.config.storeRawRequest) {
                 adapter.setState('communicate.requestRaw', JSON.stringify(callbackQuery), true, err =>
                     err && adapter.log.error(err));
             }
+
             adapter.setState('communicate.requestMessageId', callbackQuery.message.message_id, true, err => err && adapter.log.error(err));
             adapter.setState('communicate.requestChatId', callbackQuery.message.chat.id, true, err => err && adapter.log.error(err));
             adapter.setState('communicate.request', `[${!adapter.config.useUsername ? callbackQuery.from.first_name :

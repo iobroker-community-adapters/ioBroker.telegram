@@ -42,6 +42,7 @@ Use telegram service to communicate with ioBroker
 ### **WORK IN PROGRESS**
 * (klein0r) Updated Blockly definitions
 * (klein0r) Added Blockly block to ask questions
+* (klein0r) Remove keyboard on answer (or timeout)
 
 ### 3.3.2 (2024-05-26)
 * (foxriver76) fixed problem with webserver handling
