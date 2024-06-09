@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.4.0",
+    "version": "3.4.1",
     "news": {
+      "3.4.1": {
+        "en": "Blockly 9 compatibility for new ask block",
+        "de": "Blockly 9 Kompatibilität für neuen Frageblock",
+        "ru": "Совместимость Blockly 9 для нового блока запроса",
+        "pt": "Compatibilidade bloco 9 para novo bloco de perguntas",
+        "nl": "Blok 9 compatibiliteit voor nieuw vraagblok",
+        "fr": "Compatibilité Blockly 9 pour le nouveau bloc de demande",
+        "it": "Compatibilità Blockly 9 per nuovo blocco chiedere",
+        "es": "Bloqueo 9 compatibilidad para nuevo bloque de preguntas",
+        "pl": "Blockly 9 kompatybilność dla nowego bloku ask",
+        "uk": "Blockly 9 сумісність для нового блоку",
+        "zh-cn": "新询问块的块 9 兼容性"
+      },
       "3.4.0": {
         "en": "Updated Blockly definitions\nAdded Blockly block to ask questions\nRemove keyboard on answer (or timeout)",
         "de": "Aktualisierte Blockly Definitionen\nBlockly Block hinzugefügt, um Fragen zu stellen\nEntfernen Sie die Tastatur auf der Antwort (oder Timeout)",
@@ -80,19 +93,6 @@
         "pl": "Adapter wymaga node.js 18 i sterownika js- > = 5 teraz\nBieżący błąd jest dodawany jako osobny błąd właściwości do obiektu odpowiedzi (messageId).\nDodano jednostki do odpowiedzi\nUaktualniono zależności0",
         "uk": "Адаптер вимагає node.js 18 і js-controller >= 5 тепер\nПоточна помилка додана як окрема помилка власності на об'єкт відповіді (messageId) тепер.\nДодано блоки для відповіді\nЗалежність було оновлено0",
         "zh-cn": "适配器需要节点.js 18和js控制器 QQ 现在5号\n当前错误作为单独属性错误添加到现在的响应对象(messageId)中.\n答复中增加的单位\n依赖关系已更新0"
-      },
-      "3.1.1": {
-        "en": "Added units to responses\n",
-        "de": "Einheiten zu Antworten hinzugefügt\n",
-        "ru": "Добавленные единицы к ответам\n",
-        "pt": "Unidades adicionadas a respostas\n",
-        "nl": "Toegevoegde eenheden aan antwoorden\n",
-        "fr": "Ajout d'unités aux réponses\n",
-        "it": "Unità aggiunte alle risposte\n",
-        "es": "Unidades adicionales a respuestas\n",
-        "pl": "Dodano jednostki do odpowiedzi\n",
-        "uk": "Додано блоки для відповіді\n",
-        "zh-cn": "答复中增加的单位\n"
       }
     },
     "messages": [

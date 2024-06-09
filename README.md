@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.4.1 (2024-06-09)
 * (klein0r) Blockly 9 compatibility for new ask block
 
 ### 3.4.0 (2024-06-08)
@@ -58,9 +58,6 @@ Use telegram service to communicate with ioBroker
 * (foxriver76) Adapter has been migrated to `@iobroker/webserver`
 * (foxriver76) Adapter supports js-controller 6 now
 * (mcm1957) Dependencies have been updated
-
-### 3.2.1 (2024-04-03)
-* (PeterVoronov) An error at providing error information has been fixed.
 
 ## License
 
