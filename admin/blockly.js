@@ -39,7 +39,7 @@ Blockly.Sendto.blocks['telegram'] =
     '</block>';
 
 Blockly.Blocks['telegram'] = {
-    init: function() {
+    init: function () {
         const options = [[Blockly.Translate('telegram_anyInstance'), '']];
         if (typeof main !== 'undefined' && main.instances) {
             for (let i = 0; i < main.instances.length; i++) {
@@ -117,7 +117,7 @@ Blockly.Blocks['telegram'] = {
     },
 };
 
-Blockly.JavaScript['telegram'] = function(block) {
+Blockly.JavaScript['telegram'] = function (block) {
     const dropdown_instance = block.getFieldValue('INSTANCE');
     const logLevel = block.getFieldValue('LOG');
     let value_message = Blockly.JavaScript.valueToCode(block, 'MESSAGE', Blockly.JavaScript.ORDER_ATOMIC);
@@ -175,7 +175,7 @@ Blockly.Sendto.blocks['telegram_call'] =
     '</block>';
 
 Blockly.Blocks['telegram_call'] = {
-    init: function() {
+    init: function () {
         const options = [[Blockly.Translate('telegram_anyInstance'), '']];
         if (typeof main !== 'undefined' && main.instances) {
             for (let i = 0; i < main.instances.length; i++) {
@@ -340,7 +340,7 @@ Blockly.Blocks['telegram_call'] = {
     },
 };
 
-Blockly.JavaScript['telegram_call'] = function(block) {
+Blockly.JavaScript['telegram_call'] = function (block) {
     const dropdown_instance = block.getFieldValue('INSTANCE');
     const dropdown_language = block.getFieldValue('LANGUAGE');
     const repeats = block.getFieldValue('REPEATS');
@@ -397,7 +397,7 @@ Blockly.Blocks['telegram_ask_container'] = {
      * Mutator block for container.
      * @this Blockly.Block
      */
-    init: function() {
+    init: function () {
         this.setColour(Blockly.Object.HUE);
 
         this.appendDummyInput()
@@ -415,7 +415,7 @@ Blockly.Blocks['telegram_ask_mutator'] = {
      * Mutator block for add items.
      * @this Blockly.Block
      */
-    init: function() {
+    init: function () {
         this.setColour(Blockly.Sendto.HUE);
 
         this.appendDummyInput('ANSWER')
@@ -432,7 +432,7 @@ Blockly.Blocks['telegram_ask_mutator'] = {
 };
 
 Blockly.Blocks['telegram_ask'] = {
-    init: function() {
+    init: function () {
         this.answers_ = [];
         this.itemCount_ = 0;
         if (typeof Blockly.icons === 'object') {
@@ -600,7 +600,7 @@ Blockly.Blocks['telegram_ask'] = {
      * @param {!Blockly.Block} containerBlock Root block in mutator.
      * @this Blockly.Block
      */
-    saveConnections: function(containerBlock) {
+    saveConnections: function (containerBlock) {
         let itemBlock = containerBlock.getInputTargetBlock('STACK');
         let i = 0;
 
@@ -617,7 +617,7 @@ Blockly.Blocks['telegram_ask'] = {
      * @private
      * @this Blockly.Block
      */
-    updateShape_: function() {
+    updateShape_: function () {
         const workspace = this.workspace;
 
         // Add new inputs.
@@ -656,7 +656,7 @@ Blockly.Blocks['telegram_ask'] = {
     },
 };
 
-Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
+Blockly.JavaScript['telegram_ask'] = function(block) {
     const answers = [];
     for (let id = 0; id < block.itemCount_; id++) {
         const answer = Blockly.JavaScript.valueToCode(block, 'ANSWER_' + id, Blockly.JavaScript.ORDER_ATOMIC);
@@ -689,7 +689,7 @@ Blockly.JavaScript.forBlock['telegram_ask'] = function(block) {
         (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
         `  reply_markup: {\n` +
         `    inline_keyboard: [\n` +
-        answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],\n`).join('\n') +
+        answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],`).join('\n') +
         `    ],\n` +
         `  }\n` +
         `}, msg => {\n${logAnswer}` +

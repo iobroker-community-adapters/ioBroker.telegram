@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Blockly 9 compatibility for new ask block
+
 ### 3.4.0 (2024-06-08)
 * (klein0r) Updated Blockly definitions
 * (klein0r) Added Blockly block to ask questions
