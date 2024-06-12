@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.5.0",
+    "version": "3.5.1",
     "news": {
+      "3.5.1": {
+        "en": "(klein0r) Fixed file handling for voice files\n(klein0r) Updated dependencies",
+        "de": "(klein0r) Fixed-Dateihandling für Sprachdateien\n(klein0r) Aktualisierte Abhängigkeiten",
+        "ru": "(клеин0р) Исправленная обработка файлов для голосовых файлов\n(клеин0р) Обновленные зависимости",
+        "pt": "(klein0r) Manipulação de arquivos fixos para arquivos de voz\n(klein0r) Dependências atualizadas",
+        "nl": "(klein0r) Vaste bestandsbehandeling voor spraakbestanden\n(klein0r) Bijgewerkte afhankelijkheden",
+        "fr": "(klein0r) Gestion des fichiers fixes pour les fichiers vocaux\n(klein0r) Dépendances actualisées",
+        "it": "(Klein0r) Gestione file fisso per file vocali\n(Klein0r) Dipendenze aggiornate",
+        "es": "(klein0r) Manejo de archivos fijo para archivos de voz\n(klein0r) Dependencias actualizadas",
+        "pl": "(klein0r) Naprawiono obsługę plików głosowych\n(klein0r) Aktualizacja zależności",
+        "uk": "(klein0r) Виправлена обробка файлів для голосових файлів\n(klein0r) Оновлені залежності",
+        "zh-cn": "(鸣笛0r) 语音文件的固定文件处理\n(鸣笛0r) 更新的依赖关系"
+      },
       "3.5.0": {
         "en": "Added option to save media files into ioBroker file system (files tab)",
         "de": "Option zum Speichern von Mediendateien in ioBroker Dateisystem (Datei-Tab)",
@@ -80,19 +93,6 @@
         "pl": "Adapter został przeniesiony na '@ iobroker / webserver'\nAdapter obsługuje kontroler js- 6 teraz\nZaktualizowano zależności",
         "uk": "Адаптер мігрований до `@iobroker/webserver й\nАдаптер підтримує js-controller 6 тепер\nЗалежність було оновлено",
         "zh-cn": "适配器已迁移到 XQio 经纪人/网络服务器 `\n适配器支持 js 控制器 6 现在\n依赖关系已更新"
-      },
-      "3.2.1": {
-        "en": "An error at providing error information has been fixed.",
-        "de": "Es wurde ein Fehler bei der Bereitstellung von Fehlerinformationen behoben.",
-        "ru": "Установлена ошибка в предоставлении информации об ошибках.",
-        "pt": "Foi corrigido um erro ao fornecer informações de erro.",
-        "nl": "Er is een fout opgetreden bij het verstrekken van foutinformatie.",
-        "fr": "Une erreur a été corrigée pour fournir des informations sur les erreurs.",
-        "it": "È stato corretto un errore nel fornire informazioni di errore.",
-        "es": "Se ha corregido un error al proporcionar información de error.",
-        "pl": "Ustalono błąd w przekazywaniu informacji o błędzie.",
-        "uk": "Виправлено помилку при наданні інформації про помилки.",
-        "zh-cn": "提供错误信息时的错误已被修正 ."
       }
     },
     "messages": [

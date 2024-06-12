@@ -1,4 +1,8 @@
 # Older changes
+## 3.3.1 (2024-05-25)
+* (mcm1957) Dependencies have been updated - especially 'node-telegram-bot-api'
+* (mcm1957) see https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md
+
 ## 3.3.0 (2024-05-25)
 * (foxriver76) Adapter has been migrated to `@iobroker/webserver`
 * (foxriver76) Adapter supports js-controller 6 now
