@@ -173,6 +173,23 @@ function startAdapter(options) {
             });
         }, 10000);
 
+        tmpDirName = path.join(utils.getAbsoluteDefaultDataDir(), adapter.namespace.replace('.', '_'));
+
+        // Create file system directories for media files
+        if (adapter.config.saveFiles && adapter.config.saveFilesTo == 'filesystem') {
+            try {
+                !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
+
+                const subDirectories = ['voice', 'photo', 'video', 'audio', 'document'];
+                for (const subDir of subDirectories) {
+                    const subDirPath = path.join(tmpDirName, subDir);
+                    !fs.existsSync(subDirPath) && fs.mkdirSync(subDirPath);
+                }
+            } catch (e) {
+                adapter.log.error(`Cannot create tmp directory: ${tmpDirName}`);
+            }
+        }
+
         if (adapter.config.server) {
             adapter.config.port = parseInt(adapter.config.port, 10);
 
@@ -363,23 +380,6 @@ function startAdapter(options) {
     });
 
     server.settings = adapter.config;
-
-    // Create file system directories for media files
-    if (adapter.config.saveFiles && adapter.config.saveFilesTo == 'filesystem') {
-        tmpDirName = path.join(utils.getAbsoluteDefaultDataDir(), adapter.namespace.replace('.', '_'));
-
-        try {
-            !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
-
-            const subDirectories = ['voice', 'photo', 'video', 'audio', 'document'];
-            for (const subDir of subDirectories) {
-                const subDirPath = path.join(tmpDirName, subDir);
-                !fs.existsSync(subDirPath) && fs.mkdirSync(subDirPath);
-            }
-        } catch (e) {
-            adapter.log.error(`Cannot create tmp directory: ${tmpDirName}`);
-        }
-    }
 
     return adapter;
 }
@@ -936,6 +936,8 @@ function sendMessage(text, user, chatId, options) {
 }
 
 function saveFile(fileID, fileName, callback) {
+    adapter.log.debug(`Saving media file ${fileID} to ${fileName} (location = ${adapter.config.saveFilesTo})`);
+
     bot.getFileLink(fileID)
         .then(url => {
             adapter.log.debug(`Received message: ${url}`);
@@ -944,34 +946,49 @@ function saveFile(fileID, fileName, callback) {
                     const buf = [];
                     res.on('data', data => buf.push(data));
                     res.on('end', () => {
-                        const fileLocation = path.join(tmpDirName, fileName);
-                        try {
-                            fs.writeFileSync(fileLocation, Buffer.concat(buf));
-                        } catch (err) {
-                            return callback({error: `Error: ${err}`});
-                        }
+                        if (adapter.config.saveFilesTo == 'filesystem') {
+                            const fileLocation = path.join(tmpDirName, fileName);
+                            try {
+                                fs.writeFileSync(fileLocation, Buffer.concat(buf));
 
-                        callback({
-                            info: `It's saved! : ${fileLocation}`,
-                            path: fileLocation
-                        });
+                                callback({
+                                    info: `It's saved! : ${fileLocation}`,
+                                    location: adapter.config.saveFilesTo,
+                                    path: fileLocation
+                                });
+                            } catch (err) {
+                                return callback({ error: `Error: ${err}` });
+                            }
+                        } else if (adapter.config.saveFilesTo == 'iobroker') {
+                            try {
+                                adapter.writeFileAsync(adapter.namespace, fileName, Buffer.concat(buf))
+                                    .then(() => {
+                                        callback({
+                                            info: `It's saved! : ${fileName}`,
+                                            location: adapter.config.saveFilesTo,
+                                            path: `iob://${adapter.namespace}${fileName}`, // TODO: new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
+                                        });
+                                    });
+                            } catch (err) {
+                                return callback({ error: `Error: ${err}` });
+                            }
+                        }
                     });
 
-                    res.on('error', err =>
-                        callback({error: `Error: ${err}`}));
+                    res.on('error', err => callback({ error: `Error: ${err}` }));
                 } else {
-                    callback({error: 'Error: statusCode !== 200'});
+                    callback({ error: 'Error: statusCode !== 200' });
                 }
             });
         })
-        .catch(err => callback({error: `Error bot.getFileLink: ${err}`}));
+        .catch(err => callback({ error: `Error bot.getFileLink: ${err}` }));
 }
 
 function getMessage(msg) {
     const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
     adapter.log.debug(`Received message: ${JSON.stringify(msg)}`);
 
-    if (adapter.config.saveFiles && msg.voice) {
+    if (msg.voice) {
         try {
             saveFile(msg.voice.file_id, adapter.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', res => {
                 if (!res.error) {
@@ -1012,7 +1029,7 @@ function getMessage(msg) {
 
                 let fileName = '';
                 if (msg.media_group_id) {
-                    if (!mediaGroupExport.hasOwnProperty(msg.media_group_id)) {
+                    if (!Object.prototype.hasOwnProperty.call(mediaGroupExport, msg.media_group_id)) {
                         const id = Object.keys(mediaGroupExport).length;
                         mediaGroupExport[msg.media_group_id] = {
                             id,

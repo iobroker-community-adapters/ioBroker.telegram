@@ -290,6 +290,27 @@
   },
   "instanceObjects": [
     {
+      "_id": "",
+      "type": "meta",
+      "common": {
+        "name": {
+          "en": "Meta storage for media files",
+          "de": "Meta-Speicher für Mediendateien",
+          "ru": "Мета-хранилище для медиафайлов",
+          "pt": "Meta armazenamento para arquivos de mídia",
+          "nl": "Meta-opslag voor mediabestanden",
+          "fr": "Stockage de métadonnées pour les fichiers multimédias",
+          "it": "Meta storage per file multimediali",
+          "es": "Meta almacenamiento para archivos multimedia",
+          "pl": "Meta do przechowywania plików medialnych",
+          "uk": "Мета зберігання для медіа файлів",
+          "zh-cn": "媒体文件的元存储"
+        },
+        "type": "meta.user"
+      },
+      "native": {}
+    },
+    {
       "_id": "info",
       "type": "channel",
       "common": {
