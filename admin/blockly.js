@@ -668,14 +668,14 @@ Blockly.JavaScript['telegram_ask'] = function(block) {
 
     const dropdown_instance = block.getFieldValue('INSTANCE');
     const logLevel = block.getFieldValue('LOG');
-    const value_question = Blockly.JavaScript.valueToCode(block, 'QUESTION', Blockly.JavaScript.ORDER_ATOMIC);
-    const value_username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
-    const value_chatid = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
+    const valueQuestion = Blockly.JavaScript.valueToCode(block, 'QUESTION', Blockly.JavaScript.ORDER_ATOMIC);
+    const valueUsername = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
+    const valueChatId = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
 
     let logText = '';
     if (logLevel) {
-        const logUsername = value_username ? `[' + ${value_username} + ']` : '';
-        logText = `console.${logLevel}('telegramAsk${logUsername}: ' + ${value_question});\n`;
+        const logUsername = valueUsername ? `[' + ${valueUsername} + ']` : '';
+        logText = `console.${logLevel}('telegramAsk${logUsername}: ' + ${valueQuestion});\n`;
     }
 
     let logAnswer = '';
@@ -684,9 +684,9 @@ Blockly.JavaScript['telegram_ask'] = function(block) {
     }
 
     return `sendTo('telegram${dropdown_instance}', 'ask', {\n` +
-        `  text: ${value_question},\n` +
-        (value_username ? `  user: ${value_username},\n` : '') +
-        (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
+        `  text: ${valueQuestion},\n` +
+        (valueUsername ? `  user: ${valueUsername},\n` : '') +
+        (valueChatId ? `  chatId: ${valueChatId},\n` : '') +
         `  reply_markup: {\n` +
         `    inline_keyboard: [\n` +
         answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],`).join('\n') + '\n' +
