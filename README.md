@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.5.0 (2024-06-12)
 * (klein0r) Added option to save media files into ioBroker file system (files tab)
 
 ### 3.4.1 (2024-06-09)
@@ -56,11 +56,6 @@ Use telegram service to communicate with ioBroker
 ### 3.3.1 (2024-05-25)
 * (mcm1957) Dependencies have been updated - especially 'node-telegram-bot-api'
 * (mcm1957) see https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md
-
-### 3.3.0 (2024-05-25)
-* (foxriver76) Adapter has been migrated to `@iobroker/webserver`
-* (foxriver76) Adapter supports js-controller 6 now
-* (mcm1957) Dependencies have been updated
 
 ## License
 

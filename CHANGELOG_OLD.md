@@ -1,4 +1,9 @@
 # Older changes
+## 3.3.0 (2024-05-25)
+* (foxriver76) Adapter has been migrated to `@iobroker/webserver`
+* (foxriver76) Adapter supports js-controller 6 now
+* (mcm1957) Dependencies have been updated
+
 ## 3.2.1 (2024-04-03)
 * (PeterVoronov) An error at providing error information has been fixed.
 
