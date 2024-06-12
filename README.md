@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (@klein0r) Updated dependencies
+
 ### 3.5.0 (2024-06-12)
 * (klein0r) Added option to save media files into ioBroker file system (files tab)
 
