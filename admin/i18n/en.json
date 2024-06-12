@@ -82,5 +82,6 @@
     "Low": "Low quality",
     "Medium": "Medium quality",
     "High": "High quality",
-    "High definition": "High definition quality"
+    "High definition": "High definition quality",
+    "Media file location": "Media file location"
 }

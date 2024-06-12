@@ -93,11 +93,31 @@
           "lg": 8,
           "label": "Save media files"
         },
+        "saveFilesTo": {
+          "newLine": true,
+          "type": "select",
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "label": "Media file location",
+          "hidden": "!data.saveFiles",
+          "default": "filesystem",
+          "options": [
+            {
+              "label": "File system",
+              "value": "filesystem"
+            },
+            {
+              "label": "ioBroker database",
+              "value": "iobroker"
+            }
+          ]
+        },
         "saveFilesQuality": {
           "type": "select",
           "sm": 12,
-          "md": 8,
-          "lg": 8,
+          "md": 4,
+          "lg": 4,
           "label": "Quality of media files",
           "hidden": "!data.saveFiles",
           "default": "0",

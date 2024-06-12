@@ -364,11 +364,21 @@ function startAdapter(options) {
 
     server.settings = adapter.config;
 
-    tmpDirName = path.join(utils.getAbsoluteDefaultDataDir(), adapter.namespace.replace('.', '_'));
-    try {
-        !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
-    } catch (e) {
-        adapter.log.error(`Cannot create tmp directory: ${tmpDirName}`);
+    // Create file system directories for media files
+    if (adapter.config.saveFiles && adapter.config.saveFilesTo == 'filesystem') {
+        tmpDirName = path.join(utils.getAbsoluteDefaultDataDir(), adapter.namespace.replace('.', '_'));
+
+        try {
+            !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
+
+            const subDirectories = ['voice', 'photo', 'video', 'audio', 'document'];
+            for (const subDir of subDirectories) {
+                const subDirPath = path.join(tmpDirName, subDir);
+                !fs.existsSync(subDirPath) && fs.mkdirSync(subDirPath);
+            }
+        } catch (e) {
+            adapter.log.error(`Cannot create tmp directory: ${tmpDirName}`);
+        }
     }
 
     return adapter;
@@ -961,10 +971,8 @@ function getMessage(msg) {
     const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
     adapter.log.debug(`Received message: ${JSON.stringify(msg)}`);
 
-    if (msg.voice) {
+    if (adapter.config.saveFiles && msg.voice) {
         try {
-            const voiceFile = path.join(tmpDirName, 'voice');
-            !fs.existsSync(voiceFile) && fs.mkdirSync(voiceFile);
             saveFile(msg.voice.file_id, adapter.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
@@ -978,9 +986,6 @@ function getMessage(msg) {
         }
     } else if (adapter.config.saveFiles && msg.photo) {
         try {
-            const photoFile = path.join(tmpDirName, 'photo');
-            !fs.existsSync(photoFile) && fs.mkdirSync(photoFile);
-
             const qualityMap = {
                 0: 'low',
                 1: 'med',
@@ -1042,8 +1047,6 @@ function getMessage(msg) {
         }
     } else if (adapter.config.saveFiles && msg.video) {
         try {
-            const videoFile = path.join(tmpDirName, 'video');
-            !fs.existsSync(videoFile) && fs.mkdirSync(videoFile);
             saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
@@ -1057,8 +1060,6 @@ function getMessage(msg) {
         }
     } else if (adapter.config.saveFiles && msg.audio) {
         try {
-            const audioFile = path.join(tmpDirName, 'audio');
-            !fs.existsSync(audioFile) && fs.mkdirSync(audioFile);
             saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
@@ -1072,8 +1073,6 @@ function getMessage(msg) {
         }
     } else if (adapter.config.saveFiles && msg.document) {
         try {
-            const documentFile = path.join(tmpDirName, 'document');
-            !fs.existsSync(documentFile) && fs.mkdirSync(documentFile);
             saveFile(msg.document.file_id, `/document/${msg.document.file_name}`, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);

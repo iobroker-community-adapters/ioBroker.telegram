@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Added option to save media files into ioBroker file system (files tab)
+
 ### 3.4.1 (2024-06-09)
 * (klein0r) Blockly 9 compatibility for new ask block
 

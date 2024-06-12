@@ -264,6 +264,7 @@
     "doNotAcceptNewUsers": false,
     "useUsername": false,
     "saveFiles": false,
+    "saveFilesTo": "filesystem",
     "saveFilesQuality": "",
     "allowStates": true,
     "proxy": false,
