@@ -176,11 +176,16 @@ function startAdapter(options) {
         tmpDirName = path.join(utils.getAbsoluteDefaultDataDir(), adapter.namespace.replace('.', '_'));
 
         // Create file system directories for media files
-        if (adapter.config.saveFiles && adapter.config.saveFilesTo == 'filesystem') {
+        if (adapter.config.saveFilesTo == 'filesystem') {
             try {
                 !fs.existsSync(tmpDirName) && fs.mkdirSync(tmpDirName);
 
-                const subDirectories = ['voice', 'photo', 'video', 'audio', 'document'];
+                const subDirectories = ['voice'];
+                if (adapter.config.saveFiles) {
+                    // Create subdirs for other attachment types
+                    subDirectories.push('photo', 'video', 'audio', 'document');
+                }
+
                 for (const subDir of subDirectories) {
                     const subDirPath = path.join(tmpDirName, subDir);
                     !fs.existsSync(subDirPath) && fs.mkdirSync(subDirPath);
