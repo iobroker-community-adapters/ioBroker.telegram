@@ -689,7 +689,7 @@ Blockly.JavaScript['telegram_ask'] = function(block) {
         (value_chatid ? `  chatId: ${value_chatid},\n` : '') +
         `  reply_markup: {\n` +
         `    inline_keyboard: [\n` +
-        answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],`).join('\n') +
+        answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],`).join('\n') + '\n' +
         `    ],\n` +
         `  }\n` +
         `}, msg => {\n${logAnswer}` +
