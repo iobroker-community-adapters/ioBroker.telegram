@@ -952,7 +952,7 @@ function saveFile(fileID, fileName, callback) {
                                 fs.writeFileSync(fileLocation, Buffer.concat(buf));
 
                                 callback({
-                                    info: `It's saved! : ${fileLocation}`,
+                                    info: `media file has been saved to "${adapter.config.saveFilesTo}": ${fileLocation}`,
                                     location: adapter.config.saveFilesTo,
                                     path: fileLocation
                                 });
@@ -961,12 +961,14 @@ function saveFile(fileID, fileName, callback) {
                             }
                         } else if (adapter.config.saveFilesTo == 'iobroker') {
                             try {
+                                const fileLocation = path.join(tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
+
                                 adapter.writeFileAsync(adapter.namespace, fileName, Buffer.concat(buf))
                                     .then(() => {
                                         callback({
-                                            info: `It's saved! : ${fileName}`,
+                                            info: `media file has been saved to "${adapter.config.saveFilesTo}": ${fileLocation}`,
                                             location: adapter.config.saveFilesTo,
-                                            path: `iob://${adapter.namespace}${fileName}`, // TODO: new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
+                                            path: fileLocation,
                                         });
                                     });
                             } catch (err) {
@@ -1739,10 +1741,10 @@ function processTelegramText(msg) {
         });
     }
 
-    adapter.setState('communicate.requestChatId', msg.chat.id, true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestMessageId', msg.message_id, true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.requestUserId', msg.from && msg.from.id !== undefined && msg.from.id !== null ? msg.from.id.toString() : '', true, err => err && adapter.log.error(err));
-    adapter.setState('communicate.request', `[${user}]${msg.text}`, true, err => err && adapter.log.error(err));
+    adapter.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
+    adapter.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
+    adapter.setState('communicate.requestUserId', { val: msg.from && msg.from.id !== undefined && msg.from.id !== null ? msg.from.id.toString() : '', ack: true });
+    adapter.setState('communicate.request', { val: `[${user}]${msg.text}`, ack: true });
 }
 
 function connect() {
@@ -1827,8 +1829,7 @@ function connect() {
             connectionState(true);
 
             if (adapter.config.storeRawRequest) {
-                adapter.setState('communicate.requestRaw', JSON.stringify(msg), true, err =>
-                    err && adapter.log.error(err));
+                adapter.setState('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
             }
 
             getMessage(msg);
