@@ -161,7 +161,8 @@
       "it": "Telegram",
       "es": "Telegram",
       "pl": "Telegram",
-      "zh-cn": "Telegram"
+      "zh-cn": "Telegram",
+      "uk": "Телеграма"
     },
     "desc": {
       "en": "This adapter allows to send and receive telegram messages from ioBroker and to be a bot",
@@ -173,7 +174,8 @@
       "it": "Questo adattatore consente di inviare e ricevere messaggi di telegram da ioBroker e di essere un bot",
       "es": "Este adaptador permite enviar y recibir mensajes de telegrama de ioBroker y ser un bot",
       "pl": "Ten adapter umożliwia wysyłanie i odbieranie wiadomości telegramów z ioBroker i bycie botem",
-      "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人"
+      "zh-cn": "该适配器允许从ioBroker发送和接收电报消息并成为机器人",
+      "uk": "Цей адаптер дозволяє відправляти та отримувати телеграми від ioBroker і бути ботом"
     },
     "authors": [
       "bluefox <dogafox@gmail.com>",
