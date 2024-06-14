@@ -150,13 +150,14 @@ Blockly.JavaScript['telegram'] = function (block) {
 };
 
 // --- SendTo call telegram --------------------------------------------------
-Blockly.Words['telegram_call']          = {'en': 'call via Telegram', 'de': 'per Telegramm anrufen', 'ru': 'звонок через Telegram', 'pt': 'chamada via Telegram', 'nl': 'bellen via Telegram', 'fr': 'appeler par Telegram', 'it': 'chiama via Telegram',    'es': 'llamar por Telegram', 'pl': 'połączenie za Telegram', 'zh-cn': '通过电报电话'};
+Blockly.Words['telegram_call']          = {'en': 'call via Telegram', 'de': 'per Telegram anrufen', 'ru': 'звонок через Telegram', 'pt': 'chamada via Telegram', 'nl': 'bellen via Telegram', 'fr': 'appeler par Telegram', 'it': 'chiama via Telegram',    'es': 'llamar por Telegram', 'pl': 'połączenie za Telegram', 'zh-cn': '通过电报电话'};
 Blockly.Words['telegram_call_system']   = {'en': 'System language', 'de': 'Systemsprache', 'ru': 'Системный язык', 'pt': 'Idioma do sistema', 'nl': 'Systeem taal', 'fr': 'Langue du système', 'it': 'Linguaggio di sistema', 'es': 'Lenguaje del sistema', 'pl': 'Język systemowy', 'zh-cn': '系统语言'};
 Blockly.Words['telegram_call_tooltip']  = {'en': 'Call via Telegram and say some text', 'de': 'per Telegram anrufen und einen Text sagen','ru': 'Звоните через Telegram и скажите какой-нибудь текст',    'pt': 'Ligue por Telegram e diga algum texto',    'nl': 'Bel via Telegram en zeg wat tekst',    'fr': 'Appelez par Telegram et dites du texte',    'it': 'Chiama via Telegram e pronuncia un messaggio',    'es': 'Llama por Telegram y di algo de texto',    'pl': 'Zadzwoń za pośrednictwem Telegram i powiedz tekst',    'zh-cn': '通过电报呼叫并说一些文字'};
 Blockly.Words['telegram_call_help']     = {'en': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pt': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'pl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'nl': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'it': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'es': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'fr': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'de': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram', 'ru': 'https://github.com/ioBroker/ioBroker.telegram/blob/master/README.md#calls-via-telegram'};
 Blockly.Words['telegram_call_repeats']  = {'en': 'Repeats', 'de': 'Wiederholungen', 'ru': 'Повторить', 'pt': 'Repete', 'nl': 'Herhaalt', 'fr': 'Répète', 'it': 'Si ripete', 'es': 'Repite', 'pl': 'Powtarza się', 'zh-cn': '重复'};
 
 Blockly.Sendto.blocks['telegram_call'] =
+    '<sep gap="5"></sep>' +
     '<block type="telegram_call">' +
     '  <field name="INSTANCE"></field>' +
     '  <field name="LANGUAGE"></field>' +
@@ -369,6 +370,7 @@ Blockly.Words['telegram_ask_answers']  = { 'en': 'Answers', 'de': 'Antworten', '
 Blockly.Words['telegram_ask_answer']   = { 'en': 'Answer', 'de': 'Antwort', 'ru': 'Ответ', 'pt': 'Resposta', 'nl': 'Antwoord', 'fr': 'Réponse', 'it': 'Risposta', 'es': 'Respuesta', 'pl': 'Odpowiedź', 'uk': 'Відправити', 'zh-cn': '答复' };
 
 Blockly.Sendto.blocks['telegram_ask'] =
+    '<sep gap="5"></sep>' +
     '<block type="telegram_ask">' +
     '  <mutation>' +
     '    <answer id="ANSWER_0" name="yes"></answer>' +
