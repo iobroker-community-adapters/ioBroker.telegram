@@ -363,7 +363,7 @@ Blockly.JavaScript['telegram_call'] = function (block) {
 };
 
 // --- SendTo ask telegram --------------------------------------------------
-Blockly.Words['telegram_ask']          = { 'en': 'ask via Telegram', 'de': 'fragen per Telegramm', 'ru': 'спрос через Telegram', 'pt': 'perguntar via Telegram', 'nl': 'vragen via Telegram', 'fr': 'demander via Telegram', 'it': 'chiedere via Telegram', 'es': 'pregunte por Telegram', 'pl': 'pytaj przez Telegram', 'uk': 'подати заявку', 'zh-cn': '通过Telegram 查询' };
+Blockly.Words['telegram_ask']          = { 'en': 'ask via Telegram', 'de': 'fragen per Telegram', 'ru': 'спрос через Telegram', 'pt': 'perguntar via Telegram', 'nl': 'vragen via Telegram', 'fr': 'demander via Telegram', 'it': 'chiedere via Telegram', 'es': 'pregunte por Telegram', 'pl': 'pytaj przez Telegram', 'uk': 'подати заявку', 'zh-cn': '通过Telegram 查询' };
 Blockly.Words['telegram_ask_question'] = { 'en': 'Question', 'de': 'Frage', 'ru': 'Вопрос', 'pt': 'Pergunta', 'nl': 'Vraag', 'fr': 'Question', 'it': 'Domanda', 'es': 'Pregunta', 'pl': 'Pytanie', 'uk': 'Питання', 'zh-cn': '问题' };
 Blockly.Words['telegram_ask_answers']  = { 'en': 'Answers', 'de': 'Antworten', 'ru': 'Ответы', 'pt': 'Respostas', 'nl': 'Antwoorden', 'fr': 'Réponses', 'it': 'Risposte', 'es': 'Respuestas', 'pl': 'Odpowiedzi', 'uk': 'Відповідей', 'zh-cn': '答复' };
 Blockly.Words['telegram_ask_answer']   = { 'en': 'Answer', 'de': 'Antwort', 'ru': 'Ответ', 'pt': 'Resposta', 'nl': 'Antwoord', 'fr': 'Réponse', 'it': 'Risposta', 'es': 'Respuesta', 'pl': 'Odpowiedź', 'uk': 'Відправити', 'zh-cn': '答复' };

@@ -651,98 +651,96 @@ function _sendMessageHelper(dest, name, text, options) {
         } else if (options && options.deleteMessage !== undefined) {
             adapter.log.debug(`Send deleteMessage to "${name}"`);
             bot && executeSending(() => bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id), options, resolve);
-        } else
-            if (options && options.latitude !== undefined) {
-                adapter.log.debug(`Send location to "${name}": ${text}`);
-                bot && executeSending(() =>  bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options), options, resolve);
-            } else if (options && options.type === 'mediagroup') {
-                adapter.log.debug(`Send media group to "${name}": `);
-                if (bot) {
-                    const {media: fileNames} = options;
-                    if (fileNames instanceof Array) {
-                        bot.sendChatAction(dest, 'upload_photo')
-                            .then(param => {
-                                if (fileNames.every(name => fs.existsSync(name))) {
-                                    const filesAsArray = fileNames
-                                        .map(element => {
-                                            try {
-                                                return {type: 'photo', media: fs.readFileSync(element)};
-                                            } catch (error) {
-                                                adapter.log.error(`Cannot read file${element}`);
-                                                return undefined;
-                                            }
-                                        })
-                                        .filter(element => element !== undefined);
+        } else if (options && options.latitude !== undefined) {
+            adapter.log.debug(`Send location to "${name}": ${text}`);
+            bot && executeSending(() =>  bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options), options, resolve);
+        } else if (options && options.type === 'mediagroup') {
+            adapter.log.debug(`Send media group to "${name}": `);
+            if (bot) {
+                const {media: fileNames} = options;
+                if (fileNames instanceof Array) {
+                    bot.sendChatAction(dest, 'upload_photo')
+                        .then(param => {
+                            if (fileNames.every(name => fs.existsSync(name))) {
+                                const filesAsArray = fileNames
+                                    .map(element => {
+                                        try {
+                                            return {type: 'photo', media: fs.readFileSync(element)};
+                                        } catch (error) {
+                                            adapter.log.error(`Cannot read file${element}`);
+                                            return undefined;
+                                        }
+                                    })
+                                    .filter(element => element !== undefined);
 
-                                    const size = filesAsArray
-                                        .map(element => element.media.length)
-                                        .reduce((acc, val) => acc + val);
+                                const size = filesAsArray
+                                    .map(element => element.media.length)
+                                    .reduce((acc, val) => acc + val);
 
-                                    adapter.log.info(`Send media group to "${name}": ${size} bytes`);
-                                    if (filesAsArray.length > 0) {
-                                        executeSending(() => bot.sendMediaGroup(dest, filesAsArray), options, resolve);
-                                    }
-                                } else {
-                                    adapter.log.debug('files must exists');
-                                    options = null;
-                                    resolve(JSON.stringify(messageIds));
+                                adapter.log.info(`Send media group to "${name}": ${size} bytes`);
+                                if (filesAsArray.length > 0) {
+                                    executeSending(() => bot.sendMediaGroup(dest, filesAsArray), options, resolve);
                                 }
-                            })
-                            .catch(error => {
-                                adapter.log.error(`upload Error:${error}`);
-                            });
-                    } else {
-                        adapter.log.debug('option media should be an array');
-                        resolve(JSON.stringify(messageIds));
-                    }
+                            } else {
+                                adapter.log.debug('files must exists');
+                                options = null;
+                                resolve(JSON.stringify(messageIds));
+                            }
+                        })
+                        .catch(error => {
+                            adapter.log.error(`upload Error:${error}`);
+                        });
                 } else {
-                    adapter.log.debug('no files added!');
-                    options = null;
+                    adapter.log.debug('option media should be an array');
                     resolve(JSON.stringify(messageIds));
                 }
-            } else if (text && typeof text === 'string' && actions.includes(text)) {
-                adapter.log.debug(`Send action to "${name}": ${text}`);
-                bot && executeSending(() => bot.sendChatAction(dest, text), options, resolve);
-            } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
-                if (typeof text === 'string') {
-                    adapter.log.debug(`Send sticker to "${name}": ${text}`);
-                } else {
-                    adapter.log.debug(`Send sticker to "${name}": ${text.length} bytes`);
-                }
-                bot && executeSending(() => bot.sendSticker(dest, text, options), options, resolve);
-            } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))) {
-                if (typeof text === 'string') {
-                    adapter.log.debug(`Send animation to "${name}": ${text}`);
-                } else {
-                    adapter.log.debug(`Send animation to "${name}": ${text.length} bytes`);
-                }
-                bot && executeSending(() => bot.sendAnimation(dest, text, options), options, resolve);
-            } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
-                if (typeof text === 'string') {
-                    adapter.log.debug(`Send video to "${name}": ${text}`);
-                } else {
-                    adapter.log.debug(`Send video to "${name}": ${text.length} bytes`);
-                }
-                bot && executeSending(() => bot.sendVideo(dest, text, options), options, resolve);
-            } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
-                adapter.log.debug(`Send document to "${name}": ${(typeof text === 'string') ? text : text.length}`);
-                bot && executeSending(() => bot.sendDocument(dest, text, options), options, resolve);
-            } else if (
-                text &&
-            (
-                (typeof text === 'string' &&
-                    text.match(/\.(wav|mp3|ogg)$/i) &&
-                    fs.existsSync(text)
-                ) ||
-                (options && options?.type === 'audio')
-            )
-            ) {
-                adapter.log.debug(`Send audio to "${name}": ${(typeof text === 'string') ? text : text.length}`);
+            } else {
+                adapter.log.debug('no files added!');
+                options = null;
+                resolve(JSON.stringify(messageIds));
+            }
+        } else if (text && typeof text === 'string' && actions.includes(text)) {
+            adapter.log.debug(`Send action to "${name}": ${text}`);
+            bot && executeSending(() => bot.sendChatAction(dest, text), options, resolve);
+        } else if (text && ((typeof text === 'string' && text.match(/\.webp$/i) && fs.existsSync(text)) || (options && options.type === 'sticker'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send sticker to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send sticker to "${name}": ${text.length} bytes`);
+            }
+            bot && executeSending(() => bot.sendSticker(dest, text, options), options, resolve);
+        } else if (text && ((typeof text === 'string' && text.match(/\.(gif)/i) && fs.existsSync(text)) || (options && options.type === 'animation'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send animation to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send animation to "${name}": ${text.length} bytes`);
+            }
+            bot && executeSending(() => bot.sendAnimation(dest, text, options), options, resolve);
+        } else if (text && ((typeof text === 'string' && text.match(/\.(mp4)$/i) && fs.existsSync(text)) || (options && options.type === 'video'))) {
+            if (typeof text === 'string') {
+                adapter.log.debug(`Send video to "${name}": ${text}`);
+            } else {
+                adapter.log.debug(`Send video to "${name}": ${text.length} bytes`);
+            }
+            bot && executeSending(() => bot.sendVideo(dest, text, options), options, resolve);
+        } else if (text && ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && fs.existsSync(text)) || (options && options.type === 'document'))) {
+            adapter.log.debug(`Send document to "${name}": ${(typeof text === 'string') ? text : text.length}`);
+            bot && executeSending(() => bot.sendDocument(dest, text, options), options, resolve);
+        } else if (
+            text &&
+        (
+            (typeof text === 'string' &&
+                text.match(/\.(wav|mp3|ogg)$/i) &&
+                fs.existsSync(text)
+            ) ||
+            (options && options?.type === 'audio')
+        )
+        ) {
+            adapter.log.debug(`Send audio to "${name}": ${(typeof text === 'string') ? text : text.length}`);
 
-                bot && executeSending(() => bot.sendAudio(dest, text, options), options, resolve);
-
-            } else if (
-                text &&
+            bot && executeSending(() => bot.sendAudio(dest, text, options), options, resolve);
+        } else if (
+            text &&
             (
                 (
                     typeof text === 'string' && // if the message is a string, and it is a path to file or URL
@@ -751,37 +749,37 @@ function _sendMessageHelper(dest, name, text, options) {
                 ) ||
                 (options && options.type === 'photo') // if the type of message is photo
             )
-            ) {
-                adapter.log.debug(`Send photo to "${name}": ${(typeof text === 'string') ? text : text.length}`);
+        ) {
+            adapter.log.debug(`Send photo to "${name}": ${(typeof text === 'string') ? text : text.length}`);
 
-                bot && executeSending(() => bot.sendPhoto(dest, text, options), options, resolve);
-            } else if (options && options.answerCallbackQuery !== undefined) {
-                adapter.log.debug(`Send answerCallbackQuery to "${name}"`);
-                if (options.answerCallbackQuery.showAlert === undefined) {
-                    options.answerCallbackQuery.showAlert = false;
-                }
-                if (bot && callbackQueryId[options.chatId]) {
-                    const originalChatId = callbackQueryId[options.chatId].id;
-                    delete callbackQueryId[options.chatId];
-                    executeSending(() => bot.answerCallbackQuery(originalChatId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert), options, resolve);
-                }
-            } else {
-                adapter.log.debug(`Send message to [${name}]: "${text}"`);
-                if (text && typeof text === 'string') {
-                    options = options || {};
-                    if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
-                        options.parse_mode = 'MarkdownV2';
-                        text = text.substring(12, text.length - 13);
-                    } else if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
-                        options.parse_mode = 'HTML';
-                        text = text.substring(6, text.length - 7);
-                    } else if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
-                        options.parse_mode = 'Markdown';
-                        text = text.substring(10, text.length - 11);
-                    }
-                }
-                bot && executeSending(() => bot.sendMessage(dest, text || '', options), options, resolve);
+            bot && executeSending(() => bot.sendPhoto(dest, text, options), options, resolve);
+        } else if (options && options.answerCallbackQuery !== undefined) {
+            adapter.log.debug(`Send answerCallbackQuery to "${name}"`);
+            if (options.answerCallbackQuery.showAlert === undefined) {
+                options.answerCallbackQuery.showAlert = false;
             }
+            if (bot && callbackQueryId[options.chatId]) {
+                const originalChatId = callbackQueryId[options.chatId].id;
+                delete callbackQueryId[options.chatId];
+                executeSending(() => bot.answerCallbackQuery(originalChatId, options.answerCallbackQuery.text, options.answerCallbackQuery.showAlert), options, resolve);
+            }
+        } else {
+            adapter.log.debug(`Send message to [${name}]: "${text}"`);
+            if (text && typeof text === 'string') {
+                options = options || {};
+                if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
+                    options.parse_mode = 'MarkdownV2';
+                    text = text.substring(12, text.length - 13);
+                } else if (text.startsWith('<HTML>') && text.endsWith('</HTML>')) {
+                    options.parse_mode = 'HTML';
+                    text = text.substring(6, text.length - 7);
+                } else if (text.startsWith('<Markdown>') && text.endsWith('</Markdown>')) {
+                    options.parse_mode = 'Markdown';
+                    text = text.substring(10, text.length - 11);
+                }
+            }
+            bot && executeSending(() => bot.sendMessage(dest, text || '', options), options, resolve);
+        }
     });
 }
 
@@ -882,7 +880,7 @@ function sendMessage(text, user, chatId, options) {
         let matches = 0;
         userArray.forEach(userName => {
             for (const id in users) {
-                if (!users.hasOwnProperty(id)) {
+                if (!Object.prototype.hasOwnProperty.call(users, id)) {
                     continue;
                 }
 
@@ -913,7 +911,7 @@ function sendMessage(text, user, chatId, options) {
         const re = new RegExp(m[1], 'i');
         let id = '';
         for (const id_t in users) {
-            if (!users.hasOwnProperty(id_t)) {
+            if (!Object.prototype.hasOwnProperty.call(users, id_t)) {
                 continue;
             }
             if ((adapter.config.useUsername && users[id_t].userName.match(re)) || (!adapter.config.useUsername && users[id_t].firstName.match(re))) {
