@@ -1,4 +1,7 @@
 # Older changes
+## 3.3.2 (2024-05-26)
+* (foxriver76) fixed problem with webserver handling
+
 ## 3.3.1 (2024-05-25)
 * (mcm1957) Dependencies have been updated - especially 'node-telegram-bot-api'
 * (mcm1957) see https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md
