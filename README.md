@@ -39,6 +39,10 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+* (foxriver76) escape more unallowed characters when sending with notification manager
+
 ### 3.5.1 (2024-06-12)
 * (klein0r) Fixed file handling for voice files
 * (klein0r) Updated dependencies
