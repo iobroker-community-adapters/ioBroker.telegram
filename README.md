@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.5.3 (2024-06-18)
 * (foxriver76) escape all unallowed characters when sending with notification manager
 
 ### 3.5.2 (2024-06-16)
@@ -54,11 +54,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.4.1 (2024-06-09)
 * (klein0r) Blockly 9 compatibility for new ask block
-
-### 3.4.0 (2024-06-08)
-* (klein0r) Updated Blockly definitions
-* (klein0r) Added Blockly block to ask questions
-* (klein0r) Remove keyboard on answer (or timeout)
 
 ## License
 

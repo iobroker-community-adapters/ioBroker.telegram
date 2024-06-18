@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.5.2",
+    "version": "3.5.3",
     "news": {
+      "3.5.3": {
+        "en": "(foxriver76) escape all unallowed characters when sending with notification manager",
+        "de": "(foxriver76) entkommen alle unallowed zeichen beim senden mit benachrichtigungsmanager",
+        "ru": "(foxriver76) избегают всех неразрешенных персонажей при отправке с менеджером уведомлений",
+        "pt": "(foxriver76) escapar de todos os caracteres não permitidos ao enviar com o gerenciador de notificações",
+        "nl": "(foxriver76) ontsnappen aan alle niet toegestane tekens bij het verzenden met notificatiebeheerder",
+        "fr": "(foxriver76) échappe à tous les caractères non autorisés lors de l'envoi avec le gestionnaire de notification",
+        "it": "(foxriver76) sfuggire a tutti i caratteri non consentiti durante l'invio con gestore di notifiche",
+        "es": "(foxriver76) escape todos los caracteres no autorizados al enviar con el administrador de notificación",
+        "pl": "(foxriver76) uniknąć wszystkich niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
+        "uk": "(foxriver76) втекти всі незрівняні символи при надсиланні повідомлення менеджера",
+        "zh-cn": "(foxriver76) 与通知管理器一起发送时, 逃脱所有未分配字符"
+      },
       "3.5.2": {
         "en": "(foxriver76) escape more unallowed characters when sending with notification manager",
         "de": "(foxriver76) entfliehen sie unallowed zeichen beim senden mit benachrichtigungsmanager",
@@ -80,19 +93,6 @@
         "pl": "stały problem z obsługą serwera www",
         "uk": "виправлена проблема з використанням вебсервера",
         "zh-cn": "处理 web 服务器的固定问题"
-      },
-      "3.3.1": {
-        "en": "Dependencies have been updated - especially 'node-telegram-bot-api'\nsee https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "de": "Die Abhängigkeiten wurden aktualisiert - insbesondere 'node-telegram-bot-api '\nsiehe https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "ru": "Зависимости были обновлены - особенно «node-telegram-bot-api \"\nhttps://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "pt": "As dependências foram atualizadas - especialmente \"node-telegram-bot-api '\nver https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "nl": "Afhankelijkheden zijn bijgewerkt - vooral 'node-telegram-bot-api' '\nzie https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGLOG.md",
-        "fr": "Les dépendances ont été mises à jour - notamment 'node-telegram-bot-api '\nvoir https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "it": "Le dipendenze sono state aggiornate - soprattutto 'node-telegram-bot-api '\nvedi https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "es": "Las dependencias se han actualizado - especialmente 'node-telegram-bot-api '\nvéase https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "pl": "Zaktualizowano zależności - szczególnie \"node- telegram - bot- api '\nzob. https: / / github.com / yagop / node- telegram- bot- api / blob / master / CHANGELOG.md",
-        "uk": "Оновлено залежність - особливо 'node-telegram-bot-api Р\nhttps://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "zh-cn": "依赖关系已经更新 - 特别是“ node- telegram- bot- api ”  '\n见https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md"
       }
     },
     "messages": [
