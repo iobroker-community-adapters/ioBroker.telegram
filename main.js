@@ -2085,7 +2085,7 @@ ${readableInstances.join('\n')}
  * @returns {string}
  */
 function replaceReservedCharacters(text) {
-    return text.replace(/([.!()-])/g, '\\$1');
+    return text.replace(/([.!()-_*[\]~`><&#+=|{}])/g, '\\$1');
 }
 
 /**
