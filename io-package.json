@@ -327,6 +327,7 @@
           "it": "Informazioni",
           "es": "Información",
           "pl": "Informacja",
+          "uk": "Інформація",
           "zh-cn": "信息"
         }
       },
@@ -346,6 +347,7 @@
           "it": "Collegato al server Telegram",
           "es": "Conectado al servidor Telegram",
           "pl": "Łączy się z serwerem Telegram",
+          "uk": "Підключення до сервера Telegram",
           "zh-cn": "电报服务器"
         },
         "type": "boolean",
@@ -370,6 +372,7 @@
           "it": "Ultima richiesta",
           "es": "Última solicitud recibida",
           "pl": "Żądanie",
+          "uk": "Останній отримав запит",
           "zh-cn": "上次收到的请求"
         },
         "type": "string",
@@ -393,7 +396,21 @@
           "it": "Dati grezzi dell'ultima richiesta ricevuta",
           "es": "Datos brutos de la última solicitud recibida",
           "pl": "Informacja o naniesionych żądaniach",
+          "uk": "Сирі дані останнього отриманого запиту",
           "zh-cn": "最后一次收到请求的数据"
+        },
+        "desc": {
+          "en": "Must be enabled in instance settings",
+          "de": "Muss in Instanz-Einstellungen aktiviert werden",
+          "ru": "Должна быть включена в настройках экземпляра",
+          "pt": "Deve ser ativado em configurações de instância",
+          "nl": "Moet ingeschakeld zijn in instantieinstellingen",
+          "fr": "Doit être activé dans les paramètres d'instance",
+          "it": "Deve essere abilitato nelle impostazioni di istanza",
+          "es": "Debe ser habilitado en configuración de ejemplo",
+          "pl": "Musi być włączona na przykład ustawienia",
+          "uk": "Необхідно ввімкнути параметри екземпляра",
+          "zh-cn": "在实例设置中必须启用"
         },
         "type": "string",
         "role": "json",
@@ -416,6 +433,7 @@
           "it": "Chat ID dell'ultima richiesta ricevuta",
           "es": "Chat ID of last received request",
           "pl": "Wywiad z ostatnią otrzymał żądanie",
+          "uk": "Чат ID останнього отриманого запиту",
           "zh-cn": "最后一次收到请求的国际组织"
         },
         "type": "number",
@@ -439,6 +457,7 @@
           "it": "Messaggio ID dell'ultima richiesta ricevuta",
           "es": "ID del mensaje de última solicitud recibida",
           "pl": "Message ID of last otrzymało żądanie",
+          "uk": "Ідентифікатор повідомлення останнього отриманого запиту",
           "zh-cn": "上一次收到请求的邮件"
         },
         "type": "number",
@@ -486,6 +505,7 @@
           "it": "Chat ID dell'ultimo messaggio inviato dal bot",
           "es": "ID de chat del último mensaje enviado por el bot",
           "pl": "Chat ID z ostatnią przesłaną przez bota",
+          "uk": "Чат ID останнього надісланого повідомлення від бота",
           "zh-cn": "黑客最后发出的讯息"
         },
         "type": "string",
@@ -509,6 +529,7 @@
           "it": "Messaggio ID dell'ultimo messaggio inviato dal bot",
           "es": "ID del mensaje enviado por el bot",
           "pl": "Message ID z ostatniej wiadomości wysyłanej przez bota",
+          "uk": "Ідентифікатор повідомлення останнього надісланого повідомлення боту",
           "zh-cn": "黑客最后发出的讯"
         },
         "type": "number",
@@ -531,7 +552,7 @@
           "fr": "Numéro de fil du dernier message envoyé par le bot",
           "it": "ID thread dell'ultimo messaggio inviato dal bot",
           "es": "Thread ID of last sent message by the bot",
-          "pl": "Name",
+          "pl": "Thread ID z ostatniej wiadomości wysyłanej przez bota",
           "uk": "Нитка ID останнього надісланого повідомлення бо",
           "zh-cn": "机器人发送的最近消息的线索ID"
         },
@@ -556,6 +577,7 @@
           "it": "Dati grezzi dell'ultimo messaggio inviato dal bot",
           "es": "Datos brutos del último mensaje enviado por el bot",
           "pl": "Rezultaty z ostatniej wiadomości przez bota",
+          "uk": "Сирі дані останнього надісланого повідомлення від бота",
           "zh-cn": "黑白人最后发送的信息数据"
         },
         "type": "string",
@@ -579,6 +601,7 @@
           "it": "ID utente dell'ultima richiesta ricevuta",
           "es": "ID de usuario de la última solicitud recibida",
           "pl": "Użytkownik po raz ostatni otrzymał żądanie",
+          "uk": "Ідентифікатор користувача останнього отриманого запиту",
           "zh-cn": "上一次收到请求的用户"
         },
         "type": "string",
@@ -602,6 +625,7 @@
           "it": "Invia testo tramite Telegram con notifica",
           "es": "Enviar texto a través del Telegram con notificación",
           "pl": "Tekst poprzez Telegram z powiadomieniem",
+          "uk": "Надіслати текст через Telegram повідомлення",
           "zh-cn": "通过电报复制件"
         },
         "type": "string",
@@ -625,6 +649,7 @@
           "it": "Invia testo tramite Telegram silenziosamente",
           "es": "Enviar texto a través del Telegram en silencio",
           "pl": "Tekst poprzez Telegram milczeć",
+          "uk": "Надіслати текст через Телеграму мовчно",
           "zh-cn": "通过电线静态文本"
         },
         "type": "string",
@@ -648,6 +673,7 @@
           "it": "Invia testo tramite Telegram con notifica con definizione JSON",
           "es": "Enviar texto a través del Telegram con notificación con definición JSON",
           "pl": "Tekst poprzez Telegram z notyfikacją z definicją JSON",
+          "uk": "Надіслати текст через Telegram повідомлення з визначенням JSON",
           "zh-cn": "通过电线传送的通知"
         },
         "type": "string",
@@ -671,6 +697,7 @@
           "it": "Invia testo tramite Telegram in silenzio con la definizione JSON",
           "es": "Enviar texto a través del Telegram en silencio con la definición JSON",
           "pl": "Tekst minuskułowy milczy z definicją JSON",
+          "uk": "Відправте текст через Телеграму мовчно з визначенням JSON",
           "zh-cn": "通过与联合执行委员会的定义保持沉默的电报案文"
         },
         "type": "string",
@@ -694,6 +721,7 @@
           "it": "Utenti come JSON, che sono costantemente autenticati",
           "es": "Usuarios como JSON, que son constantemente autenticados",
           "pl": "Użytkownicy JSON, którzy są stale autentyczni",
+          "uk": "Користувачі JSON, які постійно автентифікуються",
           "zh-cn": "经常核证的作为联合执行机构的用户"
         },
         "type": "string",
@@ -718,6 +746,7 @@
           "it": "Percorso all'ultimo file ricevuto",
           "es": "Send to the last received file",
           "pl": "Path to the ostatni otrzymał plik plików",
+          "uk": "Шлях до останнього отриманого файлу",
           "zh-cn": "最后一次收到的档案"
         },
         "type": "string",
