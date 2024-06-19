@@ -419,7 +419,7 @@
           "zh-cn": "最后一次收到请求的国际组织"
         },
         "type": "number",
-        "role": "text",
+        "role": "value",
         "read": true,
         "write": false
       },
@@ -442,7 +442,31 @@
           "zh-cn": "上一次收到请求的邮件"
         },
         "type": "number",
-        "role": "text",
+        "role": "value",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestMessageThreadId",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Thread ID of last received request",
+          "de": "Thread ID der letzten empfangenen Anfrage",
+          "ru": "Идентификатор последнего полученного запроса",
+          "pt": "ID de rosca do último pedido recebido",
+          "nl": "Thread ID van laatst ontvangen verzoek",
+          "fr": "Numéro d'identification de la dernière demande reçue",
+          "it": "Thread ID di ultima richiesta ricevuta",
+          "es": "Thread ID of last received request",
+          "pl": "Identyfikator wątku ostatnio otrzymanego wniosku",
+          "uk": "Код нитки останнього отриманого запиту",
+          "zh-cn": "上次收到请求的线索ID"
+        },
+        "type": "number",
+        "role": "value",
         "read": true,
         "write": false
       },
@@ -480,7 +504,7 @@
           "de": "Nachrichten-ID der letzten gesendeten Nachricht durch den Bot",
           "ru": "Сообщение ID последнего отправленного сообщения ботом",
           "pt": "ID de mensagem da última mensagem enviada pelo bot",
-          "nl": "Vertaling:",
+          "nl": "Bericht ID van laatste verzonden bericht door de bot",
           "fr": "Message ID du dernier message envoyé par le bot",
           "it": "Messaggio ID dell'ultimo messaggio inviato dal bot",
           "es": "ID del mensaje enviado por el bot",
@@ -488,7 +512,31 @@
           "zh-cn": "黑客最后发出的讯"
         },
         "type": "number",
-        "role": "text",
+        "role": "value",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.botSendMessageThreadId",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Thread ID of last sent message by the bot",
+          "de": "Thread ID der letzten gesendeten Nachricht durch den Bot",
+          "ru": "Thread ID последнего сообщения бота",
+          "pt": "ID de rosca da última mensagem enviada pelo bot",
+          "nl": "Thread ID van laatst verzonden bericht door de bot",
+          "fr": "Numéro de fil du dernier message envoyé par le bot",
+          "it": "ID thread dell'ultimo messaggio inviato dal bot",
+          "es": "Thread ID of last sent message by the bot",
+          "pl": "Name",
+          "uk": "Нитка ID останнього надісланого повідомлення бо",
+          "zh-cn": "机器人发送的最近消息的线索ID"
+        },
+        "type": "number",
+        "role": "value",
         "read": true,
         "write": false
       },

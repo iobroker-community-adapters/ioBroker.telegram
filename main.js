@@ -289,6 +289,7 @@ function startAdapter(options) {
                 console.error(`Cannot close server: ${e}`);
             }
         }
+
         isConnected && adapter && adapter.setState && adapter.setState('info.connection', false, true);
         isConnected = false;
     });
@@ -535,19 +536,25 @@ function handleWebHook(req, res) {
 }
 
 function saveSendRequest(msg) {
-    adapter.log.debug(`Request: ${JSON.stringify(msg)}`);
+    adapter.log.debug(`Request [saveSendRequest]: ${JSON.stringify(msg)}`);
+
     if  (typeof msg === 'object'){
         if (adapter.config.storeRawRequest) {
-            adapter.setState('communicate.botSendRaw', JSON.stringify(msg), true, err =>
+            adapter.setState('communicate.botSendRaw', JSON.stringify(msg, null, 2), true, err =>
                 err && adapter.log.error(err));
         }
 
-        if (msg.message_id) {
+        if (msg?.message_id) {
             adapter.setState('communicate.botSendMessageId', msg.message_id, true, err =>
                 err && adapter.log.error(err));
         }
 
-        if (msg.chat && msg.chat.id) {
+        if (msg?.message_thread_id) {
+            adapter.setState('communicate.botSendMessageThreadId', msg.message_thread_id, true, err =>
+                err && adapter.log.error(err));
+        }
+
+        if (msg?.chat && msg.chat.id) {
             adapter.setState('communicate.botSendChatId', msg.chat.id.toString(), true, err =>
                 err && adapter.log.error(err));
         }
@@ -829,6 +836,7 @@ function executeSending(action, options, resolve){
         });
 }
 
+// https://core.telegram.org/bots/api
 function sendMessage(text, user, chatId, options) {
     if (!text && typeof options !== 'object' && text !== 0 && (!options || !options.latitude)) {
         adapter.log.warn('Invalid text: null');
@@ -1769,6 +1777,7 @@ function processTelegramText(msg) {
 
     adapter.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
     adapter.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
+    adapter.setState('communicate.requestMessageThreadId', { val: msg?.is_topic_message ? msg.message_thread_id : 0, ack: true });
     adapter.setState('communicate.requestUserId', { val: msg.from && msg.from.id !== undefined && msg.from.id !== null ? msg.from.id.toString() : '', ack: true });
     adapter.setState('communicate.request', { val: `[${user}]${msg.text}`, ack: true });
 }
