@@ -14,7 +14,7 @@ const fs          = require('node:fs');
 const path        = require('node:path');
 const { WebServer } = require('@iobroker/webserver');
 const https       = require('node:https');
-const axios       = require('axios');
+const axios       = require('axios').default;
 
 let bot;
 let users = {};
@@ -1071,6 +1071,19 @@ function getMessage(msg) {
     } else if (adapter.config.saveFiles && msg.video) {
         try {
             saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
+                if (!res.error) {
+                    adapter.log.info(res.info);
+                    adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));
+                } else {
+                    adapter.log.debug(res.error);
+                }
+            });
+        } catch (err) {
+            adapter.log.error(`Error saving video file: ${err}`);
+        }
+    } else if (adapter.config.saveFiles && msg.video_note) {
+        try {
+            saveFile(msg.video_note.file_id, `/video/${date}.mp4`, res => {
                 if (!res.error) {
                     adapter.log.info(res.info);
                     adapter.setState('communicate.pathFile', res.path, true, err => err && adapter.log.error(err));

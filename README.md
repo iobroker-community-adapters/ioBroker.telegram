@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Save videos which have been recorded with telegram (video_note)
+
 ### 3.5.3 (2024-06-18)
 * (foxriver76) escape all unallowed characters when sending with notification manager
 
