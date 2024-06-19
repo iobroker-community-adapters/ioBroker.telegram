@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.6.0 (2024-06-19)
 * (klein0r) Save videos which have been recorded with telegram (video_note)
 * (klein0r) Added answer timeout to instance configuration
 * (klein0r) Added option to send status updates to specific users
@@ -57,9 +57,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.5.0 (2024-06-12)
 * (klein0r) Added option to save media files into ioBroker file system (files tab)
-
-### 3.4.1 (2024-06-09)
-* (klein0r) Blockly 9 compatibility for new ask block
 
 ## License
 

@@ -1,4 +1,7 @@
 # Older changes
+## 3.4.1 (2024-06-09)
+* (klein0r) Blockly 9 compatibility for new ask block
+
 ## 3.4.0 (2024-06-08)
 * (klein0r) Updated Blockly definitions
 * (klein0r) Added Blockly block to ask questions

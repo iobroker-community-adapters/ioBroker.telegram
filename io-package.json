@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.5.3",
+    "version": "3.6.0",
     "news": {
+      "3.6.0": {
+        "en": "(klein0r) Save videos which have been recorded with telegram (video_note)\n(klein0r) Added answer timeout to instance configuration\n(klein0r) Added option to send status updates to specific users\n(klein0r) Added states for thread id (of supergroups)",
+        "de": "(klein0r) Videos speichern, die mit Telegramm aufgenommen wurden (video_note)\n(klein0r) Antwort Timeout zu Instanz-Konfiguration hinzugefügt\n(klein0r) Option hinzugefügt, um Status-Updates zu bestimmten Benutzern zu senden\n(klein0r) Hinzugefügt Zustände für Thread id (von supergroups)",
+        "ru": "(клеин0р) Сохранить видео, которые были записаны с телеграммой (видео_note)\n(клеин0р) Добавлен тайм-аут для настройки\n(клеин0р) Добавить опцию для отправки обновлений состояния конкретным пользователям\n(клеин0р) Добавленные состояния для резьбы id (супергрупп)",
+        "pt": "(klein0r) Salvar vídeos que foram gravados com telegrama (video_note)\n(klein0r) Tempo de resposta adicionado para configuração de instância\n(klein0r) Opção adicionada para enviar atualizações de status para usuários específicos\n(klein0r) Adicionados estados para fio id (de supergrupos)",
+        "nl": "(klein0r) Met telegram opgenomen video's opslaan (video_note)\n(klein0r) Antwoord timeout toegevoegd aan instantieconfiguratie\n(klein0r) Toegevoegd optie om status-updates naar specifieke gebruikers te sturen\n(klein0r) Toegevoegde status voor draad-ID (van supergroepen)",
+        "fr": "(klein0r) Enregistrer les vidéos enregistrées par télégramme (vidéo_note)\n(klein0r) Ajout du délai de réponse à la configuration de l'instance\n(klein0r) Ajout d'une option pour envoyer des mises à jour d'état à des utilisateurs spécifiques\n(klein0r) États ajoutés pour le fil id (de supergroupes)",
+        "it": "(Klein0r) Salvare video che sono stati registrati con telegramma (video_note)\n(Klein0r) Aggiunto timeout di risposta alla configurazione di istanza\n(Klein0r) Aggiunta opzione per inviare aggiornamenti di stato a utenti specifici\n(Klein0r) stati aggiunti per thread id (di supergruppi)",
+        "es": "(klein0r) Guardar vídeos que se han grabado con telegrama (video_note)\n(klein0r) Tiempo de respuesta añadido para la configuración de instancia\n(klein0r) opción adicional para enviar actualizaciones de estado a usuarios específicos\n(klein0r) Estados añadidos para hilo id (de supergrupos)",
+        "pl": "(klein0r) Zapisz wideo, które zostały nagrane telegramem (video _ note)\n(klein0r) Dodano czas odpowiedzi do konfiguracji instancji\n(klein0r) Dodano opcję wysyłania aktualizacji statusu do konkretnych użytkowników\n(klein0r) Dodano stany identyfikatora nici (z supergrup)",
+        "uk": "(klein0r) Збережіть відео, які були записані з телеграмою (відео_note)\n(klein0r) Доданий час відповіді на налаштування екземпляра\n(klein0r) Додана можливість надсилати оновлення статусу конкретним користувачам\n(klein0r) Додані стани для різьблення (від супергруп)",
+        "zh-cn": "(鸣笛0r) 保存用电报录制的视频( video_ note)\n(鸣笛0r) 添加到实例配置中的答题超时\n(鸣笛0r) 添加向特定用户发送状态更新的选项\n(鸣笛0r) 线程 ID 添加状态( 超组)"
+      },
       "3.5.3": {
         "en": "(foxriver76) escape all unallowed characters when sending with notification manager",
         "de": "(foxriver76) entkommen alle unallowed zeichen beim senden mit benachrichtigungsmanager",
@@ -80,19 +93,6 @@
         "pl": "Aktualizacja definicji blockly\nDodano Blockly bloku zadawać pytania\nUsuń klawiaturę na odpowiedź (lub timeout)",
         "uk": "Оновлено блочні визначення\nДодано блокнот для запитань\nВидалити клавіатуру на відповідь (або час)",
         "zh-cn": "更新的块状定义\n添加块块以询问问题\n删除答题上的键盘( 或超时)"
-      },
-      "3.3.2": {
-        "en": "fixed problem with webserver handling",
-        "de": "problem mit webserver-handling behoben",
-        "ru": "фиксированная проблема с обработкой веб-сервера",
-        "pt": "problema fixo com manuseio webserver",
-        "nl": "vast probleem met webserver behandeling",
-        "fr": "problème corrigé avec la gestion du serveur web",
-        "it": "problema fisso con gestione webserver",
-        "es": "problema fijo con el manejo del servidor web",
-        "pl": "stały problem z obsługą serwera www",
-        "uk": "виправлена проблема з використанням вебсервера",
-        "zh-cn": "处理 web 服务器的固定问题"
       }
     },
     "messages": [
