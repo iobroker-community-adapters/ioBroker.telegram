@@ -280,6 +280,7 @@
     "rooms": false,
     "storeRawRequest": false,
     "text2command": "",
+    "answerTimeoutSec": 60,
     "url": "",
     "bind": "0.0.0.0",
     "port": 8443,

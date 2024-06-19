@@ -83,5 +83,7 @@
     "Medium": "Середня якість",
     "High": "Висока якість",
     "High definition": "Висока якість",
-    "Media file location": "Розташування медіафайлу"
+    "Media file location": "Розташування медіафайлу",
+    "Answer timeout (in seconds)": "Час очікування відповіді (у секундах)",
+    "Time limit for users to answer questions": "Обмеження часу для відповіді користувачів на запитання"
 }

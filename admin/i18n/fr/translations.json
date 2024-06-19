@@ -83,5 +83,7 @@
     "Medium": "Qualité moyenne",
     "High": "Haute qualité",
     "High definition": "Qualité haute définition",
-    "Media file location": "Emplacement du fichier multimédia"
+    "Media file location": "Emplacement du fichier multimédia",
+    "Answer timeout (in seconds)": "Délai d'attente de réponse (en secondes)",
+    "Time limit for users to answer questions": "Délai accordé aux utilisateurs pour répondre aux questions"
 }

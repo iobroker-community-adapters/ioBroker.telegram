@@ -83,5 +83,7 @@
     "Medium": "Gemiddelde kwaliteit",
     "High": "Hoge kwaliteit",
     "High definition": "High-definition kwaliteit",
-    "Media file location": "Locatie van mediabestand"
+    "Media file location": "Locatie van mediabestand",
+    "Answer timeout (in seconds)": "Antwoordtime-out (in seconden)",
+    "Time limit for users to answer questions": "Tijdslimiet voor gebruikers om vragen te beantwoorden"
 }

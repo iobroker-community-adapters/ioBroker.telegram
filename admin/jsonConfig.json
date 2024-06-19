@@ -210,6 +210,16 @@
           "label": "text2command instance",
           "help": "Text2Command info"
         },
+        "answerTimeoutSec": {
+          "newLine": true,
+          "type": "number",
+          "min": 5,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "label": "Answer timeout (in seconds)",
+          "help": "Time limit for users to answer questions"
+        },
         "_custom": {
           "newLine": true,
           "type": "custom",

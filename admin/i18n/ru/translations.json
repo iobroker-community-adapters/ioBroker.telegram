@@ -83,5 +83,7 @@
     "Medium": "Среднее качество",
     "High": "Высокое качество",
     "High definition": "Качество высокой четкости",
-    "Media file location": "Местоположение медиа-файла"
+    "Media file location": "Местоположение медиа-файла",
+    "Answer timeout (in seconds)": "Таймаут ответа (в секундах)",
+    "Time limit for users to answer questions": "Ограничение времени для ответов пользователей на вопросы"
 }
