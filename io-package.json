@@ -1,8 +1,34 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.5.1",
+    "version": "3.5.3",
     "news": {
+      "3.5.3": {
+        "en": "(foxriver76) escape all unallowed characters when sending with notification manager",
+        "de": "(foxriver76) entkommen alle unallowed zeichen beim senden mit benachrichtigungsmanager",
+        "ru": "(foxriver76) избегают всех неразрешенных персонажей при отправке с менеджером уведомлений",
+        "pt": "(foxriver76) escapar de todos os caracteres não permitidos ao enviar com o gerenciador de notificações",
+        "nl": "(foxriver76) ontsnappen aan alle niet toegestane tekens bij het verzenden met notificatiebeheerder",
+        "fr": "(foxriver76) échappe à tous les caractères non autorisés lors de l'envoi avec le gestionnaire de notification",
+        "it": "(foxriver76) sfuggire a tutti i caratteri non consentiti durante l'invio con gestore di notifiche",
+        "es": "(foxriver76) escape todos los caracteres no autorizados al enviar con el administrador de notificación",
+        "pl": "(foxriver76) uniknąć wszystkich niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
+        "uk": "(foxriver76) втекти всі незрівняні символи при надсиланні повідомлення менеджера",
+        "zh-cn": "(foxriver76) 与通知管理器一起发送时, 逃脱所有未分配字符"
+      },
+      "3.5.2": {
+        "en": "(foxriver76) escape more unallowed characters when sending with notification manager",
+        "de": "(foxriver76) entfliehen sie unallowed zeichen beim senden mit benachrichtigungsmanager",
+        "ru": "(foxriver76) убежать более неразрешенных персонажей при отправке с менеджером уведомлений",
+        "pt": "(foxriver76) escapar de caracteres mais não permitidos ao enviar com o gerenciador de notificações",
+        "nl": "(foxriver76) meer ongeautoriseerde tekens ontsnappen bij het verzenden met notificatiebeheerder",
+        "fr": "(foxriver76) échappent plus de caractères non autorisés lors de l'envoi avec le gestionnaire de notification",
+        "it": "(foxriver76) sfuggire più caratteri non consentiti durante l'invio con gestore di notifica",
+        "es": "(foxriver76) escape más caracteres no autorizados al enviar con gestor de notificación",
+        "pl": "(foxriver76) uniknąć więcej niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
+        "uk": "(foxriver76) втекти більше незрівняних символів при надсиланні повідомлення менеджера",
+        "zh-cn": "(foxriver76) 与通知管理器发送时, 逃脱更多未分配字符"
+      },
       "3.5.1": {
         "en": "(klein0r) Fixed file handling for voice files\n(klein0r) Updated dependencies",
         "de": "(klein0r) Fixed-Dateihandling für Sprachdateien\n(klein0r) Aktualisierte Abhängigkeiten",
@@ -67,32 +93,6 @@
         "pl": "stały problem z obsługą serwera www",
         "uk": "виправлена проблема з використанням вебсервера",
         "zh-cn": "处理 web 服务器的固定问题"
-      },
-      "3.3.1": {
-        "en": "Dependencies have been updated - especially 'node-telegram-bot-api'\nsee https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "de": "Die Abhängigkeiten wurden aktualisiert - insbesondere 'node-telegram-bot-api '\nsiehe https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "ru": "Зависимости были обновлены - особенно «node-telegram-bot-api \"\nhttps://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "pt": "As dependências foram atualizadas - especialmente \"node-telegram-bot-api '\nver https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "nl": "Afhankelijkheden zijn bijgewerkt - vooral 'node-telegram-bot-api' '\nzie https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGLOG.md",
-        "fr": "Les dépendances ont été mises à jour - notamment 'node-telegram-bot-api '\nvoir https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "it": "Le dipendenze sono state aggiornate - soprattutto 'node-telegram-bot-api '\nvedi https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "es": "Las dependencias se han actualizado - especialmente 'node-telegram-bot-api '\nvéase https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "pl": "Zaktualizowano zależności - szczególnie \"node- telegram - bot- api '\nzob. https: / / github.com / yagop / node- telegram- bot- api / blob / master / CHANGELOG.md",
-        "uk": "Оновлено залежність - особливо 'node-telegram-bot-api Р\nhttps://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md",
-        "zh-cn": "依赖关系已经更新 - 特别是“ node- telegram- bot- api ”  '\n见https://github.com/yagop/node-telegram-bot-api/blob/master/CHANGELOG.md"
-      },
-      "3.3.0": {
-        "en": "Adapter has been migrated to `@iobroker/webserver`\nAdapter supports js-controller 6 now\nDependencies have been updated",
-        "de": "Adapter wurde auf `@iobroker/webserver migriert `\nAdapter unterstützt jetzt js-controller 6\nAbhängigkeiten wurden aktualisiert",
-        "ru": "Адаптер был перенесен на `@iobroker/webserver \"\nАдаптер поддерживает js-контроллер 6\nЗависимость обновлена",
-        "pt": "Adapter foi migrado para `@iobroker/webserver \"\nAdaptador suporta js-controller 6 agora\nAs dependências foram atualizadas",
-        "nl": "Adapter is gemigreerd naar  Wat\nAdapter ondersteunt js-controller 6 nu\nAfhankelijkheden zijn bijgewerkt",
-        "fr": "Adaptateur a été migré vers `@iobroker/webserver \"\nAdaptateur prend en charge js-controller 6 maintenant\nLes dépendances ont été actualisées",
-        "it": "L'adattatore è stato migrato a `@iobroker/webserver #\nAdattatore supporta js-controller 6 ora\nLe dipendenze sono state aggiornate",
-        "es": "Adapter has been migrated to `@iobroker/webserver `\nAdaptador compatible con js-controller 6 ahora\nSe han actualizado las dependencias",
-        "pl": "Adapter został przeniesiony na '@ iobroker / webserver'\nAdapter obsługuje kontroler js- 6 teraz\nZaktualizowano zależności",
-        "uk": "Адаптер мігрований до `@iobroker/webserver й\nАдаптер підтримує js-controller 6 тепер\nЗалежність було оновлено",
-        "zh-cn": "适配器已迁移到 XQio 经纪人/网络服务器 `\n适配器支持 js 控制器 6 现在\n依赖关系已更新"
       }
     },
     "messages": [
