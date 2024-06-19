@@ -472,18 +472,18 @@ To do that from javascript adapter, just call:
 sendTo('telegram.0', 'call', 'Some text');
 ```
 
-or 
+or
 
 ```javascript
 sendTo('telegram.0', 'call', {
     text: 'Some text',
     user: '@Username', // optional and the call will be done to the first user in telegram.0.communicate.users.
-    language: 'de-DE-Standard-A', // optional and the system language will be taken
+    lang: 'de-DE-Standard-A', // optional and the system language will be taken
     repeats: 0, // number of repeats 
 });
 ```
 
-or 
+or
 
 ```javascript
 sendTo('telegram.0', 'call', {
@@ -492,7 +492,7 @@ sendTo('telegram.0', 'call', {
 });
 ```
 
-or 
+or
 
 ```javascript
 sendTo('telegram.0', 'call', {
