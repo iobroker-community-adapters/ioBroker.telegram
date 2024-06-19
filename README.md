@@ -42,6 +42,7 @@ Use telegram service to communicate with ioBroker
 ### **WORK IN PROGRESS**
 * (klein0r) Save videos which have been recorded with telegram (video_note)
 * (klein0r) Added answer timeout to instance configuration
+* (klein0r) Added option to send status updates to specific users
 
 ### 3.5.3 (2024-06-18)
 * (foxriver76) escape all unallowed characters when sending with notification manager

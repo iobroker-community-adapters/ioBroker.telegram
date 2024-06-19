@@ -335,17 +335,23 @@ function startAdapter(options) {
                                     adapter.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
                                 }
                             }
-            } else {
-                if (commands[id] && commands[id].report) {
-                    const options = commands[id].reportSilent == true ? {disable_notification: true} : { };
-                    if (commands[id].reportChanges) {
-                        if (state.val !== commands[id].lastState) {
-                            commands[id].lastState = state.val;
-                            sendMessage(getStatus(id, state), null, null, options);
-                        }
-                    } else {
-                        sendMessage(getStatus(id, state), null, null, options);
+            } else if (commands[id] && commands[id].report) {
+                adapter.log.debug(`reporting state change of ${id}: ${JSON.stringify(commands[id])}`);
+
+                const options = commands[id].reportSilent == true ? { disable_notification: true } : {};
+                let users = null;
+
+                if (commands[id]?.recipients && commands[id].recipients !== '') {
+                    users = commands[id].recipients;
+                }
+
+                if (commands[id].reportChanges) {
+                    if (state.val !== commands[id].lastState) {
+                        commands[id].lastState = state.val;
+                        sendMessage(getStatus(id, state), users, null, options);
                     }
+                } else {
+                    sendMessage(getStatus(id, state), users, null, options);
                 }
             }
         }
@@ -360,13 +366,16 @@ function startAdapter(options) {
                 adapter.log.info(`enabled logging of ${id}, Alias=${alias}`);
                 setImmediate(() => adapter.subscribeForeignStates(id));
             }
+
             commands[id]        = obj.common.custom[adapter.namespace];
             commands[id].type   = obj.common.type;
             commands[id].states = parseStates(obj.common.states);
             commands[id].unit   = obj.common && obj.common.unit;
             commands[id].min    = obj.common && obj.common.min;
             commands[id].max    = obj.common && obj.common.max;
+            commands[id].recipients = obj.common && obj.common.recipients;
             commands[id].alias  = alias;
+
             // read actual state to detect changes
             if (commands[id].reportChanges) {
                 adapter.getForeignStateAsync(id)
@@ -877,7 +886,7 @@ function sendMessage(text, user, chatId, options) {
             adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
         }
 
-        const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(build => build.trim());
+        const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(u => u.trim());
         let matches = 0;
         userArray.forEach(userName => {
             for (const id in users) {

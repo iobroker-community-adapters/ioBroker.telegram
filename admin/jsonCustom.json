@@ -10,6 +10,7 @@
       "it": "Alias",
       "es": "Alias",
       "pl": "Alias",
+      "uk": "Альтанка",
       "zh-cn": "别名"
     },
     "Leave empty to use object's name": {
@@ -22,7 +23,34 @@
       "it": "Lascia vuoto per usare il nome dell'oggetto",
       "es": "Deje vacío para usar el nombre del objeto",
       "pl": "Pozostaw puste, aby użyć nazwy obiektu",
+      "uk": "Залиште порожній, щоб використовувати назву об'єкта",
       "zh-cn": "Leave empty to use object's name"
+    },
+    "Recipients": {
+      "en": "Recipients",
+      "de": "Empfänger",
+      "ru": "Получатели",
+      "pt": "Os participantes",
+      "nl": "Begunstigden",
+      "fr": "Bénéficiaires",
+      "it": "Recipienti",
+      "es": "Recipientes",
+      "pl": "Odbiorcy",
+      "uk": "Отримувачі",
+      "zh-cn": "收件人"
+    },
+    "Leave empty to inform all users (or comma separated list)": {
+      "en": "Leave empty to inform all users (or comma separated list)",
+      "de": "Leer lassen, um alle Benutzer zu informieren (oder Komma getrennte Liste)",
+      "ru": "Оставить пустым для информирования всех пользователей (или список, разделенный коммой)",
+      "pt": "Deixe vazio para informar todos os usuários (ou lista separada por vírgula)",
+      "nl": "Laat leeg om alle gebruikers te informeren (of komma gescheiden lijst)",
+      "fr": "Laisser vide pour informer tous les utilisateurs (ou la liste des virgules séparées)",
+      "it": "Lasciare vuoto per informare tutti gli utenti (o lista separata da virgola)",
+      "es": "Deja vacío para informar a todos los usuarios (o lista separada de coma)",
+      "pl": "Pozostawić puste, aby poinformować wszystkich użytkowników (lub listy oddzielonej przecinkami)",
+      "uk": "Будь ласка, зв'яжіться з нами",
+      "zh-cn": "留空以通知所有用户( 或逗号分隔列表)"
     },
     "Read only": {
       "en": "Read only",
@@ -34,6 +62,7 @@
       "it": "Sola lettura",
       "es": "Solo lectura",
       "pl": "Tylko czytać",
+      "uk": "Детальніше",
       "zh-cn": "只读"
     },
     "Only delivers the changes": {
@@ -46,6 +75,7 @@
       "it": "Fornisce solo le modifiche",
       "es": "Solo entrega los cambios.",
       "pl": "Dostarcza tylko zmiany",
+      "uk": "Тільки доставляємо зміни",
       "zh-cn": "仅交付更改"
     },
     "Report updates": {
@@ -110,6 +140,7 @@
       "it": "Invia un nuovo messaggio se il valore cambia",
       "es": "Envía un nuevo mensaje si el valor cambia",
       "pl": "Wysyła nową wiadomość, jeśli zmieni się wartość",
+      "uk": "Відправляє нове повідомлення, якщо зміни значення",
       "zh-cn": "如果值更改，则发送新消息"
     },
     "Sends a new message if the value updates": {
@@ -122,6 +153,7 @@
       "it": "Invia un nuovo messaggio se il valore viene aggiornato",
       "es": "Envía un nuevo mensaje si el valor se actualiza",
       "pl": "Wysyła nową wiadomość, jeśli wartość zostanie zaktualizowana",
+      "uk": "Відправляє нове повідомлення, якщо оновлення значення",
       "zh-cn": "如果值更新，则发送新消息"
     },
     "OFF status": {
@@ -134,6 +166,7 @@
       "it": "Off testo",
       "es": "Fuera de texto",
       "pl": "Wyłącz tekst",
+      "uk": "Статус на сервери",
       "zh-cn": "关闭状态"
     },
     "Default - 'OFF'": {
@@ -146,6 +179,7 @@
       "it": "Predefinito - 'OFF'",
       "es": "Predeterminado - 'OFF'",
       "pl": "Domyślnie - 'OFF'",
+      "uk": "За замовчуванням - 'OFF'",
       "zh-cn": "默认值-'OFF'"
     },
     "ON status": {
@@ -158,6 +192,7 @@
       "it": "Sul testo",
       "es": "En el texto",
       "pl": "Na tekst",
+      "uk": "Про статус",
       "zh-cn": "ON状态"
     },
     "Default - 'ON'": {
@@ -169,7 +204,8 @@
       "fr": "Par défaut - 'ON'",
       "it": "Predefinito - 'ON'",
       "es": "Predeterminado - 'ON'",
-      "pl": "Domyślne - 'WŁ'",
+      "pl": "Domyślne - 'ON'",
+      "uk": "За замовчуванням - 'ON'",
       "zh-cn": "默认值-'ON'"
     },
     "OFF command": {
@@ -182,6 +218,7 @@
       "it": "Comando OFF",
       "es": "Comando OFF",
       "pl": "WYŁ Polecenie",
+      "uk": "Команда OFF",
       "zh-cn": "OFF指令"
     },
     "ON command": {
@@ -194,6 +231,7 @@
       "it": "A comando",
       "es": "Comando ON",
       "pl": "Na komendę",
+      "uk": "На команду",
       "zh-cn": "ON命令"
     },
     "Only true": {
@@ -206,12 +244,21 @@
       "it": "Solo vero",
       "es": "Solo cierto",
       "pl": "Tylko true",
+      "uk": "Тільки правда",
       "zh-cn": "只有“真实”的价值"
     },
     "Only false": {
       "en": "Only false",
       "de": "Nur falsch",
-      "ru": "Только выкл."
+      "ru": "Только выкл.",
+      "pt": "Apenas falso",
+      "nl": "Alleen onwaar",
+      "fr": "Seulement faux",
+      "it": "Solo falsi",
+      "es": "Sólo falso",
+      "pl": "Tylko fałszywe",
+      "uk": "Тільки помилкові",
+      "zh-cn": "仅是虚假"
     },
     "Do not show ON": {
       "en": "Do not show ON",
@@ -234,6 +281,7 @@
       "it": "Non mostrare OFF",
       "es": "No mostrar",
       "pl": "Nie popisuj się",
+      "uk": "Не показувати",
       "zh-cn": "不炫耀"
     },
     "Buttons in line": {
@@ -246,6 +294,7 @@
       "it": "Pulsanti in linea",
       "es": "Botones en linea",
       "pl": "Przyciski w linii",
+      "uk": "Кнопки в рядку",
       "zh-cn": "排队按钮"
     },
     "Write only": {
@@ -258,6 +307,7 @@
       "it": "Scrivi solo",
       "es": "Escribir solamente",
       "pl": "Tylko pisać",
+      "uk": "Підписатися",
       "zh-cn": "只写"
     },
     "No status query": {
@@ -270,6 +320,7 @@
       "it": "Nessuna query sullo stato",
       "es": "Sin consulta de estado",
       "pl": "Brak zapytania o status",
+      "uk": "Немає запиту статусу",
       "zh-cn": "无状态查询"
     }
   },
@@ -277,9 +328,18 @@
     "alias": {
       "type": "text",
       "sm": 12,
+      "lg": 6,
       "label": "Alias",
       "default": "",
       "help": "Leave empty to use object's name"
+    },
+    "recipients": {
+      "type": "text",
+      "sm": 12,
+      "lg": 6,
+      "label": "Recipients",
+      "default": "",
+      "help": "Leave empty to inform all users (or comma separated list)"
     },
     "readOnly": {
       "newLine": true,
@@ -287,7 +347,7 @@
       "label": "Read only",
       "help": "Only delivers the changes",
       "defaultFunc": "customObj.common && customObj.common.write === false",
-      "sm": 6
+      "sm": 4
     },
     "report": {
       "newLine": true,
@@ -295,7 +355,7 @@
       "label": "Report updates",
       "help": "Sends a new message if the value updates",
       "defaultFunc": "customObj.common && customObj.common.read !== false",
-      "sm": 5
+      "sm": 4
     },
     "reportChanges": {
       "type": "checkbox",
@@ -309,7 +369,7 @@
       "label": "Silent",
       "help": "Send without notification sound",
       "hidden": "data.report !== true",
-      "sm": 3
+      "sm": 4
     },
     "buttons": {
       "newLine": true,
