@@ -51,6 +51,7 @@ const systemLang2CallMe = {
     it: 'it-IT-Standard-A',
     es: 'es-ES-Standard-A',
     pl: 'pl-PL-Standard-A',
+    uk: 'uk-UA-Standard-A',
     'zh-cn': 'en-GB-Standard-A',
 };
 
@@ -1166,7 +1167,7 @@ async function processMessage(obj) {
 
                 if (obj.callback) {
                     adapter._questions.push(question);
-                    adapter.log.debug(`added question: ${JSON.stringify(question)}`);
+                    adapter.log.debug(`added question: ${JSON.stringify(question)} - answer timeout: ${adapter.config.answerTimeoutSec}`);
 
                     question.timeout = setTimeout(q => {
                         q.timeout = null;
