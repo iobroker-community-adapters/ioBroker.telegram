@@ -382,11 +382,6 @@ Blockly.Sendto.blocks['telegram_ask'] =
     '      <field name="TEXT">text</field>' +
     '    </shadow>' +
     '  </value>' +
-    '  <value name="USERNAME">' +
-    '    <shadow type="text">' +
-    '      <field name="TEXT"></field>' +
-    '    </shadow>' +
-    '  </value>' +
     '  <value name="ANSWER_0">' +
     '    <shadow type="text">' +
     '      <field name="TEXT">Yes, please</field>' +

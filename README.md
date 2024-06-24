@@ -39,6 +39,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Removed default / shadow fiel from Blockly block ask
+
 ### 3.6.0 (2024-06-19)
 * (klein0r) Save videos which have been recorded with telegram (video_note)
 * (klein0r) Added answer timeout to instance configuration
