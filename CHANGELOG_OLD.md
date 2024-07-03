@@ -1,4 +1,8 @@
 # Older changes
+## 3.5.1 (2024-06-12)
+* (klein0r) Fixed file handling for voice files
+* (klein0r) Updated dependencies
+
 ## 3.5.0 (2024-06-12)
 * (klein0r) Added option to save media files into ioBroker file system (files tab)
 

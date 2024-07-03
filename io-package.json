@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.7.0",
+    "version": "3.7.1",
     "news": {
+      "3.7.1": {
+        "en": "Restored translations for messages",
+        "de": "Restaurierte Übersetzungen für Nachrichten",
+        "ru": "Восстановленные переводы сообщений",
+        "pt": "Traduções restauradas para mensagens",
+        "nl": "Herstelde vertalingen voor berichten",
+        "fr": "Traductions restaurées pour les messages",
+        "it": "Traduzioni restaurate per messaggi",
+        "es": "Traducciones restauradas para mensajes",
+        "pl": "Przywrócone tłumaczenia wiadomości",
+        "uk": "Відновлення перекладу для повідомлень",
+        "zh-cn": "恢复信件翻译"
+      },
       "3.7.0": {
         "en": "Removed default / shadow fiel from Blockly block ask\nAdded state to answer last request (same chat)",
         "de": "Entfernen von Standard / Schatten fiel aus Blockly Block fragen\nHinzugefügt Zustand, um die letzte Anfrage zu beantworten (gleiche Chat)",
@@ -80,19 +93,6 @@
         "pl": "Dodano opcję zapisu plików multimedialnych do systemu plików jOBroker (zakładka plików)",
         "uk": "Додано параметр для збереження медіа файлів в файлову систему ioBroker (посилання на файли)",
         "zh-cn": "添加了将媒体文件保存到 ioBroker 文件系统的选项( 文件标签)"
-      },
-      "3.4.1": {
-        "en": "Blockly 9 compatibility for new ask block",
-        "de": "Blockly 9 Kompatibilität für neuen Frageblock",
-        "ru": "Совместимость Blockly 9 для нового блока запроса",
-        "pt": "Compatibilidade bloco 9 para novo bloco de perguntas",
-        "nl": "Blok 9 compatibiliteit voor nieuw vraagblok",
-        "fr": "Compatibilité Blockly 9 pour le nouveau bloc de demande",
-        "it": "Compatibilità Blockly 9 per nuovo blocco chiedere",
-        "es": "Bloqueo 9 compatibilidad para nuevo bloque de preguntas",
-        "pl": "Blockly 9 kompatybilność dla nowego bloku ask",
-        "uk": "Blockly 9 сумісність для нового блоку",
-        "zh-cn": "新询问块的块 9 兼容性"
       }
     },
     "messages": [

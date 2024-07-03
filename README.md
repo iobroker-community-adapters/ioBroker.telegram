@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.7.1 (2024-07-03)
 * (klein0r) Restored translations for messages
 
 ### 3.7.0 (2024-07-03)
@@ -57,10 +57,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.5.2 (2024-06-16)
 * (foxriver76) escape more unallowed characters when sending with notification manager
-
-### 3.5.1 (2024-06-12)
-* (klein0r) Fixed file handling for voice files
-* (klein0r) Updated dependencies
 
 ## License
 
