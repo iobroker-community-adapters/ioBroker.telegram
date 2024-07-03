@@ -128,7 +128,7 @@ In this case, the action command will be sent.
 The description for telegram API can be found [here](https://core.telegram.org/bots/api), and you can use all options defined in this api, just by including that into send object. E.g.:
 
 ```javascript
-sendTo('telegram.0', {
+sendTo('telegram.0', 'send', {
     text:                   '/tmp/snap.jpg',
     caption:                'Snapshot',
     disable_notification:   true
@@ -151,7 +151,7 @@ Adapter tries to detect the type of message (photo, video, audio, document, stic
 Location will be detected on attribute latitude:
 
 ```javascript
-sendTo('telegram.0', {
+sendTo('telegram.0', 'send', {
     latitude:               52.522430,
     longitude:              13.372234,
     disable_notification:   true
@@ -164,7 +164,7 @@ You have the possibility to define extra the type of the message in case you wan
 The following types are possible: *sticker*, *video*, *document*, *audio*, *photo*.
 
 ```javascript
-sendTo('telegram.0', {
+sendTo('telegram.0', 'send', {
     text: fs.readFileSync('/opt/path/picture.png'),
     type: 'photo'
 });
@@ -174,8 +174,8 @@ sendTo('telegram.0', {
 You can show keyboard **ReplyKeyboardMarkup** in the client:
 
 ```javascript
-sendTo('telegram.0', {
-    text:   'Press button',
+sendTo('telegram.0', 'send', {
+    text: 'Press button',
     reply_markup: {
         keyboard: [
             ['Line 1, Button 1', 'Line 1, Button 2'],
@@ -192,7 +192,7 @@ You can read more [here](https://core.telegram.org/bots/api#replykeyboardmarkup)
 You can show keyboard **InlineKeyboardMarkup** in the client:
 
 ```javascript
-sendTo('telegram', {
+sendTo('telegram', 'send', {
     user: user,
     text: 'Click the button',
     reply_markup: {
@@ -213,7 +213,7 @@ Use this method to send answers to callback queries sent from inline keyboards. 
 
 ```javascript
 if (command === '1_2') {
-    sendTo('telegram', {
+    sendTo('telegram', 'send', {
         user: user,
         answerCallbackQuery: {
             text: 'Pressed!',
@@ -227,7 +227,7 @@ You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/rel
 
 ### Question
 You can send to telegram the message, and the next answer will be returned in callback. 
-Timeout can be set in configuration and by default is 60 seconds.
+Timeout can be set in instance configuration (default is 60 seconds).
 
 ```javascript
 sendTo('telegram.0', 'ask', {
@@ -243,13 +243,27 @@ sendTo('telegram.0', 'ask', {
 }, msg => {
     console.log('user says ' + msg.data);
 });
-``` 
+```
 
 ## Chat ID
 From version 0.4.0 you can use chat ID to send messages to chat.
 
 ```javascript
-sendTo('telegram.0', {text: 'Message to chat', chatId: 'SOME-CHAT-ID-123'});
+sendTo('telegram.0', 'send', {
+    text: 'Message to chat',
+    chatId: 'SOME-CHAT-ID-123'
+});
+```
+
+## Thread ID
+You can also set a thread id for super groups.
+
+```javascript
+sendTo('telegram.0', 'send', {
+    text: 'Message to chat',
+    chatId: 'SOME-CHAT-ID-123',
+    message_thread_id: 7,
+});
 ```
 
 ## Updating messages
