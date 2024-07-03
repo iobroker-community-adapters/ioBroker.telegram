@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.7.0 (2024-07-03)
 * (klein0r) Removed default / shadow fiel from Blockly block ask
 * (klein0r) Added state to answer last request (same chat)
 
@@ -58,9 +58,6 @@ Use telegram service to communicate with ioBroker
 ### 3.5.1 (2024-06-12)
 * (klein0r) Fixed file handling for voice files
 * (klein0r) Updated dependencies
-
-### 3.5.0 (2024-06-12)
-* (klein0r) Added option to save media files into ioBroker file system (files tab)
 
 ## License
 

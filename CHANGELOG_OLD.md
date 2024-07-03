@@ -1,4 +1,7 @@
 # Older changes
+## 3.5.0 (2024-06-12)
+* (klein0r) Added option to save media files into ioBroker file system (files tab)
+
 ## 3.4.1 (2024-06-09)
 * (klein0r) Blockly 9 compatibility for new ask block
 

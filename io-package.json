@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "news": {
+      "3.7.0": {
+        "en": "Removed default / shadow fiel from Blockly block ask\nAdded state to answer last request (same chat)",
+        "de": "Entfernen von Standard / Schatten fiel aus Blockly Block fragen\nHinzugefügt Zustand, um die letzte Anfrage zu beantworten (gleiche Chat)",
+        "ru": "Удаленный по умолчанию / теневой плод из блока Blockly\nДобавленное состояние, чтобы ответить на последний запрос (такой чат)",
+        "pt": "Retirado padrão / sombra de bloco perguntar\nEstado adicionado para responder última solicitação (mesmo chat)",
+        "nl": "Standaard / schaduw fiel verwijderd uit Blockly blok vraag\nStatus toegevoegd om antwoord te geven op laatste verzoek (zelfde chat)",
+        "fr": "Supprimé par défaut / shadow fiel du bloc Blockly demander\nAjouté l'état pour répondre à la dernière demande (même chat)",
+        "it": "Eliminato default / fiel ombra da blocco Blockly chiedere\nAggiunto stato per rispondere ultima richiesta (stessa chat)",
+        "es": "Retirada por defecto / sombra de bloque pregunta\nEstado añadido para responder última petición (same chat)",
+        "pl": "Usunięty domyślny / cień pola z Blockly bloku poprosić\nDodano stan, aby odpowiedzieć na ostatnie żądanie (ten sam czat)",
+        "uk": "Вилучено за замовчуванням / тіньовий фільтр з блокуючого блоку\nДодано стан для відповіді останнього запиту (самий чат)",
+        "zh-cn": "从 Blockly 块中删除默认 / 阴影线\n添加状态以回答上次请求( 相同的聊天)"
+      },
       "3.6.0": {
         "en": "(klein0r) Save videos which have been recorded with telegram (video_note)\n(klein0r) Added answer timeout to instance configuration\n(klein0r) Added option to send status updates to specific users\n(klein0r) Added states for thread id (of supergroups)",
         "de": "(klein0r) Videos speichern, die mit Telegramm aufgenommen wurden (video_note)\n(klein0r) Antwort Timeout zu Instanz-Konfiguration hinzugefügt\n(klein0r) Option hinzugefügt, um Status-Updates zu bestimmten Benutzern zu senden\n(klein0r) Hinzugefügt Zustände für Thread id (von supergroups)",
@@ -80,19 +93,6 @@
         "pl": "Blockly 9 kompatybilność dla nowego bloku ask",
         "uk": "Blockly 9 сумісність для нового блоку",
         "zh-cn": "新询问块的块 9 兼容性"
-      },
-      "3.4.0": {
-        "en": "Updated Blockly definitions\nAdded Blockly block to ask questions\nRemove keyboard on answer (or timeout)",
-        "de": "Aktualisierte Blockly Definitionen\nBlockly Block hinzugefügt, um Fragen zu stellen\nEntfernen Sie die Tastatur auf der Antwort (oder Timeout)",
-        "ru": "Обновленные детальные определения\nДобавлена блокировка, чтобы задать вопросы\nУдалить клавиатуру на ответ (или таймаут)",
-        "pt": "Definições Blockly atualizadas\nAdicionado Blockly bloco para fazer perguntas\nRemover teclado na resposta (ou timeout)",
-        "nl": "Bijgewerkte blokdefinities\nBlockly blok toegevoegd om vragen te stellen\nVerwijder toetsenbord op antwoord (of timeout)",
-        "fr": "Mise à jour des définitions par blocs\nAjouté Blocage bloc pour poser des questions\nSupprimer le clavier sur la réponse (ou timeout)",
-        "it": "Aggiornate definizioni Blockly\nAggiunto Blockly per fare domande\nRimuovere la tastiera sulla risposta (o timeout)",
-        "es": "Definiciones bloqueadas actualizadas\nBloqueo agregado para hacer preguntas\nQuitar el teclado en la respuesta (o el tiempo fuera)",
-        "pl": "Aktualizacja definicji blockly\nDodano Blockly bloku zadawać pytania\nUsuń klawiaturę na odpowiedź (lub timeout)",
-        "uk": "Оновлено блочні визначення\nДодано блокнот для запитань\nВидалити клавіатуру на відповідь (або час)",
-        "zh-cn": "更新的块状定义\n添加块块以询问问题\n删除答题上的键盘( 或超时)"
       }
     },
     "messages": [
