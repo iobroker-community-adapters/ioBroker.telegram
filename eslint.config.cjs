@@ -1,9 +1,7 @@
 const globals = require('globals');
 const js = require('@eslint/js');
 
-const {
-    FlatCompat,
-} = require('@eslint/eslintrc');
+const { FlatCompat } = require('@eslint/eslintrc');
 
 const compat = new FlatCompat({
     baseDirectory: __dirname,
@@ -12,7 +10,7 @@ const compat = new FlatCompat({
 });
 
 module.exports = [{
-    ignores: ['.dev-server/**', 'src/**', 'src-admin/**'],
+    ignores: ['.dev-server/**', 'admin/custom/**', 'admin/rules/**', 'src/**', 'src-admin/**', 'admin/blockly.js'],
 }, ...compat.extends('eslint:recommended'), {
     languageOptions: {
         globals: {

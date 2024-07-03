@@ -1,6 +1,3 @@
-/* jshint -W097 */
-/* jshint strict: false */
-/* jslint node: true */
 'use strict';
 
 // https://github.com/yagop/node-telegram-bot-api/issues/319 (because of bluebird)
@@ -191,8 +188,8 @@ function startAdapter(options) {
                     const subDirPath = path.join(tmpDirName, subDir);
                     !fs.existsSync(subDirPath) && fs.mkdirSync(subDirPath);
                 }
-            } catch (e) {
-                adapter.log.error(`Cannot create tmp directory: ${tmpDirName}`);
+            } catch (err) {
+                adapter.log.error(`Cannot create tmp directory: ${tmpDirName}: ${err}`);
             }
         }
 
@@ -700,14 +697,14 @@ function _sendMessageHelper(dest, name, text, options) {
                 const {media: fileNames} = options;
                 if (fileNames instanceof Array) {
                     bot.sendChatAction(dest, 'upload_photo')
-                        .then(param => {
+                        .then(() => {
                             if (fileNames.every(name => fs.existsSync(name))) {
                                 const filesAsArray = fileNames
                                     .map(element => {
                                         try {
                                             return {type: 'photo', media: fs.readFileSync(element)};
-                                        } catch (error) {
-                                            adapter.log.error(`Cannot read file${element}`);
+                                        } catch (err) {
+                                            adapter.log.error(`Cannot read file ${element}: ${err}`);
                                             return undefined;
                                         }
                                     })
@@ -728,7 +725,7 @@ function _sendMessageHelper(dest, name, text, options) {
                             }
                         })
                         .catch(error => {
-                            adapter.log.error(`upload Error:${error}`);
+                            adapter.log.error(`upload Error: ${error}`);
                         });
                 } else {
                     adapter.log.debug('option media should be an array');
@@ -1458,10 +1455,10 @@ function getCommandsKeyboard(chatId) {
         },
         chatId
     })
-        .then(response => {
+        .then(() => {
             adapter.log.debug('Message sent');
         })
-        .catch(error => {
+        .catch((error) => {
             adapter.log.error(`Send message error: ${error}`);
         });
 }
@@ -1634,7 +1631,7 @@ function processTelegramText(msg) {
     // Search all user's states and try to detect something like "device-alias on"
     let found = false;
     for (const id in commands) {
-        if (commands.hasOwnProperty(id)) {
+        if (Object.prototype.hasOwnProperty.call(commands, id)) {
             if (msg.text.startsWith(`${commands[id].alias} `)) {
                 let sValue = msg.text.substring(commands[id].alias.length + 1);
                 found = true;
@@ -1666,7 +1663,7 @@ function processTelegramText(msg) {
                         value = sValue;
                     }
 
-                    adapter.setForeignState(id, value, false, err =>
+                    adapter.setForeignState(id, value, false, () =>
                         bot.sendMessage(msg.chat.id, _('Done')))
                         .catch(error => adapter.log.error(`send Message Error: ${error}`));
                 }
@@ -1814,7 +1811,7 @@ function connect() {
                 else {
                     adapter.log.debug('bot restarting...');
                     bot.stopPolling().then(
-                        response => {
+                        () => {
                             adapter.log.debug('Start Polling');
                             bot.startPolling();
                         },
@@ -1823,7 +1820,7 @@ function connect() {
                         }
                     );
                 }
-            } catch (e) {
+            } catch {
                 // looks empty
             }
         }
@@ -1927,7 +1924,7 @@ function connect() {
             adapter.log.debug('bot restarting...');
 
             bot.stopPolling().then(
-                response => {
+                () => {
                     adapter.log.debug('Start Polling');
                     bot.startPolling();
                 },
