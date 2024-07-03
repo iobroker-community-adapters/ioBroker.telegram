@@ -295,7 +295,7 @@ function startAdapter(options) {
     });
 
     // is called if a subscribed state changes
-    adapter.on('stateChange', (id, state) => {
+    adapter.on('stateChange', async (id, state) => {
         if (state) {
             if (!state.ack) {
                 if (id.endsWith('communicate.response')) {
@@ -303,39 +303,62 @@ function startAdapter(options) {
                         adapter.log.error(`communicate.response only supports passing a message to send as string. You provided ${JSON.stringify(state.val)}. Please use "communicate.responseJson" instead with a stringified JSON object!`);
                         return;
                     }
+
                     // Send to someone this message
-                    sendMessage(state.val)
-                        .then(data => adapter.setState('communicate.response', state.val, true));
-                } else
-                    if (id.endsWith('communicate.responseSilent')) {
-                        if (typeof state.val === 'object') {
-                            adapter.log.error(`communicate.responseSilent only supports passing a message to send as string. You provided ${JSON.stringify(state.val)}. Please use "communicate.responseSilentJson" instead with a stringified JSON object!`);
-                            return;
-                        }
+                    await sendMessage(state.val);
+                    await adapter.setStateAsync('communicate.response', { val: state.val, ack: true });
+                } else if (id.endsWith('communicate.responseSilent')) {
+                    if (typeof state.val === 'object') {
+                        adapter.log.error(`communicate.responseSilent only supports passing a message to send as string. You provided ${JSON.stringify(state.val)}. Please use "communicate.responseSilentJson" instead with a stringified JSON object!`);
+                        return;
+                    }
+                    // Send to someone this message
+                    await sendMessage(state.val, null, null, { disable_notification: true });
+                    await adapter.setStateAsync('communicate.responseSilent', { val: state.val, ack: true });
+                } else if (id.endsWith('communicate.responseJson')) {
+                    try {
+                        const val = JSON.parse(state.val);
+
                         // Send to someone this message
-                        sendMessage(state.val, null, null, {disable_notification: true})
-                            .then(data => adapter.setState('communicate.responseSilent', state.val, true));
-                    } else
-                        if (id.endsWith('communicate.responseJson')) {
-                            try {
-                                const val = JSON.parse(state.val);
-                                // Send to someone this message
-                                sendMessage(val)
-                                    .then(data => adapter.setState('communicate.responseJson', state.val, true));
-                            } catch (err) {
-                                adapter.log.error(`could not parse Json in communicate.responseJon state: ${err.message}`);
-                            }
-                        } else
-                            if (id.endsWith('communicate.responseSilentJson')) {
-                                try {
-                                    const val = JSON.parse(state.val);
-                                    // Send to someone this message
-                                    sendMessage(val, null, null, {disable_notification: true})
-                                        .then(data => adapter.setState('communicate.responseSilent', state.val, true));
-                                } catch (err) {
-                                    adapter.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
-                                }
-                            }
+                        await sendMessage(val);
+                        await adapter.setStateAsync('communicate.responseJson', { val: state.val, ack: true });
+                    } catch (err) {
+                        adapter.log.error(`could not parse Json in communicate.responseJon state: ${err.message}`);
+                    }
+                } else if (id.endsWith('communicate.responseSilentJson')) {
+                    try {
+                        const val = JSON.parse(state.val);
+
+                        // Send to someone this message
+                        await sendMessage(val, null, null, { disable_notification: true });
+                        await adapter.setStateAsync('communicate.responseSilent', { val: state.val, ack: true });
+                    } catch (err) {
+                        adapter.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
+                    }
+                } else if (id.endsWith('communicate.requestResponse')) {
+                    try {
+                        const text = state.val;
+                        const chatIdState = await adapter.getStateAsync('communicate.requestChatId');
+                        const threadIdState = await adapter.getStateAsync('communicate.requestMessageThreadId');
+
+                        const options = {};
+
+                        if (threadIdState && threadIdState.val > 0) {
+                            options.message_thread_id = threadIdState.val;
+                        }
+
+                        // Send to someone this message
+                        await sendMessage(
+                            text,
+                            null,
+                            chatIdState ? chatIdState.val : null,
+                            options,
+                        );
+                        await adapter.setStateAsync('communicate.requestResponse', { val: state.val, ack: true });
+                    } catch (err) {
+                        adapter.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
+                    }
+                }
             } else if (commands[id] && commands[id].report) {
                 adapter.log.debug(`reporting state change of ${id}: ${JSON.stringify(commands[id])}`);
 
@@ -1165,7 +1188,7 @@ async function processMessage(obj) {
             if (obj.message) {
                 let tPromise;
                 if (typeof obj.message === 'object') {
-                    tPromise = sendMessage(obj.message.text, obj.message.user, obj.message.chatId, obj.message);
+                    tPromise = sendMessage(obj.message.text, obj.message?.user, obj.message?.chatId, obj.message);
                 } else {
                     tPromise = sendMessage(obj.message);
                 }
@@ -2024,14 +2047,16 @@ async function main() {
     await adapter.subscribeStatesAsync('communicate.responseSilent');
     await adapter.subscribeStatesAsync('communicate.responseJson');
     await adapter.subscribeStatesAsync('communicate.responseSilentJson');
+    await adapter.subscribeStatesAsync('communicate.requestResponse');
 
     // clear states
-    await adapter.setStateAsync('communicate.request',  '', true);
-    await adapter.setStateAsync('communicate.response', '', true);
-    await adapter.setStateAsync('communicate.responseSilent', '', true);
-    await adapter.setStateAsync('communicate.responseJson', '', true);
-    await adapter.setStateAsync('communicate.responseSilentJson', '', true);
-    await adapter.setStateAsync('communicate.pathFile', '', true);
+    await adapter.setStateAsync('communicate.request', { val: '', ack: true });
+    await adapter.setStateAsync('communicate.response', { val: '', ack: true });
+    await adapter.setStateAsync('communicate.responseSilent', { val: '', ack: true });
+    await adapter.setStateAsync('communicate.responseJson', { val: '', ack: true });
+    await adapter.setStateAsync('communicate.responseSilentJson', { val: '', ack: true });
+    await adapter.setStateAsync('communicate.requestResponse', { val: '', ack: true });
+    await adapter.setStateAsync('communicate.pathFile', { val: '', ack: true });
 
     adapter.config.password = adapter.config.password || '';
     adapter.config.keyboard = adapter.config.keyboard || '/cmds';

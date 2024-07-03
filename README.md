@@ -41,6 +41,7 @@ Use telegram service to communicate with ioBroker
 -->
 ### **WORK IN PROGRESS**
 * (klein0r) Removed default / shadow fiel from Blockly block ask
+* (klein0r) Added state to answer last request (same chat)
 
 ### 3.6.0 (2024-06-19)
 * (klein0r) Save videos which have been recorded with telegram (video_note)

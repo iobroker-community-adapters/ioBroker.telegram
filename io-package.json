@@ -636,6 +636,30 @@
       "native": {}
     },
     {
+      "_id": "communicate.requestResponse",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Respond to last received message in the same chat",
+          "de": "Antwort auf letzte empfangene Nachricht im gleichen Chat",
+          "ru": "Ответ на последнее полученное сообщение в том же чате",
+          "pt": "Responda à última mensagem recebida no mesmo chat",
+          "nl": "Antwoord op laatst ontvangen bericht in dezelfde chat",
+          "fr": "Répondre au dernier message reçu dans le même chat",
+          "it": "Rispondi a ultimo messaggio ricevuto nella stessa chat",
+          "es": "Responder al último mensaje recibido en el mismo chat",
+          "pl": "Respond to last received message in the same chat",
+          "uk": "Відповідність останнього отриманого повідомлення в одному чаті",
+          "zh-cn": "在同一聊天中回复上次收到的消息"
+        },
+        "type": "string",
+        "role": "text",
+        "read": true,
+        "write": true
+      },
+      "native": {}
+    },
+    {
       "_id": "communicate.responseSilent",
       "type": "state",
       "common": {
