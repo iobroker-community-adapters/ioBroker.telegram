@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.7.1",
+    "version": "3.8.0",
     "news": {
+      "3.8.0": {
+        "en": "Migrated GUI for Admin 7",
+        "de": "Migrated GUI für Admin 7",
+        "ru": "Migrated GUI for Admin 7",
+        "pt": "GUI Migrada para administrador 7",
+        "nl": "GUI voor beheerder 7 migreren",
+        "fr": "GUI modifié pour l'administrateur 7",
+        "it": "GUI migrata per Admin 7",
+        "es": "GUI migrado por Admin 7",
+        "pl": "Interfejs z migracją dla admin 7",
+        "uk": "Мігрований графічний інтерфейс для адміністратора 7",
+        "zh-cn": "为管理 7 添加了图形界面"
+      },
       "3.7.1": {
         "en": "Restored translations for messages",
         "de": "Restaurierte Übersetzungen für Nachrichten",
@@ -80,19 +93,6 @@
         "pl": "(klein0r) Naprawiono obsługę plików głosowych\n(klein0r) Aktualizacja zależności",
         "uk": "(klein0r) Виправлена обробка файлів для голосових файлів\n(klein0r) Оновлені залежності",
         "zh-cn": "(鸣笛0r) 语音文件的固定文件处理\n(鸣笛0r) 更新的依赖关系"
-      },
-      "3.5.0": {
-        "en": "Added option to save media files into ioBroker file system (files tab)",
-        "de": "Option zum Speichern von Mediendateien in ioBroker Dateisystem (Datei-Tab)",
-        "ru": "Добавлена опция для сохранения медиа-файлов в файловой системе ioBroker (вкладка файлов)",
-        "pt": "Adicionado opção para salvar arquivos de mídia no sistema de arquivo ioBroker (arquivos guia)",
-        "nl": "Toegevoegd optie om mediabestanden op te slaan in ioBroker bestandssysteem (tabblad bestanden)",
-        "fr": "Ajout de l'option pour enregistrer les fichiers multimédias dans le système de fichiers ioBroker (onglet fichiers)",
-        "it": "Aggiunta opzione per salvare i file multimediali in ioBroker file system (file scheda)",
-        "es": "Añadido opción para guardar los archivos multimedia en el sistema de archivos ioBroker (tapa de archivos)",
-        "pl": "Dodano opcję zapisu plików multimedialnych do systemu plików jOBroker (zakładka plików)",
-        "uk": "Додано параметр для збереження медіа файлів в файлову систему ioBroker (посилання на файли)",
-        "zh-cn": "添加了将媒体文件保存到 ioBroker 文件系统的选项( 文件标签)"
       }
     },
     "messages": [

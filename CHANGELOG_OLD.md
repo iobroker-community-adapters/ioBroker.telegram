@@ -1,4 +1,7 @@
 # Older changes
+## 3.5.2 (2024-06-16)
+* (foxriver76) escape more unallowed characters when sending with notification manager
+
 ## 3.5.1 (2024-06-12)
 * (klein0r) Fixed file handling for voice files
 * (klein0r) Updated dependencies

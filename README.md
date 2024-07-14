@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.8.0 (2024-07-14)
 * (bluefox) Migrated GUI for Admin 7
 
 ### 3.7.1 (2024-07-03)
@@ -55,9 +55,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.5.3 (2024-06-18)
 * (foxriver76) escape all unallowed characters when sending with notification manager
-
-### 3.5.2 (2024-06-16)
-* (foxriver76) escape more unallowed characters when sending with notification manager
 
 ## License
 
