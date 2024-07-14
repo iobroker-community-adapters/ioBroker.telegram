@@ -1,27 +1,28 @@
 // this file used only for simulation and not used in end build
-
 import React from 'react';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
-import withStyles from '@mui/styles/withStyles';
+import { Box } from '@mui/material';
 
-import GenericApp from '@iobroker/adapter-react-v5/GenericApp';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import Loader from '@iobroker/adapter-react-v5/Components/Loader';
+import {
+    GenericApp,
+    I18n,
+    Loader,
+} from '@iobroker/adapter-react-v5';
 
 import TelegramComponent from './TelegramComponent';
 
-const styles = theme => ({
-    app: {
+const styles = {
+    app: theme => ({
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
         height: '100%',
-    },
+    }),
     item: {
         padding: 50,
         width: 400
     }
-});
+};
 
 class App extends GenericApp {
     constructor(props) {
@@ -61,8 +62,8 @@ class App extends GenericApp {
 
         return <StyledEngineProvider injectFirst>
             <ThemeProvider theme={this.state.theme}>
-                <div className={this.props.classes.app}>
-                    <div className={this.props.classes.item}>
+                <Box sx={styles.app}>
+                    <div style={styles.item}>
                         <TelegramComponent
                             socket={this.socket}
                             themeType={this.state.themeType}
@@ -75,15 +76,13 @@ class App extends GenericApp {
                                 name: 'ConfigCustomTelegramSet/Components/TelegramComponent',
                                 type: 'custom',
                             }}
-                            onChange={data => {
-                                this.setState({ data });
-                            }}
+                            onChange={data => this.setState({ data })}
                         />
                     </div>
-                </div>
+                </Box>
             </ThemeProvider>
         </StyledEngineProvider>;
     }
 }
 
-export default withStyles(styles)(App);
+export default App;

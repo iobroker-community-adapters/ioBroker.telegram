@@ -37,6 +37,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Migrated GUI for Admin 7
+
 ### 3.7.1 (2024-07-03)
 * (klein0r) Restored translations for messages
 

@@ -1,24 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@mui/styles';
 
-import { LinearProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, IconButton } from '@mui/material';
+import {
+    LinearProgress, Table, TableBody,
+    TableCell, TableContainer, TableHead,
+    TableRow, Paper, Checkbox, IconButton,
+} from '@mui/material';
 import { Delete as IconDelete } from '@mui/icons-material';
 // important to make from package and not from some children.
 // invalid
 // import ConfigGeneric from '@iobroker/adapter-react-v5/ConfigGeneric';
 // valid
-import {ConfigGeneric, Confirm, i18n as I18n} from '@iobroker/adapter-react-v5';
-
-const styles = () => ({
-    table: {
-        minWidth: 400
-    },
-    header: {
-        fontSize: 16,
-        fontWeight: 'bold'
-    }
-});
+import { Confirm, I18n } from '@iobroker/adapter-react-v5';
+import { ConfigGeneric } from '@iobroker/json-config';
 
 class TelegramComponent extends ConfigGeneric {
     constructor(props) {
@@ -114,10 +108,12 @@ class TelegramComponent extends ConfigGeneric {
 
     renderConfirmDialog() {
         if (this.state.confirm) {
-            return <Confirm onClose={result => {
-                const id = this.state.confirm;
-                this.setState({ confirm: null }, () => result && this.onDelete(id));
-            }}/>;
+            return <Confirm
+                onClose={result => {
+                    const id = this.state.confirm;
+                    this.setState({ confirm: null }, () => result && this.onDelete(id));
+                }}
+            />;
         } else {
             return null;
         }
@@ -148,8 +144,21 @@ class TelegramComponent extends ConfigGeneric {
                             >
                                 <TableCell component="th" scope="row">{user.id}</TableCell>
                                 <TableCell>{user.names}</TableCell>
-                                <TableCell><Checkbox disabled={!this.state.alive} checked={!!user.sysMessages} onClick={() => this.onSysMessageChange(user.id)} /></TableCell>
-                                <TableCell><IconButton disabled={!this.state.alive} onClick={() => this.setState({ confirm: user.id })} ><IconDelete /></IconButton></TableCell>
+                                <TableCell>
+                                    <Checkbox
+                                        disabled={!this.state.alive}
+                                        checked={!!user.sysMessages}
+                                        onClick={() => this.onSysMessageChange(user.id)}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <IconButton
+                                        disabled={!this.state.alive}
+                                        onClick={() => this.setState({ confirm: user.id })}
+                                    >
+                                        <IconDelete />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>)}
                         </TableBody>
                     </Table>
@@ -165,7 +174,6 @@ TelegramComponent.propTypes = {
     themeType: PropTypes.string,
     themeName: PropTypes.string,
     style: PropTypes.object,
-    className: PropTypes.string,
     data: PropTypes.object.isRequired,
     attr: PropTypes.string,
     schema: PropTypes.object,
@@ -173,4 +181,4 @@ TelegramComponent.propTypes = {
     onChange: PropTypes.func,
 };
 
-export default withStyles(styles)(TelegramComponent);
+export default TelegramComponent;
