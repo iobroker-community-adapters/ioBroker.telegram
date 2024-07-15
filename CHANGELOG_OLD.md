@@ -1,4 +1,7 @@
 # Older changes
+## 3.5.3 (2024-06-18)
+* (foxriver76) escape all unallowed characters when sending with notification manager
+
 ## 3.5.2 (2024-06-16)
 * (foxriver76) escape more unallowed characters when sending with notification manager
 

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.8.0",
+    "version": "3.8.1",
     "news": {
+      "3.8.1": {
+        "en": "Username can consist of more than one user. The separator is comma, semicolon or space.",
+        "de": "Benutzername kann aus mehr als einem Benutzer bestehen. Der Separator ist Komma, Semikolon oder Raum.",
+        "ru": "Имя пользователя может состоять из нескольких пользователей. Сепаратор - комма, полуколон или пространство.",
+        "pt": "O nome de usuário pode consistir em mais de um usuário. O separador é vírgula, vírgula ou espaço.",
+        "nl": "Gebruikersnaam kan bestaan uit meer dan één gebruiker. De scheiding is komma, puntkomma of ruimte.",
+        "fr": "Nom d'utilisateur peut se composer de plus d'un utilisateur. Le séparateur est virgule, semi-colon ou espace.",
+        "it": "Il nome utente può essere composto da più di un utente. Il separatore è virgola, virgola o spazio.",
+        "es": "El nombre de usuario puede consistir en más de un usuario. El separador es coma, ymicolon o espacio.",
+        "pl": "Nazwa użytkownika może zawierać więcej niż jednego użytkownika. Separator to przecinek, średnik lub przestrzeń.",
+        "uk": "Ім'я користувача може містити більше одного користувача. Сепаратор - кома, напівколон або простір.",
+        "zh-cn": "用户名可以由多个用户组成. 分隔符是逗号,分号或空格."
+      },
       "3.8.0": {
         "en": "Migrated GUI for Admin 7",
         "de": "Migrated GUI für Admin 7",
@@ -80,19 +93,6 @@
         "pl": "(foxriver76) uniknąć więcej niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
         "uk": "(foxriver76) втекти більше незрівняних символів при надсиланні повідомлення менеджера",
         "zh-cn": "(foxriver76) 与通知管理器发送时, 逃脱更多未分配字符"
-      },
-      "3.5.1": {
-        "en": "(klein0r) Fixed file handling for voice files\n(klein0r) Updated dependencies",
-        "de": "(klein0r) Fixed-Dateihandling für Sprachdateien\n(klein0r) Aktualisierte Abhängigkeiten",
-        "ru": "(клеин0р) Исправленная обработка файлов для голосовых файлов\n(клеин0р) Обновленные зависимости",
-        "pt": "(klein0r) Manipulação de arquivos fixos para arquivos de voz\n(klein0r) Dependências atualizadas",
-        "nl": "(klein0r) Vaste bestandsbehandeling voor spraakbestanden\n(klein0r) Bijgewerkte afhankelijkheden",
-        "fr": "(klein0r) Gestion des fichiers fixes pour les fichiers vocaux\n(klein0r) Dépendances actualisées",
-        "it": "(Klein0r) Gestione file fisso per file vocali\n(Klein0r) Dipendenze aggiornate",
-        "es": "(klein0r) Manejo de archivos fijo para archivos de voz\n(klein0r) Dependencias actualizadas",
-        "pl": "(klein0r) Naprawiono obsługę plików głosowych\n(klein0r) Aktualizacja zależności",
-        "uk": "(klein0r) Виправлена обробка файлів для голосових файлів\n(klein0r) Оновлені залежності",
-        "zh-cn": "(鸣笛0r) 语音文件的固定文件处理\n(鸣笛0r) 更新的依赖关系"
       }
     },
     "messages": [

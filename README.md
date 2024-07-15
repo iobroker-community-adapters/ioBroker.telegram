@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.8.1 (2024-07-15)
 * (bluefox) Username can consist of more than one user. The separator is comma, semicolon or space.
 
 ### 3.8.0 (2024-07-14)
@@ -55,9 +55,6 @@ Use telegram service to communicate with ioBroker
 * (klein0r) Added answer timeout to instance configuration
 * (klein0r) Added option to send status updates to specific users
 * (klein0r) Added states for thread id (of supergroups)
-
-### 3.5.3 (2024-06-18)
-* (foxriver76) escape all unallowed characters when sending with notification manager
 
 ## License
 
