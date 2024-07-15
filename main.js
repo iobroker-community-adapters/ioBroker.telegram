@@ -58,7 +58,7 @@ function startAdapter(options) {
         name: adapterName,
         /**
          * If the JS-Controller catches an unhandled error, this will be called
-         * so we have a chance to handle it ourself.
+         * so we have a chance to handle it ourselves.
          * @param {Error} err
          */
         error: (err) => {
@@ -150,7 +150,7 @@ function startAdapter(options) {
                     err && adapter.log.error(err);
                     adapter.log.error('Cannot wipe list of saved users!');
                 }
-            } else if(obj.command === 'sendNotification') {
+            } else if (obj.command === 'sendNotification') {
                 processNotification(obj);
             } else{
                 processMessage(obj);
@@ -291,7 +291,7 @@ function startAdapter(options) {
         isConnected = false;
     });
 
-    // is called if a subscribed state changes
+    // This handler is called if a subscribed state changes
     adapter.on('stateChange', async (id, state) => {
         if (state) {
             if (!state.ack) {
@@ -845,13 +845,14 @@ function executeSending(action, options, resolve){
             options = null;
             // return all the collected message ids to the callback
             resolve(JSON.stringify(messageIds));
-        }).catch(error => {
+        })
+        .catch(error => {
             // add the error to the message ids object
             messageIds.error = {[options.chat_id ? options.chat_id : options.chatId] : error};
             // log error to the system
             adapter.log.error(`Failed sending [${options.chatId ? 'chatId' : 'user'} - ${options.chatId ? options.chatId : options.user}]: ${error}`);
             options = null;
-            // send the succesfully send messages as callback
+            // send the successfully sent messages as callback
             resolve(JSON.stringify(messageIds));
         });
 }
@@ -908,7 +909,8 @@ function sendMessage(text, user, chatId, options) {
     }
     if (chatId) {
         tPromiseList.push(_sendMessageHelper(chatId, 'chat', text, options));
-        return Promise.all(tPromiseList).catch(e => e);
+        return Promise.all(tPromiseList)
+            .catch(e => e);
     } else if (user) {
         if (typeof user !== 'string' && !(user instanceof Array)) {
             adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
@@ -938,7 +940,8 @@ function sendMessage(text, user, chatId, options) {
             adapter.log.warn(`${userArray.length - matches} of ${userArray.length} recipients are unknown!`);
         }
 
-        return Promise.all(tPromiseList).catch(e => e);
+        return Promise.all(tPromiseList)
+            .catch(e => e);
     }
 
     const m = typeof text === 'string' ? text.match(/^@(.+?)\b/) : null;
@@ -973,7 +976,8 @@ function sendMessage(text, user, chatId, options) {
         });
     }
 
-    return Promise.all(tPromiseList).catch(e => e);
+    return Promise.all(tPromiseList)
+        .catch(e => e);
 }
 
 function saveFile(fileID, fileName, callback) {
@@ -1183,16 +1187,20 @@ async function processMessage(obj) {
     switch (obj.command) {
         case 'send':
             if (obj.message) {
-                let tPromise;
                 if (typeof obj.message === 'object') {
-                    tPromise = sendMessage(obj.message.text, obj.message?.user, obj.message?.chatId, obj.message);
+                    const users = obj.message?.user.split(/[,;\s]/).map(u => u.trim()).filter(u => u);
+                    const tPromise = [];
+                    for (let i = 0; i < users.length; i++) {
+                        tPromise.push(sendMessage(obj.message.text, obj.message?.user, obj.message?.chatId, obj.message));
+                    }
+                    Promise.all(tPromise)
+                        .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count.length, obj.callback))
+                        .catch(e => adapter.log.error(`Cannot send command: ${e}`));
                 } else {
-                    tPromise = sendMessage(obj.message);
+                    sendMessage(obj.message)
+                        .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count.length, obj.callback))
+                        .catch(e => adapter.log.error(`Cannot send command: ${e}`));
                 }
-
-                tPromise
-                    .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback))
-                    .catch(e => adapter.log.error(`Cannot send command: ${e}`));
             }
             break;
 
