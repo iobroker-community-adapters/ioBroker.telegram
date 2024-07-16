@@ -916,7 +916,7 @@ function sendMessage(text, user, chatId, options) {
             adapter.log.warn(`Invalid type of user parameter: ${typeof user}. Expected is string or array.`);
         }
 
-        const userArray = user instanceof Array ? user : (user || '').toString().split(',').map(u => u.trim());
+        const userArray = Array.isArray(user) ? user : (user || '').toString().split(/[,;\s]/).map(u => u.trim()).filter(u => !!u);
         let matches = 0;
         userArray.forEach(userName => {
             for (const id in users) {
@@ -1187,20 +1187,16 @@ async function processMessage(obj) {
     switch (obj.command) {
         case 'send':
             if (obj.message) {
+                let tPromise;
                 if (typeof obj.message === 'object') {
-                    const users = obj.message?.user.split(/[,;\s]/).map(u => u.trim()).filter(u => u);
-                    const tPromise = [];
-                    for (let i = 0; i < users.length; i++) {
-                        tPromise.push(sendMessage(obj.message.text, obj.message?.user, obj.message?.chatId, obj.message));
-                    }
-                    Promise.all(tPromise)
-                        .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count.length, obj.callback))
-                        .catch(e => adapter.log.error(`Cannot send command: ${e}`));
+                    tPromise = sendMessage(obj.message.text, obj.message?.user, obj.message?.chatId, obj.message);
                 } else {
-                    sendMessage(obj.message)
-                        .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count.length, obj.callback))
-                        .catch(e => adapter.log.error(`Cannot send command: ${e}`));
+                    tPromise = sendMessage(obj.message);
                 }
+
+                tPromise
+                    .then(count => obj.callback && adapter.sendTo(obj.from, obj.command, count, obj.callback))
+                    .catch(e => adapter.log.error(`Cannot send command: ${e}`));
             }
             break;
 
