@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.8.1",
+    "version": "3.8.2",
     "news": {
+      "3.8.2": {
+        "en": "Username can consist of more than one user. The separator is comma, semicolon or space.",
+        "de": "Benutzername kann aus mehr als einem Benutzer bestehen. Der Separator ist Komma, Semikolon oder Raum.",
+        "ru": "Имя пользователя может состоять из нескольких пользователей. Сепаратор - комма, полуколон или пространство.",
+        "pt": "O nome de usuário pode consistir em mais de um usuário. O separador é vírgula, vírgula ou espaço.",
+        "nl": "Gebruikersnaam kan bestaan uit meer dan één gebruiker. De scheiding is komma, puntkomma of ruimte.",
+        "fr": "Nom d'utilisateur peut se composer de plus d'un utilisateur. Le séparateur est virgule, semi-colon ou espace.",
+        "it": "Il nome utente può essere composto da più di un utente. Il separatore è virgola, virgola o spazio.",
+        "es": "El nombre de usuario puede consistir en más de un usuario. El separador es coma, ymicolon o espacio.",
+        "pl": "Nazwa użytkownika może zawierać więcej niż jednego użytkownika. Separator to przecinek, średnik lub przestrzeń.",
+        "uk": "Ім'я користувача може містити більше одного користувача. Сепаратор - кома, напівколон або простір.",
+        "zh-cn": "用户名可以由多个用户组成. 分隔符是逗号,分号或空格."
+      },
       "3.8.0": {
         "en": "Migrated GUI for Admin 7",
         "de": "Migrated GUI für Admin 7",
