@@ -688,8 +688,11 @@ function _sendMessageHelper(dest, name, text, options) {
         } else if (options && options.deleteMessage !== undefined) {
             adapter.log.debug(`Send deleteMessage to "${name}"`);
             bot && executeSending(() => bot.deleteMessage(options.deleteMessage.options.chat_id, options.deleteMessage.options.message_id), options, resolve);
-        } else if (options && options.latitude !== undefined) {
-            adapter.log.debug(`Send location to "${name}": ${text}`);
+        } else if (options && options.latitude !== undefined && options.longitude !== undefined && options.title !== undefined && options.address !== undefined) {
+            adapter.log.debug(`Send venue to "${name}": ${options.latitude},${options.longitude}`);
+            bot && executeSending(() =>  bot.sendVenue(dest, parseFloat(options.latitude), parseFloat(options.longitude), options.title, options.address, options), options, resolve);
+        } else if (options && options.latitude !== undefined && options.longitude !== undefined) {
+            adapter.log.debug(`Send location to "${name}": ${options.latitude},${options.longitude}`);
             bot && executeSending(() =>  bot.sendLocation(dest, parseFloat(options.latitude), parseFloat(options.longitude), options), options, resolve);
         } else if (options && options.type === 'mediagroup') {
             adapter.log.debug(`Send media group to "${name}": `);

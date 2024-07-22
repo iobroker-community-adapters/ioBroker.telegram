@@ -148,13 +148,24 @@ sendTo('telegram.0', 'send', {
 
 Adapter tries to detect the type of message (photo, video, audio, document, sticker, action, location) depends on a text in the message if the text is a path to existing file, it will be sent as according to a type.
 
-Location will be detected on attribute latitude:
+Location will be detected on attribute latitude and longitude:
 
 ```javascript
 sendTo('telegram.0', 'send', {
     latitude:               52.522430,
     longitude:              13.372234,
     disable_notification:   true
+});
+```
+
+Venue will be detected on attribute latitude, longitude, title and address:
+
+```javascript
+sendTo('telegram.0', 'send', {
+    latitude:               52.51630462381893,
+    longitude:              13.37770039691943,
+    title:                  'Brandenburger Tor',
+    address:                'Pariser Platz 8, 10117 Berlin',
 });
 ```
 

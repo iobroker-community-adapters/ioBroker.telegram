@@ -37,6 +37,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (klein0r) Added option to send venue (with title and address)
+
 ### 3.8.2 (2024-07-16)
 * (bluefox) Username can consist of more than one user. The separator is comma, semicolon or space.
 
