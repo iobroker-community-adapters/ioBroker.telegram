@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 3.9.0 (2024-07-22)
 * (klein0r) Added option to send venue (with title and address)
 
 ### 3.8.2 (2024-07-16)
@@ -52,12 +52,6 @@ Use telegram service to communicate with ioBroker
 ### 3.7.0 (2024-07-03)
 * (klein0r) Removed default / shadow fiel from Blockly block ask
 * (klein0r) Added state to answer last request (same chat)
-
-### 3.6.0 (2024-06-19)
-* (klein0r) Save videos which have been recorded with telegram (video_note)
-* (klein0r) Added answer timeout to instance configuration
-* (klein0r) Added option to send status updates to specific users
-* (klein0r) Added states for thread id (of supergroups)
 
 ## License
 

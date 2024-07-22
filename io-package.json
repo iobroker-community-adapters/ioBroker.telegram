@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.8.2",
+    "version": "3.9.0",
     "news": {
+      "3.9.0": {
+        "en": "Added option to send venue (with title and address)",
+        "de": "Option hinzugefügt, um Veranstaltungsort zu senden (mit Titel und Adresse)",
+        "ru": "Добавлен вариант для отправки места (с названием и адресом)",
+        "pt": "Adicionado opção para enviar local (com título e endereço)",
+        "nl": "Toegevoegd optie om locatie te versturen (met titel en adres)",
+        "fr": "Ajout d'une option pour envoyer le lieu (avec titre et adresse)",
+        "it": "Aggiunta opzione per inviare la sede (con titolo e indirizzo)",
+        "es": "Opción adicional para enviar el lugar (con el título y la dirección)",
+        "pl": "Dodano opcję wysyłania miejsca (z tytułem i adresem)",
+        "uk": "Додано варіант для відправки місця (з назвою і адресою)",
+        "zh-cn": "添加了发送会场的选项( 有标题和地址)"
+      },
       "3.8.2": {
         "en": "Username can consist of more than one user. The separator is comma, semicolon or space.",
         "de": "Benutzername kann aus mehr als einem Benutzer bestehen. Der Separator ist Komma, Semikolon oder Raum.",
@@ -80,19 +93,6 @@
         "pl": "(foxriver76) uniknąć wszystkich niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
         "uk": "(foxriver76) втекти всі незрівняні символи при надсиланні повідомлення менеджера",
         "zh-cn": "(foxriver76) 与通知管理器一起发送时, 逃脱所有未分配字符"
-      },
-      "3.5.2": {
-        "en": "(foxriver76) escape more unallowed characters when sending with notification manager",
-        "de": "(foxriver76) entfliehen sie unallowed zeichen beim senden mit benachrichtigungsmanager",
-        "ru": "(foxriver76) убежать более неразрешенных персонажей при отправке с менеджером уведомлений",
-        "pt": "(foxriver76) escapar de caracteres mais não permitidos ao enviar com o gerenciador de notificações",
-        "nl": "(foxriver76) meer ongeautoriseerde tekens ontsnappen bij het verzenden met notificatiebeheerder",
-        "fr": "(foxriver76) échappent plus de caractères non autorisés lors de l'envoi avec le gestionnaire de notification",
-        "it": "(foxriver76) sfuggire più caratteri non consentiti durante l'invio con gestore di notifica",
-        "es": "(foxriver76) escape más caracteres no autorizados al enviar con gestor de notificación",
-        "pl": "(foxriver76) uniknąć więcej niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
-        "uk": "(foxriver76) втекти більше незрівняних символів при надсиланні повідомлення менеджера",
-        "zh-cn": "(foxriver76) 与通知管理器发送时, 逃脱更多未分配字符"
       }
     },
     "messages": [
