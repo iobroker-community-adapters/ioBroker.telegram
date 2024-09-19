@@ -327,6 +327,7 @@
   "items": {
     "alias": {
       "type": "text",
+      "xs": 12,
       "sm": 12,
       "lg": 6,
       "label": "Alias",
@@ -335,6 +336,7 @@
     },
     "recipients": {
       "type": "text",
+      "xs": 12,
       "sm": 12,
       "lg": 6,
       "label": "Recipients",
@@ -347,6 +349,7 @@
       "label": "Read only",
       "help": "Only delivers the changes",
       "defaultFunc": "customObj.common && customObj.common.write === false",
+      "xs": 12,
       "sm": 4
     },
     "report": {
@@ -355,6 +358,7 @@
       "label": "Report updates",
       "help": "Sends a new message if the value updates",
       "defaultFunc": "customObj.common && customObj.common.read !== false",
+      "xs": 12,
       "sm": 4
     },
     "reportChanges": {
@@ -362,6 +366,7 @@
       "label": "Report changes only",
       "help": "Sends a new message if the value changes",
       "hidden": "data.report !== true",
+      "xs": 12,
       "sm": 4
     },
     "reportSilent": {
@@ -369,6 +374,7 @@
       "label": "Silent",
       "help": "Send without notification sound",
       "hidden": "data.report !== true",
+      "xs": 12,
       "sm": 4
     },
     "buttons": {
@@ -378,6 +384,7 @@
       "default": 3,
       "min": 1,
       "max": 3,
+      "xs": 12,
       "sm": 6
     },
     "writeOnly": {
@@ -385,6 +392,7 @@
       "label": "Write only",
       "default": false,
       "help": "No status query",
+      "xs": 12,
       "sm": 6
     },
     "offCommand": {
@@ -395,6 +403,7 @@
       "help": "Default - 'OFF'",
       "default": "",
       "hideOnlyControl": true,
+      "xs": 12,
       "sm": 6
     },
     "onCommand": {
@@ -403,6 +412,7 @@
       "label": "ON command",
       "help": "Default - 'ON'",
       "default": "",
+      "xs": 12,
       "sm": 6
     },
     "offStatus": {
@@ -413,6 +423,7 @@
       "label": "OFF status",
       "help": "Default - 'OFF'",
       "default": "",
+      "xs": 12,
       "sm": 6
     },
     "onStatus": {
@@ -421,6 +432,7 @@
       "label": "ON status",
       "help": "Default - 'ON'",
       "default": "",
+      "xs": 12,
       "sm": 6
     },
     "onlyFalse": {
@@ -431,6 +443,7 @@
       "label": "Only false",
       "help": "Do not show ON",
       "default": false,
+      "xs": 12,
       "sm": 6
     },
     "onlyTrue": {
@@ -440,6 +453,7 @@
       "type": "checkbox",
       "label": "Only true",
       "help": "Do not show OFF",
+      "xs": 12,
       "sm": 6
     }
   }

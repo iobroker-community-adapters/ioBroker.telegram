@@ -8,6 +8,7 @@
       "items": {
         "server": {
           "type": "select",
+          "xs": 12,
           "sm": 12,
           "md": 3,
           "lg": 3,
@@ -27,6 +28,7 @@
         "pollingInterval": {
           "hidden": "data.server === 'true'",
           "type": "number",
+          "xs": 12,
           "sm": 12,
           "md": 5,
           "lg": 5,
@@ -35,6 +37,7 @@
         "token": {
           "newLine": true,
           "type": "text",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -45,6 +48,7 @@
         "baseApiUrl": {
           "newLine": true,
           "type": "text",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -55,6 +59,7 @@
           "type": "password",
           "repeat": true,
           "visible": false,
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -64,6 +69,7 @@
         "rememberUsers": {
           "newLine": true,
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -72,6 +78,7 @@
         "doNotAcceptNewUsers": {
           "newLine": true,
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -80,6 +87,7 @@
         "useUsername": {
           "newLine": true,
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -88,6 +96,7 @@
         "saveFiles": {
           "newLine": true,
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -96,6 +105,7 @@
         "saveFilesTo": {
           "newLine": true,
           "type": "select",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -115,6 +125,7 @@
         },
         "saveFilesQuality": {
           "type": "select",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -147,6 +158,7 @@
         "allowStates": {
           "newLine": true,
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -161,6 +173,7 @@
         "restarted": {
           "newLine": true,
           "type": "text",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -169,6 +182,7 @@
         },
         "restarting": {
           "type": "text",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -178,6 +192,7 @@
         "keyboard": {
           "newLine": true,
           "type": "text",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -186,6 +201,7 @@
         },
         "rooms": {
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -195,6 +211,7 @@
         "storeRawRequest": {
           "newLine": true,
           "type": "checkbox",
+          "xs": 12,
           "sm": 12,
           "md": 8,
           "lg": 8,
@@ -204,6 +221,7 @@
           "newLine": true,
           "type": "instance",
           "adapter": "text2command",
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -214,6 +232,7 @@
           "newLine": true,
           "type": "number",
           "min": 5,
+          "xs": 12,
           "sm": 12,
           "md": 4,
           "lg": 4,
@@ -223,6 +242,7 @@
         "_custom": {
           "newLine": true,
           "type": "custom",
+          "xs": 12,
           "sm": 12,
           "md": 6,
           "lg": 6,
@@ -241,6 +261,7 @@
         "url": {
           "newLine": true,
           "type": "text",
+          "xs": 12,
           "sm": 12,
           "md": 9,
           "lg": 9,
@@ -251,6 +272,7 @@
           "newLine": true,
           "type": "ip",
           "listenOnAllPorts": true,
+          "xs": 12,
           "sm": 12,
           "md": 6,
           "lg": 6,
@@ -260,6 +282,7 @@
           "type": "number",
           "min": 1,
           "max": 65565,
+          "xs": 12,
           "sm": 12,
           "md": 3,
           "lg": 3,
@@ -270,6 +293,7 @@
           "newLine": true,
           "type": "certificate",
           "certType": "public",
+          "xs": 12,
           "sm": 12,
           "md": 3,
           "lg": 3,
@@ -278,6 +302,7 @@
         "certPrivate": {
           "type": "certificate",
           "certType": "private",
+          "xs": 12,
           "sm": 12,
           "md": 3,
           "lg": 3,
@@ -286,6 +311,7 @@
         "certChained": {
           "type": "certificate",
           "certType": "chained",
+          "xs": 12,
           "sm": 12,
           "md": 3,
           "lg": 3,
