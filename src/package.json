@@ -3,13 +3,14 @@
     "private": true,
     "version": "3.9.0",
     "scripts": {
-        "start": "set PORT=4173 && craco start",
+        "start": "vite --port 4173",
         "old-start": "set PORT=4173 && react-scripts start",
         "lint": "eslint --fix --ext .js,.jsx src",
         "webpack-build": "craco build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "build": "gulp",
+        "build": "vite build",
+        "preview": "vite preview --port 4173",
         "prepublishOnly": "echo Run publish in build && exit 1",
         "release": "release-script",
         "release-patch": "release-script patch --yes",
@@ -17,7 +18,7 @@
         "release-major": "release-script major --yes"
     },
     "dependencies": {
-        "@iobroker/adapter-react-v5": "^5.0.4",
+        "@iobroker/adapter-react-v5": "^7.2.4",
         "@mui/material": "5.15.19",
         "@mui/styles": "5.15.19",
         "prop-types": "^15.8.1",
@@ -33,7 +34,14 @@
         "@rollup/plugin-replace": "^5.0.7",
         "@craco/craco": "^7.1.0",
         "craco-esbuild": "^0.6.1",
-        "craco-module-federation": "^1.1.0"
+        "craco-module-federation": "^1.1.0",
+        "vite": "5.2.10",
+        "vite-plugin-commonjs": "^0.10.4",
+        "vite-plugin-svgr": "^4.3.0",
+        "vite-tsconfig-paths": "^5.1.4",
+        "@vitejs/plugin-react": "^4.3.4",
+        "@module-federation/runtime": "^0.8.2",
+        "@module-federation/vite": "^1.1.9"
     },
     "eslintConfig": {
         "extends": "react-app"
