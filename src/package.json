@@ -2,6 +2,7 @@
     "name": "iobroker.telegram.rules",
     "private": true,
     "version": "3.9.0",
+    "type": "module",
     "scripts": {
         "start": "vite --port 4173",
         "old-start": "set PORT=4173 && react-scripts start",
@@ -9,7 +10,7 @@
         "webpack-build": "craco build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "build": "vite build",
+        "build": "tsc && vite build",
         "preview": "vite preview --port 4173",
         "prepublishOnly": "echo Run publish in build && exit 1",
         "release": "release-script",
@@ -41,7 +42,8 @@
         "vite-tsconfig-paths": "^5.1.4",
         "@vitejs/plugin-react": "^4.3.4",
         "@module-federation/runtime": "^0.8.2",
-        "@module-federation/vite": "^1.1.9"
+        "@module-federation/vite": "^1.1.9",
+		"typescript": "5.4.5"
     },
     "eslintConfig": {
         "extends": "react-app"

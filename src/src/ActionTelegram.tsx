@@ -1,15 +1,28 @@
 import WidgetGenericBlock from './GenericBlock';
 import { I18n } from '@iobroker/adapter-react-v5';
 
+import React from 'react';
+import { IGenericBlock } from './IGenericBlock';
+import { RuleBlockDescription, RuleContext, RuleTagCardTitle } from './types';
+console.log((React as any).something);
+
+declare global {
+    interface Window {
+        GenericBlock: typeof IGenericBlock;
+    }
+}
+
 const GenericBlock = window.GenericBlock || WidgetGenericBlock;
 
 class ActionTelegram extends GenericBlock {
-    constructor(props) {
+    cachePromises: any;
+    
+    constructor(props: any) {
         super(props, ActionTelegram.getStaticData());
         this.cachePromises = {};
     }
 
-    static compile(config, context) {
+    static compile(config: any, context: RuleContext) {
         let text = (config.text || '').replace(/"/g, '\\"');
         if (!text) {
             return `// no text defined
@@ -22,18 +35,18 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
         }
     }
 
-    renderDebug(debugMessage) {
+    renderDebug(debugMessage: any) {
         return `${I18n.t('Sent:')} ${debugMessage.data.text}`;
     }
 
-    onValueChanged(value, attr) {
+    onValueChanged(value: any, attr: string) {
         if (attr === 'instance') {
             this._setUsers(value);
         }
     }
 
-    _setUsers(instance) {
-        instance = instance || this.state.settings.instance || 'telegram.0';
+    _setUsers(instance?: any) {
+        instance = instance || (this.state.settings as any).instance || 'telegram.0';
         this.cachePromises[instance] = this.cachePromises[instance] || this.props.socket.getState(`${instance}.communicate.users`);
         if (!this.state.settings._id) {
             return this.setState({
@@ -64,7 +77,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
         }
 
         this.cachePromises[instance]
-            .then(users => {
+            .then((users: any) => {
                 try {
                     users = users?.val ? JSON.parse(users.val) : null;
                     users = users && Object.keys(users).map(user => ({title: users[user].userName || users[user].firstName, value: user}));
@@ -102,11 +115,11 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
             });
     }
 
-    onTagChange(tagCard) {
+    onTagChange(tagCard: RuleTagCardTitle) {
         this._setUsers();
     }
 
-    static getStaticData() {
+    static getStaticData(): RuleBlockDescription {
         return {
             acceptedBy: 'actions',
             name: 'Telegram',

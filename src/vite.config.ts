@@ -2,7 +2,7 @@
 import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
 import svgr from 'vite-plugin-svgr';
-// import vitetsConfigPaths from 'vite-tsconfig-paths';
+import vitetsConfigPaths from 'vite-tsconfig-paths';
 import { federation } from '@module-federation/vite';
 
 const makeShared = pkgs => {
@@ -25,7 +25,7 @@ const config = ({
       name: 'ActionTelegram',
     filename: 'customRuleBlocks.js',
     exposes: {
-        './ActionTelegram': './src/ActionTelegram.jsx',
+        './ActionTelegram': './src/ActionTelegram.tsx',
     },
     remotes: {},
     shared: makeShared([
@@ -33,7 +33,7 @@ const config = ({
     ])
     }),
     react(),
-    // vitetsConfigPaths(),
+    vitetsConfigPaths(),
     commonjs(),
     svgr({
       include: [
@@ -49,4 +49,4 @@ const config = ({
   },
 });
 
-module.exports = config;
+export default config;
