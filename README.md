@@ -38,7 +38,11 @@ Use telegram service to communicate with ioBroker
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+
+NodeJS >= 20.x and js-controller >= 6 is required
+
 * (simatec) Responsive Design added
+* (klein0r) Allow async function calls in ask callback function
 
 ### 3.9.0 (2024-07-22)
 * (klein0r) Added option to send venue (with title and address)
