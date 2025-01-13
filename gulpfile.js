@@ -33,7 +33,7 @@ function npmInstallRules() {
         // System call used for update of js-controller itself,
         // because during installation npm packet will be deleted too, but some files must be loaded even during the install process.
         const exec = cp.exec;
-        const child = exec(cmd, {cwd});
+        const child = exec(cmd, { cwd });
 
         child.stderr.pipe(process.stderr);
         child.stdout.pipe(process.stdout);
@@ -52,17 +52,17 @@ function npmInstallRules() {
 }
 
 function buildRules() {
-    const version = JSON.parse(fs.readFileSync(__dirname + '/package.json').toString('utf8')).version;
-    const data    = JSON.parse(fs.readFileSync(src + 'package.json').toString('utf8'));
+    const version = JSON.parse(fs.readFileSync(`${__dirname}/package.json`).toString('utf8')).version;
+    const data = JSON.parse(fs.readFileSync(`${src}package.json`).toString('utf8'));
 
     data.version = version;
 
-    fs.writeFileSync(src + 'package.json', JSON.stringify(data, null, 4));
+    fs.writeFileSync(`${src}package.json`, JSON.stringify(data, null, 4));
 
     return new Promise((resolve, reject) => {
         const options = {
             stdio: 'pipe',
-            cwd: src
+            cwd: src,
         };
 
         console.log(options.cwd);
@@ -96,13 +96,23 @@ gulp.task('rules-1-npm', async () => npmInstallRules());
 
 gulp.task('rules-2-compile', async () => buildRules());
 
-gulp.task('rules-3-copy', () => Promise.all([
-    gulp.src(['src/build/*.js']).pipe(gulp.dest('admin/rules')),
-    gulp.src(['src/build/*.map']).pipe(gulp.dest('admin/rules')),
-    gulp.src(['src/build/asset-manifest.json']).pipe(gulp.dest('admin/rules')),
-    gulp.src(['src/build/static/**/*', '!src/build/static/media/*.svg', '!src/build/static/media/*.txt', '!src/build/static/js/vendors*.js', '!src/build/static/js/vendors*.map']).pipe(gulp.dest('admin/rules/static')),
-    gulp.src(['src/src/i18n/*.json']).pipe(gulp.dest('admin/rules/i18n')),
-]));
+gulp.task('rules-3-copy', () =>
+    Promise.all([
+        gulp.src(['src/build/*.js']).pipe(gulp.dest('admin/rules')),
+        gulp.src(['src/build/*.map']).pipe(gulp.dest('admin/rules')),
+        gulp.src(['src/build/asset-manifest.json']).pipe(gulp.dest('admin/rules')),
+        gulp
+            .src([
+                'src/build/static/**/*',
+                '!src/build/static/media/*.svg',
+                '!src/build/static/media/*.txt',
+                '!src/build/static/js/vendors*.js',
+                '!src/build/static/js/vendors*.map',
+            ])
+            .pipe(gulp.dest('admin/rules/static')),
+        gulp.src(['src/src/i18n/*.json']).pipe(gulp.dest('admin/rules/i18n')),
+    ]),
+);
 
 gulp.task('rules-build', gulp.series(['rules-0-clean', 'rules-1-npm', 'rules-2-compile', 'rules-3-copy']));
 
@@ -119,7 +129,7 @@ function npmInstallAdmin() {
         // System call used for update of js-controller itself,
         // because during installation npm packet will be deleted too, but some files must be loaded even during the install process.
         const exec = cp.exec;
-        const child = exec(cmd, {cwd});
+        const child = exec(cmd, { cwd });
 
         child.stderr.pipe(process.stderr);
         child.stdout.pipe(process.stdout);
@@ -139,7 +149,7 @@ function npmInstallAdmin() {
 
 function buildAdmin() {
     const version = JSON.parse(fs.readFileSync(`${__dirname}/package.json`).toString('utf8')).version;
-    const data    = JSON.parse(fs.readFileSync(`${srcAdmin}package.json`).toString('utf8'));
+    const data = JSON.parse(fs.readFileSync(`${srcAdmin}package.json`).toString('utf8'));
 
     data.version = version;
 
@@ -148,7 +158,7 @@ function buildAdmin() {
     return new Promise((resolve, reject) => {
         const options = {
             stdio: 'pipe',
-            cwd:   srcAdmin
+            cwd: srcAdmin,
         };
 
         console.log(options.cwd);
@@ -181,13 +191,19 @@ gulp.task('admin-0-clean', done => {
 gulp.task('admin-1-npm', async () => npmInstallAdmin());
 gulp.task('admin-2-compile', async () => buildAdmin());
 
-gulp.task('admin-3-copy', () => Promise.all([
-    gulp.src(['src-admin/build/static/js/*.js', '!src-admin/build/static/js/vendors*.js']).pipe(gulp.dest('admin/custom/static/js')),
-    gulp.src(['src-admin/build/static/js/*.map', '!src-admin/build/static/js/vendors*.map']).pipe(gulp.dest('admin/custom/static/js')),
-    gulp.src(['src-admin/build/customComponents.js']).pipe(gulp.dest('admin/custom')),
-    gulp.src(['src-admin/build/customComponents.js.map']).pipe(gulp.dest('admin/custom')),
-    gulp.src(['src-admin/src/i18n/*.json']).pipe(gulp.dest('admin/custom/i18n')),
-]));
+gulp.task('admin-3-copy', () =>
+    Promise.all([
+        gulp
+            .src(['src-admin/build/static/js/*.js', '!src-admin/build/static/js/vendors*.js'])
+            .pipe(gulp.dest('admin/custom/static/js')),
+        gulp
+            .src(['src-admin/build/static/js/*.map', '!src-admin/build/static/js/vendors*.map'])
+            .pipe(gulp.dest('admin/custom/static/js')),
+        gulp.src(['src-admin/build/customComponents.js']).pipe(gulp.dest('admin/custom')),
+        gulp.src(['src-admin/build/customComponents.js.map']).pipe(gulp.dest('admin/custom')),
+        gulp.src(['src-admin/src/i18n/*.json']).pipe(gulp.dest('admin/custom/i18n')),
+    ]),
+);
 
 gulp.task('admin-build', gulp.series(['admin-0-clean', 'admin-1-npm', 'admin-2-compile', 'admin-3-copy']));
 

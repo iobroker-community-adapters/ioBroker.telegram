@@ -16,8 +16,10 @@ export default [
             'build',
             'admin/build',
             'admin/words.js',
+            'admin/blockly.js',
             'admin/admin.d.ts',
             '**/adapter-config.d.ts',
+            'lib/words.js',
             'admin/custom',
             'admin/rules',
             'src/', // TODO
@@ -27,6 +29,9 @@ export default [
     {
         rules: {
             'jsdoc/require-jsdoc': 'off',
+            'jsdoc/require-param-description': 'off',
+            'jsdoc/require-returns-description': 'off',
+            'jsdoc/require-returns-check': 'off',
         },
     },
 ];
