@@ -689,7 +689,7 @@ Blockly.JavaScript['telegram_ask'] = function(block) {
         answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],`).join('\n') + '\n' +
         `    ],\n` +
         `  }\n` +
-        `}, msg => {\n${logAnswer}` +
+        `}, async (msg) => {\n${logAnswer}` +
         answers.map(a => `  if (msg?.data && msg.data == '${a.id}') {\n${Blockly.JavaScript.prefixLines(a.statement, Blockly.JavaScript.INDENT)}  }`).join('\n') +
         `\n});\n${logText}`;
 };
