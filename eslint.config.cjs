@@ -10,7 +10,7 @@ const compat = new FlatCompat({
 });
 
 module.exports = [{
-    ignores: ['.dev-server/**', 'admin/custom/**', 'admin/rules/**', 'src/**', 'src-admin/**', 'admin/blockly.js'],
+    ignores: ['.dev-server/**', 'admin/custom/**', 'admin/rules/**', 'src/**', 'src-admin/**', 'admin/blockly.js', 'admin/words.js'],
 }, ...compat.extends('eslint:recommended'), {
     languageOptions: {
         globals: {
