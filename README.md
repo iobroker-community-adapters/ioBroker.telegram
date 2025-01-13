@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.0.0 (2025-01-13)
 
 NodeJS >= 20.x and js-controller >= 6 is required
 
@@ -55,10 +55,6 @@ NodeJS >= 20.x and js-controller >= 6 is required
 
 ### 3.7.1 (2024-07-03)
 * (klein0r) Restored translations for messages
-
-### 3.7.0 (2024-07-03)
-* (klein0r) Removed default / shadow fiel from Blockly block ask
-* (klein0r) Added state to answer last request (same chat)
 
 ## License
 

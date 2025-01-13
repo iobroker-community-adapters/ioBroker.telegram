@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "3.9.0",
+    "version": "4.0.0",
     "news": {
+      "4.0.0": {
+        "en": "NodeJS >= 20.x and js-controller >= 6 is required\n\n* Responsive Design added\n* Allow async function calls in ask callback function",
+        "de": "NodeJS >= 20.x und js-Controller >= 6 ist erforderlich\n\n* Responsive Design hinzugefügt\n* Lassen Sie Async-Funktion Anrufe in Fragen Callback-Funktion",
+        "ru": "NodeJS >= 20.x и js-controller >= 6 требуется\n\n* Добавлен ответный дизайн\n* Разрешить вызов функции асинка в функции вызова",
+        "pt": "NodeJS >= 20.x e js-controller >= 6 é necessário\n\n* Design responsivo adicionado\n* Permitir chamadas de função de sincronização em pedir função de retorno",
+        "nl": "Van niet-gelegeerd staal 6 is vereist\n\n* Responsive Design toegevoegd\n* Async-functieaanroepen toestaan in vraagterugroepfunctie",
+        "fr": "NodeJS >= 20.x et js-controller >= 6 est nécessaire\n\n* Design sensible ajouté\n* Autorise les appels de fonction async dans la fonction callback",
+        "it": "NodeJS >= 20.x e js-controller >= 6 è richiesto\n\n* Responsive Design aggiunto\n# Consentire chiamate funzione asincrona a chiedere la funzione callback",
+        "es": "NodeJS ю= 20.x y js-controller Se requiere 6\n\n* Diseño responsable añadido\n* Permitir llamadas de función asinc en función de llamada",
+        "pl": "NodeJS > = 20 x i kontroler js- > = 6 jest wymagane\n\n* Responsive Design dodany\n* Pozwól na wywołanie funkcji async w funkcji callback",
+        "uk": "NodeJS >= 20.x та js-controller >= 6 обов'язковий\n\n* Додано адаптивний дизайн\nІм'я * Усі виклики функції async за допомогою функції виклику",
+        "zh-cn": "节点JS20x和js控制器QQ 需要6个\n\n* 添加了反应设计\n* 《大会正式记录,第五十八届会议,补编第5号》(A/C.6/61/Rev.1)。 允许调用调用调用函数"
+      },
       "3.9.0": {
         "en": "Added option to send venue (with title and address)",
         "de": "Option hinzugefügt, um Veranstaltungsort zu senden (mit Titel und Adresse)",

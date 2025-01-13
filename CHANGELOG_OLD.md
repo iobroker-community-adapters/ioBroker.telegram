@@ -1,4 +1,8 @@
 # Older changes
+## 3.7.0 (2024-07-03)
+* (klein0r) Removed default / shadow fiel from Blockly block ask
+* (klein0r) Added state to answer last request (same chat)
+
 ## 3.6.0 (2024-06-19)
 * (klein0r) Save videos which have been recorded with telegram (video_note)
 * (klein0r) Added answer timeout to instance configuration
