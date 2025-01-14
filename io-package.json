@@ -234,7 +234,8 @@
     "javascriptRules": {
       "i18n": true,
       "url": "rules/customRuleBlocks.js",
-      "name": "ActionTelegram"
+      "name": "ActionTelegram",
+      "type": "module"
     },
     "licenseInformation": {
       "license": "MIT",
