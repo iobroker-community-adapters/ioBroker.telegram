@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.js": "/static/js/main.44f1f861.js",
+    "main.js": "/static/js/main.5d9a9893.js",
     "ActionTelegram.js": "/customRuleBlocks.js",
     "static/js/src_bootstrap_jsx.daa4bc6c.chunk.js": "/static/js/src_bootstrap_jsx.daa4bc6c.chunk.js",
-    "static/js/node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.c537ddf6.chunk.js": "/static/js/node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.c537ddf6.chunk.js",
+    "static/js/node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.d4c12c2d.chunk.js": "/static/js/node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.d4c12c2d.chunk.js",
     "static/js/node_modules_prop-types_index_js.c5b5d86f.chunk.js": "/static/js/node_modules_prop-types_index_js.c5b5d86f.chunk.js",
-    "static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.bbc6ce97.chunk.js": "/static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.bbc6ce97.chunk.js",
+    "static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.7c879d40.chunk.js": "/static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.7c879d40.chunk.js",
     "static/js/node_modules_react_index_js.6114a944.chunk.js": "/static/js/node_modules_react_index_js.6114a944.chunk.js",
     "static/js/src_ActionTelegram_jsx.606264b1.chunk.js": "/static/js/src_ActionTelegram_jsx.606264b1.chunk.js",
     "static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d270.bc9865f0.chunk.js": "/static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d270.bc9865f0.chunk.js",
     "static/js/vendors-node_modules_react-dom_index_js.33c91328.chunk.js": "/static/js/vendors-node_modules_react-dom_index_js.33c91328.chunk.js",
-    "static/js/vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.dbebc9d2.chunk.js": "/static/js/vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.dbebc9d2.chunk.js",
+    "static/js/vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.efc9a3f2.chunk.js": "/static/js/vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.efc9a3f2.chunk.js",
     "static/media/Ground Floor.svg": "/static/media/Ground Floor.2b7c5c91db7f070935a2.svg",
     "static/media/Second Floor.svg": "/static/media/Second Floor.a2d5ed32df336591c06b.svg",
     "static/media/Cellar.svg": "/static/media/Cellar.7ec1b1803a2437c8b78c.svg",
@@ -131,19 +131,19 @@
     "static/media/Outdoor Blinds.svg": "/static/media/Outdoor Blinds.37b85a9c060a4af48da9.svg",
     "static/media/Upstairs.svg": "/static/media/Upstairs.441813e54e0daca0882d.svg",
     "index.html": "/index.html",
-    "main.44f1f861.js.map": "/static/js/main.44f1f861.js.map",
+    "main.5d9a9893.js.map": "/static/js/main.5d9a9893.js.map",
     "customRuleBlocks.js.map": "/customRuleBlocks.js.map",
     "src_bootstrap_jsx.daa4bc6c.chunk.js.map": "/static/js/src_bootstrap_jsx.daa4bc6c.chunk.js.map",
-    "node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.c537ddf6.chunk.js.map": "/static/js/node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.c537ddf6.chunk.js.map",
+    "node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.d4c12c2d.chunk.js.map": "/static/js/node_modules_iobroker_adapter-react-v5_assets_devices_sync_recursive_-node_modules_iobroker_a-d234ae.d4c12c2d.chunk.js.map",
     "node_modules_prop-types_index_js.c5b5d86f.chunk.js.map": "/static/js/node_modules_prop-types_index_js.c5b5d86f.chunk.js.map",
-    "node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.bbc6ce97.chunk.js.map": "/static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.bbc6ce97.chunk.js.map",
+    "node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.7c879d40.chunk.js.map": "/static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d271.7c879d40.chunk.js.map",
     "node_modules_react_index_js.6114a944.chunk.js.map": "/static/js/node_modules_react_index_js.6114a944.chunk.js.map",
     "src_ActionTelegram_jsx.606264b1.chunk.js.map": "/static/js/src_ActionTelegram_jsx.606264b1.chunk.js.map",
     "node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d270.bc9865f0.chunk.js.map": "/static/js/node_modules_iobroker_adapter-react-v5_node_modules_react_index_js-_9d270.bc9865f0.chunk.js.map",
     "vendors-node_modules_react-dom_index_js.33c91328.chunk.js.map": "/static/js/vendors-node_modules_react-dom_index_js.33c91328.chunk.js.map",
-    "vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.dbebc9d2.chunk.js.map": "/static/js/vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.dbebc9d2.chunk.js.map"
+    "vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.efc9a3f2.chunk.js.map": "/static/js/vendors-node_modules_iobroker_adapter-react-v5_assets_devices_parseNames_d_ts-node_modules_io-1d9f06.efc9a3f2.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.44f1f861.js"
+    "static/js/main.5d9a9893.js"
   ]
 }
