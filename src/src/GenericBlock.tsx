@@ -1,4 +1,4 @@
-import { IGenericBlock } from "./IGenericBlock";
+import { IGenericBlock } from './IGenericBlock';
 
 class GenericBlock {
 

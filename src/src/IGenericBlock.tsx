@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import {
-    type AdminConnection,
-    type IobTheme,
-} from '@iobroker/adapter-react-v5';
+import { type AdminConnection, type IobTheme } from '@iobroker/adapter-react-v5';
 
 import type {
     RuleBlockConfig,
@@ -97,14 +94,14 @@ export declare class IGenericBlock<
 
     static getStaticData(): RuleBlockDescription;
 
-    static compile(_config: RuleBlockConfig, _context: RuleContext): string
+    static compile(_config: RuleBlockConfig, _context: RuleContext): string;
 
     constructor(props: GenericBlockProps<Settings>, item: RuleBlockDescription);
 
     static getDerivedStateFromProps(
         nextProps: GenericBlockProps<any>,
         state: GenericBlockState<any>,
-    ): Partial<GenericBlockState<any>> | null
+    ): Partial<GenericBlockState<any>> | null;
 
     // called every time, the tagCard changes or at start
     onTagChange(
@@ -113,19 +110,19 @@ export declare class IGenericBlock<
         _value?: any,
         _toggle?: boolean,
         _useTrigger?: boolean,
-    ): void
+    ): void;
 
     // called if trigger added or removed
     // eslint-disable-next-line class-methods-use-this
-    onUpdate(): void
+    onUpdate(): void;
 
-    onValueChanged(_value: any, _attr: string): void
+    onValueChanged(_value: any, _attr: string): void;
 
     // eslint-disable-next-line react/no-unused-class-component-methods
     renderText: (input: RuleInputText, value: string, onChange: (value: string) => void) => React.JSX.Element;
 
     // eslint-disable-next-line react/no-unused-class-component-methods
-    renderSwitch: (input: RuleInputSwitch, value: boolean, onChange: (value: boolean) => void) => React.JSX.Element
+    renderSwitch: (input: RuleInputSwitch, value: boolean, onChange: (value: boolean) => void) => React.JSX.Element;
 
     // eslint-disable-next-line react/no-unused-class-component-methods,class-methods-use-this
     renderNameText: (
@@ -138,17 +135,13 @@ export declare class IGenericBlock<
         input: RuleInputNumber,
         value: number,
         onChange: (value: number | string) => void,
-    ) => React.JSX.Element | null
+    ) => React.JSX.Element | null;
 
     // eslint-disable-next-line react/no-unused-class-component-methods
-    renderColor: (input: RuleInputColor, value: string, onChange: (value: string) => void) => React.JSX.Element
+    renderColor: (input: RuleInputColor, value: string, onChange: (value: string) => void) => React.JSX.Element;
 
     // eslint-disable-next-line react/no-unused-class-component-methods
-    renderCheckbox: (
-        input: RuleInputCheckbox,
-        value: boolean,
-        onChange: (value: boolean) => void,
-    ) => React.JSX.Element;
+    renderCheckbox: (input: RuleInputCheckbox, value: boolean, onChange: (value: boolean) => void) => React.JSX.Element;
 
     // eslint-disable-next-line react/no-unused-class-component-methods
     renderSlider: (input: RuleInputSlider, value: number, onChange: (value: number) => void) => React.JSX.Element;
@@ -167,7 +160,7 @@ export declare class IGenericBlock<
 
     renderIconTag: () => React.JSX.Element;
 
-        // eslint-disable-next-line react/no-unused-class-component-methods,class-methods-use-this
+    // eslint-disable-next-line react/no-unused-class-component-methods,class-methods-use-this
     renderTime: (input: RuleInputTime, value: string, onChange: (value: string) => void) => React.JSX.Element;
     // eslint-disable-next-line react/no-unused-class-component-methods,class-methods-use-this
     renderSelect: (
@@ -192,45 +185,44 @@ export declare class IGenericBlock<
     ) => React.JSX.Element;
     // eslint-disable-next-line react/no-unused-class-component-methods,class-methods-use-this
     renderDate: (input: RuleInputDate, value: string, onChange: (value: string) => void) => React.JSX.Element;
-    
-    static getReplacesInText(context: RuleContext): string
+
+    static getReplacesInText(context: RuleContext): string;
 
     /////////////////////////////
-    renderTags(): React.JSX.Element | string | undefined
+    renderTags(): React.JSX.Element | string | undefined;
 
-        // will be overwritten
+    // will be overwritten
     // eslint-disable-next-line react/no-unused-class-component-methods,class-methods-use-this
-    getData(): RuleBlockDescription
+    getData(): RuleBlockDescription;
 
     onChangeTag: () => void;
 
-    onChangeInput: (attribute: string) => ((value: any, attr?: string | (() => void), cb?: () => void) => void);
-
-        // eslint-disable-next-line class-methods-use-this
-    renderSpecific(): React.JSX.Element | null
+    onChangeInput: (attribute: string) => (value: any, attr?: string | (() => void), cb?: () => void) => void;
 
     // eslint-disable-next-line class-methods-use-this
-    renderDebug(_message?: any): React.JSX.Element | string
+    renderSpecific(): React.JSX.Element | null;
 
-    renderDebugInfo(): React.JSX.Element | null
+    // eslint-disable-next-line class-methods-use-this
+    renderDebug(_message?: any): React.JSX.Element | string;
+
+    renderDebugInfo(): React.JSX.Element | null;
 
     // eslint-disable-next-line class-methods-use-this
     renderCron(
         _input: RuleInputCron,
         _value: string,
         _onChange: (value: string, attr?: string, cb?: () => void) => void,
-    ): React.JSX.Element | null
+    ): React.JSX.Element | null;
 
     // eslint-disable-next-line class-methods-use-this
     renderWizard(
         _input: RuleInputWizard,
         _value: string,
         _onChange: (newData: Record<string, any> | string) => void,
-    ): React.JSX.Element | null
+    ): React.JSX.Element | null;
 
     // eslint-disable-next-line class-methods-use-this
-    renderWriteState(): React.JSX.Element[] | null
+    renderWriteState(): React.JSX.Element[] | null;
 
-    renderInputElement(input: RuleInputAny, index: number): React.JSX.Element | React.JSX.Element[] | null
-
+    renderInputElement(input: RuleInputAny, index: number): React.JSX.Element | React.JSX.Element[] | null;
 }
