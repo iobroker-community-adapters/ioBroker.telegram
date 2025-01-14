@@ -454,7 +454,7 @@ function startAdapter(options) {
 }
 
 /**
- * Send message to all system users
+ * Send a message to all system users
  *
  * @param text text to send
  * @param options additional options, e.g. parse_mode
