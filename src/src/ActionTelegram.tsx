@@ -1,9 +1,15 @@
 import React from 'react';
-import WidgetGenericBlock from './GenericBlock';
 import { I18n } from '@iobroker/adapter-react-v5';
 
-import { GenericBlockProps, IGenericBlock } from './IGenericBlock';
-import { RuleBlockConfig, RuleBlockDescription, RuleContext, RuleTagCardTitle } from './types';
+import {
+    type GenericBlockProps,
+    IGenericBlock,
+    GenericBlock as WidgetGenericBlock,
+    type RuleBlockConfig,
+    type RuleBlockDescription,
+    type RuleContext,
+    type RuleTagCardTitle,
+} from '@iobroker/javascript-rules-dev';
 
 declare global {
     interface Window {
@@ -93,12 +99,12 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
                 const usersStruct: Record<string, { userName: string; firstName: string }> | null = users?.val
                     ? JSON.parse(users.val as string)
                     : null;
-                options =
-                    usersStruct ?
-                    Object.keys(usersStruct).map(user => ({
-                        title: usersStruct[user].userName || usersStruct[user].firstName,
-                        value: user,
-                    })) : [];
+                options = usersStruct
+                    ? Object.keys(usersStruct).map(user => ({
+                          title: usersStruct[user].userName || usersStruct[user].firstName,
+                          value: user,
+                      }))
+                    : [];
                 options.unshift({ title: 'all1', value: '' });
             } catch (e) {
                 options = [{ title: 'all1', value: '' }];
