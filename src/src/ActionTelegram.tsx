@@ -105,9 +105,9 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
                           value: user,
                       }))
                     : [];
-                options.unshift({ title: 'all1', value: '' });
+                options.unshift({ title: 'all', value: '' });
             } catch (e) {
-                options = [{ title: 'all1', value: '' }];
+                options = [{ title: 'all', value: '' }];
             }
 
             this.setState(
