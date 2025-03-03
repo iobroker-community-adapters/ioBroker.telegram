@@ -33,8 +33,11 @@ const config = {
     server: {
         port: 3000,
         proxy: {
-            '/lib/js/socket.io.js': 'http://127.0.0.1:8081',
-        },
+            '/files': 'http://localhost:8081',
+            '/adapter': 'http://localhost:8081',
+            '/session': 'http://localhost:8081',
+            '/log': 'http://localhost:8081',
+            '/lib': 'http://localhost:8081',        },
     },
     base: './',
     build: {

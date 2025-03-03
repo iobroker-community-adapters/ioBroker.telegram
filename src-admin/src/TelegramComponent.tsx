@@ -12,12 +12,26 @@ import { Delete as IconDelete } from '@mui/icons-material';
 // import ConfigGeneric from '@iobroker/adapter-react-v5/ConfigGeneric';
 // valid
 import { Confirm, I18n } from '@iobroker/adapter-react-v5';
-import { ConfigGeneric } from '@iobroker/json-config';
+import { ConfigGeneric, ConfigGenericProps, ConfigGenericState } from '@iobroker/json-config';
 
-class TelegramComponent extends ConfigGeneric {
-    constructor(props) {
+interface TelegramUser {
+    id: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    sysMessages: boolean;
+}
+
+class TelegramComponent extends ConfigGeneric<ConfigGenericProps, ConfigGenericState & {
+    alive: boolean;
+    initialized: boolean;
+    users: { id: string; names: string; sysMessages: boolean }[];
+    confirm: string | null;
+}> {
+    constructor(props: ConfigGenericProps) {
         super(props);
         this.state = {
+            ...this.state,
             alive: false,
             initialized: false,
             users: [],
@@ -28,24 +42,24 @@ class TelegramComponent extends ConfigGeneric {
     componentDidMount() {
         super.componentDidMount();
 
-        this.props.socket.getState(`system.adapter.telegram.${this.props.instance}.alive`)
-            .then(async state => {
+        this.props.oContext.socket.getState(`system.adapter.telegram.${this.props.oContext.instance}.alive`)
+            .then(async (state: ioBroker.State) => {
                 if (state && state.val) {
                     this.setState({ alive: true }, () => this.readData());
                 } else {
                     this.setState({ alive: false });
                 }
 
-                await this.props.socket.subscribeState(`system.adapter.telegram.${this.props.instance}.alive`, this.onAliveChanged);
+                await this.props.oContext.socket.subscribeState(`system.adapter.telegram.${this.props.oContext.instance}.alive`, this.onAliveChanged);
             });
     }
 
     readData() {
-        this.props.socket.sendTo(`telegram.${this.props.instance}`, 'adminuser', null)
-            .then(obj => {  // get admin user
+        this.props.oContext.socket.sendTo(`telegram.${this.props.oContext.instance}`, 'adminuser', null)
+            .then((obj: Record<string, TelegramUser>) => {  // get admin user
                 const users = [];
                 for (const id in obj) {
-                    const names = [];
+                    const names: string[] = [];
                     obj[id].userName  && names.push(obj[id].userName);
                     obj[id].firstName && names.push(obj[id].firstName);
                     users.push({
@@ -59,11 +73,11 @@ class TelegramComponent extends ConfigGeneric {
     }
 
     async componentWillUnmount() {
-        await this.props.socket.unsubscribeState(`system.adapter.telegram.${this.props.instance}.alive`, this.onAliveChanged);
+        await this.props.oContext.socket.unsubscribeState(`system.adapter.telegram.${this.props.oContext.instance}.alive`, this.onAliveChanged);
     }
 
-    onAliveChanged = (id, state) => {
-        const alive = state ? state.val : false;
+    onAliveChanged = (id: string, state: ioBroker.State) => {
+        const alive: boolean = state ? state.val as boolean : false;
         if (alive !== this.state.alive) {
             this.setState({ alive }, () => {
                 if (alive && !this.state.initialized) {
@@ -73,15 +87,15 @@ class TelegramComponent extends ConfigGeneric {
         }
     };
 
-    onSysMessageChange(id) {
+    onSysMessageChange(id: string) {
         const pos = this.state.users.findIndex(item => item.id === id);
         if (pos !== -1) {
             const checked = !this.state.users[pos].sysMessages;
 
-            this.props.socket.sendTo(`telegram.${this.props.instance}`, 'systemMessages', { itemId: id, checked })
-                .then(obj => {
+            this.props.oContext.socket.sendTo(`telegram.${this.props.oContext.instance}`, 'systemMessages', { itemId: id, checked })
+                .then((obj: string) => {
                     if (obj === id) {
-                        const users = JSON.parse(JSON.stringify(this.state.users));
+                        const users:TelegramComponent['state']['users'] = JSON.parse(JSON.stringify(this.state.users));
                         const pos = users.findIndex(item => item.id === id);
                         if (pos !== -1) {
                             users[pos].sysMessages = checked;
@@ -92,11 +106,12 @@ class TelegramComponent extends ConfigGeneric {
         }
     }
 
-    onDelete(id) {
-        this.props.socket.sendTo(`telegram.${this.props.instance}`, 'delUser', id)
-            .then(obj => {
+    onDelete(id: string) {
+        this.props.oContext.socket.sendTo(`telegram.${this.props.oContext.instance}`, 'delUser', id)
+            .then((obj: string) => {
                 if (obj === id) {
-                    const users = JSON.parse(JSON.stringify(this.state.users));
+                    const users: TelegramComponent['state']['users']
+                     = JSON.parse(JSON.stringify(this.state.users));
                     const pos = users.findIndex(item => item.id === id);
                     if (pos !== -1) {
                         users.splice(pos, 1);
@@ -111,7 +126,7 @@ class TelegramComponent extends ConfigGeneric {
             return <Confirm
                 onClose={result => {
                     const id = this.state.confirm;
-                    this.setState({ confirm: null }, () => result && this.onDelete(id));
+                    this.setState({ confirm: null }, () => result && this.onDelete(id!));
                 }}
             />;
         } else {
@@ -168,17 +183,5 @@ class TelegramComponent extends ConfigGeneric {
         }
     }
 }
-
-TelegramComponent.propTypes = {
-    socket: PropTypes.object.isRequired,
-    themeType: PropTypes.string,
-    themeName: PropTypes.string,
-    style: PropTypes.object,
-    data: PropTypes.object.isRequired,
-    attr: PropTypes.string,
-    schema: PropTypes.object,
-    onError: PropTypes.func,
-    onChange: PropTypes.func,
-};
 
 export default TelegramComponent;

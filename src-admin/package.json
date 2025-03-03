@@ -5,19 +5,8 @@
     "type": "module",
     "scripts": {
         "start": "vite --port 4173",
-        "lint": "eslint --fix --ext .js,.jsx src",
-        "vite-build": "tsc && vite build",
-        "build": "node tasks.cjs",
-        "preview": "vite preview",
-        "update-packages": "ncu --upgrade && cd src && ncu --upgrade && cd ..",
-        "0-clean": "node tasks.cjs --0-clean",
-        "1-npm": "node tasks.cjs --1-npm",
-        "2-compile": "node tasks.cjs --2-compile",
-        "3-copy": "node tasks.cjs --3-copy",
-        "release": "release-script --force-update-lockfile",
-        "release-patch": "release-script patch --yes --force-update-lockfile",
-        "release-minor": "release-script minor --yes --force-update-lockfile",
-        "release-major": "release-script major --yes --force-update-lockfile"
+        "build": "tsc && vite build",
+        "preview": "vite preview"
       },
     "devDependencies": {
         "@module-federation/runtime": "^0.8.2",

@@ -251,7 +251,8 @@
           "lg": 6,
           "i18n": true,
           "url": "custom/customComponents.js",
-          "name": "ConfigCustomTelegramSet/Components/TelegramComponent"
+          "name": "ConfigCustomTelegramSet/Components/TelegramComponent",
+          "bundlerType": "module"
         }
       }
     },
