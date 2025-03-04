@@ -2,18 +2,21 @@
 import React from 'react';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
-import { Box } from '@mui/material';
+import { Box, Theme } from '@mui/material';
 
 import {
     GenericApp,
+    GenericAppProps,
+    GenericAppState,
     I18n,
+    IobTheme,
     Loader,
 } from '@iobroker/adapter-react-v5';
 
 import TelegramComponent from './TelegramComponent';
 
-const styles = {
-    app: theme => ({
+const styles: Record<string, any> = {
+    app: (theme: Theme) => ({
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
         height: '100%',
@@ -24,12 +27,19 @@ const styles = {
     }
 };
 
-class App extends GenericApp {
-    constructor(props) {
+declare global {
+    interface Navigator {
+        userLanguage?: string;
+    }
+}
+
+class App extends GenericApp<GenericAppProps, GenericAppState & { data: any, theme: IobTheme }> {
+    constructor(props: GenericAppProps) {
         const extendedProps = { ...props };
         super(props, extendedProps);
 
         this.state = {
+            ...this.state,
             data: { myCustomAttribute: 'red' },
             theme: this.createTheme(),
         };
@@ -48,7 +58,9 @@ class App extends GenericApp {
         };
 
         I18n.setTranslations(translations);
-        I18n.setLanguage((navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase());
+        I18n.setLanguage(
+            (navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase() as ioBroker.Languages            
+        );
     }
 
     render() {
@@ -65,18 +77,24 @@ class App extends GenericApp {
                 <Box sx={styles.app}>
                     <div style={styles.item}>
                         <TelegramComponent
-                            socket={this.socket}
-                            themeType={this.state.themeType}
+                            oContext={{
+                                socket: this.socket,
+                                themeType: this.state.themeType,
+                            }}
                             themeName={this.state.themeName}
                             attr='myCustomAttribute'
                             data={this.state.data}
                             onError={() => {}}
-                            instance={0}
+                            // instance={0}
                             schema={{
                                 name: 'ConfigCustomTelegramSet/Components/TelegramComponent',
                                 type: 'custom',
                             }}
                             onChange={data => this.setState({ data })}
+                            alive
+                            changed={false}
+                            common={{}}
+                            originalData={{}}
                         />
                     </div>
                 </Box>
