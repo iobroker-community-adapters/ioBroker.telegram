@@ -18,8 +18,8 @@ function adminClean() {
     deleteFoldersRecursive(`${srcAdmin}build`);
 }
 function adminCopy() {
-    copyFiles(['src-admin/build/static/js/*.js', '!src-admin/build/static/js/vendors*.js'], 'admin/custom/static/js');
-    copyFiles(['src-admin/build/static/js/*.map', '!src-admin/build/static/js/vendors*.map'], 'admin/custom/static/js');
+    copyFiles(['src-admin/build/assets/*.js', '!src-admin/build/static/js/vendors*.js'], 'admin/custom/assets');
+    copyFiles(['src-admin/build/assets/*.map', '!src-admin/build/static/js/vendors*.map'], 'admin/custom/assets');
     copyFiles(['src-admin/build/customComponents.js'], 'admin/custom');
     copyFiles(['src-admin/build/customComponents.js.map'], 'admin/custom');
     copyFiles(['src-admin/src/i18n/*.json'], 'admin/custom/i18n');
@@ -59,7 +59,7 @@ if (process.argv.includes('--rules-0-clean')) {
 } else if (process.argv.includes('--admin-build')) {
     adminClean();
     npmInstall(srcAdmin)
-        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, craco: true }))
+        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, vite: true, tsc: true }))
         .then(() => adminCopy())
         .catch(e => {
             console.error(e);
@@ -72,7 +72,7 @@ if (process.argv.includes('--rules-0-clean')) {
         .then(() => buildReact(src, { rootDir: src, vite: true, tsc: true }))
         .then(() => rulesCopy())
         .then(() => npmInstall(srcAdmin))
-        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, craco: true }))
+        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, vite: true, tsc: true }))
         .then(() => adminCopy())
         .catch(e => {
             console.error(e);
