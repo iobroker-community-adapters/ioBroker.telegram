@@ -43,7 +43,7 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, ConfigGenericS
         super.componentDidMount();
 
         this.props.oContext.socket.getState(`system.adapter.telegram.${this.props.oContext.instance}.alive`)
-            .then(async (state: ioBroker.State) => {
+            .then(async (state) => {
                 if (state && state.val) {
                     this.setState({ alive: true }, () => this.readData());
                 } else {
@@ -76,7 +76,7 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, ConfigGenericS
         await this.props.oContext.socket.unsubscribeState(`system.adapter.telegram.${this.props.oContext.instance}.alive`, this.onAliveChanged);
     }
 
-    onAliveChanged = (id: string, state: ioBroker.State) => {
+    onAliveChanged = (id: string, state: ioBroker.State | null | undefined) => {
         const alive: boolean = state ? state.val as boolean : false;
         if (alive !== this.state.alive) {
             this.setState({ alive }, () => {
