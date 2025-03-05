@@ -1,2 +1,0 @@
-import{C as _,i as r}from"./ConfigCustomTelegramSet__mf_v__runtimeInit__mf_v__-_xfUaItO.js";const{loadShare:o}=r,{initPromise:t}=_,a=t.then(e=>o("@iobroker/adapter-react-v5",{customShareInfo:{shareConfig:{singleton:!0,strictVersion:!1,requiredVersion:"*"}}})),i=await a.then(e=>e());var n=i;export{n as C};
-//# sourceMappingURL=ConfigCustomTelegramSet__loadShare___mf_0_iobroker_mf_1_adapter_mf_2_react_mf_2_v5__loadShare__-BtfZ4GMG.js.map

@@ -1,0 +1,2 @@
+import{C as o,i as t}from"./ConfigCustomTelegramSet__mf_v__runtimeInit__mf_v__-J6gnGK7T.js";const{loadShare:_}=t,{initPromise:r}=o,n=r.then(e=>_("@emotion/react",{customShareInfo:{shareConfig:{singleton:!0,strictVersion:!1,requiredVersion:"*"}}})),a=await n.then(e=>e());var s=a;export{s as C};
+//# sourceMappingURL=ConfigCustomTelegramSet__loadShare___mf_0_emotion_mf_1_react__loadShare__-vQ0ChBP1.js.map

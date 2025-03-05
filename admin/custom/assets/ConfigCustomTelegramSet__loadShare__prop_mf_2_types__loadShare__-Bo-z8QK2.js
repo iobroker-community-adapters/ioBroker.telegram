@@ -1,0 +1,2 @@
+import{g as o}from"./_commonjsHelpers-BosuxZz1.js";import{i as t,C as r}from"./ConfigCustomTelegramSet__mf_v__runtimeInit__mf_v__-J6gnGK7T.js";const{loadShare:s}=t,{initPromise:_}=r,a=_.then(e=>s("prop-types",{customShareInfo:{shareConfig:{singleton:!0,strictVersion:!1,requiredVersion:"*"}}})),n=await a.then(e=>e());var i=n;const f=o(i);export{i as C,f as P};
+//# sourceMappingURL=ConfigCustomTelegramSet__loadShare__prop_mf_2_types__loadShare__-Bo-z8QK2.js.map

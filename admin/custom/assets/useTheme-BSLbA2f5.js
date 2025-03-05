@@ -1,0 +1,2 @@
+import{f as o}from"./createSvgIcon-CB8M8dPE.js";import{C as r}from"./ConfigCustomTelegramSet__loadShare__react__loadShare__-qT6HkOsG.js";import{C as _}from"./ConfigCustomTelegramSet__loadShare___mf_0_emotion_mf_1_react__loadShare__-vQ0ChBP1.js";function m(e){return Object.keys(e).length===0}function a(e=null){const t=r.useContext(_.ThemeContext);return!t||m(t)?e:t}const n=o();function c(e=n){return a(e)}export{a,c as u};
+//# sourceMappingURL=useTheme-BSLbA2f5.js.map

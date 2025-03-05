@@ -1,0 +1,2 @@
+import{C as t,i as o}from"./ConfigCustomTelegramSet__mf_v__runtimeInit__mf_v__-J6gnGK7T.js";import{K as r,j as a}from"./createSvgIcon-CB8M8dPE.js";const{loadShare:s}=o,{initPromise:_}=t,i=_.then(e=>s("@mui/material",{customShareInfo:{shareConfig:{singleton:!0,strictVersion:!1,requiredVersion:"*"}}})),n=await i.then(e=>e());var c=n;const h=r(a.jsx("path",{d:"M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"}),"Delete");export{c as C,h as D};
+//# sourceMappingURL=Delete-DiGfg-c0.js.map
