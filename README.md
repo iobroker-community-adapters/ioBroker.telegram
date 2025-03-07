@@ -37,10 +37,11 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (bluefox) Admin component was migrated to TypeScript
+
 ### 4.0.0 (2025-01-13)
-
-NodeJS >= 20.x and js-controller >= 6 is required
-
+* NodeJS >= 20.x and js-controller >= 6 are required
 * (simatec) Responsive Design added
 * (klein0r) Allow async function calls in ask callback function
 

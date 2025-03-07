@@ -1,2 +1,0 @@
-const __vite__fileDeps=["./ActionTelegram-BmF3Cdv4.js","./ActionTelegram__mf_v__runtimeInit__mf_v__-mOGARPzg.js","./preload-helper-D6kgxu3v.js","./_commonjsHelpers-Cpj98o6Y.js"],__vite__mapDeps=i=>i.map(i=>__vite__fileDeps[i]);
-import{_ as o}from"./preload-helper-D6kgxu3v.js";const a={"./ActionTelegram":async()=>{const t=await o(()=>import("./ActionTelegram-BmF3Cdv4.js"),__vite__mapDeps([0,1,2,3]),import.meta.url),e={};return Object.assign(e,t),Object.defineProperty(e,"__esModule",{value:!0,enumerable:!1}),e}};export{a as default};

@@ -1,9 +1,9 @@
-import React from 'react';
+import type React from 'react';
 import { I18n } from '@iobroker/adapter-react-v5';
 
 import {
     type GenericBlockProps,
-    IGenericBlock,
+    type IGenericBlock,
     GenericBlock as WidgetGenericBlock,
     type RuleBlockConfig,
     type RuleBlockDescription,
@@ -27,7 +27,7 @@ export interface TelegramRuleBlockConfig extends RuleBlockConfig {
 }
 
 class ActionTelegram extends GenericBlock<TelegramRuleBlockConfig> {
-    cachePromises: Record<string, Promise<ioBroker.State>>;
+    cachePromises: Record<string, Promise<ioBroker.State | null | undefined>>;
 
     constructor(props: GenericBlockProps<TelegramRuleBlockConfig>) {
         super(props, ActionTelegram.getStaticData());
@@ -35,16 +35,16 @@ class ActionTelegram extends GenericBlock<TelegramRuleBlockConfig> {
     }
 
     static compile(config: TelegramRuleBlockConfig, context: RuleContext): string {
-        let text = (config.text || '').replace(/"/g, '\\"');
+        const text = (config.text || '').replace(/"/g, '\\"');
         if (!text) {
             return `// no text defined
 _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
-        } else {
-            return `// Telegram ${text || ''}
+        }
+
+        return `// Telegram ${text || ''}
 \t\tconst subActionVar${config._id} = "${(text || '').replace(/"/g, '\\"')}"${GenericBlock.getReplacesInText(context)};
 \t\t_sendToFrontEnd(${config._id}, {text: subActionVar${config._id}});
 \t\tsendTo("${config.instance}", "send", ${config.user && config.user !== '_' ? `{user: "${(config.user || '').replace(/"/g, '\\"')}", text: subActionVar${config._id}}` : `subActionVar${config._id}`});`;
-        }
     }
 
     renderDebug(debugMessage: { data: { text: string } }): React.JSX.Element | string {
@@ -59,8 +59,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
 
     _setUsers(instance?: string): void {
         instance = instance || this.state.settings.instance || 'telegram.0';
-        this.cachePromises[instance!] =
-            this.cachePromises[instance!] || this.props.socket.getState(`${instance}.communicate.users`);
+        this.cachePromises[instance] ||= this.props.socket.getState(`${instance}.communicate.users`);
 
         if (!this.state.settings._id) {
             return this.setState(
@@ -93,7 +92,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
             );
         }
 
-        this.cachePromises[instance].then((users: ioBroker.State): void => {
+        void this.cachePromises[instance].then((users: ioBroker.State | null | undefined): void => {
             let options: { title: string; value: string }[];
             try {
                 const usersStruct: Record<string, { userName: string; firstName: string }> | null = users?.val
@@ -106,7 +105,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
                       }))
                     : [];
                 options.unshift({ title: 'all', value: '' });
-            } catch (e) {
+            } catch {
                 options = [{ title: 'all', value: '' }];
             }
 
@@ -141,7 +140,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
         });
     }
 
-    onTagChange(tagCard: RuleTagCardTitle): void {
+    onTagChange(_tagCard: RuleTagCardTitle): void {
         this._setUsers();
     }
 

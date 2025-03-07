@@ -53,13 +53,13 @@ if (process.argv.includes('--rules-0-clean')) {
 } else if (process.argv.includes('--admin-1-npm')) {
     npmInstall(srcAdmin);
 } else if (process.argv.includes('--admin-2-compile')) {
-    buildReact(srcAdmin, { rootDir: srcAdmin, craco: true });
+    buildReact(srcAdmin, { rootDir: srcAdmin, vite: true });
 } else if (process.argv.includes('--admin-3-copy')) {
     adminCopy();
 } else if (process.argv.includes('--admin-build')) {
     adminClean();
     npmInstall(srcAdmin)
-        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, craco: true }))
+        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, vite: true }))
         .then(() => adminCopy())
         .catch(e => {
             console.error(e);
@@ -72,7 +72,7 @@ if (process.argv.includes('--rules-0-clean')) {
         .then(() => buildReact(src, { rootDir: src, vite: true, tsc: true }))
         .then(() => rulesCopy())
         .then(() => npmInstall(srcAdmin))
-        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, craco: true }))
+        .then(() => buildReact(srcAdmin, { rootDir: srcAdmin, vite: true }))
         .then(() => adminCopy())
         .catch(e => {
             console.error(e);

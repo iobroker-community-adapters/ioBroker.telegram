@@ -16,10 +16,7 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "baseUrl": ".",
-        "types": ["@iobroker/types"],
-        "paths": {
-            "shared": ["../shared/shared.ts"]
-        }
+        "types": ["@iobroker/types"]
     },
     "include": ["src"],
     "references": [

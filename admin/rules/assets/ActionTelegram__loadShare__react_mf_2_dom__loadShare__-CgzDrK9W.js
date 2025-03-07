@@ -1,4 +1,4 @@
-import{A as m}from"./ActionTelegram__loadShare__react__loadShare__-9hPgAKpp.js";import{g as u}from"./_commonjsHelpers-Cpj98o6Y.js";import{i as l,A as c}from"./ActionTelegram__mf_v__runtimeInit__mf_v__-mOGARPzg.js";var i={exports:{}},n={};/**
+import{A as m}from"./ActionTelegram__loadShare__react__loadShare__-Ccaej0ya.js";import{g as u}from"./_commonjsHelpers-Cpj98o6Y.js";import{i as l,A as c}from"./ActionTelegram__mf_v__runtimeInit__mf_v__-DxlLd_3A.js";var i={exports:{}},n={};/**
  * @license React
  * react-jsx-runtime.production.min.js
  *
