@@ -15,6 +15,7 @@
           "sm": 12,
           "md": 3,
           "lg": 3,
+          "xl": 3,
           "options": [
             {
               "label": "Polling",
@@ -35,6 +36,7 @@
           "sm": 12,
           "md": 5,
           "lg": 5,
+          "xl": 5,
           "label": "Polling interval (ms)"
         },
         "token": {
@@ -44,6 +46,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "token",
           "help": "Read README.md how to get token",
           "helpLink": "https://github.com/iobroker-community-adapters/ioBroker.telegram#iobroker-telegram-adapter"
@@ -55,6 +58,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "API URL"
         },
         "password": {
@@ -66,6 +70,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "password",
           "help": "Leave it blank if no password desired"
         },
@@ -76,6 +81,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "Remember authenticated users"
         },
         "doNotAcceptNewUsers": {
@@ -85,6 +91,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "Do not authenticate new users"
         },
         "useUsername": {
@@ -94,6 +101,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "Store username instead of firstname of remembered users"
         },
         "saveFiles": {
@@ -103,6 +111,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "Save media files"
         },
         "saveFilesTo": {
@@ -112,6 +121,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "Media file location",
           "hidden": "!data.saveFiles",
           "default": "filesystem",
@@ -132,6 +142,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "Quality of media files",
           "hidden": "!data.saveFiles",
           "default": "0",
@@ -165,6 +176,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "Allow state control"
         }
       }
@@ -180,6 +192,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "restarted",
           "help": "restarted_help"
         },
@@ -189,6 +202,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "restarting",
           "help": "restarting_help"
         },
@@ -199,6 +213,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "Keyboard command",
           "help": "Command to show the keyboard"
         },
@@ -208,6 +223,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "Use rooms in keyboard command",
           "help": "Show the list of rooms before the device selection"
         },
@@ -218,6 +234,7 @@
           "sm": 12,
           "md": 8,
           "lg": 8,
+          "xl": 8,
           "label": "Remember raw request data"
         },
         "text2command": {
@@ -228,6 +245,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "text2command instance",
           "help": "Text2Command info"
         },
@@ -239,6 +257,7 @@
           "sm": 12,
           "md": 4,
           "lg": 4,
+          "xl": 4,
           "label": "Answer timeout (in seconds)",
           "help": "Time limit for users to answer questions"
         },
@@ -249,6 +268,7 @@
           "sm": 12,
           "md": 6,
           "lg": 6,
+          "xl": 6,
           "i18n": true,
           "url": "custom/customComponents.js",
           "name": "ConfigCustomTelegramSet/Components/TelegramComponent",
@@ -269,6 +289,7 @@
           "sm": 12,
           "md": 9,
           "lg": 9,
+          "xl": 9,
           "label": "url",
           "help": "url_help"
         },
@@ -280,6 +301,7 @@
           "sm": 12,
           "md": 6,
           "lg": 6,
+          "xl": 6,
           "label": "ip"
         },
         "port": {
@@ -290,6 +312,7 @@
           "sm": 12,
           "md": 3,
           "lg": 3,
+          "xl": 3,
           "label": "port",
           "help": "port_help"
         },
@@ -301,6 +324,7 @@
           "sm": 12,
           "md": 3,
           "lg": 3,
+          "xl": 3,
           "label": "public certificate"
         },
         "certPrivate": {
@@ -310,6 +334,7 @@
           "sm": 12,
           "md": 3,
           "lg": 3,
+          "xl": 3,
           "label": "private certificate"
         },
         "certChained": {
@@ -319,6 +344,7 @@
           "sm": 12,
           "md": 3,
           "lg": 3,
+          "xl": 3,
           "label": "chained certificate"
         }
       }
