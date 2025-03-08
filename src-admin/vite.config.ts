@@ -35,6 +35,15 @@ const config = {
     build: {
         target: 'chrome89',
         outDir: './build',
+        rollupOptions: {
+            onwarn(warning: { code: string }, warn: (warning: { code: string }) => void): void {
+                // Suppress "Module level directives cause errors when bundled" warnings
+                if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+                    return;
+                }
+                warn(warning);
+            },
+        },
     },
 };
 
