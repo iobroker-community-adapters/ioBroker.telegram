@@ -2,17 +2,8 @@ import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
 import vitetsConfigPaths from 'vite-tsconfig-paths';
 import { federation } from '@module-federation/vite';
-
-const makeShared = pkgs => {
-    const result = {};
-    pkgs.forEach(packageName => {
-        result[packageName] = {
-            requiredVersion: '*',
-            singleton: true,
-        };
-    });
-    return result;
-};
+import { moduleFederationShared } from '@iobroker/adapter-react-v5/modulefederation.admin.config';
+import { readFileSync } from 'node:fs';
 
 const config = {
     plugins: [
@@ -24,24 +15,7 @@ const config = {
                 './Components': './src/Components.tsx',
             },
             remotes: {},
-            shared: makeShared([
-                '@emotion/react',
-                '@emotion/styled',
-                '@iobroker/adapter-react-v5',
-                '@iobroker/json-config',
-                '@iobroker/dm-gui-components',
-                '@mui/icons-material',
-                '@mui/material',
-                '@mui/x-date-pickers',
-                'date-fns',
-                'leaflet',
-                'leaflet-geosearch',
-                'react',
-                'react-ace',
-                'react-dom',
-                'react-dropzone',
-                'semver',
-            ]),
+            shared: moduleFederationShared(JSON.parse(readFileSync('./package.json').toString())),
         }),
         react(),
         vitetsConfigPaths(),
