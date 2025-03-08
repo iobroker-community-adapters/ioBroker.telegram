@@ -78,6 +78,7 @@
     "scripts": {
         "test:package": "mocha test/package --exit",
         "test:integration": "mocha test/integration --exit",
+        "test:js": "echo skip",
         "test": "npm run test:package",
         "check": "tsc --noEmit -p tsconfig.check.json",
         "lint": "eslint -c eslint.config.mjs .",
