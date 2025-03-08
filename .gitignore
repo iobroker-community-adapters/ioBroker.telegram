@@ -14,3 +14,5 @@ iob_npm.done
 /src-admin/package-lock.json
 /src-admin/build
 /src/build
+/src/.__mf__temp
+/src-admin/.__mf__temp
