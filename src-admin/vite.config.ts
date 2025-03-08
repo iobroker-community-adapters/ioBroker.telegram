@@ -3,7 +3,7 @@ import commonjs from 'vite-plugin-commonjs';
 import vitetsConfigPaths from 'vite-tsconfig-paths';
 import { federation } from '@module-federation/vite';
 import { moduleFederationShared } from '@iobroker/adapter-react-v5/modulefederation.admin.config';
-import { readFileSync } from 'node:fs';
+import pack from './package.json';
 
 const config = {
     plugins: [
@@ -15,7 +15,7 @@ const config = {
                 './Components': './src/Components.tsx',
             },
             remotes: {},
-            shared: moduleFederationShared(JSON.parse(readFileSync('./package.json').toString())),
+            shared: moduleFederationShared(pack),
         }),
         react(),
         vitetsConfigPaths(),
@@ -28,7 +28,8 @@ const config = {
             '/adapter': 'http://localhost:8081',
             '/session': 'http://localhost:8081',
             '/log': 'http://localhost:8081',
-            '/lib': 'http://localhost:8081',        },
+            '/lib': 'http://localhost:8081',
+        },
     },
     base: './',
     build: {

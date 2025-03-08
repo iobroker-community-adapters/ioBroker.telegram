@@ -79,7 +79,7 @@ class App extends GenericApp<GenericAppProps, AppState> {
             return (
                 <StyledEngineProvider injectFirst>
                     <ThemeProvider theme={this.state.theme}>
-                        <Loader theme={this.state.themeType} />
+                        <Loader themeType={this.state.themeType} />
                     </ThemeProvider>
                 </StyledEngineProvider>
             );
@@ -92,11 +92,17 @@ class App extends GenericApp<GenericAppProps, AppState> {
                         <div style={styles.item}>
                             <TelegramComponent
                                 oContext={{
+                                    adapterName: 'telegram',
                                     socket: this.socket,
-                                    selectedInstance: 0,
+                                    instance: 0,
                                     themeType: this.state.theme.palette.mode,
                                     isFloatComma: true,
                                     dateFormat: '',
+                                    forceUpdate: () => {},
+                                    systemConfig: {} as ioBroker.SystemConfigCommon,
+                                    theme: this.state.theme,
+                                    _themeName: this.state.themeName,
+                                    onCommandRunning: (_commandRunning: boolean): void => {},
                                 }}
                                 alive
                                 changed={JSON.stringify(this.state.originalData) !== JSON.stringify(this.state.data)}
@@ -107,6 +113,8 @@ class App extends GenericApp<GenericAppProps, AppState> {
                                 originalData={this.state.originalData}
                                 onError={() => {}}
                                 schema={{
+                                    url: '',
+                                    i18n: true,
                                     name: 'ConfigCustomTelegramSet/Components/TelegramComponent',
                                     type: 'custom',
                                 }}

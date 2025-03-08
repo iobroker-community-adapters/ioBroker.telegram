@@ -1,3 +1,16 @@
 // this file used only for simulation and not used in end build
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
 
-import('./bootstrap');
+window.adapterName = 'adapter-component-template';
+
+const container = document.getElementById('root');
+if (container) {
+    const root = createRoot(container);
+    root.render(
+        <React.StrictMode>
+            <App socket={{ port: 8081 }} />
+        </React.StrictMode>,
+    );
+}

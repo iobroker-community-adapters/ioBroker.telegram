@@ -50,10 +50,10 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, TelegramCompon
     componentDidMount(): void {
         super.componentDidMount();
 
-        this.props.oContext.socket
+        void this.props.oContext.socket
             .getState(`system.adapter.telegram.${this.props.oContext.instance}.alive`)
-            .then(async (state: ioBroker.State) => {
-                if (state && state.val) {
+            .then(async (state: ioBroker.State | null | undefined): Promise<void> => {
+                if (state?.val) {
                     this.setState({ alive: true }, () => this.readData());
                 } else {
                     this.setState({ alive: false });
@@ -67,7 +67,7 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, TelegramCompon
     }
 
     readData(): void {
-        this.props.oContext.socket
+        void this.props.oContext.socket
             .sendTo(`telegram.${this.props.oContext.instance}`, 'adminuser', null)
             .then((obj: Record<string, TelegramUser>) => {
                 // get admin user
@@ -86,14 +86,14 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, TelegramCompon
             });
     }
 
-    async componentWillUnmount(): Promise<void> {
-        await this.props.oContext.socket.unsubscribeState(
+    componentWillUnmount(): void {
+        this.props.oContext.socket.unsubscribeState(
             `system.adapter.telegram.${this.props.oContext.instance}.alive`,
             this.onAliveChanged,
         );
     }
 
-    onAliveChanged = (_id: string, state: ioBroker.State): void => {
+    onAliveChanged = (_id: string, state: ioBroker.State | null | undefined): void => {
         const alive: boolean = state ? (state.val as boolean) : false;
         if (alive !== this.state.alive) {
             this.setState({ alive }, () => {
