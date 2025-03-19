@@ -28,7 +28,7 @@
       
           "@iobroker/adapter-react-v5": {
             name: "@iobroker/adapter-react-v5",
-            version: "7.6.0",
+            version: "7.6.3",
             scope: ["default"],
             loaded: false,
             from: "ActionTelegram",

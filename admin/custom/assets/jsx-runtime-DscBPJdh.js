@@ -1,4 +1,4 @@
-import{C as l}from"./ConfigCustomTelegramSet__loadShare__react__loadShare__-qT6HkOsG.js";var p={exports:{}},_={};/**
+import{C as l}from"./ConfigCustomTelegramSet__loadShare__react__loadShare__-xs2vjw5Y.js";var p={exports:{}},_={};/**
  * @license React
  * react-jsx-runtime.production.min.js
  *

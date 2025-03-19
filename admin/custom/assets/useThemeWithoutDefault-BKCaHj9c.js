@@ -1,0 +1,1 @@
+import{C as o}from"./ConfigCustomTelegramSet__loadShare__react__loadShare__-xs2vjw5Y.js";import{X as n}from"./createTheme-CfKVAAx0.js";function r(e){return Object.keys(e).length===0}function s(e=null){const t=o.useContext(n);return!t||r(t)?e:t}export{s as u};
