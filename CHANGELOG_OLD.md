@@ -1,4 +1,7 @@
 # Older changes
+## 3.7.1 (2024-07-03)
+* (klein0r) Restored translations for messages
+
 ## 3.7.0 (2024-07-03)
 * (klein0r) Removed default / shadow fiel from Blockly block ask
 * (klein0r) Added state to answer last request (same chat)

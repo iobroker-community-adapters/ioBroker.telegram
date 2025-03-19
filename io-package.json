@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "news": {
+      "4.1.0": {
+        "en": "Admin component was migrated to TypeScript",
+        "de": "Admin-Komponente wurde zu TypeScript migriert",
+        "ru": "Компонент администратора был перенесен в TypeScript",
+        "pt": "O componente de administrador foi migrado para TypeScript",
+        "nl": "Admin-component is gemigreerd naar TypeScript",
+        "fr": "La composante Admin a été migrée vers TypeScript",
+        "it": "Componente Admin è stato migrato a TypeScript",
+        "es": "El componente Admin fue migrado a TipoScript",
+        "pl": "Składnik admin został przeniesiony do TypeScript",
+        "uk": "Компонент адміністратора мігрувався на TypeScript",
+        "zh-cn": "管理员组件已迁移到类型脚本"
+      },
       "4.0.0": {
         "en": "NodeJS >= 20.x and js-controller >= 6 is required\n\n* Responsive Design added\n* Allow async function calls in ask callback function",
         "de": "NodeJS >= 20.x und js-Controller >= 6 ist erforderlich\n\n* Responsive Design hinzugefügt\n* Lassen Sie Async-Funktion Anrufe in Fragen Callback-Funktion",
@@ -80,19 +93,6 @@
         "pl": "(klein0r) Zapisz wideo, które zostały nagrane telegramem (video _ note)\n(klein0r) Dodano czas odpowiedzi do konfiguracji instancji\n(klein0r) Dodano opcję wysyłania aktualizacji statusu do konkretnych użytkowników\n(klein0r) Dodano stany identyfikatora nici (z supergrup)",
         "uk": "(klein0r) Збережіть відео, які були записані з телеграмою (відео_note)\n(klein0r) Доданий час відповіді на налаштування екземпляра\n(klein0r) Додана можливість надсилати оновлення статусу конкретним користувачам\n(klein0r) Додані стани для різьблення (від супергруп)",
         "zh-cn": "(鸣笛0r) 保存用电报录制的视频( video_ note)\n(鸣笛0r) 添加到实例配置中的答题超时\n(鸣笛0r) 添加向特定用户发送状态更新的选项\n(鸣笛0r) 线程 ID 添加状态( 超组)"
-      },
-      "3.5.3": {
-        "en": "(foxriver76) escape all unallowed characters when sending with notification manager",
-        "de": "(foxriver76) entkommen alle unallowed zeichen beim senden mit benachrichtigungsmanager",
-        "ru": "(foxriver76) избегают всех неразрешенных персонажей при отправке с менеджером уведомлений",
-        "pt": "(foxriver76) escapar de todos os caracteres não permitidos ao enviar com o gerenciador de notificações",
-        "nl": "(foxriver76) ontsnappen aan alle niet toegestane tekens bij het verzenden met notificatiebeheerder",
-        "fr": "(foxriver76) échappe à tous les caractères non autorisés lors de l'envoi avec le gestionnaire de notification",
-        "it": "(foxriver76) sfuggire a tutti i caratteri non consentiti durante l'invio con gestore di notifiche",
-        "es": "(foxriver76) escape todos los caracteres no autorizados al enviar con el administrador de notificación",
-        "pl": "(foxriver76) uniknąć wszystkich niedozwolonych znaków podczas wysyłania z menedżerem powiadomień",
-        "uk": "(foxriver76) втекти всі незрівняні символи при надсиланні повідомлення менеджера",
-        "zh-cn": "(foxriver76) 与通知管理器一起发送时, 逃脱所有未分配字符"
       }
     },
     "messages": [

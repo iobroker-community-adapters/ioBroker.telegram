@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 4.1.0 (2025-03-19)
 * (bluefox) Admin component was migrated to TypeScript
 
 ### 4.0.0 (2025-01-13)
@@ -53,9 +53,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.8.0 (2024-07-14)
 * (bluefox) Migrated GUI for Admin 7
-
-### 3.7.1 (2024-07-03)
-* (klein0r) Restored translations for messages
 
 ## License
 
