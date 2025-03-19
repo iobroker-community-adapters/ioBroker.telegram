@@ -109,7 +109,7 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, TelegramCompon
         if (pos !== -1) {
             const checked = !this.state.users[pos].sysMessages;
 
-            this.props.oContext.socket
+            void this.props.oContext.socket
                 .sendTo(`telegram.${this.props.oContext.instance}`, 'systemMessages', { itemId: id, checked })
                 .then((obj: string) => {
                     if (obj === id) {
@@ -125,7 +125,7 @@ class TelegramComponent extends ConfigGeneric<ConfigGenericProps, TelegramCompon
     }
 
     onDelete(id: string): void {
-        this.props.oContext.socket
+        void this.props.oContext.socket
             .sendTo(`telegram.${this.props.oContext.instance}`, 'delUser', id)
             .then((obj: string) => {
                 if (obj === id) {
