@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.3",
-    "@iobroker/webserver": "^1.2.0",
+    "@iobroker/webserver": "^1.2.4",
     "axios": "^1.8.4",
     "node-telegram-bot-api": "^0.66.0"
   },
