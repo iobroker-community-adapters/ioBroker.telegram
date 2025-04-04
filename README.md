@@ -39,6 +39,7 @@ Use telegram service to communicate with ioBroker
 -->
 ### 4.1.0 (2025-03-19)
 * (bluefox) Admin component was migrated to TypeScript
+* (bluefox) NodeJS >= 20.x and js-controller >= 6 and admin >= 7 are required now.
 
 ### 4.0.0 (2025-01-13)
 * NodeJS >= 20.x and js-controller >= 6 are required
