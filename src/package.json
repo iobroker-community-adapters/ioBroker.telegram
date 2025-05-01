@@ -19,7 +19,7 @@
         "release-major": "release-script major --yes"
     },
     "dependencies": {
-        "@iobroker/adapter-react-v5": "^7.6.3",
+        "@iobroker/adapter-react-v5": "^7.6.15",
         "@iobroker/javascript-rules-dev": "^0.0.6",
         "@iobroker/types": "^7.0.6",
         "@module-federation/runtime": "^0.11.2",
