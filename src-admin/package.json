@@ -19,7 +19,7 @@
         "@mui/material": "^6.4.8",
         "@originjs/vite-plugin-federation": "^1.4.1",
         "@types/node": "^22.15.29",
-        "@types/react": "^18.3.23",
+        "@types/react": "^19.1.12",
         "@types/react-dom": "^18.3.5",
         "@vitejs/plugin-react": "^4.3.4",
         "react": "^18.3.1",
