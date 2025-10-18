@@ -48,6 +48,9 @@ jobs:
           extra-tests: npm run test:js
 
   deploy:
+    permissions:
+      contents: write
+      id-token: write
     needs: [check-and-lint, adapter-tests]
 
     if: |
@@ -61,7 +64,7 @@ jobs:
       - uses: ioBroker/testing-action-deploy@v1
         with:
           node-version: '20.x'
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          # npm-token: ${{ secrets.NPM_TOKEN }}  # Commented out for migration to Trusted Publishing
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
           # When using Sentry for error reporting, Sentry can be informed about new releases
