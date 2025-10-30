@@ -17,3 +17,6 @@ iob_npm.done
 /src/.__mf__temp
 /src-admin/.__mf__temp
 /src/.__mf__temp/
+
+#ignore .commitinfo created by ioBroker release script
+.commitinfo
