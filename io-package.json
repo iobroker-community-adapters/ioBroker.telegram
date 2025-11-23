@@ -272,6 +272,7 @@
     "proxyPort": 1234,
     "proxyLogin": "",
     "proxyPassword": "",
+    "passwordRepeat": "",
     "restarted": "_",
     "restarting": "_",
     "keyboard": "/cmds",
