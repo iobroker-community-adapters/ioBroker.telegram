@@ -27,7 +27,7 @@
         "@mui/material": "6.4.8",
         "@mui/styles": "6.4.12",
         "@originjs/vite-plugin-federation": "^1.4.1",
-        "@types/react": "^19.0.12",
+        "@types/react": "^19.2.7",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react": "^4.3.4",
         "react": "^18.3.1",
