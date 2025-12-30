@@ -2,23 +2,12 @@
   "name": "iobroker.telegram",
   "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
   "version": "4.1.0",
-  "author": {
-    "name": "bluefox",
-    "email": "dogafox@gmail.com"
-  },
+  "author": "bluefox <dogafox@gmail.com>",
   "contributors": [
-    {
-      "name": "bluefox",
-      "email": "dogafox@gmail.com"
-    },
-    {
-      "name": "apollon77",
-      "email": "iobroker@fischer-ka.de"
-    },
-    {
-      "name": "Matthias Kleine",
-      "email": "info@haus-automatisierung.com"
-    }
+    "bluefox <dogafox@gmail.com>",
+    "apollon77 <iobroker@fischer-ka.de>",
+    "Matthias Kleine <info@haus-automatisierung.com>",
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
   "repository": {
