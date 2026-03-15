@@ -1,38 +1,38 @@
-# Dependabot will run on day 13 of each month at 01:51 (Europe/Berlin timezone)
+# Dependabot will run on day 8 of each month at 03:23 (Europe/Berlin timezone)
 version: 2
 updates:
 
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "cron"
-      timezone: "Europe/Berlin"
-      cronjob: "51 1 13 * *"
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '51 1 13 * *'
     open-pull-requests-limit: 15
-    versioning-strategy: "increase"
+    versioning-strategy: 'increase'
 
-  - package-ecosystem: "npm"
-    directory: "/src"
+  - package-ecosystem: 'npm'
+    directory: '/src'
     schedule:
-      interval: "cron"
-      timezone: "Europe/Berlin"
-      cronjob: "51 1 13 * *"
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '51 1 13 * *'
     open-pull-requests-limit: 15
-    versioning-strategy: "increase"
+    versioning-strategy: 'increase'
 
-  - package-ecosystem: "npm"
-    directory: "/src-admin"
+  - package-ecosystem: 'npm'
+    directory: '/src-admin'
     schedule:
-      interval: "cron"
-      timezone: "Europe/Berlin"
-      cronjob: "51 1 13 * *"
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '51 1 13 * *'
     open-pull-requests-limit: 15
-    versioning-strategy: "increase"
+    versioning-strategy: 'increase'
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "cron"
-      timezone: "Europe/Berlin"
-      cronjob: "51 1 13 * *"
+      interval: 'cron'
+      timezone: 'Europe/Berlin'
+      cronjob: '51 1 13 * *'
     open-pull-requests-limit: 15
