@@ -724,6 +724,13 @@ function _sendMessageHelper(dest, name, text, options) {
 
                     const payload = Object.assign({}, mediaInput);
 
+                    if (options.editMessageMedia.options?.caption) {
+                        payload.caption = options.editMessageMedia.options.caption;
+                    }
+                    if (options.editMessageMedia.options?.parse_mode) {
+                        payload.parse_mode = options.editMessageMedia.options.parse_mode;
+                    }
+
                     delete payload.media;
                     delete payload.fileOptions;
 
@@ -745,6 +752,11 @@ function _sendMessageHelper(dest, name, text, options) {
                     }
 
                     opts.qs.media = JSON.stringify(payload);
+
+                    if (options.editMessageMedia.options?.reply_markup) {
+                        opts.qs.reply_markup = JSON.stringify(options.editMessageMedia.options.reply_markup);
+                    }
+
                     bot && executeSending(() => bot._request('editMessageMedia', opts), options, resolve);
                 } else {
                     adapter.log.error(
