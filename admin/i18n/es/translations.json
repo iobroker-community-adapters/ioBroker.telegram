@@ -71,7 +71,7 @@
     "text2command instance": "Instancia Text2Command",
     "token": "Token",
     "type": "Tipo",
-    "url": "URL",
+    "url": "Url",
     "url_help": "como \"https://mydomain.noip.com:8443\"",
     "value as boolean": "valor como booleano",
     "value as number": "valor como número",
