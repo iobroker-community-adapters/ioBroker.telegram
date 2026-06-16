@@ -35,7 +35,7 @@
         "vite": "6.2.7",
         "vite-plugin-commonjs": "^0.10.4",
         "vite-plugin-svgr": "^4.3.0",
-        "vite-tsconfig-paths": "^5.1.4"
+        "vite-tsconfig-paths": "^6.1.1"
     },
     "eslintConfig": {
         "extends": "react-app"
