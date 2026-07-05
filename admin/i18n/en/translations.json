@@ -69,6 +69,8 @@
     "server": "server",
     "telegram adapter settings": "telegram adapter settings",
     "text2command instance": "Text2Command instance",
+    "assistant instance": "Assistant instance",
+    "Forward messages that no internal rule/command matched to this ioBroker.assistant instance and reply with its answer.": "Forward messages that no internal rule/command matched to this ioBroker.assistant instance and reply with its answer.",
     "token": "Token",
     "type": "Type",
     "url": "URL",

@@ -2058,6 +2058,35 @@ function processTelegramText(msg) {
         );
     }
 
+    // Forward messages that no internal rule/command matched to the ioBroker.assistant instance and
+    // reply with its answer. The reply is routed via this closure (msg.chat.id), so the answer always
+    // goes back to the right chat/thread.
+    if (adapter.config.assistantInstance) {
+        adapter.sendTo(
+            adapter.config.assistantInstance,
+            'ask',
+            {
+                text: msg.text,
+                source: `telegram:${user}`,
+                user,
+                chatId: msg.chat.id,
+                userId: msg.from && msg.from.id !== undefined && msg.from.id !== null ? msg.from.id.toString() : '',
+                messageThreadId: msg?.is_topic_message ? msg.message_thread_id : 0,
+            },
+            response => {
+                const text = response && (response.answer || response.error);
+                if (text) {
+                    adapter.log.debug(`Assistant response: ${text}`);
+                    const options =
+                        msg?.is_topic_message ? { message_thread_id: msg.message_thread_id } : undefined;
+                    bot.sendMessage(msg.chat.id, text, options).catch(error =>
+                        adapter.log.error(`send Message Error: ${error}`),
+                    );
+                }
+            },
+        );
+    }
+
     adapter.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
     adapter.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
     adapter.setState('communicate.requestMessageThreadId', {

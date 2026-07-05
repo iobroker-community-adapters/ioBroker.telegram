@@ -11,6 +11,7 @@
 		"checkJs": true,
 
 		"module": "commonjs",
+		"rootDir": "./",
 		"moduleResolution": "node",
 		"esModuleInterop": true,
 		// this is necessary for the automatic typing of the adapter config
