@@ -102,7 +102,7 @@ export interface Question {
     chatId?: number | string;
     user?: string;
     msgId?: number;
-    timeout?: NodeJS.Timeout | null;
+    timeout?: ioBroker.Timeout | null;
 }
 
 /** The extra options accepted for an `editMessageMedia` request (caption/parse_mode are applied to the media). */

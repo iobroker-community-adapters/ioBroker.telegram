@@ -58,14 +58,14 @@ class Telegram extends Adapter {
     private bot: TelegramBot | undefined;
     private storedUsers: Users = {};
     private systemLang: ioBroker.Languages = 'en';
-    private reconnectTimer: NodeJS.Timeout | null = null;
-    private pollConnectionStatus: NodeJS.Timeout | null = null;
+    private reconnectTimer: ioBroker.Interval | undefined;
+    private pollConnectionStatus: ioBroker.Timeout | undefined;
     private isConnected: boolean | null = null;
     private lastMessageTime = 0;
     private lastMessageText = '';
     private readonly enumsCache: Record<string, Record<string, any>> = {};
     private readonly protection: Record<string, number[]> = {};
-    private gcInterval: NodeJS.Timeout | null = null;
+    private gcInterval: ioBroker.Interval | undefined;
 
     private readonly commands: Record<string, CommandConfig> = {};
     private readonly callbackQueryId: Record<string, { id: string; ts: number }> = {};
@@ -73,7 +73,7 @@ class Telegram extends Adapter {
     private tmpDirName = '';
 
     private questions: Question[] = [];
-    private garbageCollectorInterval: NodeJS.Timeout | null = null;
+    private garbageCollectorInterval: ioBroker.Interval | undefined;
     private isServer = false;
 
     private readonly server: { app: any; server: any; settings: any } = {
@@ -124,7 +124,7 @@ class Telegram extends Adapter {
                             adminUserData = JSON.parse(state.val as string);
                             this.sendTo(obj.from, obj.command, adminUserData, obj.callback);
                         } catch (err) {
-                            err && this.log.error(err);
+                            this.log.error(err);
                             this.log.error('Cannot parse stored user IDs!');
                         }
                     }
@@ -136,7 +136,7 @@ class Telegram extends Adapter {
                     if (err) {
                         this.log.error(err.toString());
                     }
-                    if (state && state.val) {
+                    if (state?.val) {
                         try {
                             userObj = JSON.parse(state.val as string);
                             delete userObj[userID];
@@ -148,7 +148,7 @@ class Telegram extends Adapter {
                                 }
                             });
                         } catch (err) {
-                            err && this.log.error(err);
+                            this.log.error(err);
                             this.log.error(`Cannot delete user ${userID}!`);
                         }
                     }
@@ -175,7 +175,7 @@ class Telegram extends Adapter {
                                 }
                             });
                         } catch (err) {
-                            err && this.log.error(err);
+                            this.log.error(err);
                             this.log.error(`Cannot change user ${userID}!`);
                         }
                     }
@@ -192,7 +192,7 @@ class Telegram extends Adapter {
                         }
                     });
                 } catch (err) {
-                    err && this.log.error(err);
+                    this.log.error(err);
                     this.log.error('Cannot wipe list of saved users!');
                 }
             } else if (obj.command === 'sendNotification') {
@@ -209,7 +209,7 @@ class Telegram extends Adapter {
         await I18n.init(join(__dirname, '..'), this);
 
         this.questions = [];
-        this.garbageCollectorInterval = setInterval(() => {
+        this.garbageCollectorInterval = this.setInterval(() => {
             const now = Date.now();
             Object.keys(this.callbackQueryId).forEach(id => {
                 if (now - this.callbackQueryId[id].ts > 120000) {
@@ -223,7 +223,9 @@ class Telegram extends Adapter {
         // Create file system directories for media files
         if (this.config.saveFilesTo == 'filesystem') {
             try {
-                !existsSync(this.tmpDirName) && mkdirSync(this.tmpDirName);
+                if (!existsSync(this.tmpDirName)) {
+                    mkdirSync(this.tmpDirName);
+                }
 
                 const subDirectories = ['voice'];
                 if (this.config.saveFiles) {
@@ -233,7 +235,9 @@ class Telegram extends Adapter {
 
                 for (const subDir of subDirectories) {
                     const subDirPath = join(this.tmpDirName, subDir);
-                    !existsSync(subDirPath) && mkdirSync(subDirPath);
+                    if (!existsSync(subDirPath)) {
+                        mkdirSync(subDirPath);
+                    }
                 }
             } catch (err) {
                 this.log.error(`Cannot create tmp directory: ${this.tmpDirName}: ${err}`);
@@ -318,17 +322,29 @@ class Telegram extends Adapter {
     }
 
     onUnload(callback: () => void): void {
-        this.reconnectTimer && clearInterval(this.reconnectTimer);
-        this.reconnectTimer = null;
+        if (this.reconnectTimer) {
+            this.clearInterval(this.reconnectTimer);
+            this.reconnectTimer = undefined;
+        }
 
-        this.gcInterval && clearInterval(this.gcInterval);
-        this.gcInterval = null;
+        if (this.gcInterval) {
+            this.clearInterval(this.gcInterval);
+            this.gcInterval = undefined;
+        }
 
-        this.pollConnectionStatus && clearInterval(this.pollConnectionStatus);
-        this.pollConnectionStatus = null;
+        if (this.pollConnectionStatus) {
+            this.clearTimeout(this.pollConnectionStatus);
+            this.pollConnectionStatus = undefined;
+        }
 
-        this.garbageCollectorInterval && clearInterval(this.garbageCollectorInterval);
-        this.garbageCollectorInterval = null;
+        if (this.garbageCollectorInterval) {
+            this.clearInterval(this.garbageCollectorInterval);
+            this.garbageCollectorInterval = undefined;
+        }
+
+        // cancel any pending question answer-timeouts so they cannot fire after unload
+        this.questions?.forEach(q => q.timeout && this.clearTimeout(q.timeout));
+        this.questions = [];
 
         if (this.config) {
             if (this.config.restarting !== '') {
@@ -356,7 +372,9 @@ class Telegram extends Adapter {
             }
         }
 
-        void (this.isConnected && this.setState && this.setState('info.connection', false, true));
+        if (this.isConnected && this.setState) {
+            this.setState('info.connection', false, true).catch(e => this.log.error(`Cannot set state: ${e}`));
+        }
         this.isConnected = false;
 
         callback();
@@ -395,7 +413,9 @@ class Telegram extends Adapter {
                         await this.sendMessage(val);
                         await this.setStateAsync('communicate.responseJson', { val: state.val, ack: true });
                     } catch (err) {
-                        this.log.error(`could not parse Json in communicate.responseJon state: ${err.message}`);
+                        this.log.error(
+                            `could not parse Json in communicate.responseJon state: ${err instanceof Error ? err.message : err}`,
+                        );
                     }
                 } else if (id.endsWith('communicate.responseSilentJson')) {
                     try {
@@ -403,9 +423,11 @@ class Telegram extends Adapter {
 
                         // Send to someone this message
                         await this.sendMessage(val, null, null, { disable_notification: true });
-                        await this.setStateAsync('communicate.responseSilent', { val: state.val, ack: true });
+                        await this.setStateAsync('communicate.responseSilentJson', { val: state.val, ack: true });
                     } catch (err) {
-                        this.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
+                        this.log.error(
+                            `could not parse Json in communicate.responseSilentJon state: ${err instanceof Error ? err.message : err}`,
+                        );
                     }
                 } else if (id.endsWith('communicate.requestResponse')) {
                     try {
@@ -423,10 +445,12 @@ class Telegram extends Adapter {
                         await this.sendMessage(text, null, chatIdState ? (chatIdState.val as string) : null, options);
                         await this.setStateAsync('communicate.requestResponse', { val: state.val, ack: true });
                     } catch (err) {
-                        this.log.error(`could not parse Json in communicate.responseSilentJon state: ${err.message}`);
+                        this.log.error(
+                            `could not parse Json in communicate.requestResponse state: ${err instanceof Error ? err.message : err}`,
+                        );
                     }
                 }
-            } else if (this.commands[id] && this.commands[id].report) {
+            } else if (this.commands[id]?.report) {
                 this.log.debug(`reporting state change of ${id}: ${JSON.stringify(this.commands[id])}`);
 
                 const options: SendOptions =
@@ -501,11 +525,16 @@ class Telegram extends Adapter {
 
     getStatus(id: string, state?: ioBroker.State | null): string {
         const cmd = this.commands[id];
-        let val: ioBroker.StateValue | string = state ? state.val : 'State not set';
+        // If the state has no value yet, we cannot tell ON from OFF - report it as uncertain instead of
+        // rendering a not-set boolean as "ON" (falsy 'State not set' string used to leak through here).
+        if (state?.val == null) {
+            return `${cmd.alias} => ${I18n.translate('uncertain')}`;
+        }
+        let val: ioBroker.StateValue | string = state.val;
         if (cmd.type === 'boolean') {
             return `${cmd.alias} => ${val ? cmd.onStatus || I18n.translate('ON-Status') : cmd.offStatus || I18n.translate('OFF-Status')}`;
         }
-        if (cmd.states && cmd.states[String(val)] !== undefined) {
+        if (cmd.states?.[String(val)] !== undefined) {
             val = cmd.states[String(val)];
         }
         return `${cmd.alias} => ${val}${cmd.unit ? ` ${cmd.unit}` : ''}`;
@@ -515,7 +544,7 @@ class Telegram extends Adapter {
         let errorCounter = 0;
 
         const checkConnection = (): void => {
-            this.pollConnectionStatus = null;
+            this.pollConnectionStatus = undefined;
             this.bot &&
                 this.bot.getMe &&
                 this.bot
@@ -525,10 +554,14 @@ class Telegram extends Adapter {
                         this.connectionState(true, errorCounter > 0);
                     })
                     .catch(error => {
-                        errorCounter % 10 === 0 && this.log.error(`getMe (reconnect #${errorCounter}) Error:${error}`);
+                        if (errorCounter % 10 === 0) {
+                            this.log.error(`getMe (reconnect #${errorCounter}) Error:${error}`);
+                        }
                         errorCounter++;
-                        this.pollConnectionStatus && clearTimeout(this.pollConnectionStatus);
-                        this.pollConnectionStatus = setTimeout(checkConnection, 1000);
+                        if (this.pollConnectionStatus) {
+                            this.clearTimeout(this.pollConnectionStatus);
+                        }
+                        this.pollConnectionStatus = this.setTimeout(checkConnection, 1000);
                     });
         };
 
@@ -539,8 +572,8 @@ class Telegram extends Adapter {
             this.isConnected = connected;
             void this.setState('info.connection', this.isConnected, true);
             if (this.isConnected && this.pollConnectionStatus) {
-                clearTimeout(this.pollConnectionStatus);
-                this.pollConnectionStatus = null;
+                this.clearTimeout(this.pollConnectionStatus);
+                this.pollConnectionStatus = undefined;
             } else if (!this.isConnected) {
                 checkConnection();
             }
@@ -602,38 +635,26 @@ class Telegram extends Adapter {
 
         if (typeof msg === 'object') {
             if (this.config.storeRawRequest) {
-                void this.setState(
-                    'communicate.botSendRaw',
-                    JSON.stringify(msg, null, 2),
-                    true,
-                    err => err && this.log.error(err.message),
+                this.setState('communicate.botSendRaw', JSON.stringify(msg, null, 2), true).catch(err =>
+                    this.log.error(err.message),
                 );
             }
 
             if (msg?.message_id) {
-                void this.setState(
-                    'communicate.botSendMessageId',
-                    msg.message_id,
-                    true,
-                    err => err && this.log.error(err.message),
+                void this.setState('communicate.botSendMessageId', msg.message_id, true).catch(err =>
+                    this.log.error(err.message),
                 );
             }
 
             if (msg?.message_thread_id) {
-                void this.setState(
-                    'communicate.botSendMessageThreadId',
-                    msg.message_thread_id,
-                    true,
-                    err => err && this.log.error(err.message),
+                void this.setState('communicate.botSendMessageThreadId', msg.message_thread_id, true).catch(err =>
+                    this.log.error(err.message),
                 );
             }
 
-            if (msg?.chat && msg.chat.id) {
-                void this.setState(
-                    'communicate.botSendChatId',
-                    msg.chat.id.toString(),
-                    true,
-                    err => err && this.log.error(err.message),
+            if (msg?.chat?.id) {
+                void this.setState('communicate.botSendChatId', msg.chat.id.toString(), true).catch(err =>
+                    this.log.error(err.message),
                 );
             }
         }
@@ -681,7 +702,7 @@ class Telegram extends Adapter {
                         (typeof text === 'string' &&
                             text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) &&
                             (existsSync(text) || text.match(/^(https|http)/i))) ||
-                        (options && options.type === 'photo')
+                        options?.type === 'photo'
                     ) {
                         mediaInput = {
                             type: 'photo',
@@ -689,7 +710,7 @@ class Telegram extends Adapter {
                         };
                     } else if (
                         (typeof text === 'string' && text.match(/\.(gif)/i) && existsSync(text)) ||
-                        (options && options.type === 'animation')
+                        options?.type === 'animation'
                     ) {
                         mediaInput = {
                             type: 'animation',
@@ -697,7 +718,7 @@ class Telegram extends Adapter {
                         };
                     } else if (
                         (typeof text === 'string' && text.match(/\.(mp4)$/i) && existsSync(text)) ||
-                        (options && options.type === 'video')
+                        options?.type === 'video'
                     ) {
                         mediaInput = {
                             type: 'video',
@@ -705,7 +726,7 @@ class Telegram extends Adapter {
                         };
                     } else if (
                         (typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && existsSync(text)) ||
-                        (options && options.type === 'audio')
+                        options?.type === 'audio'
                     ) {
                         mediaInput = {
                             type: 'audio',
@@ -715,7 +736,7 @@ class Telegram extends Adapter {
                         (typeof text === 'string' &&
                             text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) &&
                             existsSync(text)) ||
-                        (options && options.type === 'document')
+                        options?.type === 'document'
                     ) {
                         mediaInput = {
                             type: 'document',
@@ -783,7 +804,7 @@ class Telegram extends Adapter {
                     );
                     resolve(JSON.stringify(messageIds));
                 }
-            } else if (options && options.editMessageCaption !== undefined) {
+            } else if (options?.editMessageCaption !== undefined) {
                 this.log.debug(`Send editMessageCaption to "${name}"`);
                 bot &&
                     this.executeSending(
@@ -791,7 +812,7 @@ class Telegram extends Adapter {
                         options,
                         resolve,
                     );
-            } else if (options && options.deleteMessage !== undefined) {
+            } else if (options?.deleteMessage !== undefined) {
                 this.log.debug(`Send deleteMessage to "${name}"`);
                 bot &&
                     this.executeSending(
@@ -811,7 +832,7 @@ class Telegram extends Adapter {
                 options.address !== undefined
             ) {
                 this.log.debug(`Send venue to "${name}": ${options.latitude},${options.longitude}`);
-                bot &&
+                if (bot) {
                     this.executeSending(
                         () =>
                             bot.sendVenue(
@@ -825,9 +846,10 @@ class Telegram extends Adapter {
                         options,
                         resolve,
                     );
-            } else if (options && options.latitude !== undefined && options.longitude !== undefined) {
+                }
+            } else if (options?.latitude !== undefined && options.longitude !== undefined) {
                 this.log.debug(`Send location to "${name}": ${options.latitude},${options.longitude}`);
-                bot &&
+                if (bot) {
                     this.executeSending(
                         () =>
                             bot.sendLocation(
@@ -839,7 +861,8 @@ class Telegram extends Adapter {
                         options,
                         resolve,
                     );
-            } else if (options && options.type === 'mediagroup') {
+                }
+            } else if (options?.type === 'mediagroup') {
                 this.log.debug(`Send media group to "${name}": `);
                 if (bot) {
                     const { media: fileNames } = options;
@@ -888,47 +911,56 @@ class Telegram extends Adapter {
                 }
             } else if (text && typeof text === 'string' && actions.includes(text)) {
                 this.log.debug(`Send action to "${name}": ${text}`);
-                bot && this.executeSending(() => bot.sendChatAction(dest, text), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendChatAction(dest, text), options, resolve);
+                }
             } else if (
                 text &&
                 ((typeof text === 'string' && text.match(/\.webp$/i) && existsSync(text)) ||
-                    (options && options.type === 'sticker'))
+                    options?.type === 'sticker')
             ) {
                 if (typeof text === 'string') {
                     this.log.debug(`Send sticker to "${name}": ${text}`);
                 } else {
                     this.log.debug(`Send sticker to "${name}": ${text.length} bytes`);
                 }
-                bot && this.executeSending(() => bot.sendSticker(dest, text, options), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendSticker(dest, text, options), options, resolve);
+                }
             } else if (
                 text &&
                 ((typeof text === 'string' && text.match(/\.(gif)/i) && existsSync(text)) ||
-                    (options && options.type === 'animation'))
+                    options?.type === 'animation')
             ) {
                 if (typeof text === 'string') {
                     this.log.debug(`Send animation to "${name}": ${text}`);
                 } else {
                     this.log.debug(`Send animation to "${name}": ${text.length} bytes`);
                 }
-                bot && this.executeSending(() => bot.sendAnimation(dest, text, options), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendAnimation(dest, text, options), options, resolve);
+                }
             } else if (
                 text &&
-                ((typeof text === 'string' && text.match(/\.(mp4)$/i) && existsSync(text)) ||
-                    (options && options.type === 'video'))
+                ((typeof text === 'string' && text.match(/\.(mp4)$/i) && existsSync(text)) || options?.type === 'video')
             ) {
                 if (typeof text === 'string') {
                     this.log.debug(`Send video to "${name}": ${text}`);
                 } else {
                     this.log.debug(`Send video to "${name}": ${text.length} bytes`);
                 }
-                bot && this.executeSending(() => bot.sendVideo(dest, text, options), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendVideo(dest, text, options), options, resolve);
+                }
             } else if (
                 text &&
                 ((typeof text === 'string' && text.match(/\.(txt|doc|docx|csv|pdf|xls|xlsx)$/i) && existsSync(text)) ||
-                    (options && options.type === 'document'))
+                    options?.type === 'document')
             ) {
                 this.log.debug(`Send document to "${name}": ${typeof text === 'string' ? text : text.length}`);
-                bot && this.executeSending(() => bot.sendDocument(dest, text, options), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendDocument(dest, text, options), options, resolve);
+                }
             } else if (
                 text &&
                 ((typeof text === 'string' && text.match(/\.(wav|mp3|ogg)$/i) && existsSync(text)) ||
@@ -936,18 +968,22 @@ class Telegram extends Adapter {
             ) {
                 this.log.debug(`Send audio to "${name}": ${typeof text === 'string' ? text : text.length}`);
 
-                bot && this.executeSending(() => bot.sendAudio(dest, text, options), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendAudio(dest, text, options), options, resolve);
+                }
             } else if (
                 text &&
                 ((typeof text === 'string' && // if the message is a string, and it is a path to file or URL
                     text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) &&
                     (existsSync(text) || text.match(/^(https|http)/i))) ||
-                    (options && options.type === 'photo')) // if the type of message is photo
+                    options?.type === 'photo') // if the type of message is photo
             ) {
                 this.log.debug(`Send photo to "${name}": ${typeof text === 'string' ? text : text.length}`);
 
-                bot && this.executeSending(() => bot.sendPhoto(dest, text, options), options, resolve);
-            } else if (options && options.answerCallbackQuery !== undefined) {
+                if (bot) {
+                    this.executeSending(() => bot.sendPhoto(dest, text, options), options, resolve);
+                }
+            } else if (options?.answerCallbackQuery !== undefined) {
                 this.log.debug(`Send answerCallbackQuery to "${name}"`);
                 if (options.answerCallbackQuery.showAlert === undefined) {
                     options.answerCallbackQuery.showAlert = false;
@@ -968,7 +1004,7 @@ class Telegram extends Adapter {
             } else {
                 this.log.debug(`Send message to [${name}]: "${text}"`);
                 if (text && typeof text === 'string') {
-                    options = options || {};
+                    options ||= {};
                     if (text.startsWith('<MarkdownV2>') && text.endsWith('</MarkdownV2>')) {
                         options.parse_mode = 'MarkdownV2';
                         text = text.substring(12, text.length - 13);
@@ -980,7 +1016,9 @@ class Telegram extends Adapter {
                         text = text.substring(10, text.length - 11);
                     }
                 }
-                bot && this.executeSending(() => bot.sendMessage(dest, text || '', options), options, resolve);
+                if (bot) {
+                    this.executeSending(() => bot.sendMessage(dest, text || '', options), options, resolve);
+                }
             }
         });
     }
@@ -1041,7 +1079,6 @@ class Telegram extends Adapter {
             this.log.warn('Invalid text: null');
             return Promise.resolve({});
         }
-
         if (
             text &&
             typeof text === 'object' &&
@@ -1397,21 +1434,17 @@ class Telegram extends Adapter {
     }
 
     async processMessage(obj: ioBroker.Message): Promise<void> {
-        if (!obj || !obj.command) {
+        if (!obj?.command) {
             return;
         }
         // Ignore own answers
-        if (obj.message && obj.message.response) {
+        if (obj.message?.response) {
             return;
         }
 
         // filter out the double messages
         const json = JSON.stringify(obj);
-        if (
-            this.lastMessageTime &&
-            this.lastMessageText === JSON.stringify(obj) &&
-            Date.now() - this.lastMessageTime < 1200
-        ) {
+        if (this.lastMessageTime && this.lastMessageText === json && Date.now() - this.lastMessageTime < 1200) {
             return this.log.debug(
                 `Filter out double message [first was for ${Date.now() - this.lastMessageTime}ms]: ${json}`,
             );
@@ -1473,7 +1506,7 @@ class Telegram extends Adapter {
                             `added question: ${JSON.stringify(question)} - answer timeout: ${this.config.answerTimeoutSec}`,
                         );
 
-                        question.timeout = setTimeout(
+                        question.timeout = this.setTimeout(
                             (q: Question) => {
                                 q.timeout = null;
                                 this.sendTo(q.from, 'ask', '__timeout__', q.cb);
@@ -1493,7 +1526,7 @@ class Telegram extends Adapter {
                                 }
 
                                 const pos = this.questions.indexOf(q);
-                                pos !== -1 && this.questions.splice(pos);
+                                pos !== -1 && this.questions.splice(pos, 1);
                             },
                             this.config.answerTimeoutSec + 1000,
                             question,
@@ -1530,7 +1563,7 @@ class Telegram extends Adapter {
                         call.users = [call.users as string];
                     }
                     // set language
-                    call.lang = call.lang || systemLang2CallMe[this.systemLang] || systemLang2CallMe.en;
+                    call.lang ||= systemLang2CallMe[this.systemLang] || systemLang2CallMe.en;
                     if (!call.file) {
                         // Set message
                         call.message = call.message || call.text || I18n.translate('Call text');
@@ -1707,7 +1740,7 @@ class Telegram extends Adapter {
                 } else if (cmd.states) {
                     let s: string[] = [];
                     const stat = Object.keys(cmd.states);
-                    for (let i = 0; i <= stat.length; i++) {
+                    for (let i = 0; i < stat.length; i++) {
                         s.push(`${cmd.alias} ${cmd.states[stat[i]]}`);
                         if (s.length >= (cmd.buttons || 3)) {
                             keyboard.push(s);
@@ -1771,7 +1804,7 @@ class Telegram extends Adapter {
             // user have 60 seconds for answer
             if (question && Date.now() - question.ts < this.config.answerTimeoutSec) {
                 if (question.timeout) {
-                    clearTimeout(question.timeout);
+                    this.clearTimeout(question.timeout);
                     question.timeout = null;
                     this.sendTo(question.from, 'ask', msg, question.cb);
 
@@ -1818,8 +1851,8 @@ class Telegram extends Adapter {
         });
 
         if (!Object.keys(this.protection).length) {
-            this.gcInterval && clearInterval(this.gcInterval);
-            this.gcInterval = null;
+            this.gcInterval && this.clearInterval(this.gcInterval);
+            this.gcInterval = undefined;
         }
     }
 
@@ -1841,7 +1874,7 @@ class Telegram extends Adapter {
     ): Promise<void> {
         try {
             const aliveState = await this.getForeignStateAsync(`system.adapter.${instance}.alive`);
-            if (!aliveState || !aliveState.val) {
+            if (!aliveState?.val) {
                 this.log.warn(`Cannot forward message to "${instance}": instance is not running`);
                 return;
             }
@@ -1896,7 +1929,7 @@ class Telegram extends Adapter {
         if (this.config.password && !this.config.doNotAcceptNewUsers) {
             // if user sent password
             let m = msgText.match(/^\/password (.+)$/);
-            m = m || msgText.match(/^\/p (.+)$/);
+            m ||= msgText.match(/^\/p (.+)$/);
 
             if (m) {
                 this.garbageCollector();
@@ -1924,10 +1957,10 @@ class Telegram extends Adapter {
                         .sendMessage(from.id, I18n.translate('Welcome ') + user)
                         .catch(error => this.log.error(`send Message Error: ${error}`));
                 }
-                this.protection[user] = this.protection[user] || [];
+                this.protection[user] ||= [];
                 this.protection[user].push(Date.now());
 
-                this.gcInterval = this.gcInterval || setInterval(() => this.garbageCollector(), 60000);
+                this.gcInterval ||= this.setInterval(() => this.garbageCollector(), 60000);
 
                 this.log.warn(`Got invalid password from ${user}: ${m[1]}`);
 
@@ -2050,17 +2083,17 @@ class Telegram extends Adapter {
                 let currentMsg: Message | null = msg;
 
                 // clear by timeout id
-                let memoryLeak1: NodeJS.Timeout | null = setTimeout(() => {
+                let memoryLeak1: ioBroker.Timeout | undefined = this.setTimeout(() => {
                     currentMsg = null;
-                    memoryLeak1 = null;
+                    memoryLeak1 = undefined;
                     id1 = null;
                     val1 = null;
                 }, 1000);
 
                 void this.getForeignState(id1, (err, state) => {
                     if (memoryLeak1) {
-                        clearTimeout(memoryLeak1);
-                        memoryLeak1 = null;
+                        this.clearTimeout(memoryLeak1);
+                        memoryLeak1 = undefined;
                         m = null;
                     }
                     if (currentMsg) {
@@ -2100,16 +2133,16 @@ class Telegram extends Adapter {
                 let currentMsg: Message | null = msg;
 
                 // clear by timeout id
-                let memoryLeak2: NodeJS.Timeout | null = setTimeout(() => {
+                let memoryLeak2: ioBroker.Timeout | undefined = this.setTimeout(() => {
                     id2 = null;
                     currentMsg = null;
-                    memoryLeak2 = null;
+                    memoryLeak2 = undefined;
                 }, 1000);
 
                 void this.getForeignState(id2, (err, state) => {
                     if (memoryLeak2) {
-                        clearTimeout(memoryLeak2);
-                        memoryLeak2 = null;
+                        this.clearTimeout(memoryLeak2);
+                        memoryLeak2 = undefined;
                         m = null;
                     }
                     if (currentMsg) {
@@ -2146,7 +2179,7 @@ class Telegram extends Adapter {
                     user,
                 },
                 (response: any) => {
-                    if (response && response.response) {
+                    if (response?.response) {
                         let text = response.response;
                         let options: { parse_mode: ParseMode } | undefined;
                         if (text && typeof text === 'string') {
@@ -2384,7 +2417,7 @@ class Telegram extends Adapter {
         if (this.config.rememberUsers) {
             try {
                 const state = await this.getStateAsync('communicate.users');
-                if (state && state.val) {
+                if (state?.val) {
                     try {
                         this.storedUsers = JSON.parse(state.val as string);
 
@@ -2411,7 +2444,9 @@ class Telegram extends Adapter {
                             }
                         });
                     } catch (err) {
-                        err && this.log.error(err);
+                        if (err) {
+                            this.log.error(err);
+                        }
                         this.log.error('Cannot parse stored user IDs!');
                     }
                 }
@@ -2467,7 +2502,7 @@ class Telegram extends Adapter {
     }
 
     async readEnums(name?: string): Promise<Record<string, Record<string, any>>> {
-        name = name || 'rooms';
+        name ||= 'rooms';
         this.enumsCache[name] = {};
         try {
             const doc = await this.getObjectViewAsync('system', 'enum', {
@@ -2498,7 +2533,7 @@ class Telegram extends Adapter {
             return;
         }
 
-        await this.setStateAsync('info.connection', false, true);
+        await this.setState('info.connection', false, true);
 
         await this.subscribeStatesAsync('communicate.request');
         await this.subscribeStatesAsync('communicate.response');
@@ -2508,19 +2543,20 @@ class Telegram extends Adapter {
         await this.subscribeStatesAsync('communicate.requestResponse');
 
         // clear states
-        await this.setStateAsync('communicate.request', { val: '', ack: true });
-        await this.setStateAsync('communicate.response', { val: '', ack: true });
-        await this.setStateAsync('communicate.responseSilent', { val: '', ack: true });
-        await this.setStateAsync('communicate.responseJson', { val: '', ack: true });
-        await this.setStateAsync('communicate.responseSilentJson', { val: '', ack: true });
-        await this.setStateAsync('communicate.requestResponse', { val: '', ack: true });
-        await this.setStateAsync('communicate.pathFile', { val: '', ack: true });
+        await this.setState('communicate.request', { val: '', ack: true });
+        await this.setState('communicate.response', { val: '', ack: true });
+        await this.setState('communicate.responseSilent', { val: '', ack: true });
+        await this.setState('communicate.responseJson', { val: '', ack: true });
+        await this.setState('communicate.responseSilentJson', { val: '', ack: true });
+        await this.setState('communicate.requestResponse', { val: '', ack: true });
+        await this.setState('communicate.pathFile', { val: '', ack: true });
 
-        this.config.password = this.config.password || '';
-        this.config.keyboard = this.config.keyboard || '/cmds';
+        this.config.password ||= '';
+        this.config.keyboard ||= '/cmds';
 
         await this.updateUsers();
-        if (this.config.allowStates !== undefined) {
+        // Default to enabled only when the option is missing (old configs); respect an explicit `false`.
+        if (this.config.allowStates == null) {
             this.config.allowStates = true;
         }
         this.config.answerTimeoutSec = parseInt(String(this.config.answerTimeoutSec), 10) || 60;
@@ -2540,7 +2576,7 @@ class Telegram extends Adapter {
                 await this.readEnums();
             }
             // init polling every hour
-            this.reconnectTimer = setInterval(() => this.connect(), 3600000);
+            this.reconnectTimer = this.setInterval(() => this.connect(), 3600000);
 
             this.connect();
 

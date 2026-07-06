@@ -39,6 +39,14 @@ Use telegram service to communicate with ioBroker
 -->
 ### **WORK IN PROGRESS**
 - (@GermanBluefox) Added an optional `ioBroker.assistant` instance: messages that no internal rule/command matched are forwarded to it and its answer is sent back to the chat
+- (@GermanBluefox) Migrated the adapter backend to TypeScript; texts are now provided as `i18n` JSON files loaded via `I18n`
+- (@GermanBluefox) The target instance is now checked to be alive before a message is forwarded (text2command/assistant)
+- (@GermanBluefox) States without a value are now reported as "uncertain" instead of showing an unset boolean as "ON"
+- (@GermanBluefox) Timers are now managed by the adapter and cleared on unload (including pending question timeouts)
+- (@GermanBluefox) Fixed: the "allow states" option could not be disabled
+- (@GermanBluefox) Fixed: a question timeout could drop other pending questions
+- (@GermanBluefox) Fixed: `communicate.responseSilentJson` acknowledged the wrong state
+- (@GermanBluefox) Fixed: removed a stray empty entry from the generated command keyboard
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
 * (@klein0r) admin 7.6.17 and js-controller 6.0.11 (or later) are required
@@ -46,7 +54,7 @@ Use telegram service to communicate with ioBroker
 
 ### 4.1.0 (2025-03-19)
 * (bluefox) Admin component was migrated to TypeScript
-* (bluefox) NodeJS >= 20.x and js-controller >= 6 and admin >= 7 are required now.
+* (bluefox) Node.js >= 20.x and js-controller >= 6 and admin >= 7 are required now.
 
 ### 4.0.0 (2025-01-13)
 * NodeJS >= 20.x and js-controller >= 6 are required

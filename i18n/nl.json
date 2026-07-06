@@ -18,5 +18,6 @@
     "Invalid number %s": "Ongeldig aantal %s",
     "Done": "Gedaan",
     "ID \"%s\" not found.": "ID \"%s\" niet gevonden.",
-    "Started!": "Begonnen!"
+    "Started!": "Begonnen!",
+    "uncertain": "onbekend"
 }

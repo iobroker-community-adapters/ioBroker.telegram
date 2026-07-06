@@ -18,5 +18,6 @@
     "Invalid number %s": "无效的号码％s",
     "Done": "完毕",
     "ID \"%s\" not found.": "找不到ID“％s”。",
-    "Started!": "开始！"
+    "Started!": "开始！",
+    "uncertain": "未知"
 }

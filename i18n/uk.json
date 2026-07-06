@@ -18,5 +18,6 @@
     "Invalid number %s": "Неточна кількість %s",
     "Done": "Сонце",
     "ID \"%s\" not found.": "Не знайдено ID \"%s\".",
-    "Started!": "Почати!"
+    "Started!": "Почати!",
+    "uncertain": "невідомо"
 }

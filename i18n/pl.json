@@ -18,5 +18,6 @@
     "Invalid number %s": "Nieprawidłowy numer %s",
     "Done": "Gotowe",
     "ID \"%s\" not found.": "Nie znaleziono identyfikatora \"%s\".",
-    "Started!": "Rozpoczęty!"
+    "Started!": "Rozpoczęty!",
+    "uncertain": "nieznany"
 }

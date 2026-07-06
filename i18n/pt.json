@@ -18,5 +18,6 @@
     "Invalid number %s": "Número inválido %s",
     "Done": "Pronto",
     "ID \"%s\" not found.": "ID \"%s\" não foi encontrado.",
-    "Started!": "O bot foi iniciado!"
+    "Started!": "O bot foi iniciado!",
+    "uncertain": "incerto"
 }

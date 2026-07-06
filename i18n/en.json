@@ -18,5 +18,6 @@
     "Invalid number %s": "Invalid number %s",
     "Done": "Done",
     "ID \"%s\" not found.": "ID \"%s\" not found.",
-    "Started!": "Started!"
+    "Started!": "Started!",
+    "uncertain": "uncertain"
 }
