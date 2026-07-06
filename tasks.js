@@ -1,16 +1,16 @@
 const { deleteFoldersRecursive, npmInstall, buildReact, copyFiles } = require('@iobroker/build-tools');
 
 const srcAdmin = `${__dirname}/src-admin/`;
-const src = `${__dirname}/src/`;
+const src = `${__dirname}/src-rules/`;
 
 function rulesClean() {
     deleteFoldersRecursive(`${__dirname}/admin/rules`);
-    deleteFoldersRecursive(`${__dirname}/src/build`);
+    deleteFoldersRecursive(`${src}/build`);
 }
 
 function rulesCopy() {
-    copyFiles(['src/build/**/*', '!*.json'], 'admin/rules');
-    copyFiles(['src/src/i18n/*.json'], 'admin/rules/i18n');
+    copyFiles(['src-rules/build/**/*', '!*.json'], 'admin/rules');
+    copyFiles(['src-rules/src/i18n/*.json'], 'admin/rules/i18n');
 }
 
 function adminClean() {

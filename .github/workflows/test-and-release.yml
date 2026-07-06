@@ -46,7 +46,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           os: ${{ matrix.os }}
-          extra-tests: npm run test:js
+          build: true
 
   deploy:
     permissions:
@@ -65,6 +65,7 @@ jobs:
       - uses: ioBroker/testing-action-deploy@v1
         with:
           node-version: '24.x'
+          build: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
           sentry-project: "iobroker-telegram"

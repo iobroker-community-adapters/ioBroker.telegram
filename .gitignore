@@ -1,21 +1,21 @@
 node_modules
 .idea
 tmp
+/build
 admin/i18n/flat.txt
 admin/i18n/*/flat.txt
 iob_npm.done
 
 # ioBroker dev-server
 .dev-server/
-/src/dist
-/src/node_modules
-/src/package-lock.json
+/src-rules/node_modules
+/src-rules/package-lock.json
 /src-admin/package-lock.json
 /src-admin/build
-/src/build
-/src/.__mf__temp
+/src-rules/build
+/src-rules/.__mf__temp
 /src-admin/.__mf__temp
-/src/.__mf__temp/
+/src-rules/.__mf__temp/
 
 #ignore .commitinfo created by ioBroker release script
 .commitinfo

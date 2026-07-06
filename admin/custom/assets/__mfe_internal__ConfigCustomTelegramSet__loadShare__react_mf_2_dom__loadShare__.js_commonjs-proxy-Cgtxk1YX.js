@@ -1,0 +1,1 @@
+import{g as _}from"./__mfe_internal__ConfigCustomTelegramSet__loadShare__react__loadShare__.js_commonjs-proxy-CGMzhmqz.js";import{_ as e}from"./__mfe_internal__ConfigCustomTelegramSet__loadShare__react_mf_2_dom__loadShare__.js-C66pHbAo.js";const m=_(e);export{m as r};

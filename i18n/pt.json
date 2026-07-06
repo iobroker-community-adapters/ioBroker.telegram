@@ -1,0 +1,22 @@
+{
+    "Restarting...": "O bot será reiniciado.",
+    "Restarting... Reauthenticate!": "Reiniciando... Autentique-se novamente!",
+    "ON-Status": "ligado",
+    "OFF-Status": "apagado",
+    "Call text": "Isto é ioBroker a ligar. Aconteceu alguma coisa na tua casa.",
+    "value as boolean": "valor como booleano",
+    "value as number": "valor como numero",
+    "value as string": "valor como string",
+    "Select option": "Selecione uma opção",
+    "Message ignored: ": "Mensagem foi ignorada: ",
+    "Please enter password in form \"/password phrase\"": "A senha deve ser inserida no formato \"/password phrase\"",
+    "Too many attempts. Blocked for": "Muitas tentativas. Bloqueado para",
+    "seconds": "segundos",
+    "Welcome ": "Oi ",
+    "Invalid password": "Senha inválida!",
+    "User is not in the list": "O usuário não está na lista",
+    "Invalid number %s": "Número inválido %s",
+    "Done": "Pronto",
+    "ID \"%s\" not found.": "ID \"%s\" não foi encontrado.",
+    "Started!": "O bot foi iniciado!"
+}

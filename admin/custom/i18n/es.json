@@ -1,0 +1,7 @@
+{
+  "custom_telegram_not_alive": "La instancia de Telegram no está viva",
+  "custom_telegram_id": "ID",
+  "custom_telegram_name": "Nombre",
+  "custom_telegram_sys_messages": "Mensajes del sistema",
+  "custom_telegram_title": "Usuarios autenticados"
+}

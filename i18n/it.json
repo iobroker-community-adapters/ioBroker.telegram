@@ -1,0 +1,22 @@
+{
+    "Restarting...": "Riavvio ...",
+    "Restarting... Reauthenticate!": "Riavvio ... Re-authenticate!",
+    "ON-Status": "ON-Stato",
+    "OFF-Status": "OFF-Stato",
+    "Call text": "Questo è ioBroker che chiama. E' successo qualcosa in casa tua.",
+    "value as boolean": "valore come booleano",
+    "value as number": "valore come numero",
+    "value as string": "valore come stringa",
+    "Select option": "Selezionare l'opzione",
+    "Message ignored: ": "Messaggio ignorato: ",
+    "Please enter password in form \"/password phrase\"": "Per favore inserisci la password nel modulo \"/ frase password\"",
+    "Too many attempts. Blocked for": "Troppi tentativi. Bloccato per",
+    "seconds": "secondi",
+    "Welcome ": "benvenuto ",
+    "Invalid password": "Password non valida!",
+    "User is not in the list": "L'utente non è nella lista",
+    "Invalid number %s": "Numero non valido %s",
+    "Done": "Fatto",
+    "ID \"%s\" not found.": "ID \"%s\" non trovato.",
+    "Started!": "Iniziato!"
+}

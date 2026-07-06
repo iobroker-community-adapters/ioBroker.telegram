@@ -1,0 +1,22 @@
+{
+    "Restarting...": "Перезавантаження...",
+    "Restarting... Reauthenticate!": "Перезавантаження... Реабілітація!",
+    "ON-Status": "Оф-статус",
+    "OFF-Status": "Статус на сервери",
+    "Call text": "Це ioBroker виклик. Що сталося в будинку.",
+    "value as boolean": "значення як boolean",
+    "value as number": "значення як номер",
+    "value as string": "значення як рядок",
+    "Select option": "Виберіть опцію",
+    "Message ignored: ": "Повідомлення ігнорується: ",
+    "Please enter password in form \"/password phrase\"": "Будь ласка, введіть пароль у форму \"/password фраза\"",
+    "Too many attempts. Blocked for": "Занадто багато спроб. Заблоковано",
+    "seconds": "час",
+    "Welcome ": "Про нас ",
+    "Invalid password": "Ім'я користувача!",
+    "User is not in the list": "Користувач не в списку",
+    "Invalid number %s": "Неточна кількість %s",
+    "Done": "Сонце",
+    "ID \"%s\" not found.": "Не знайдено ID \"%s\".",
+    "Started!": "Почати!"
+}

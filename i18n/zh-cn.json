@@ -1,0 +1,22 @@
+{
+    "Restarting...": "正在重新启动...",
+    "Restarting... Reauthenticate!": "正在重新启动...重新认证！",
+    "ON-Status": "切换到",
+    "OFF-Status": "关掉",
+    "Call text": "这是ioBroker呼叫。 你家里出了点事.",
+    "value as boolean": "布尔值",
+    "value as number": "价值作为数字",
+    "value as string": "值作为字符串",
+    "Select option": "选择选项",
+    "Message ignored: ": "讯息被忽略：",
+    "Please enter password in form \"/password phrase\"": "请以“ /密码短语”形式输入密码",
+    "Too many attempts. Blocked for": "尝试太多。 屏蔽为",
+    "seconds": "秒数",
+    "Welcome ": "欢迎 ",
+    "Invalid password": "无效的密码！",
+    "User is not in the list": "用户不在列表中",
+    "Invalid number %s": "无效的号码％s",
+    "Done": "完毕",
+    "ID \"%s\" not found.": "找不到ID“％s”。",
+    "Started!": "开始！"
+}

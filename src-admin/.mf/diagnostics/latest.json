@@ -1,0 +1,10 @@
+{
+  "latestErrorEvent": {
+    "code": "TYPE-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"npx tsc --project C:\\\\pWork\\\\ioBroker.telegram\\\\src-admin\\\\node_modules\\\\.federation\\\\tsconfig.0257672b9e6726b6ff3c1ff65c313735.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "args": {
+      "cmd": "npx tsc --project C:\\pWork\\ioBroker.telegram\\src-admin\\node_modules\\.federation\\tsconfig.0257672b9e6726b6ff3c1ff65c313735.json"
+    },
+    "timestamp": 1783284336943
+  }
+}
