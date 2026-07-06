@@ -1,0 +1,8 @@
+{
+  "User:": "Gebruiker:",
+  "Text:": "Tekst:",
+  "Instance:": "Voorbeeld:",
+  "Sends message via telegram": "Stuurt bericht via telegram",
+  "Telegram": "Telegram",
+  "You can use %s in the text to display current trigger value or %id to display the triggered object ID": "U kunt %s in de tekst gebruiken om de huidige triggerwaarde weer te geven of %id om de getriggerde object-ID weer te geven"
+}

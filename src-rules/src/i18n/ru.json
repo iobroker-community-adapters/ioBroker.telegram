@@ -1,0 +1,8 @@
+{
+  "User:": "Пользователь:",
+  "Text:": "Текст:",
+  "Instance:": "Экземпляр:",
+  "Sends message via telegram": "Отправляет сообщение через телеграмм",
+  "Telegram": "Telegram",
+  "You can use %s in the text to display current trigger value or %id to display the triggered object ID": "Вы можете использовать %s в тексте, чтобы отобразить текущее значение триггера, или %id, чтобы отобразить идентификатор сработавшего объекта."
+}
