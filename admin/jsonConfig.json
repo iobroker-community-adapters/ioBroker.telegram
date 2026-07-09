@@ -92,7 +92,7 @@
           "md": 8,
           "lg": 8,
           "xl": 8,
-          "label": "Do not authenticate new users"
+          "label": "Do not accept new users"
         },
         "useUsername": {
           "newLine": true,
