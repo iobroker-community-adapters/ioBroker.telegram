@@ -1201,6 +1201,8 @@ class Telegram extends Adapter {
                     }
 
                     if (
+                        // allow addressing a recipient by its numeric user/chat id (storedUsers is keyed by id)
+                        id === userName ||
                         (this.config.useUsername && this.storedUsers[id].userName === userName) ||
                         (!this.config.useUsername && this.storedUsers[id].firstName === userName)
                     ) {
