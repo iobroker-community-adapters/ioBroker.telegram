@@ -2694,6 +2694,10 @@ ${readableInstances.join('\n')}
      * @returns the formatted newest message
      */
     getNewestMessage(messages: NotificationInstanceMessage[]): string {
+        if (!messages?.length) {
+            return '';
+        }
+
         const newestMessage = messages.sort((a, b) => (a.ts < b.ts ? 1 : -1))[0];
 
         return `${new Date(newestMessage.ts).toLocaleString()} ${newestMessage.message}`;
