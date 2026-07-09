@@ -1320,6 +1320,22 @@ class Telegram extends Adapter {
         const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
         this.log.debug(`Received message: ${JSON.stringify(msg)}`);
 
+        // Media messages (photo, document, voice, ...) do not contain `msg.text`, so they are not handled
+        // by `processTelegramText` (which is bound via `bot.onText`). As a result the request metadata
+        // (chat id, message id, user id) would stay empty for received files. Populate it here so the
+        // sender can be identified. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/1043
+        if (msg.voice || msg.photo || msg.video || msg.video_note || msg.audio || msg.document) {
+            this.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
+            this.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
+            this.setState('communicate.requestMessageThreadId', {
+                val: msg.is_topic_message ? msg.message_thread_id : 0,
+                ack: true,
+            });
+            if (msg.from) {
+                this.setState('communicate.requestUserId', { val: msg.from.id.toString(), ack: true });
+            }
+        }
+
         if (msg.voice) {
             try {
                 this.saveFile(
@@ -1936,7 +1952,7 @@ class Telegram extends Adapter {
         return await this.sendToAsync(instance, command, message);
     }
 
-    processTelegramText(msg: Message): Promise<Message | void> | void {
+    async processTelegramText(msg: Message): Promise<Message | void> {
         this.connectionState(true);
         const bot = this.bot!;
         const from: User = msg.from!;
@@ -2003,6 +2019,11 @@ class Telegram extends Adapter {
                     if (!from.username) {
                         this.log.warn(`User ${from.first_name} hast not set an username in the Telegram App!!`);
                     }
+
+                    // delete the message that contains the password, so the passphrase is not left in the chat
+                    await bot
+                        .deleteMessage(msg.chat.id, msg.message_id)
+                        .catch(error => this.log.warn(`Cannot delete password message: ${error}`));
 
                     return bot
                         .sendMessage(from.id, I18n.translate('Welcome ') + user)
