@@ -15,7 +15,7 @@
         "@emotion/styled": "^11.14.1",
         "@iobroker/adapter-react-v5": "^8.2.13",
         "@iobroker/json-config": "^8.4.15",
-        "@module-federation/runtime": "2.3.3",
+        "@module-federation/runtime": "2.6.0",
         "@module-federation/vite": "1.16.12",
         "@mui/icons-material": "^6.5.0",
         "@mui/material": "^6.5.0",
