@@ -1,11 +1,13 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { get as httpsGet } from 'node:https';
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { Server as HttpServer, IncomingMessage, ServerResponse } from 'node:http';
+import type { Server as HttpsServer } from 'node:https';
 
 import axios from 'axios';
 import TelegramBot, {
     type CallbackQuery,
+    type EditMessageMediaParams,
     type Message,
     type ParseMode,
     type TelegramBotOptions,
@@ -15,6 +17,9 @@ import TelegramBot, {
 
 import { Adapter, EXIT_CODES, getAbsoluteDefaultDataDir, type AdapterOptions, I18n } from '@iobroker/adapter-core';
 import { WebServer } from '@iobroker/webserver';
+
+type Server = HttpServer | HttpsServer;
+type ServerExt = Server & { __server: any };
 
 import type {
     CallOptions,
@@ -63,7 +68,7 @@ class Telegram extends Adapter {
     private isConnected: boolean | null = null;
     private lastMessageTime = 0;
     private lastMessageText = '';
-    private readonly enumsCache: Record<string, Record<string, any>> = {};
+    private readonly enumsCache: { rooms: { [roomId: string]: ioBroker.EnumCommon } } = { rooms: {} };
     private readonly protection: Record<string, number[]> = {};
     private gcInterval: ioBroker.Interval | undefined;
 
@@ -76,8 +81,10 @@ class Telegram extends Adapter {
     private garbageCollectorInterval: ioBroker.Interval | undefined;
     private isServer = false;
 
-    private readonly server: { app: any; server: any; settings: any } = {
-        app: null,
+    private readonly server: {
+        server: ServerExt | null;
+        settings: TelegramConfig | null;
+    } = {
         server: null,
         settings: null,
     };
@@ -140,10 +147,10 @@ class Telegram extends Adapter {
                         try {
                             userObj = JSON.parse(state.val as string);
                             delete userObj[userID];
-                            void this.setState('communicate.users', JSON.stringify(userObj), true, err => {
+                            this.setState('communicate.users', JSON.stringify(userObj), true, err => {
                                 if (!err) {
                                     this.sendTo(obj.from, obj.command, userID, obj.callback);
-                                    void this.updateUsers();
+                                    this.updateUsers();
                                     this.log.warn(`User ${userID} has been deleted!`);
                                 }
                             });
@@ -165,10 +172,10 @@ class Telegram extends Adapter {
                         try {
                             userObj = JSON.parse(state.val as string);
                             userObj[userID].sysMessages = checked;
-                            void this.setState('communicate.users', JSON.stringify(userObj), true, err => {
+                            this.setState('communicate.users', JSON.stringify(userObj), true, err => {
                                 if (!err) {
                                     this.sendTo(obj.from, obj.command, userID, obj.callback);
-                                    void this.updateUsers();
+                                    this.updateUsers();
                                     this.log.info(
                                         `Receiving of system messages for user "${userID}" has been changed to ${checked}!`,
                                     );
@@ -182,10 +189,10 @@ class Telegram extends Adapter {
                 });
             } else if (obj.command === 'delAllUser') {
                 try {
-                    void this.setState('communicate.users', '{}', true, err => {
+                    this.setState('communicate.users', '{}', true, err => {
                         if (!err) {
                             this.sendTo(obj.from, obj.command, true, obj.callback);
-                            void this.updateUsers();
+                            this.updateUsers();
                             this.log.warn(
                                 'List of saved users has been wiped. Every User has to reauthenticate with the new password!',
                             );
@@ -196,9 +203,9 @@ class Telegram extends Adapter {
                     this.log.error('Cannot wipe list of saved users!');
                 }
             } else if (obj.command === 'sendNotification') {
-                void this.processNotification(obj);
+                this.processNotification(obj);
             } else {
-                void this.processMessage(obj);
+                this.processMessage(obj);
             }
         }
     }
@@ -260,7 +267,7 @@ class Telegram extends Adapter {
                         secure: this.config.secure,
                     });
 
-                    this.server.server = await webserver.init();
+                    this.server.server = (await webserver.init()) as ServerExt;
                 } catch (err) {
                     this.log.error(`Cannot create webserver: ${err}`);
                     this.terminate
@@ -302,7 +309,7 @@ class Telegram extends Adapter {
                             }
                             serverPort = port;
 
-                            this.server.server.listen(
+                            this.server.server?.listen(
                                 port,
                                 !this.config.bind || this.config.bind === '0.0.0.0'
                                     ? undefined
@@ -354,13 +361,13 @@ class Telegram extends Adapter {
                     this.config.restarting === null ||
                     this.config.restarting === undefined
                 ) {
-                    void this.sendSystemMessage(
+                    this.sendSystemMessage(
                         this.config.rememberUsers
                             ? I18n.translate('Restarting...')
                             : I18n.translate('Restarting... Reauthenticate!'),
                     );
                 } else {
-                    void this.sendSystemMessage(this.config.restarting);
+                    this.sendSystemMessage(this.config.restarting);
                 }
             }
             try {
@@ -393,8 +400,8 @@ class Telegram extends Adapter {
                     }
 
                     // Send to someone this message
-                    await this.sendMessage(state.val);
-                    await this.setStateAsync('communicate.response', { val: state.val, ack: true });
+                    await this.sendMessage(state.val as string | number);
+                    await this.setState('communicate.response', { val: state.val, ack: true });
                 } else if (id.endsWith('communicate.responseSilent')) {
                     if (typeof state.val === 'object') {
                         this.log.error(
@@ -403,15 +410,35 @@ class Telegram extends Adapter {
                         return;
                     }
                     // Send to someone this message
-                    await this.sendMessage(state.val, null, null, { disable_notification: true });
-                    await this.setStateAsync('communicate.responseSilent', { val: state.val, ack: true });
+                    await this.sendMessage(state.val as string | number, null, null, { disable_notification: true });
+                    await this.setState('communicate.responseSilent', { val: state.val, ack: true });
                 } else if (id.endsWith('communicate.responseJson')) {
                     try {
-                        const val = JSON.parse(state.val as string);
+                        const val: string | number | SendOptions = JSON.parse(state.val as string);
+                        let options: SendOptions | undefined;
+                        let text: string | number | undefined;
+                        let chatId: string | number | undefined;
+                        let user: string | undefined;
+                        if (val && typeof val === 'object' && val.text !== undefined && typeof val.text === 'string') {
+                            options = val;
+                            text = options.text;
+                            if (options.chatId) {
+                                chatId = options.chatId;
+                            }
+                            if (options.user) {
+                                user = options.user;
+                            }
+                        } else {
+                            text = val as number | string;
+                        }
 
-                        // Send to someone this message
-                        await this.sendMessage(val);
-                        await this.setStateAsync('communicate.responseJson', { val: state.val, ack: true });
+                        if (text) {
+                            // Send to someone this message
+                            await this.sendMessage(text, user, chatId, options);
+                        } else {
+                            this.log.warn(`Invalid message: no text found: ${JSON.stringify(state.val)}`);
+                        }
+                        await this.setState('communicate.responseJson', { val: state.val, ack: true });
                     } catch (err) {
                         this.log.error(
                             `could not parse Json in communicate.responseJon state: ${err instanceof Error ? err.message : err}`,
@@ -419,11 +446,32 @@ class Telegram extends Adapter {
                     }
                 } else if (id.endsWith('communicate.responseSilentJson')) {
                     try {
-                        const val = JSON.parse(state.val as string);
+                        const val: string | number | SendOptions = JSON.parse(state.val as string);
+                        let options: SendOptions | undefined;
+                        let text: string | number | undefined;
+                        let chatId: string | number | undefined;
+                        let user: string | undefined;
+                        if (val && typeof val === 'object' && val.text !== undefined && typeof val.text === 'string') {
+                            options = val;
+                            text = options.text;
+                            if (options.chatId) {
+                                chatId = options.chatId;
+                            }
+                            if (options.user) {
+                                user = options.user;
+                            }
+                        } else {
+                            text = val as number | string;
+                        }
 
-                        // Send to someone this message
-                        await this.sendMessage(val, null, null, { disable_notification: true });
-                        await this.setStateAsync('communicate.responseSilentJson', { val: state.val, ack: true });
+                        if (text) {
+                            // Send to someone this message
+                            await this.sendMessage(text, user, chatId, { disable_notification: true, ...options });
+                        } else {
+                            this.log.warn(`Invalid message: no text found: ${JSON.stringify(state.val)}`);
+                        }
+
+                        await this.setState('communicate.responseSilentJson', { val: state.val, ack: true });
                     } catch (err) {
                         this.log.error(
                             `could not parse Json in communicate.responseSilentJon state: ${err instanceof Error ? err.message : err}`,
@@ -431,7 +479,7 @@ class Telegram extends Adapter {
                     }
                 } else if (id.endsWith('communicate.requestResponse')) {
                     try {
-                        const text = state.val;
+                        const text = state.val as string;
                         const chatIdState = await this.getStateAsync('communicate.requestChatId');
                         const threadIdState = await this.getStateAsync('communicate.requestMessageThreadId');
 
@@ -443,7 +491,7 @@ class Telegram extends Adapter {
 
                         // Send to someone this message
                         await this.sendMessage(text, null, chatIdState ? (chatIdState.val as string) : null, options);
-                        await this.setStateAsync('communicate.requestResponse', { val: state.val, ack: true });
+                        await this.setState('communicate.requestResponse', { val: state.val, ack: true });
                     } catch (err) {
                         this.log.error(
                             `could not parse Json in communicate.requestResponse state: ${err instanceof Error ? err.message : err}`,
@@ -464,10 +512,10 @@ class Telegram extends Adapter {
                 if (this.commands[id].reportChanges) {
                     if (state.val !== this.commands[id].lastState) {
                         this.commands[id].lastState = state.val;
-                        void this.sendMessage(this.getStatus(id, state), users, null, options);
+                        await this.sendMessage(this.getStatus(id, state), users, null, options);
                     }
                 } else {
-                    void this.sendMessage(this.getStatus(id, state), users, null, options);
+                    await this.sendMessage(this.getStatus(id, state), users, null, options);
                 }
             }
         }
@@ -492,7 +540,7 @@ class Telegram extends Adapter {
 
             // read actual state to detect changes
             if (this.commands[id].reportChanges) {
-                void this.getForeignStateAsync(id).then(
+                this.getForeignStateAsync(id).then(
                     state => (this.commands[id].lastState = state ? state.val : undefined),
                 );
             }
@@ -502,7 +550,7 @@ class Telegram extends Adapter {
             setImmediate(() => this.unsubscribeForeignStates(id));
         } else if (id.startsWith('enum.rooms') && this.config.rooms) {
             if (obj?.common?.members?.length) {
-                this.enumsCache.rooms[id] = obj.common;
+                this.enumsCache.rooms[id] = obj.common as ioBroker.EnumCommon;
             } else if (this.enumsCache.rooms[id]) {
                 delete this.enumsCache.rooms[id];
             }
@@ -545,24 +593,22 @@ class Telegram extends Adapter {
 
         const checkConnection = (): void => {
             this.pollConnectionStatus = undefined;
-            this.bot &&
-                this.bot.getMe &&
-                this.bot
-                    .getMe()
-                    .then(data => {
-                        this.log.debug(`getMe (reconnect): ${JSON.stringify(data)}`);
-                        this.connectionState(true, errorCounter > 0);
-                    })
-                    .catch(error => {
-                        if (errorCounter % 10 === 0) {
-                            this.log.error(`getMe (reconnect #${errorCounter}) Error:${error}`);
-                        }
-                        errorCounter++;
-                        if (this.pollConnectionStatus) {
-                            this.clearTimeout(this.pollConnectionStatus);
-                        }
-                        this.pollConnectionStatus = this.setTimeout(checkConnection, 1000);
-                    });
+            this.bot
+                ?.getMe?.()
+                .then(data => {
+                    this.log.debug(`getMe (reconnect): ${JSON.stringify(data)}`);
+                    this.connectionState(true, errorCounter > 0);
+                })
+                .catch(error => {
+                    if (errorCounter % 10 === 0) {
+                        this.log.error(`getMe (reconnect #${errorCounter}) Error:${error}`);
+                    }
+                    errorCounter++;
+                    if (this.pollConnectionStatus) {
+                        this.clearTimeout(this.pollConnectionStatus);
+                    }
+                    this.pollConnectionStatus = this.setTimeout(checkConnection, 1000);
+                });
         };
 
         if (connected && logSuccess) {
@@ -570,7 +616,7 @@ class Telegram extends Adapter {
         }
         if (this.isConnected !== connected) {
             this.isConnected = connected;
-            void this.setState('info.connection', this.isConnected, true);
+            this.setState('info.connection', this.isConnected, true);
             if (this.isConnected && this.pollConnectionStatus) {
                 this.clearTimeout(this.pollConnectionStatus);
                 this.pollConnectionStatus = undefined;
@@ -580,8 +626,24 @@ class Telegram extends Adapter {
         }
     }
 
-    parseStates(states: any): any {
-        // todo
+    parseStates(
+        states: { [value: string]: string } | string | string[] | undefined,
+    ): { [value: string]: string } | undefined {
+        if (!states) {
+            return undefined;
+        }
+        if (Array.isArray(states)) {
+            const obj: { [value: string]: string } = {};
+            states.forEach(value => (obj[value] = value));
+            return obj;
+        }
+        if (typeof states === 'string') {
+            const parts = states.split(';');
+            const obj: { [value: string]: string } = {};
+            parts.forEach(value => (obj[value] = value));
+            return obj;
+        }
+
         return states;
     }
 
@@ -641,19 +703,19 @@ class Telegram extends Adapter {
             }
 
             if (msg?.message_id) {
-                void this.setState('communicate.botSendMessageId', msg.message_id, true).catch(err =>
+                this.setState('communicate.botSendMessageId', msg.message_id, true).catch(err =>
                     this.log.error(err.message),
                 );
             }
 
             if (msg?.message_thread_id) {
-                void this.setState('communicate.botSendMessageThreadId', msg.message_thread_id, true).catch(err =>
+                this.setState('communicate.botSendMessageThreadId', msg.message_thread_id, true).catch(err =>
                     this.log.error(err.message),
                 );
             }
 
             if (msg?.chat?.id) {
-                void this.setState('communicate.botSendChatId', msg.chat.id.toString(), true).catch(err =>
+                this.setState('communicate.botSendChatId', msg.chat.id.toString(), true).catch(err =>
                     this.log.error(err.message),
                 );
             }
@@ -675,7 +737,7 @@ class Telegram extends Adapter {
             }
             if (options?.editMessageReplyMarkup !== undefined) {
                 this.log.debug(`Send editMessageReplyMarkup to "${name}"`);
-                bot &&
+                if (bot) {
                     this.executeSending(
                         () =>
                             bot.editMessageReplyMarkup(
@@ -685,11 +747,12 @@ class Telegram extends Adapter {
                         options,
                         resolve,
                     );
+                }
             } else if (options?.editMessageText !== undefined) {
                 this.log.debug(`Send editMessageText to "${name}"`);
                 if (bot) {
                     this.executeSending(
-                        () => bot.editMessageText(text, options.editMessageText!.options),
+                        () => bot.editMessageText({ ...options.editMessageText!.options, text }),
                         options,
                         resolve,
                     );
@@ -697,7 +760,21 @@ class Telegram extends Adapter {
             } else if (options?.editMessageMedia !== undefined) {
                 this.log.debug(`Send editMessageMedia to "${name}"`);
                 if (text) {
-                    let mediaInput: any;
+                    let mediaInput:
+                        | {
+                              type:
+                                  | 'media'
+                                  | 'thumbnail'
+                                  | 'cover'
+                                  | 'photo'
+                                  | 'animation'
+                                  | 'video'
+                                  | 'audio'
+                                  | 'document';
+                              media: string;
+                              fileOptions?: unknown;
+                          }
+                        | undefined;
                     if (
                         (typeof text === 'string' &&
                             text.match(/\.(jpg|png|jpeg|bmp|gif)$/i) &&
@@ -745,53 +822,40 @@ class Telegram extends Adapter {
                     }
 
                     if (mediaInput) {
-                        const opts: any = {
-                            qs: options.editMessageMedia.options,
+                        // The library resolves the file itself (local path / Buffer / stream / URL /
+                        // file_id) and builds the multipart form + `attach://` reference internally.
+                        // We only pass the InputMedia object and the extra form fields.
+                        const inputMedia: {
+                            type: 'photo' | 'animation' | 'video' | 'audio' | 'document';
+                            media: string;
+                            caption?: string;
+                            parse_mode?: ParseMode;
+                        } = {
+                            type: mediaInput.type as 'photo' | 'animation' | 'video' | 'audio' | 'document',
+                            media: mediaInput.media,
                         };
-                        opts.formData = {};
-
-                        const payload: any = Object.assign({}, mediaInput);
 
                         if (options.editMessageMedia.options?.caption) {
-                            payload.caption = options.editMessageMedia.options.caption;
+                            inputMedia.caption = options.editMessageMedia.options.caption;
                         }
                         if (options.editMessageMedia.options?.parse_mode) {
-                            payload.parse_mode = options.editMessageMedia.options.parse_mode;
+                            inputMedia.parse_mode = options.editMessageMedia.options.parse_mode;
                         }
 
-                        delete payload.media;
-                        delete payload.fileOptions;
-
-                        try {
-                            const attachName = String(0);
-                            const [formData, fileId] = (bot as any)._formatSendData(
-                                attachName,
-                                mediaInput.media,
-                                mediaInput.fileOptions,
-                            );
-                            if (formData) {
-                                opts.formData[attachName] = formData[attachName];
-                                payload.media = `attach://${attachName}`;
-                            } else {
-                                payload.media = fileId;
-                            }
-                        } catch (ex) {
-                            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-                            return Promise.reject(ex);
+                        const form: Omit<EditMessageMediaParams, 'media'> = {};
+                        if (options.editMessageMedia.options?.chat_id !== undefined) {
+                            form.chat_id = options.editMessageMedia.options.chat_id;
                         }
-
-                        opts.qs.media = JSON.stringify(payload);
-
+                        if (options.editMessageMedia.options?.message_id !== undefined) {
+                            form.message_id = options.editMessageMedia.options.message_id;
+                        }
                         if (options.editMessageMedia.options?.reply_markup) {
-                            opts.qs.reply_markup = JSON.stringify(options.editMessageMedia.options.reply_markup);
+                            form.reply_markup = options.editMessageMedia.options.reply_markup;
                         }
 
-                        bot &&
-                            this.executeSending(
-                                () => (bot as any)._request('editMessageMedia', opts),
-                                options,
-                                resolve,
-                            );
+                        if (bot) {
+                            this.executeSending(() => bot.editMessageMedia(inputMedia, form), options, resolve);
+                        }
                     } else {
                         this.log.error(
                             `Cannot send editMessageMedia [chatId - ${options.chatId}]: unsupported media type`,
@@ -806,15 +870,16 @@ class Telegram extends Adapter {
                 }
             } else if (options?.editMessageCaption !== undefined) {
                 this.log.debug(`Send editMessageCaption to "${name}"`);
-                bot &&
+                if (bot) {
                     this.executeSending(
                         () => bot.editMessageCaption(text, options.editMessageCaption!.options),
                         options,
                         resolve,
                     );
+                }
             } else if (options?.deleteMessage !== undefined) {
                 this.log.debug(`Send deleteMessage to "${name}"`);
-                bot &&
+                if (bot) {
                     this.executeSending(
                         () =>
                             bot.deleteMessage(
@@ -824,6 +889,7 @@ class Telegram extends Adapter {
                         options,
                         resolve,
                     );
+                }
             } else if (
                 options &&
                 options.latitude !== undefined &&
@@ -1070,30 +1136,14 @@ class Telegram extends Adapter {
 
     // https://core.telegram.org/bots/api
     sendMessage(
-        text: any,
+        text: string | number,
         user?: string | string[] | null,
         chatId?: number | string | null,
         options?: SendOptions,
-    ): Promise<any> {
+    ): Promise<string[]> {
         if (!text && typeof options !== 'object' && text !== 0 && (!options || !(options as SendOptions).latitude)) {
             this.log.warn('Invalid text: null');
-            return Promise.resolve({});
-        }
-        if (
-            text &&
-            typeof text === 'object' &&
-            text.text !== undefined &&
-            typeof text.text === 'string' &&
-            options === undefined
-        ) {
-            options = text;
-            text = options!.text;
-            if (options!.chatId) {
-                chatId = options!.chatId;
-            }
-            if (options!.user) {
-                user = options!.user;
-            }
+            return Promise.resolve([]);
         }
 
         if (options && typeof options === 'object') {
@@ -1244,7 +1294,7 @@ class Telegram extends Adapter {
                                 try {
                                     const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
 
-                                    void this.writeFileAsync(this.namespace, fileName, Buffer.concat(buf)).then(() => {
+                                    this.writeFileAsync(this.namespace, fileName, Buffer.concat(buf)).then(() => {
                                         callback({
                                             info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
                                             location: this.config.saveFilesTo,
@@ -1278,7 +1328,7 @@ class Telegram extends Adapter {
                     res => {
                         if (!res.error) {
                             this.log.info(res.info!);
-                            void this.setState(
+                            this.setState(
                                 'communicate.pathFile',
                                 res.path!,
                                 true,
@@ -1301,13 +1351,13 @@ class Telegram extends Adapter {
                     3: 'highdef',
                 };
 
-                let saveOnlyQuality: any = this.config.saveFilesQuality;
+                let saveOnlyQuality: string | null = this.config.saveFilesQuality;
                 if (saveOnlyQuality) {
-                    saveOnlyQuality = parseInt(saveOnlyQuality, 10);
-                    if (msg.photo.length <= saveOnlyQuality) {
+                    const saveOnlyQualityNum = parseInt(saveOnlyQuality, 10);
+                    if (msg.photo.length <= saveOnlyQualityNum) {
                         saveOnlyQuality = null;
                     } else {
-                        saveOnlyQuality = saveOnlyQuality.toString();
+                        saveOnlyQuality = saveOnlyQualityNum.toString();
                     }
                 }
 
@@ -1344,7 +1394,7 @@ class Telegram extends Adapter {
                     this.saveFile(item.file_id, fileName, res => {
                         if (!res.error) {
                             this.log.info(res.info!);
-                            void this.setState(
+                            this.setState(
                                 'communicate.pathFile',
                                 res.path!,
                                 true,
@@ -1363,7 +1413,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        void this.setState(
+                        this.setState(
                             'communicate.pathFile',
                             res.path!,
                             true,
@@ -1381,7 +1431,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.video_note.file_id, `/video/${date}.mp4`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        void this.setState(
+                        this.setState(
                             'communicate.pathFile',
                             res.path!,
                             true,
@@ -1399,7 +1449,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        void this.setState(
+                        this.setState(
                             'communicate.pathFile',
                             res.path!,
                             true,
@@ -1417,7 +1467,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.document.file_id, `/document/${msg.document.file_name}`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        void this.setState(
+                        this.setState(
                             'communicate.pathFile',
                             res.path!,
                             true,
@@ -1458,7 +1508,7 @@ class Telegram extends Adapter {
         switch (obj.command) {
             case 'send':
                 if (obj.message) {
-                    let tPromise: Promise<any>;
+                    let tPromise: Promise<string[]>;
                     if (typeof obj.message === 'object') {
                         tPromise = this.sendMessage(
                             obj.message.text,
@@ -1467,11 +1517,13 @@ class Telegram extends Adapter {
                             obj.message,
                         );
                     } else {
-                        tPromise = this.sendMessage(obj.message);
+                        tPromise = this.sendMessage(obj.message as string | number);
                     }
 
                     tPromise
-                        .then(count => obj.callback && this.sendTo(obj.from, obj.command, count, obj.callback))
+                        .then(
+                            results => obj.callback && this.sendTo(obj.from, obj.command, results.length, obj.callback),
+                        )
                         .catch(e => this.log.error(`Cannot send command: ${e}`));
                 }
                 break;
@@ -1491,13 +1543,14 @@ class Telegram extends Adapter {
                             obj.message.chatId,
                             obj.message,
                         );
-                        const msgIds = messages.length > 0 ? messages.map(JSON.parse)[0] : {};
+                        const msgIds: { [chatId: string]: number } =
+                            messages.length > 0 ? messages.map(m => JSON.parse(m))[0] : {};
 
                         question.chatId = obj.message.chatId;
                         question.user = obj.message.user;
                         question.msgId = msgIds?.[String(question.chatId)];
                     } else {
-                        void this.sendMessage(obj.message);
+                        await this.sendMessage(obj.message as string | number);
                     }
 
                     if (obj.callback) {
@@ -1515,7 +1568,7 @@ class Telegram extends Adapter {
 
                                 // Remove keyboard
                                 if (this.bot && q?.chatId && q?.msgId) {
-                                    void this.bot.editMessageReplyMarkup(
+                                    this.bot.editMessageReplyMarkup(
                                         { inline_keyboard: [] },
                                         {
                                             chat_id: q.chatId,
@@ -1647,7 +1700,7 @@ class Telegram extends Adapter {
             this.storedUsers[id] = { firstName, userName, sysMessages: false };
 
             if (this.config.rememberUsers) {
-                void this.setState('communicate.users', JSON.stringify(this.storedUsers), true);
+                this.setState('communicate.users', JSON.stringify(this.storedUsers), true);
             }
         }
     }
@@ -1810,7 +1863,7 @@ class Telegram extends Adapter {
 
                     // Remove keyboard
                     if (this.bot && question?.chatId && question?.msgId) {
-                        void this.bot.editMessageReplyMarkup(
+                        this.bot.editMessageReplyMarkup(
                             { inline_keyboard: [] },
                             {
                                 chat_id: question.chatId,
@@ -1864,14 +1917,12 @@ class Telegram extends Adapter {
      * @param instance target instance id, e.g. `assistant.0`
      * @param command the `sendTo` command
      * @param message the payload to forward
-     * @param callback invoked with the target instance's answer
      */
     async sendToIfAlive(
         instance: string,
         command: string,
         message: Record<string, unknown>,
-        callback: (response: any) => void,
-    ): Promise<void> {
+    ): Promise<ioBroker.Message | undefined> {
         try {
             const aliveState = await this.getForeignStateAsync(`system.adapter.${instance}.alive`);
             if (!aliveState?.val) {
@@ -1882,7 +1933,7 @@ class Telegram extends Adapter {
             this.log.warn(`Cannot check if "${instance}" is alive: ${err instanceof Error ? err.message : err}`);
             return;
         }
-        this.sendTo(instance, command, message, callback);
+        return await this.sendToAsync(instance, command, message);
     }
 
     processTelegramText(msg: Message): Promise<Message | void> | void {
@@ -2021,7 +2072,7 @@ class Telegram extends Adapter {
                     let sValue = msgText.substring((this.commands[id].alias as string).length + 1);
                     found = true;
                     if (sValue === '?') {
-                        void this.getForeignState(id, (err, state) =>
+                        this.getForeignState(id, (err, state) =>
                             bot
                                 .sendMessage(msg.chat.id, this.getStatus(id, state))
                                 .catch(error => this.log.error(`send Message Error: ${error}`)),
@@ -2090,7 +2141,7 @@ class Telegram extends Adapter {
                     val1 = null;
                 }, 1000);
 
-                void this.getForeignState(id1, (err, state) => {
+                this.getForeignState(id1, (err, state) => {
                     if (memoryLeak1) {
                         this.clearTimeout(memoryLeak1);
                         memoryLeak1 = undefined;
@@ -2139,7 +2190,7 @@ class Telegram extends Adapter {
                     memoryLeak2 = undefined;
                 }, 1000);
 
-                void this.getForeignState(id2, (err, state) => {
+                this.getForeignState(id2, (err, state) => {
                     if (memoryLeak2) {
                         this.clearTimeout(memoryLeak2);
                         memoryLeak2 = undefined;
@@ -2170,15 +2221,13 @@ class Telegram extends Adapter {
 
         // Send to text2command
         if (this.config.text2command) {
-            void this.sendToIfAlive(
-                this.config.text2command,
-                'send',
-                {
-                    text: msgText.replace(/\//g, '#').replace(/_/g, ' '),
-                    id: msg.chat.id,
-                    user,
-                },
-                (response: any) => {
+            this.sendToIfAlive(this.config.text2command, 'send', {
+                text: msgText.replace(/\//g, '#').replace(/_/g, ' '),
+                id: msg.chat.id,
+                user,
+            })
+                // @ts-expect-error types fixed in js-controller
+                .then((response: { response?: string; id: string } | null) => {
                     if (response?.response) {
                         let text = response.response;
                         let options: { parse_mode: ParseMode } | undefined;
@@ -2200,26 +2249,24 @@ class Telegram extends Adapter {
                             this.log.error(`send Message Error: ${error}`),
                         );
                     }
-                },
-            );
+                })
+                .catch(err => this.log.error(`Cannot send message to ${this.config.text2command}: ${err}`));
         }
 
         // Forward messages that no internal rule/command matched to the ioBroker.assistant instance and
         // reply with its answer. The reply is routed via this closure (msg.chat.id), so the answer always
         // goes back to the right chat/thread.
         if (this.config.assistantInstance) {
-            void this.sendToIfAlive(
-                this.config.assistantInstance,
-                'ask',
-                {
-                    text: msgText,
-                    source: `telegram:${user}`,
-                    user,
-                    chatId: msg.chat.id,
-                    userId: from.id.toString(),
-                    messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
-                },
-                (response: any) => {
+            this.sendToIfAlive(this.config.assistantInstance, 'ask', {
+                text: msgText,
+                source: `telegram:${user}`,
+                user,
+                chatId: msg.chat.id,
+                userId: from.id.toString(),
+                messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
+            })
+                // @ts-expect-error types fixed in js-controller
+                .then((response: { answer?: string; error?: string }) => {
                     const text = response && (response.answer || response.error);
                     if (text) {
                         this.log.debug(`Assistant response: ${text}`);
@@ -2228,21 +2275,21 @@ class Telegram extends Adapter {
                             this.log.error(`send Message Error: ${error}`),
                         );
                     }
-                },
-            );
+                })
+                .catch(err => this.log.error(`Cannot send message to ${this.config.assistantInstance}: ${err}`));
         }
 
-        void this.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
-        void this.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
-        void this.setState('communicate.requestMessageThreadId', {
+        this.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
+        this.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
+        this.setState('communicate.requestMessageThreadId', {
             val: msg.is_topic_message ? msg.message_thread_id : 0,
             ack: true,
         });
-        void this.setState('communicate.requestUserId', {
+        this.setState('communicate.requestUserId', {
             val: from.id.toString(),
             ack: true,
         });
-        void this.setState('communicate.request', { val: `[${user}]${msgText}`, ack: true });
+        this.setState('communicate.request', { val: `[${user}]${msgText}`, ack: true });
     }
 
     connect(): void {
@@ -2287,7 +2334,7 @@ class Telegram extends Adapter {
                 if (this.config.url[this.config.url.length - 1] === '/') {
                     this.config.url = this.config.url.substring(0, this.config.url.length - 1);
                 }
-                void this.bot.setWebHook(`${this.config.url}/${this.config.token}`);
+                this.bot.setWebhook(`${this.config.url}/${this.config.token}`);
             } else {
                 // Setup polling way
                 const pollingOptions = {
@@ -2301,8 +2348,8 @@ class Telegram extends Adapter {
                     `Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`,
                 );
                 this.bot = new TelegramBot(this.config.token, pollingOptions);
-                this.bot.setWebHook('').catch(error => {
-                    this.log.error(`setWebHook Error:${error}`);
+                this.bot.setWebhook('').catch(error => {
+                    this.log.error(`setWebhook Error:${error}`);
                 });
             }
 
@@ -2321,9 +2368,9 @@ class Telegram extends Adapter {
                             this.config.restarted === null ||
                             this.config.restarted === undefined
                         ) {
-                            void this.sendSystemMessage(I18n.translate('Started!'));
+                            this.sendSystemMessage(I18n.translate('Started!'));
                         } else {
-                            void this.sendSystemMessage(this.config.restarted);
+                            this.sendSystemMessage(this.config.restarted);
                         }
                     }
                 })
@@ -2338,7 +2385,7 @@ class Telegram extends Adapter {
                 this.connectionState(true);
 
                 if (this.config.storeRawRequest) {
-                    void this.setState('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+                    this.setState('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
                 }
 
                 this.getMessage(msg);
@@ -2353,7 +2400,7 @@ class Telegram extends Adapter {
                 this.callbackQueryId[callbackQuery.from.id] = { id: callbackQuery.id, ts: Date.now() };
 
                 if (this.config.storeRawRequest) {
-                    void this.setState(
+                    this.setState(
                         'communicate.requestRaw',
                         JSON.stringify(callbackQuery),
                         true,
@@ -2361,19 +2408,19 @@ class Telegram extends Adapter {
                     );
                 }
 
-                void this.setState(
+                this.setState(
                     'communicate.requestMessageId',
                     callbackQuery.message!.message_id,
                     true,
                     err => err && this.log.error(err.message),
                 );
-                void this.setState(
+                this.setState(
                     'communicate.requestChatId',
                     callbackQuery.message!.chat.id,
                     true,
                     err => err && this.log.error(err.message),
                 );
-                void this.setState(
+                this.setState(
                     'communicate.request',
                     `[${
                         !this.config.useUsername
@@ -2463,12 +2510,11 @@ class Telegram extends Adapter {
                 const obj = await this.getForeignObjectAsync(ids[i]);
                 if (obj) {
                     this.commands[ids[i]].alias = this.getName(obj);
-                    this.commands[ids[i]].type = obj.common && (obj.common as ioBroker.StateCommon).type;
-                    this.commands[ids[i]].states =
-                        obj.common && this.parseStates((obj.common as ioBroker.StateCommon).states || undefined);
-                    this.commands[ids[i]].unit = obj.common && (obj.common as ioBroker.StateCommon).unit;
-                    this.commands[ids[i]].min = obj.common && (obj.common as ioBroker.StateCommon).min;
-                    this.commands[ids[i]].max = obj.common && (obj.common as ioBroker.StateCommon).max;
+                    this.commands[ids[i]].type = (obj.common as ioBroker.StateCommon)?.type;
+                    this.commands[ids[i]].states = this.parseStates((obj.common as ioBroker.StateCommon)?.states);
+                    this.commands[ids[i]].unit = (obj.common as ioBroker.StateCommon)?.unit;
+                    this.commands[ids[i]].min = (obj.common as ioBroker.StateCommon)?.min;
+                    this.commands[ids[i]].max = (obj.common as ioBroker.StateCommon)?.max;
                     // read actual state to detect changes
                     if (this.commands[ids[i]].reportChanges) {
                         const state = await this.getForeignStateAsync(ids[i]);
@@ -2501,7 +2547,7 @@ class Telegram extends Adapter {
         await this.readAllNames(readNames);
     }
 
-    async readEnums(name?: string): Promise<Record<string, Record<string, any>>> {
+    async readEnums(name?: 'rooms'): Promise<{ rooms: { [roomId: string]: ioBroker.EnumCommon } }> {
         name ||= 'rooms';
         this.enumsCache[name] = {};
         try {

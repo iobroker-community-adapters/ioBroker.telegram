@@ -112,6 +112,7 @@ export interface EditMessageMediaOptions {
     reply_markup?: InlineKeyboardMarkup;
     chat_id?: number | string;
     message_id?: number;
+    media?: string;
 }
 
 /**
