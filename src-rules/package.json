@@ -26,7 +26,7 @@
         "@iobroker/types": "^7.2.2",
         "@module-federation/runtime": "2.3.3",
         "@module-federation/vite": "1.14.5",
-        "@mui/material": "6.4.8",
+        "@mui/material": "9.1.2",
         "@mui/styles": "6.4.12",
         "@originjs/vite-plugin-federation": "^1.4.1",
         "@types/react": "^18.3.31",
