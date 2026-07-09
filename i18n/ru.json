@@ -1,0 +1,23 @@
+{
+    "Restarting...": "Перезапуск бота.",
+    "Restarting... Reauthenticate!": "Перезапуск ... Повторно аутентифицировать!",
+    "ON-Status": "включен(о/а)",
+    "OFF-Status": "выключен(о/а)",
+    "Call text": "Это звонит ioBroker. Что-то случилось в вашем доме.",
+    "value as boolean": "логическое значение",
+    "value as number": "значение в виде число",
+    "value as string": "значение в виде строки",
+    "Select option": "Выберите опцию",
+    "Message ignored: ": "Сообщение проигнорировано: ",
+    "Please enter password in form \"/password phrase\"": "Пожалуйста введите пароль в формате: \"/password phrase\"",
+    "Too many attempts. Blocked for": "Слишком много попыток. Заблокировано",
+    "seconds": "секунд",
+    "Welcome ": "Добро пожаловать ",
+    "Invalid password": "Неверный пароль!",
+    "User is not in the list": "Пользователь не входит в список",
+    "Invalid number %s": "Неверное число %s",
+    "Done": "Готово",
+    "ID \"%s\" not found.": "Идентификатор \" %s\" не найден.",
+    "Started!": "Бот запущен!",
+    "uncertain": "неизвестно"
+}

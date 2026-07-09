@@ -247,7 +247,21 @@
           "lg": 4,
           "xl": 4,
           "label": "text2command instance",
-          "help": "Text2Command info"
+          "help": "Text2Command info",
+          "hidden": "!!data.assistantInstance"
+        },
+        "assistantInstance": {
+          "newLine": true,
+          "type": "instance",
+          "adapter": "assistant",
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4,
+          "label": "assistant instance",
+          "hidden": "!!data.text2command",
+          "help": "Forward messages that no internal rule/command matched to this ioBroker.assistant instance and reply with its answer."
         },
         "answerTimeoutSec": {
           "newLine": true,

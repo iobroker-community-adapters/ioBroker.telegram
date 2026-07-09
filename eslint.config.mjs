@@ -6,6 +6,16 @@ export default [
     ...config,
 
     {
+        languageOptions: {
+            parserOptions: {
+                allowDefaultProject: {
+                    allow: ['*.js', '*.mjs'],
+                },
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
+    },
+    {
         // specify files to exclude from linting here
         ignores: [
             '.dev-server/',
@@ -13,18 +23,17 @@ export default [
             '**/*.test.js',
             'test/**/*.js',
             '*.config.mjs',
-            'build',
+            'tasks.js',
+            'build/',
             'admin/build',
             'admin/words.js',
             'admin/blockly.js',
             'admin/admin.d.ts',
-            '**/adapter-config.d.ts',
-            'lib/words.js',
             'admin/custom',
             'admin/rules',
-            'src/', // TODO
-            'src-admin/', // TODO
-        ] 
+            'src-rules/',
+            'src-admin/',
+        ],
     },
     {
         rules: {

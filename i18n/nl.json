@@ -1,0 +1,23 @@
+{
+    "Restarting...": "Het opnieuw starten ...",
+    "Restarting... Reauthenticate!": "Opnieuw opstarten ... Opnieuw verifiëren!",
+    "ON-Status": "ON-Status",
+    "OFF-Status": "OFF-Status",
+    "Call text": "Dit is ioBroker. Er is iets gebeurd in je huis.",
+    "value as boolean": "waarde als Boolean",
+    "value as number": "waarde als nummer",
+    "value as string": "waarde als tekenreeks",
+    "Select option": "Selecteer optie",
+    "Message ignored: ": "Bericht genegeerd: ",
+    "Please enter password in form \"/password phrase\"": "Voer een wachtwoord in het formulier \"/ wachtwoord zin\"",
+    "Too many attempts. Blocked for": "Te veel pogingen. Geblokkeerd voor",
+    "seconds": "seconden",
+    "Welcome ": "Welkom ",
+    "Invalid password": "Ongeldig wachtwoord!",
+    "User is not in the list": "Gebruiker staat niet in de lijst",
+    "Invalid number %s": "Ongeldig aantal %s",
+    "Done": "Gedaan",
+    "ID \"%s\" not found.": "ID \"%s\" niet gevonden.",
+    "Started!": "Begonnen!",
+    "uncertain": "onbekend"
+}

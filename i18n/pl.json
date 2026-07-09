@@ -1,0 +1,23 @@
+{
+    "Restarting...": "Ponowne uruchamianie ...",
+    "Restarting... Reauthenticate!": "Restartowanie ... Ponownie uwierzytelnij!",
+    "ON-Status": "ON-Status",
+    "OFF-Status": "OFF-Status",
+    "Call text": "Tu JoBroker. Coś się stało w twoim domu.",
+    "value as boolean": "wartość jako boolean",
+    "value as number": "wartość jako liczba",
+    "value as string": "wartość jako ciąg",
+    "Select option": "Wybierz opcję",
+    "Message ignored: ": "Wiadomość została zignorowana: ",
+    "Please enter password in form \"/password phrase\"": "Proszę podać hasło w formularzu \"/hasło zwrotne\"",
+    "Too many attempts. Blocked for": "Zbyt wiele prób. Zablokowany",
+    "seconds": "sekund",
+    "Welcome ": "Witamy ",
+    "Invalid password": "Nieprawidłowe hasło!",
+    "User is not in the list": "Użytkownik nie jest na liście",
+    "Invalid number %s": "Nieprawidłowy numer %s",
+    "Done": "Gotowe",
+    "ID \"%s\" not found.": "Nie znaleziono identyfikatora \"%s\".",
+    "Started!": "Rozpoczęty!",
+    "uncertain": "nieznany"
+}

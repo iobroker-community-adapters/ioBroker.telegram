@@ -1,0 +1,58 @@
+{
+    "name": "iobroker.telegram.rules",
+    "private": true,
+    "version": "4.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "set PORT=4173 && craco start",
+        "old-start": "set PORT=4173 && react-scripts start",
+        "lint": "eslint --fix --ext .js,.jsx src",
+        "webpack-build": "craco build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "build": "tsc && vite build",
+        "preview": "vite preview --port 4173",
+        "prepublishOnly": "echo Run publish in build && exit 1",
+        "release": "release-script",
+        "release-patch": "release-script patch --yes",
+        "release-minor": "release-script minor --yes",
+        "release-major": "release-script major --yes"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@iobroker/adapter-react-v5": "^8.2.13",
+        "@iobroker/javascript-rules-dev": "^0.0.6",
+        "@iobroker/types": "^7.2.2",
+        "@module-federation/runtime": "2.3.3",
+        "@module-federation/vite": "1.14.5",
+        "@mui/material": "6.4.8",
+        "@mui/styles": "6.4.12",
+        "@originjs/vite-plugin-federation": "^1.4.1",
+        "@types/react": "^18.3.31",
+        "@types/react-dom": "^18.3.7",
+        "@vitejs/plugin-react": "^4.3.4",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "vite": "7.3.2",
+        "vite-plugin-commonjs": "^0.10.4",
+        "vite-plugin-svgr": "^4.3.0",
+        "vite-tsconfig-paths": "^6.1.1"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "devDependencies": {},
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
