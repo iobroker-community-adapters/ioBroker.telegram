@@ -22,6 +22,7 @@ Blockly.Words['telegram_help']          = {'en': 'https://github.com/ioBroker/io
 Blockly.Words['telegram_silent']        = {'en': 'without notification',        'de': 'ohne Benachrichtigung',          'ru': 'без уведомления',                    'pt': 'sem notificação',                'nl': 'zonder kennisgeving',            'fr': 'sans notification',              'it': 'senza notifica',                     'es': 'sin notificación',                   'pl': 'bez powiadomienia'};
 Blockly.Words['telegram_escaping']      = {'en': 'Escape chars',                'de': 'Escapezeichen verwenden',                   'ru': 'Escape',                       'pt': 'escape chars',                   'nl': 'escape chars',                    'fr': 'escape chars',                  'it': 'escape chars',                        'es': 'escape chars',                      'pl': 'escape chars', 'zh-cn': 'escape chars'};
 Blockly.Words['telegram_disable_web_preview'] = {'en': 'disable web preview',   'de': 'Webvorschau deaktivieren', 'ru': 'отключить предварительный просмотр в Интернете', 'pt': 'desativar a visualização da web', 'nl': 'webvoorbeeld uitschakelen', 'fr': 'désactiver l\'aperçu Web','it': 'disabilitare l\'anteprima web', 'es': 'deshabilitar la vista previa web', 'pl': 'wyłącz podgląd internetowy', 'zh-cn': '禁用网页预览'};
+Blockly.Words['telegram_parsemode_default'] = {'en': 'default',                'de': 'Standard',                 'ru': 'по умолчанию',                                  'pt': 'padrão',                          'nl': 'standaard',                 'fr': 'par défaut',           'it': 'predefinito',                   'es': 'predeterminado',                    'pl': 'domyślny',                    'uk': 'за замовчуванням',    'zh-cn': '默认'};
 
 Blockly.Sendto.blocks['telegram'] =
     '<block type="telegram">' +
@@ -97,7 +98,7 @@ Blockly.Blocks['telegram'] = {
 
         this.appendDummyInput('PARSEMODE')
             .appendField('Parsemode')
-            .appendField(new Blockly.FieldDropdown([['default', 'default'], ['HTML', 'HTML'], ['MarkdownV2', 'MarkdownV2']]), 'PARSEMODE');
+            .appendField(new Blockly.FieldDropdown([[Blockly.Translate('telegram_parsemode_default'), 'default'], ['HTML', 'HTML'], ['MarkdownV2', 'MarkdownV2']]), 'PARSEMODE');
 
         this.appendDummyInput('ESCAPING')
             .appendField(Blockly.Translate('telegram_escaping'))
@@ -377,6 +378,7 @@ Blockly.Sendto.blocks['telegram_ask'] =
     '  </mutation>' +
     '  <field name="INSTANCE"></field>' +
     '  <field name="LOG"></field>' +
+    '  <field name="PARSEMODE">default</field>' +
     '  <value name="QUESTION">' +
     '    <shadow type="text">' +
     '      <field name="TEXT">text</field>' +
@@ -489,6 +491,10 @@ Blockly.Blocks['telegram_ask'] = {
                 [Blockly.Translate('telegram_log_warn'),  'warn'],
                 [Blockly.Translate('telegram_log_error'), 'error'],
             ]), 'LOG');
+
+        this.appendDummyInput('PARSEMODE')
+            .appendField('Parsemode')
+            .appendField(new Blockly.FieldDropdown([[Blockly.Translate('telegram_parsemode_default'), 'default'], ['HTML', 'HTML'], ['MarkdownV2', 'MarkdownV2']]), 'PARSEMODE');
 
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
@@ -665,6 +671,7 @@ Blockly.JavaScript['telegram_ask'] = function(block) {
 
     const dropdown_instance = block.getFieldValue('INSTANCE');
     const logLevel = block.getFieldValue('LOG');
+    const parsemode = block.getFieldValue('PARSEMODE');
     const valueQuestion = Blockly.JavaScript.valueToCode(block, 'QUESTION', Blockly.JavaScript.ORDER_ATOMIC);
     const valueUsername = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
     const valueChatId = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
@@ -684,6 +691,7 @@ Blockly.JavaScript['telegram_ask'] = function(block) {
         `  text: ${valueQuestion},\n` +
         (valueUsername ? `  user: ${valueUsername},\n` : '') +
         (valueChatId ? `  chatId: ${valueChatId},\n` : '') +
+        (parsemode !== 'default' ? `  parse_mode: '${parsemode}',\n` : '') +
         `  reply_markup: {\n` +
         `    inline_keyboard: [\n` +
         answers.map(a => `      [ { text: ${a.answer}, callback_data: '${a.id}' } ],`).join('\n') + '\n' +

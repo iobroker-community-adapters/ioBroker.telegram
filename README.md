@@ -38,6 +38,7 @@ Use telegram service to communicate with ioBroker
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (@GermanBluefox) Added a "Parsemode" option to the "ask via Telegram" Blockly block, so questions can be formatted with HTML/MarkdownV2
 - (@GermanBluefox) Added support for sending files directly from the ioBroker file storage via `iobfile://`, `iobobject://` and `iobstate://` URIs (works with Redis/jsonl where the file is not on the local filesystem)
 - (@GermanBluefox) The `/password` message is now deleted from the chat after a successful authentication
 - (@GermanBluefox) Fixed: `requestChatId`/`requestMessageId`/`requestUserId` are now set when receiving a photo, document or other media
