@@ -58,7 +58,7 @@
       "3.8.0": {
         "en": "Migrated GUI for Admin 7",
         "de": "Migrated GUI für Admin 7",
-        "ru": "Migrated GUI for Admin 7",
+        "ru": "GUI подогнана для Admin 7",
         "pt": "GUI Migrada para administrador 7",
         "nl": "GUI voor beheerder 7 migreren",
         "fr": "GUI modifié pour l'administrateur 7",
@@ -208,6 +208,7 @@
     "type": "messaging",
     "stopBeforeUpdate": true,
     "blockly": true,
+    "nogit": true,
     "adminUI": {
       "custom": "json",
       "config": "json"
@@ -240,8 +241,7 @@
     },
     "licenseInformation": {
       "license": "MIT",
-      "type": "free",
-      "link": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/LICENSE"
+      "type": "free"
     }
   },
   "protectedNative": [

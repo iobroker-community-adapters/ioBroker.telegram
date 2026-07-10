@@ -273,9 +273,7 @@ class Telegram extends Adapter {
                     this.server.server = (await webserver.init()) as ServerExt;
                 } catch (err) {
                     this.log.error(`Cannot create webserver: ${err}`);
-                    this.terminate
-                        ? this.terminate(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION)
-                        : process.exit(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
+                    this.terminate(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
                     return;
                 }
                 if (this.server.server) {
@@ -1755,14 +1753,26 @@ class Telegram extends Adapter {
 
                                 // Remove keyboard
                                 if (this.bot && q?.chatId && q?.msgId) {
-                                    this.bot.editMessageReplyMarkup(
-                                        { inline_keyboard: [] },
-                                        {
-                                            chat_id: q.chatId,
-                                            message_id: q.msgId,
-                                        },
-                                    );
-                                    this.log.debug(`removed inline_keyboard for msg ${q.msgId}: ${JSON.stringify(q)}`);
+                                    // Catch the rejection: if the message was already deleted/edited or is too
+                                    // old, telegram answers "message to edit not found". Without a catch this
+                                    // rejection is unhandled and terminates the whole adapter. See
+                                    // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/879
+                                    this.bot
+                                        .editMessageReplyMarkup(
+                                            { inline_keyboard: [] },
+                                            {
+                                                chat_id: q.chatId,
+                                                message_id: q.msgId,
+                                            },
+                                        )
+                                        .then(() =>
+                                            this.log.debug(
+                                                `removed inline_keyboard for msg ${q.msgId}: ${JSON.stringify(q)}`,
+                                            ),
+                                        )
+                                        .catch(error =>
+                                            this.log.warn(`Cannot remove inline_keyboard for msg ${q.msgId}: ${error}`),
+                                        );
                                 }
 
                                 const pos = this.questions.indexOf(q);
@@ -2048,18 +2058,31 @@ class Telegram extends Adapter {
                     question.timeout = null;
                     this.sendTo(question.from, 'ask', msg, question.cb);
 
-                    // Remove keyboard
-                    if (this.bot && question?.chatId && question?.msgId) {
-                        this.bot.editMessageReplyMarkup(
-                            { inline_keyboard: [] },
-                            {
-                                chat_id: question.chatId,
-                                message_id: question.msgId,
-                            },
-                        );
-                        this.log.debug(
-                            `removed inline_keyboard for msg ${question.msgId}: ${JSON.stringify(question)}`,
-                        );
+                    // Remove the inline keyboard. For a broadcast question `question.chatId`/`msgId` are
+                    // empty (the question was not tied to a single chat), so prefer the chat/message the
+                    // button was actually pressed on - it is carried by the incoming CallbackQuery. Fall back
+                    // to the stored question for text-message answers.
+                    const callbackMessage = 'data' in msg ? msg.message : undefined;
+                    const answeredChatId = callbackMessage?.chat.id ?? question.chatId;
+                    const answeredMsgId = callbackMessage?.message_id ?? question.msgId;
+
+                    if (this.bot && answeredChatId && answeredMsgId) {
+                        // Catch the rejection: if the message was already deleted/edited or is too old,
+                        // telegram answers "message to edit not found". Without a catch this rejection is
+                        // unhandled and terminates the whole adapter. See
+                        // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/879
+                        this.bot
+                            .editMessageReplyMarkup(
+                                { inline_keyboard: [] },
+                                {
+                                    chat_id: answeredChatId,
+                                    message_id: answeredMsgId,
+                                },
+                            )
+                            .then(() => this.log.debug(`removed inline_keyboard for msg ${answeredMsgId}`))
+                            .catch(error =>
+                                this.log.warn(`Cannot remove inline_keyboard for msg ${answeredMsgId}: ${error}`),
+                            );
                     }
                 }
                 this.questions.splice(this.questions.indexOf(question), 1);
@@ -2301,8 +2324,10 @@ class Telegram extends Adapter {
                         }
 
                         this.setForeignStateAsync(id, value, false, () =>
-                            bot.sendMessage(msg.chat.id, I18n.translate('Done')),
-                        )?.catch(error => this.log.error(`send Message Error: ${error}`));
+                            bot
+                                .sendMessage(msg.chat.id, I18n.translate('Done'))
+                                .catch(error => this.log.error(`send Message Error: ${error}`)),
+                        )?.catch(error => this.log.error(`setForeignState Error: ${error}`));
                     }
                 }
             }
@@ -2496,7 +2521,7 @@ class Telegram extends Adapter {
                         bot.stopPolling().then(
                             () => {
                                 this.log.debug('Start Polling');
-                                void bot.startPolling();
+                                bot.startPolling().catch(error => this.log.error(`Error start polling: ${error}`));
                             },
                             error => {
                                 this.log.error(`Error stop polling: ${error}`);
@@ -2526,7 +2551,9 @@ class Telegram extends Adapter {
                 if (this.config.url[this.config.url.length - 1] === '/') {
                     this.config.url = this.config.url.substring(0, this.config.url.length - 1);
                 }
-                this.bot.setWebhook(`${this.config.url}/${this.config.token}`);
+                this.bot
+                    .setWebhook(`${this.config.url}/${this.config.token}`)
+                    .catch(error => this.log.error(`setWebhook Error: ${error}`));
             } else {
                 // Setup polling way
                 const pollingOptions = {
