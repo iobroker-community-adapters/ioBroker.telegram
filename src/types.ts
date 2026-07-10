@@ -68,6 +68,20 @@ export interface StoredUser {
 export type Users = Record<string, StoredUser>;
 
 /**
+ * A chat the bot has seen (private chat, group, supergroup or channel), stored in `communicate.chats` so
+ * that other adapters can offer a chat/group picker. See issue #312.
+ */
+export interface StoredChat {
+    /** Group/channel title, or the first (+ last) name / username for a private chat. */
+    title: string;
+    /** The telegram chat type: `private`, `group`, `supergroup` or `channel`. */
+    type: string;
+}
+
+/** Map of chat id => stored chat. */
+export type Chats = Record<string, StoredChat>;
+
+/**
  * Per-state custom configuration (the `common.custom[namespace]` object) enriched at runtime with
  * a few properties copied from the object's `common` (type, states, unit, min, max, ...).
  */

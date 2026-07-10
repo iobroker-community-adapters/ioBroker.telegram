@@ -348,6 +348,25 @@ on({ id: 'telegram.0.communicate.requestLocation', change: 'any' }, obj => {
 });
 ```
 
+## Known chats and groups
+Every chat or group the bot receives a message from is remembered in the state
+`telegram.INSTANCE.communicate.chats` as a JSON object `id => { title, type }` (where `type` is one of
+`private`, `group`, `supergroup` or `channel`). This is handy to look up a group's chat id (e.g. to let
+another adapter pick a group to send to). Add the bot to the group and send one message so the group appears.
+
+```json
+{
+    "1234567": { "title": "John Doe", "type": "private" },
+    "-1001234567890": { "title": "My smart home group", "type": "supergroup" }
+}
+```
+
+The list is persisted, so it survives an adapter restart. Use the chat id as `chatId` when sending:
+
+```javascript
+sendTo('telegram.0', 'send', { text: 'Hello group', chatId: '-1001234567890' });
+```
+
 ## Updating messages
 The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with *inline keyboards* using callback queries, but can also help reduce clutter in conversations with regular chat bots.
 

@@ -782,6 +782,31 @@
       "native": {}
     },
     {
+      "_id": "communicate.chats",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Known chats and groups as JSON (id => {title, type})",
+          "de": "Bekannte Chats und Gruppen als JSON (id => {title, type})",
+          "ru": "Известные чаты и группы в формате JSON (id => {title, type})",
+          "pt": "Chats e grupos conhecidos como JSON (id => {title, type})",
+          "nl": "Bekende chats en groepen als JSON (id => {title, type})",
+          "fr": "Chats et groupes connus au format JSON (id => {title, type})",
+          "it": "Chat e gruppi noti come JSON (id => {title, type})",
+          "es": "Chats y grupos conocidos como JSON (id => {title, type})",
+          "pl": "Znane czaty i grupy jako JSON (id => {title, type})",
+          "uk": "Відомі чати та групи у форматі JSON (id => {title, type})",
+          "zh-cn": "以 JSON 表示的已知聊天和群组 (id => {title, type})"
+        },
+        "type": "string",
+        "role": "json",
+        "read": true,
+        "write": false,
+        "def": "{}"
+      },
+      "native": {}
+    },
+    {
       "_id": "communicate.pathFile",
       "type": "state",
       "common": {

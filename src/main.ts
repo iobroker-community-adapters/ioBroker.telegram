@@ -7,6 +7,7 @@ import type { Server as HttpsServer } from 'node:https';
 import axios from 'axios';
 import TelegramBot, {
     type CallbackQuery,
+    type Chat,
     type EditMessageMediaParams,
     type Message,
     type ParseMode,
@@ -30,6 +31,7 @@ import type {
     NotificationInstanceMessage,
     NotificationMessage,
     Question,
+    Chats,
     SaveFileResult,
     SendOptions,
     TelegramConfig,
@@ -65,6 +67,7 @@ class Telegram extends Adapter {
     declare config: TelegramConfig;
     private bot: TelegramBot | undefined;
     private storedUsers: Users = {};
+    private storedChats: Chats = {};
     private systemLang: ioBroker.Languages = 'en';
     private reconnectTimer: ioBroker.Interval | undefined;
     private pollConnectionStatus: ioBroker.Timeout | undefined;
@@ -1650,6 +1653,9 @@ class Telegram extends Adapter {
         const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
         this.log.debug(`Received message: ${JSON.stringify(msg)}`);
 
+        // Remember the chat/group so other adapters can pick it by id (issue #312).
+        this.storeChat(msg.chat);
+
         // Media messages (photo, document, voice, ...) do not contain `msg.text`, so they are not handled
         // by `processTelegramText` (which is bound via `bot.onText`). As a result the request metadata
         // (chat id, message id, user id) would stay empty for received files. Populate it here so the
@@ -2080,6 +2086,26 @@ class Telegram extends Adapter {
             if (this.config.rememberUsers) {
                 this.setState('communicate.users', JSON.stringify(this.storedUsers), true);
             }
+        }
+    }
+
+    /**
+     * Remember a chat the bot has seen (private chat, group, supergroup or channel) in `communicate.chats`,
+     * so other adapters can offer a chat/group picker (e.g. to address a group by id). See issue #312.
+     *
+     * @param chat the `msg.chat` object of a received message
+     */
+    storeChat(chat?: Chat): void {
+        if (chat?.id == null) {
+            return;
+        }
+        const id = String(chat.id);
+        const title = chat.title || [chat.first_name, chat.last_name].filter(n => !!n).join(' ') || chat.username || id;
+        const type = chat.type || 'private';
+
+        if (!this.storedChats[id] || this.storedChats[id].title !== title || this.storedChats[id].type !== type) {
+            this.storedChats[id] = { title, type };
+            this.setState('communicate.chats', { val: JSON.stringify(this.storedChats), ack: true });
         }
     }
 
@@ -2911,6 +2937,22 @@ class Telegram extends Adapter {
         }
     }
 
+    /** Restore the list of known chats/groups from `communicate.chats` on startup. See issue #312. */
+    async updateChats(): Promise<void> {
+        try {
+            const state = await this.getStateAsync('communicate.chats');
+            if (state?.val) {
+                try {
+                    this.storedChats = JSON.parse(state.val as string);
+                } catch (err) {
+                    this.log.error(`Cannot parse stored chat IDs: ${err instanceof Error ? err.message : err}`);
+                }
+            }
+        } catch (err) {
+            this.log.error(err);
+        }
+    }
+
     // Read all Object names sequentially, that do not have aliases
     async readAllNames(ids: string[]): Promise<void> {
         for (let i = 0; i < ids.length; i++) {
@@ -3009,6 +3051,7 @@ class Telegram extends Adapter {
         this.config.keyboard ||= '/cmds';
 
         await this.updateUsers();
+        await this.updateChats();
         // Default to enabled only when the option is missing (old configs); respect an explicit `false`.
         if (this.config.allowStates == null) {
             this.config.allowStates = true;
