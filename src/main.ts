@@ -2565,6 +2565,14 @@ class Telegram extends Adapter {
                 }
 
                 this.getMessage(msg);
+
+                // Media messages (photo, video, document, ...) carry their text in `msg.caption`, not in
+                // `msg.text`, so `bot.onText` never fires for them and the caption would be lost. Route the
+                // caption through the same text pipeline (auth check, command handling, communicate.request)
+                // by treating it as the message text.
+                if (!msg.text && msg.caption) {
+                    void this.processTelegramText({ ...msg, text: msg.caption });
+                }
             });
 
             // callback InlineKeyboardButton
