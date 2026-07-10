@@ -1326,6 +1326,22 @@ class Telegram extends Adapter {
             }
         }
 
+        // deleteMessage / editMessage* already carry their target chat in their own options. If the caller
+        // did not address a specific recipient, dispatch the operation exactly once to that chat instead of
+        // broadcasting it to every stored user (which made all but the first recipient fail, see
+        // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/885).
+        if (!chatId && !user) {
+            const targetedChatId =
+                options.deleteMessage?.options?.chat_id ??
+                options.editMessageText?.options?.chat_id ??
+                options.editMessageCaption?.options?.chat_id ??
+                options.editMessageMedia?.options?.chat_id ??
+                options.editMessageReplyMarkup?.options?.chat_id;
+            if (targetedChatId !== undefined && targetedChatId !== null) {
+                chatId = targetedChatId;
+            }
+        }
+
         const tPromiseList: Promise<string>[] = [];
         // convert
         if (text !== undefined && text !== null && typeof text !== 'object') {
