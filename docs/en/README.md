@@ -181,6 +181,42 @@ sendTo('telegram.0', 'send', {
 });
 ```
 
+### Sending files from the ioBroker file storage or from states (iob:// URIs)
+Besides a local file path or a web URL, the `text` can be an **ioBroker URI**. The adapter resolves the URI, reads the content and sends it with the automatically detected media type (photo, video, audio, document, ...). This is especially useful when the file is stored in the ioBroker file storage behind Redis/jsonl, where it does **not** exist on the local filesystem, so a plain path would not work.
+
+The following schemes are supported:
+
+- `iobfile://<adapter.instance>/<path>` — a file from the ioBroker file storage.
+- `iobstate://<state.id>` — the value of a state (see below how the value is interpreted).
+- `iobobject://<object.id>/<path>` — a value nested inside an ioBroker object (the `path` navigates into the object by `/`).
+
+```javascript
+// send a snapshot that another adapter has written into the file storage
+sendTo('telegram.0', 'send', {
+    user: 'UserName',
+    text: 'iobfile://cameras.0/snapshots/front_door.jpg',
+    caption: 'Someone is at the front door',
+});
+
+// send a file whose full path is stored in a state
+sendTo('telegram.0', 'send', {
+    text: 'iobstate://0_userdata.0.lastReport',
+});
+
+// take a value out of an object
+sendTo('telegram.0', 'send', {
+    text: 'iobobject://0_userdata.0.myObject/native/document',
+});
+```
+
+The media type is derived from the file extension (`.jpg`/`.png` → photo, `.mp4` → video, `.mp3`/`.ogg`/`.wav` → audio, `.gif` → animation, `.webp` → sticker, `.pdf`/`.csv`/`.docx`/... → document). If the extension is unknown, the type is taken from the stored MIME type; as a fallback the content is sent as a document. You can still override it explicitly with the `type` option.
+
+**How a state/object value is interpreted** (`iobstate://` and `iobobject://`):
+- a **data URL** (`data:image/png;base64,...`) is decoded and sent as the corresponding media type;
+- a value that itself is an `iob*://` URI or an `http(s)://` URL is resolved further (up to 5 levels of nesting);
+- any other string is treated as a file path / URL;
+- numbers, booleans and objects are sent as text (objects are JSON-stringified).
+
 ### Keyboard
 You can show keyboard **ReplyKeyboardMarkup** in the client:
 

@@ -126,6 +126,8 @@ export interface SendOptions {
     user?: string;
     text?: string;
     type?: string;
+    /** Filename hint used when an ioBroker URI is resolved to a Buffer (so uploaded documents keep their name). */
+    fileName?: string;
     media?: string | string[];
     parse_mode?: ParseMode;
     disable_notification?: boolean;
@@ -177,6 +179,26 @@ export interface NotificationMessage {
         description: string;
         instances: Record<string, NotificationCategoryInstance>;
     };
+}
+
+/**
+ * An ioBroker URI in string form, addressing a resource that can be sent through the bot:
+ * - `iobfile://<adapter.instance>/<path>` — a file from the ioBroker file storage (works with Redis/jsonl,
+ *   where the file may not exist on the local filesystem, see issue #907)
+ * - `iobobject://<object.id>/<path>` — a value nested inside an ioBroker object
+ * - `iobstate://<state.id>` — the value of an ioBroker state
+ * - `http(s)://…` — a plain web URL
+ */
+export type IobUri = string;
+
+/** The parsed representation of an {@link IobUri}. */
+export interface IobUriParsed {
+    /** The kind of resource the URI addresses. */
+    type: 'object' | 'state' | 'file' | 'http';
+    /** The primary address: adapter namespace (file), object/state id, or the http URL. */
+    address: string;
+    /** For files: the file path within the namespace; for objects: the `/`-separated path within the object. */
+    path?: string;
 }
 
 /** Options for a CallMeBot voice call (the `call` command message). */

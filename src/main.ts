@@ -24,6 +24,8 @@ type ServerExt = Server & { __server: any };
 import type {
     CallOptions,
     CommandConfig,
+    IobUri,
+    IobUriParsed,
     MessageIds,
     NotificationInstanceMessage,
     NotificationMessage,
@@ -33,6 +35,7 @@ import type {
     TelegramConfig,
     Users,
 } from './types';
+import { detectMediaTypeFromName, iobUriFromString, isIobUri, mimeToMediaType } from './iobUri';
 
 const systemLang2CallMe: Record<string, string> = {
     en: 'en-GB-Standard-A',
@@ -722,8 +725,134 @@ class Telegram extends Adapter {
         }
     }
 
-    sendMessageHelper(dest: number | string, name: string, text: any, options: SendOptions): Promise<string> {
+    /**
+     * Resolve an ioBroker URI to a payload that can be handed to the telegram send functions.
+     *
+     * File and (base64) object/state content is returned as a Buffer, so that it can be uploaded even when
+     * the file is not present on the local filesystem. `http(s)` URLs and filesystem paths are returned as a
+     * string and forwarded as-is (telegram / the bot library fetch them).
+     *
+     * @param uri the ioBroker URI (string or already parsed)
+     * @param depth internal recursion guard (a state may reference another URI)
+     * @returns the resolved payload or null if it could not be resolved
+     */
+    async resolveIobUri(
+        uri: IobUri | IobUriParsed,
+        depth = 0,
+    ): Promise<{ content: Buffer | string; type?: string; fileName?: string } | null> {
+        if (depth > 5) {
+            this.log.warn('Too many nested ioBroker URI references');
+            return null;
+        }
+        const parsed = typeof uri === 'string' ? iobUriFromString(uri) : uri;
+
+        if (parsed.type === 'http') {
+            return { content: parsed.address, type: detectMediaTypeFromName(parsed.address) };
+        }
+
+        if (parsed.type === 'file') {
+            const result = await this.readFileAsync(parsed.address, parsed.path || '');
+            const file = result?.file;
+            if (file === undefined || file === null) {
+                return null;
+            }
+            const content = Buffer.isBuffer(file) ? file : Buffer.from(file, 'binary');
+            const fileName = (parsed.path || '').split('/').pop() || undefined;
+            let type = detectMediaTypeFromName(parsed.path || '');
+            if (!type && result?.mimeType) {
+                type = mimeToMediaType(result.mimeType);
+            }
+            return { content, type: type || 'document', fileName };
+        }
+
+        if (parsed.type === 'state') {
+            const state = await this.getForeignStateAsync(parsed.address);
+            return this.valueToPayload(state ? state.val : null, depth);
+        }
+
+        // parsed.type === 'object'
+        const obj = await this.getForeignObjectAsync(parsed.address);
+        let value: any = obj;
+        if (parsed.path) {
+            for (const key of parsed.path.split('/')) {
+                if (value && typeof value === 'object') {
+                    value = value[key];
+                } else {
+                    value = undefined;
+                    break;
+                }
+            }
+        }
+        return this.valueToPayload(value, depth);
+    }
+
+    /**
+     * Convert an ioBroker state/object value into a send payload. Data URLs are decoded to a Buffer, nested
+     * ioBroker/http URIs are resolved recursively, everything else is returned as a string.
+     *
+     * @param value the raw value
+     * @param depth current recursion depth (see {@link resolveIobUri})
+     * @returns the resolved payload or null
+     */
+    async valueToPayload(
+        value: unknown,
+        depth: number,
+    ): Promise<{ content: Buffer | string; type?: string; fileName?: string } | null> {
+        if (value === undefined || value === null) {
+            return null;
+        }
+        if (typeof value === 'string') {
+            const dataUrl = value.match(/^data:([^;]+);base64,(.*)$/s);
+            if (dataUrl) {
+                const mime = dataUrl[1];
+                return {
+                    content: Buffer.from(dataUrl[2], 'base64'),
+                    type: mimeToMediaType(mime),
+                    fileName: `data.${mime.split('/')[1] || 'bin'}`,
+                };
+            }
+            if (isIobUri(value) || /^https?:\/\//i.test(value)) {
+                return this.resolveIobUri(value, depth + 1);
+            }
+            return { content: value, type: detectMediaTypeFromName(value) };
+        }
+        if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+            return { content: String(value) };
+        }
+        if (typeof value === 'object') {
+            return { content: JSON.stringify(value) };
+        }
+        return null;
+    }
+
+    async sendMessageHelper(dest: number | string, name: string, text: any, options: SendOptions): Promise<string> {
         const bot = this.bot!;
+
+        // Resolve ioBroker URIs (iobfile://, iobobject://, iobstate://) to their content before dispatching.
+        // This allows sending files that live in the ioBroker file storage (e.g. behind Redis/jsonl) and are
+        // therefore not accessible through the local filesystem. See issue #907.
+        if (typeof text === 'string' && isIobUri(text)) {
+            try {
+                const resolved = await this.resolveIobUri(text);
+                if (!resolved) {
+                    this.log.error(`Cannot resolve ioBroker URI: ${text}`);
+                    return JSON.stringify({
+                        error: { [String(options.chatId ?? dest)]: 'Cannot resolve ioBroker URI' },
+                    });
+                }
+                text = resolved.content;
+                if (resolved.type && !options.type) {
+                    options.type = resolved.type;
+                }
+                if (resolved.fileName && !options.fileName) {
+                    options.fileName = resolved.fileName;
+                }
+            } catch (err) {
+                this.log.error(`Cannot resolve ioBroker URI "${text}": ${err instanceof Error ? err.message : err}`);
+                return JSON.stringify({ error: { [String(options.chatId ?? dest)]: String(err) } });
+            }
+        }
+
         return new Promise(resolve => {
             const messageIds: MessageIds = {};
             if (options?.chatId !== undefined && options.user === undefined) {
@@ -991,7 +1120,11 @@ class Telegram extends Adapter {
                     this.log.debug(`Send sticker to "${name}": ${text.length} bytes`);
                 }
                 if (bot) {
-                    this.executeSending(() => bot.sendSticker(dest, text, options), options, resolve);
+                    this.executeSending(
+                        () => bot.sendSticker(dest, text, options, { filename: options.fileName }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (
                 text &&
@@ -1004,7 +1137,11 @@ class Telegram extends Adapter {
                     this.log.debug(`Send animation to "${name}": ${text.length} bytes`);
                 }
                 if (bot) {
-                    this.executeSending(() => bot.sendAnimation(dest, text, options), options, resolve);
+                    this.executeSending(
+                        () => bot.sendAnimation(dest, text, options, { filename: options.fileName }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (
                 text &&
@@ -1016,7 +1153,11 @@ class Telegram extends Adapter {
                     this.log.debug(`Send video to "${name}": ${text.length} bytes`);
                 }
                 if (bot) {
-                    this.executeSending(() => bot.sendVideo(dest, text, options), options, resolve);
+                    this.executeSending(
+                        () => bot.sendVideo(dest, text, options, { filename: options.fileName }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (
                 text &&
@@ -1025,7 +1166,11 @@ class Telegram extends Adapter {
             ) {
                 this.log.debug(`Send document to "${name}": ${typeof text === 'string' ? text : text.length}`);
                 if (bot) {
-                    this.executeSending(() => bot.sendDocument(dest, text, options), options, resolve);
+                    this.executeSending(
+                        () => bot.sendDocument(dest, text, options, { filename: options.fileName }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (
                 text &&
@@ -1035,7 +1180,11 @@ class Telegram extends Adapter {
                 this.log.debug(`Send audio to "${name}": ${typeof text === 'string' ? text : text.length}`);
 
                 if (bot) {
-                    this.executeSending(() => bot.sendAudio(dest, text, options), options, resolve);
+                    this.executeSending(
+                        () => bot.sendAudio(dest, text, options, { filename: options.fileName }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (
                 text &&
@@ -1047,7 +1196,11 @@ class Telegram extends Adapter {
                 this.log.debug(`Send photo to "${name}": ${typeof text === 'string' ? text : text.length}`);
 
                 if (bot) {
-                    this.executeSending(() => bot.sendPhoto(dest, text, options), options, resolve);
+                    this.executeSending(
+                        () => bot.sendPhoto(dest, text, options, { filename: options.fileName }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (options?.answerCallbackQuery !== undefined) {
                 this.log.debug(`Send answerCallbackQuery to "${name}"`);
