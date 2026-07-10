@@ -348,6 +348,14 @@ on({ id: 'telegram.0.communicate.requestLocation', change: 'any' }, obj => {
 });
 ```
 
+## Receiving channel posts
+If the bot is an administrator of a channel, posts published in that channel are received as well and written
+to `telegram.INSTANCE.communicate.request` in the form `[channel title]text` (together with
+`communicate.requestChatId` and `communicate.requestMessageId`). Channel posts are anonymous (they have no
+sender user), so the authentication/command handling does not apply to them - they are only exposed as a
+request. Any attached media is saved like for normal messages, and the channel is added to
+`communicate.chats`.
+
 ## Known chats and groups
 Every chat or group the bot receives a message from is remembered in the state
 `telegram.INSTANCE.communicate.chats` as a JSON object `id => { title, type }` (where `type` is one of

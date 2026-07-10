@@ -166,13 +166,13 @@ class Telegram extends Adapter {
                         try {
                             userObj = JSON.parse(state.val as string);
                             delete userObj[userID];
-                            this.setState('communicate.users', JSON.stringify(userObj), true, err => {
-                                if (!err) {
+                            this.setState('communicate.users', JSON.stringify(userObj), true)
+                                .then(() => {
                                     this.sendTo(obj.from, obj.command, userID, obj.callback);
-                                    this.updateUsers();
+                                    void this.updateUsers();
                                     this.log.warn(`User ${userID} has been deleted!`);
-                                }
-                            });
+                                })
+                                .catch(e => this.log.error(`Cannot set state communicate.users: ${e}`));
                         } catch (err) {
                             this.log.error(err);
                             this.log.error(`Cannot delete user ${userID}!`);
@@ -191,15 +191,15 @@ class Telegram extends Adapter {
                         try {
                             userObj = JSON.parse(state.val as string);
                             userObj[userID].sysMessages = checked;
-                            this.setState('communicate.users', JSON.stringify(userObj), true, err => {
-                                if (!err) {
+                            this.setState('communicate.users', JSON.stringify(userObj), true)
+                                .then(() => {
                                     this.sendTo(obj.from, obj.command, userID, obj.callback);
-                                    this.updateUsers();
+                                    void this.updateUsers();
                                     this.log.info(
                                         `Receiving of system messages for user "${userID}" has been changed to ${checked}!`,
                                     );
-                                }
-                            });
+                                })
+                                .catch(e => this.log.error(`Cannot set state communicate.users: ${e}`));
                         } catch (err) {
                             this.log.error(err);
                             this.log.error(`Cannot change user ${userID}!`);
@@ -208,15 +208,15 @@ class Telegram extends Adapter {
                 });
             } else if (obj.command === 'delAllUser') {
                 try {
-                    this.setState('communicate.users', '{}', true, err => {
-                        if (!err) {
+                    this.setState('communicate.users', '{}', true)
+                        .then(() => {
                             this.sendTo(obj.from, obj.command, true, obj.callback);
-                            this.updateUsers();
+                            void this.updateUsers();
                             this.log.warn(
                                 'List of saved users has been wiped. Every User has to reauthenticate with the new password!',
                             );
-                        }
-                    });
+                        })
+                        .catch(e => this.log.error(`Cannot set state communicate.users: ${e}`));
                 } catch (err) {
                     this.log.error(err);
                     this.log.error('Cannot wipe list of saved users!');
@@ -610,6 +610,17 @@ class Telegram extends Adapter {
         return `${cmd.alias} => ${val}${cmd.unit ? ` ${cmd.unit}` : ''}`;
     }
 
+    /**
+     * Fire-and-forget `setState` that never rejects: a failure is logged instead of surfacing as an
+     * unhandled promise rejection (which would otherwise terminate the adapter).
+     *
+     * @param id the (namespaced) state id
+     * @param value the value or a settable-state object (e.g. `{ val, ack: true }`)
+     */
+    setStateSafe(id: string, value: ioBroker.SettableState): void {
+        this.setState(id, value).catch(e => this.log.error(`Cannot set state "${id}": ${e}`));
+    }
+
     connectionState(connected: boolean, logSuccess?: boolean): void {
         let errorCounter = 0;
 
@@ -638,7 +649,7 @@ class Telegram extends Adapter {
         }
         if (this.isConnected !== connected) {
             this.isConnected = connected;
-            this.setState('info.connection', this.isConnected, true);
+            this.setStateSafe('info.connection', { val: this.isConnected, ack: true });
             if (this.isConnected) {
                 if (this.pollConnectionStatus) {
                     this.clearTimeout(this.pollConnectionStatus);
@@ -1670,14 +1681,14 @@ class Telegram extends Adapter {
             msg.location ||
             msg.venue
         ) {
-            this.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
-            this.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
-            this.setState('communicate.requestMessageThreadId', {
+            this.setStateSafe('communicate.requestChatId', { val: msg.chat.id, ack: true });
+            this.setStateSafe('communicate.requestMessageId', { val: msg.message_id, ack: true });
+            this.setStateSafe('communicate.requestMessageThreadId', {
                 val: msg.is_topic_message ? msg.message_thread_id : 0,
                 ack: true,
             });
             if (msg.from) {
-                this.setState('communicate.requestUserId', { val: msg.from.id.toString(), ack: true });
+                this.setStateSafe('communicate.requestUserId', { val: msg.from.id.toString(), ack: true });
             }
         }
 
@@ -1686,7 +1697,7 @@ class Telegram extends Adapter {
         // vis/jarvis map. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/853
         const location = msg.venue?.location || msg.location;
         if (location) {
-            this.setState('communicate.requestLocation', {
+            this.setStateSafe('communicate.requestLocation', {
                 val: `${location.latitude};${location.longitude}`,
                 ack: true,
             });
@@ -1700,12 +1711,7 @@ class Telegram extends Adapter {
                     res => {
                         if (!res.error) {
                             this.log.info(res.info!);
-                            this.setState(
-                                'communicate.pathFile',
-                                res.path!,
-                                true,
-                                err => err && this.log.error(err.message),
-                            );
+                            this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
                         } else {
                             this.log.debug(res.error);
                         }
@@ -1766,12 +1772,7 @@ class Telegram extends Adapter {
                     this.saveFile(item.file_id, fileName, res => {
                         if (!res.error) {
                             this.log.info(res.info!);
-                            this.setState(
-                                'communicate.pathFile',
-                                res.path!,
-                                true,
-                                err => err && this.log.error(err.message),
-                            );
+                            this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
                         } else {
                             this.log.debug(res.error);
                         }
@@ -1785,12 +1786,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setState(
-                            'communicate.pathFile',
-                            res.path!,
-                            true,
-                            err => err && this.log.error(err.message),
-                        );
+                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
                     } else {
                         this.log.debug(res.error);
                     }
@@ -1803,12 +1799,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.video_note.file_id, `/video/${date}.mp4`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setState(
-                            'communicate.pathFile',
-                            res.path!,
-                            true,
-                            err => err && this.log.error(err.message),
-                        );
+                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
                     } else {
                         this.log.debug(res.error);
                     }
@@ -1821,12 +1812,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setState(
-                            'communicate.pathFile',
-                            res.path!,
-                            true,
-                            err => err && this.log.error(err.message),
-                        );
+                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
                     } else {
                         this.log.debug(res.error);
                     }
@@ -1839,12 +1825,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.document.file_id, `/document/${msg.document.file_name}`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setState(
-                            'communicate.pathFile',
-                            res.path!,
-                            true,
-                            err => err && this.log.error(err.message),
-                        );
+                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
                     } else {
                         this.log.debug(res.error);
                     }
@@ -2084,7 +2065,7 @@ class Telegram extends Adapter {
             this.storedUsers[id] = { firstName, userName, sysMessages: false };
 
             if (this.config.rememberUsers) {
-                this.setState('communicate.users', JSON.stringify(this.storedUsers), true);
+                this.setStateSafe('communicate.users', { val: JSON.stringify(this.storedUsers), ack: true });
             }
         }
     }
@@ -2105,7 +2086,7 @@ class Telegram extends Adapter {
 
         if (!this.storedChats[id] || this.storedChats[id].title !== title || this.storedChats[id].type !== type) {
             this.storedChats[id] = { title, type };
-            this.setState('communicate.chats', { val: JSON.stringify(this.storedChats), ack: true });
+            this.setStateSafe('communicate.chats', { val: JSON.stringify(this.storedChats), ack: true });
         }
     }
 
@@ -2703,17 +2684,17 @@ class Telegram extends Adapter {
                 .catch(err => this.log.error(`Cannot send message to ${this.config.assistantInstance}: ${err}`));
         }
 
-        this.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
-        this.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
-        this.setState('communicate.requestMessageThreadId', {
+        this.setStateSafe('communicate.requestChatId', { val: msg.chat.id, ack: true });
+        this.setStateSafe('communicate.requestMessageId', { val: msg.message_id, ack: true });
+        this.setStateSafe('communicate.requestMessageThreadId', {
             val: msg.is_topic_message ? msg.message_thread_id : 0,
             ack: true,
         });
-        this.setState('communicate.requestUserId', {
+        this.setStateSafe('communicate.requestUserId', {
             val: from.id.toString(),
             ack: true,
         });
-        this.setState('communicate.request', { val: `[${user}]${msgText}`, ack: true });
+        this.setStateSafe('communicate.request', { val: `[${user}]${msgText}`, ack: true });
     }
 
     connect(): void {
@@ -2811,7 +2792,7 @@ class Telegram extends Adapter {
                 this.connectionState(true);
 
                 if (this.config.storeRawRequest) {
-                    this.setState('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
                 }
 
                 this.getMessage(msg);
@@ -2825,6 +2806,33 @@ class Telegram extends Adapter {
                 }
             });
 
+            // Channel posts (in a channel where the bot is an admin) are delivered as a separate event, not
+            // as `message`, so they were ignored before. They are anonymous (no `msg.from`), therefore the
+            // auth/command pipeline cannot run; instead expose the post text and metadata so scripts can
+            // react. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/289
+            bot.on('channel_post', msg => {
+                this.connectionState(true);
+
+                if (this.config.storeRawRequest) {
+                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+                }
+
+                // stores the channel in communicate.chats and handles/saves any attached media
+                this.getMessage(msg);
+
+                const text = msg.text ?? msg.caption;
+                if (text !== undefined) {
+                    const name = msg.chat.title || String(msg.chat.id);
+                    this.setStateSafe('communicate.requestChatId', { val: msg.chat.id, ack: true });
+                    this.setStateSafe('communicate.requestMessageId', { val: msg.message_id, ack: true });
+                    this.setStateSafe('communicate.requestMessageThreadId', {
+                        val: msg.is_topic_message ? msg.message_thread_id : 0,
+                        ack: true,
+                    });
+                    this.setStateSafe('communicate.request', { val: `[${name}]${text}`, ack: true });
+                }
+            });
+
             // callback InlineKeyboardButton
             bot.on('callback_query', (callbackQuery: CallbackQuery) => {
                 this.connectionState(true);
@@ -2834,38 +2842,24 @@ class Telegram extends Adapter {
                 this.callbackQueryId[callbackQuery.from.id] = { id: callbackQuery.id, ts: Date.now() };
 
                 if (this.config.storeRawRequest) {
-                    this.setState(
-                        'communicate.requestRaw',
-                        JSON.stringify(callbackQuery),
-                        true,
-                        err => err && this.log.error(err.message),
-                    );
+                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(callbackQuery), ack: true });
                 }
 
-                this.setState(
-                    'communicate.requestMessageId',
-                    callbackQuery.message!.message_id,
-                    true,
-                    err => err && this.log.error(err.message),
-                );
-                this.setState(
-                    'communicate.requestChatId',
-                    callbackQuery.message!.chat.id,
-                    true,
-                    err => err && this.log.error(err.message),
-                );
-                this.setState(
-                    'communicate.request',
-                    `[${
+                this.setStateSafe('communicate.requestMessageId', {
+                    val: callbackQuery.message!.message_id,
+                    ack: true,
+                });
+                this.setStateSafe('communicate.requestChatId', { val: callbackQuery.message!.chat.id, ack: true });
+                this.setStateSafe('communicate.request', {
+                    val: `[${
                         !this.config.useUsername
                             ? callbackQuery.from.first_name
                             : !callbackQuery.from.username
                               ? callbackQuery.from.first_name
                               : callbackQuery.from.username
                     }]${callbackQuery.data}`,
-                    true,
-                    err => err && this.log.error(err.message),
-                );
+                    ack: true,
+                });
 
                 this.isAnswerForQuestion(callbackQuery);
             });
