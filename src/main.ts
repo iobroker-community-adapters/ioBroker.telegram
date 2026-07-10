@@ -1501,7 +1501,16 @@ class Telegram extends Adapter {
         // by `processTelegramText` (which is bound via `bot.onText`). As a result the request metadata
         // (chat id, message id, user id) would stay empty for received files. Populate it here so the
         // sender can be identified. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/1043
-        if (msg.voice || msg.photo || msg.video || msg.video_note || msg.audio || msg.document) {
+        if (
+            msg.voice ||
+            msg.photo ||
+            msg.video ||
+            msg.video_note ||
+            msg.audio ||
+            msg.document ||
+            msg.location ||
+            msg.venue
+        ) {
             this.setState('communicate.requestChatId', { val: msg.chat.id, ack: true });
             this.setState('communicate.requestMessageId', { val: msg.message_id, ack: true });
             this.setState('communicate.requestMessageThreadId', {
@@ -1511,6 +1520,17 @@ class Telegram extends Adapter {
             if (msg.from) {
                 this.setState('communicate.requestUserId', { val: msg.from.id.toString(), ack: true });
             }
+        }
+
+        // A shared location (paperclip -> location) or a venue (location + title/address) carries a
+        // latitude/longitude. Expose it as a "latitude;longitude" GPS string so it can be shown e.g. on a
+        // vis/jarvis map. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/853
+        const location = msg.venue?.location || msg.location;
+        if (location) {
+            this.setState('communicate.requestLocation', {
+                val: `${location.latitude};${location.longitude}`,
+                ack: true,
+            });
         }
 
         if (msg.voice) {

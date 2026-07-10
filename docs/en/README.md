@@ -313,6 +313,18 @@ sendTo('telegram.0', 'send', {
 });
 ```
 
+## Receiving a location
+When a user shares a location with the bot (paperclip → location) or sends a venue, the coordinates are written to the state `telegram.INSTANCE.communicate.requestLocation` as a `latitude;longitude` string (role `value.gps`). The metadata states (`requestChatId`, `requestMessageId`, `requestUserId`) are updated as well, so you know who sent it.
+
+```javascript
+on({ id: 'telegram.0.communicate.requestLocation', change: 'any' }, obj => {
+    const [latitude, longitude] = obj.state.val.split(';').map(parseFloat);
+    const user = getState('telegram.0.communicate.requestUserId').val;
+    console.log(`User ${user} is at ${latitude}, ${longitude}`);
+    // e.g. forward the coordinates to a map widget
+});
+```
+
 ## Updating messages
 The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with *inline keyboards* using callback queries, but can also help reduce clutter in conversations with regular chat bots.
 

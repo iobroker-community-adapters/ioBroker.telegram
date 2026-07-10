@@ -613,6 +613,30 @@
       "native": {}
     },
     {
+      "_id": "communicate.requestLocation",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "GPS location of last received request (latitude;longitude)",
+          "de": "GPS-Position der letzten empfangenen Anfrage (Breite;Länge)",
+          "ru": "GPS-координаты последнего полученного запроса (широта;долгота)",
+          "pt": "Localização GPS do último pedido recebido (latitude;longitude)",
+          "nl": "GPS-locatie van het laatste ontvangen verzoek (breedtegraad;lengtegraad)",
+          "fr": "Position GPS de la dernière demande reçue (latitude;longitude)",
+          "it": "Posizione GPS dell'ultima richiesta ricevuta (latitudine;longitudine)",
+          "es": "Ubicación GPS de la última solicitud recibida (latitud;longitud)",
+          "pl": "Lokalizacja GPS ostatniego otrzymanego żądania (szerokość;długość)",
+          "uk": "GPS-координати останнього отриманого запиту (широта;довгота)",
+          "zh-cn": "最后收到请求的 GPS 位置（纬度；经度）"
+        },
+        "type": "string",
+        "role": "value.gps",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
       "_id": "communicate.response",
       "type": "state",
       "common": {
