@@ -1,85 +1,85 @@
 {
-    "name": "iobroker.telegram",
-    "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
-    "version": "4.1.0",
-    "author": "bluefox <dogafox@gmail.com>",
-    "contributors": [
-        "bluefox <dogafox@gmail.com>",
-        "apollon77 <iobroker@fischer-ka.de>",
-        "Matthias Kleine <info@haus-automatisierung.com>",
-        "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
-    ],
-    "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
-    },
-    "keywords": [
-        "ioBroker",
-        "notification",
-        "telegram",
-        "message"
-    ],
-    "engines": {
-        "node": ">=22"
-    },
-    "dependencies": {
-        "@iobroker/adapter-core": "^3.4.1",
-        "@iobroker/webserver": "^1.4.0",
-        "axios": "^1.18.1",
-        "node-telegram-bot-api": "^1.1.2"
-    },
-    "devDependencies": {
-        "@alcalzone/release-script": "^5.2.1",
-        "@alcalzone/release-script-plugin-iobroker": "^5.2.0",
-        "@alcalzone/release-script-plugin-license": "^5.2.0",
-        "@alcalzone/release-script-plugin-manual-review": "^5.2.0",
-        "@iobroker/adapter-dev": "^1.5.0",
-        "@iobroker/build-tools": "^3.0.1",
-        "@iobroker/eslint-config": "^2.3.4",
-        "@iobroker/testing": "^5.2.2",
-        "@iobroker/types": "^7.2.2",
-        "@tsconfig/node22": "^22.0.5",
-        "@types/node": "^22.20.0",
-        "typescript": "~5.9.3"
-    },
-    "bugs": {
-        "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
-    },
-    "main": "build/main.js",
-    "files": [
-        "admin/",
-        "build/",
-        "i18n/",
-        "io-package.json",
-        "LICENSE"
-    ],
-    "scripts": {
-        "test:package": "mocha test/package --exit",
-        "test:integration": "mocha test/integration --exit",
-        "test:js": "echo skip",
-        "test": "npm run test:package",
-        "build:ts": "tsc -p tsconfig.build.json",
-        "check": "tsc --noEmit -p tsconfig.json",
-        "lint": "eslint -c eslint.config.mjs .",
-        "translate": "translate-adapter",
-        "release": "release-script",
-        "release-patch": "release-script patch --yes",
-        "release-minor": "release-script minor --yes",
-        "release-major": "release-script major --yes",
-        "update-packages": "npx -y npm-check-updates --upgrade && cd src-rules && npx -y npm-check-updates --upgrade && cd ../src-admin && npx -y npm-check-updates --upgrade",
-        "npm": "npm i && cd src-rules && npm i -f && cd ../src-admin && npm i -f && cd ..",
-        "rules-0-clean": "node tasks --rules-0-clean",
-        "rules-1-npm": "node tasks --rules-1-npm",
-        "rules-2-compile": "node tasks --rules-2-compile",
-        "rules-3-copy": "node tasks --rules-3-copy",
-        "rules-build": "node tasks --rules-build",
-        "admin-0-clean": "node tasks --admin-0-clean",
-        "admin-1-npm": "node tasks --admin-1-npm",
-        "admin-2-compile": "node tasks --admin-2-compile",
-        "admin-3-copy": "node tasks --admin-3-copy",
-        "admin-build": "node tasks --admin-build",
-        "build": "npm run build:ts && node tasks --default"
-    },
-    "license": "MIT"
+  "name": "iobroker.telegram",
+  "description": "The adapter allows to send and receive telegram messages from ioBroker and to be a broker.",
+  "version": "5.0.0-alpha.0",
+  "author": "bluefox <dogafox@gmail.com>",
+  "contributors": [
+    "bluefox <dogafox@gmail.com>",
+    "apollon77 <iobroker@fischer-ka.de>",
+    "Matthias Kleine <info@haus-automatisierung.com>",
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
+  ],
+  "homepage": "https://github.com/iobroker-community-adapters/ioBroker.telegram",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram"
+  },
+  "keywords": [
+    "ioBroker",
+    "notification",
+    "telegram",
+    "message"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@iobroker/adapter-core": "^3.4.1",
+    "@iobroker/webserver": "^1.4.0",
+    "axios": "^1.18.1",
+    "node-telegram-bot-api": "^1.1.2"
+  },
+  "devDependencies": {
+    "@alcalzone/release-script": "^5.2.1",
+    "@alcalzone/release-script-plugin-iobroker": "^5.2.0",
+    "@alcalzone/release-script-plugin-license": "^5.2.0",
+    "@alcalzone/release-script-plugin-manual-review": "^5.2.0",
+    "@iobroker/adapter-dev": "^1.5.0",
+    "@iobroker/build-tools": "^3.0.1",
+    "@iobroker/eslint-config": "^2.3.4",
+    "@iobroker/testing": "^5.2.2",
+    "@iobroker/types": "^7.2.2",
+    "@tsconfig/node22": "^22.0.5",
+    "@types/node": "^22.20.0",
+    "typescript": "~5.9.3"
+  },
+  "bugs": {
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
+  },
+  "main": "build/main.js",
+  "files": [
+    "admin/",
+    "build/",
+    "i18n/",
+    "io-package.json",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test:package": "mocha test/package --exit",
+    "test:integration": "mocha test/integration --exit",
+    "test:js": "echo skip",
+    "test": "npm run test:package",
+    "build:ts": "tsc -p tsconfig.build.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint -c eslint.config.mjs .",
+    "translate": "translate-adapter",
+    "release": "release-script",
+    "release-patch": "release-script patch --yes",
+    "release-minor": "release-script minor --yes",
+    "release-major": "release-script major --yes",
+    "update-packages": "npx -y npm-check-updates --upgrade && cd src-rules && npx -y npm-check-updates --upgrade && cd ../src-admin && npx -y npm-check-updates --upgrade",
+    "npm": "npm i && cd src-rules && npm i -f && cd ../src-admin && npm i -f && cd ..",
+    "rules-0-clean": "node tasks --rules-0-clean",
+    "rules-1-npm": "node tasks --rules-1-npm",
+    "rules-2-compile": "node tasks --rules-2-compile",
+    "rules-3-copy": "node tasks --rules-3-copy",
+    "rules-build": "node tasks --rules-build",
+    "admin-0-clean": "node tasks --admin-0-clean",
+    "admin-1-npm": "node tasks --admin-1-npm",
+    "admin-2-compile": "node tasks --admin-2-compile",
+    "admin-3-copy": "node tasks --admin-3-copy",
+    "admin-build": "node tasks --admin-build",
+    "build": "npm run build:ts && node tasks --default"
+  },
+  "license": "MIT"
 }

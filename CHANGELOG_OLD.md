@@ -1,4 +1,7 @@
 # Older changes
+## 3.8.0 (2024-07-14)
+* (bluefox) Migrated GUI for Admin 7
+
 ## 3.7.1 (2024-07-03)
 * (klein0r) Restored translations for messages
 

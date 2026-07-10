@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 5.0.0-alpha.0 (2026-07-10)
 - (@GermanBluefox) Channel posts (from a channel where the bot is an admin) are now received and written to `communicate.request`/`communicate.requestChatId` (previously ignored)
 - (@GermanBluefox) Robustness: all `setState` calls now catch their errors (via a `setStateSafe` helper), so a failing state write can no longer cause an unhandled promise rejection
 - (@GermanBluefox) Added the state `communicate.chats`: every chat/group the bot receives a message from is remembered as JSON (`id => {title, type}`), so other adapters can offer a chat/group picker
@@ -85,9 +85,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.8.2 (2024-07-16)
 * (bluefox) Username can consist of more than one user. The separator is comma, semicolon or space.
-
-### 3.8.0 (2024-07-14)
-* (bluefox) Migrated GUI for Admin 7
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
