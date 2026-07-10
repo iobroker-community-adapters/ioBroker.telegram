@@ -84,6 +84,19 @@ class Telegram extends Adapter {
     private garbageCollectorInterval: ioBroker.Interval | undefined;
     private isServer = false;
 
+    /**
+     * In-memory queue of outgoing sends that failed because telegram was unreachable. They are resent (FIFO)
+     * as soon as the connection is re-established. See issue #839. The queue is intentionally NOT persisted,
+     * so an adapter restart clears it.
+     */
+    private readonly sendQueue: { action: () => Promise<any>; label: string; ts: number; attempts: number }[] = [];
+    private sendQueueFlushing = false;
+    private sendQueueRetryTimer: ioBroker.Timeout | undefined;
+    private static readonly MAX_SEND_QUEUE_LENGTH = 100;
+    private static readonly SEND_QUEUE_RETRY_MS = 30000;
+    private static readonly MAX_SEND_QUEUE_AGE_MS = 24 * 60 * 60 * 1000; // 24 h
+    private static readonly MAX_SEND_ATTEMPTS = 10;
+
     private readonly server: {
         server: ServerExt | null;
         settings: TelegramConfig | null;
@@ -343,6 +356,11 @@ class Telegram extends Adapter {
         if (this.pollConnectionStatus) {
             this.clearTimeout(this.pollConnectionStatus);
             this.pollConnectionStatus = undefined;
+        }
+
+        if (this.sendQueueRetryTimer) {
+            this.clearTimeout(this.sendQueueRetryTimer);
+            this.sendQueueRetryTimer = undefined;
         }
 
         if (this.garbageCollectorInterval) {
@@ -618,12 +636,141 @@ class Telegram extends Adapter {
         if (this.isConnected !== connected) {
             this.isConnected = connected;
             this.setState('info.connection', this.isConnected, true);
-            if (this.isConnected && this.pollConnectionStatus) {
-                this.clearTimeout(this.pollConnectionStatus);
-                this.pollConnectionStatus = undefined;
-            } else if (!this.isConnected) {
+            if (this.isConnected) {
+                if (this.pollConnectionStatus) {
+                    this.clearTimeout(this.pollConnectionStatus);
+                    this.pollConnectionStatus = undefined;
+                }
+                // Connection (re)established: resend everything that piled up while telegram was unreachable.
+                void this.flushSendQueue();
+            } else {
                 checkConnection();
             }
+        }
+    }
+
+    /**
+     * Whether a failed send is worth retrying. Only transient/network problems are retried; permanent
+     * telegram errors (e.g. 400 "chat not found", 403 "bot was blocked") must not be requeued, otherwise
+     * they would be retried forever. See issue #839.
+     *
+     * @param error the error thrown by the telegram API call
+     * @returns true if the send should be queued and retried later
+     */
+    isRetryableSendError(error: any): boolean {
+        const code = error?.code;
+        // EFATAL: network/connection problem (e.g. no internet); EPARSE: telegram answered with a
+        // non-JSON body, typically a transient 5xx gateway error.
+        if (code === 'EFATAL' || code === 'EPARSE') {
+            return true;
+        }
+        if (code === 'ETELEGRAM') {
+            // the Bot API replied with ok:false - retry only on rate limit (429) or server errors (5xx)
+            const status = error?.response?.body?.error_code ?? error?.response?.statusCode;
+            if (status === 429 || (typeof status === 'number' && status >= 500 && status < 600)) {
+                return true;
+            }
+            const m = /ETELEGRAM:\s*(\d{3})/.exec(String(error?.message ?? error));
+            if (m) {
+                const s = parseInt(m[1], 10);
+                return s === 429 || (s >= 500 && s < 600);
+            }
+            return false;
+        }
+        // unknown error shape - be conservative and do not retry
+        return false;
+    }
+
+    /**
+     * Queue a send that failed because telegram was unreachable, so it can be resent on reconnect. The
+     * queue is bounded: when it is full the oldest entry is dropped. See issue #839.
+     *
+     * @param action the telegram API call to repeat later
+     * @param label a human-readable recipient label for logging
+     * @param error the error that caused the enqueue (for the log message)
+     */
+    enqueueFailedSend(action: () => Promise<any>, label: string, error: unknown): void {
+        if (this.sendQueue.length >= Telegram.MAX_SEND_QUEUE_LENGTH) {
+            this.sendQueue.shift();
+            this.log.warn(
+                `Outgoing message queue is full (${Telegram.MAX_SEND_QUEUE_LENGTH}); dropped the oldest queued message`,
+            );
+        }
+        this.sendQueue.push({ action, label, ts: Date.now(), attempts: 1 });
+        this.log.info(
+            `Telegram not reachable - queued message for "${label}" to resend on reconnect (queue size: ${this.sendQueue.length}). Reason: ${String(error)}`,
+        );
+        // Safety net for transient failures that do not trigger a full disconnect/reconnect cycle: keep
+        // retrying the queue periodically until it is empty (see flushSendQueue).
+        this.scheduleSendQueueRetry();
+    }
+
+    /** Schedule a delayed flush of the send queue (once), unless one is already pending. */
+    scheduleSendQueueRetry(): void {
+        if (this.sendQueueRetryTimer || !this.sendQueue.length) {
+            return;
+        }
+        this.sendQueueRetryTimer = this.setTimeout(() => {
+            this.sendQueueRetryTimer = undefined;
+            void this.flushSendQueue();
+        }, Telegram.SEND_QUEUE_RETRY_MS);
+    }
+
+    /**
+     * Resend all queued messages (FIFO) once the connection is back. Entries older than the max age are
+     * dropped; if a resend fails again with a retryable error, the queue is kept and the flush stops (the
+     * server is probably down again) to be retried on the next reconnect. See issue #839.
+     */
+    async flushSendQueue(): Promise<void> {
+        if (this.sendQueueFlushing || !this.sendQueue.length) {
+            return;
+        }
+        this.sendQueueFlushing = true;
+        try {
+            // drop messages that are too old to be worth sending
+            const now = Date.now();
+            for (let i = this.sendQueue.length - 1; i >= 0; i--) {
+                if (now - this.sendQueue[i].ts >= Telegram.MAX_SEND_QUEUE_AGE_MS) {
+                    const [dropped] = this.sendQueue.splice(i, 1);
+                    this.log.warn(`Dropped queued message for "${dropped.label}" (older than 24 h)`);
+                }
+            }
+
+            if (this.sendQueue.length) {
+                this.log.info(`Connection restored - resending ${this.sendQueue.length} queued message(s)`);
+            }
+
+            while (this.sendQueue.length) {
+                const item = this.sendQueue[0];
+                try {
+                    const response = await item.action();
+                    this.saveSendRequest(response);
+                    this.sendQueue.shift();
+                    this.log.debug(`Resent queued message for "${item.label}"`);
+                } catch (error) {
+                    item.attempts++;
+                    if (
+                        this.isRetryableSendError(error) &&
+                        item.attempts <= Telegram.MAX_SEND_ATTEMPTS &&
+                        Date.now() - item.ts < Telegram.MAX_SEND_QUEUE_AGE_MS
+                    ) {
+                        // still unreachable: keep the queue and wait for the next reconnect
+                        this.log.warn(
+                            `Resending queued message for "${item.label}" failed again (attempt ${item.attempts}); will retry on next reconnect: ${error}`,
+                        );
+                        break;
+                    }
+                    // permanent error or too many attempts: give up on this message and continue with the rest
+                    this.sendQueue.shift();
+                    this.log.error(
+                        `Giving up on queued message for "${item.label}" after ${item.attempts} attempt(s): ${error}`,
+                    );
+                }
+            }
+        } finally {
+            this.sendQueueFlushing = false;
+            // if anything is still queued (server still down), make sure we try again later
+            this.scheduleSendQueueRetry();
         }
     }
 
@@ -1280,6 +1427,12 @@ class Telegram extends Adapter {
                 this.log.error(
                     `Failed sending [${options.chatId ? 'chatId' : 'user'} - ${options.chatId ? options.chatId : options.user}]: ${error}`,
                 );
+                // If telegram was unreachable, queue the send so it can be retried on reconnect (issue #839).
+                // The original promise is still resolved right away so callers never block on the retry.
+                if (this.isRetryableSendError(error)) {
+                    const label = String(options.chat_id ?? options.chatId ?? options.user ?? 'all');
+                    this.enqueueFailedSend(action, label, error);
+                }
                 // send the successfully sent messages as callback
                 resolve(JSON.stringify(messageIds));
             });
