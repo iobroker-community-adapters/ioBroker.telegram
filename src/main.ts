@@ -1370,8 +1370,12 @@ class Telegram extends Adapter {
                     if (
                         // allow addressing a recipient by its numeric user/chat id (storedUsers is keyed by id)
                         id === userName ||
-                        (this.config.useUsername && this.storedUsers[id].userName === userName) ||
-                        (!this.config.useUsername && this.storedUsers[id].firstName === userName)
+                        // Match by username when one is stored, otherwise fall back to the first name. A
+                        // recipient without a public telegram username is stored with an empty userName, so
+                        // usernames and first names can be mixed in one recipient list. See issue #854.
+                        (this.config.useUsername && this.storedUsers[id].userName
+                            ? this.storedUsers[id].userName === userName
+                            : this.storedUsers[id].firstName === userName)
                     ) {
                         if (options) {
                             options.chatId = id;
@@ -1402,8 +1406,10 @@ class Telegram extends Adapter {
                     continue;
                 }
                 if (
-                    (this.config.useUsername && this.storedUsers[id_t].userName.match(re)) ||
-                    (!this.config.useUsername && this.storedUsers[id_t].firstName.match(re))
+                    // Match by username when one is stored, otherwise fall back to the first name (see #854).
+                    this.config.useUsername && this.storedUsers[id_t].userName
+                        ? this.storedUsers[id_t].userName.match(re)
+                        : this.storedUsers[id_t].firstName.match(re)
                 ) {
                     id = id_t;
                     break;
@@ -1424,7 +1430,9 @@ class Telegram extends Adapter {
                 tPromiseList.push(
                     this.sendMessageHelper(
                         id,
-                        this.config.useUsername ? this.storedUsers[id].userName : this.storedUsers[id].firstName,
+                        this.config.useUsername && this.storedUsers[id].userName
+                            ? this.storedUsers[id].userName
+                            : this.storedUsers[id].firstName,
                         text,
                         options,
                     ),
