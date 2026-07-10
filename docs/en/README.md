@@ -274,7 +274,8 @@ You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/rel
 
 ### Question
 You can send to telegram the message, and the next answer will be returned in callback. 
-Timeout can be set in instance configuration (default is 60 seconds).
+The answer timeout can be set in the instance configuration (default is 60 seconds). If the user does not
+answer in time, the callback is called with the **string** `'__timeout__'` (so `msg.data` is `undefined`).
 
 ```javascript
 sendTo('telegram.0', 'ask', {
@@ -288,8 +289,30 @@ sendTo('telegram.0', 'ask', {
         ]
     }
 }, msg => {
-    console.log('user says ' + msg.data);
+    if (msg === '__timeout__') {
+        console.log('no answer within the configured timeout');
+    } else if (msg.data === '1') {
+        console.log('user pressed Yes');
+    } else {
+        console.log('user pressed No');
+    }
 });
+```
+
+**Important – the caller has its own `sendTo` timeout:** the adapter that sends the `ask` (e.g. the
+JavaScript adapter) applies its **own** timeout to the `sendTo` callback, and in the JavaScript adapter this
+defaults to about **20 seconds**. If your configured answer timeout is longer than that, the callback is
+fired early by the *caller* with a timeout result – which looks like the user answered "No". Increase the
+caller's timeout so it is **larger** than the answer timeout, e.g. in the JavaScript adapter by passing it as
+the last argument:
+
+```javascript
+sendTo('telegram.0', 'ask', {
+    text: 'Are you sure?',
+    reply_markup: { inline_keyboard: [[{ text: 'Yes!', callback_data: '1' }], [{ text: 'No...', callback_data: '0' }]] }
+}, msg => {
+    // ... handle msg (see above)
+}, { timeout: 65000 }); // must be > the configured answer timeout (here 60 s)
 ```
 
 ## Chat ID
