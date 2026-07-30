@@ -11,7 +11,7 @@ import {
     Loader,
     type GenericAppProps,
     type GenericAppState,
-} from '@iobroker/adapter-react-v5';
+} from '@iobroker/gui-components';
 
 import TelegramComponent from './TelegramComponent';
 

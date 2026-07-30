@@ -9,8 +9,6 @@ iob_npm.done
 # ioBroker dev-server
 .dev-server/
 /src-rules/node_modules
-/src-rules/package-lock.json
-/src-admin/package-lock.json
 /src-admin/build
 /src-rules/build
 /src-rules/.__mf__temp

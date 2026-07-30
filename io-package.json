@@ -225,7 +225,7 @@
     ],
     "globalDependencies": [
       {
-        "admin": ">=7.7.22"
+        "admin": ">=8.0.0"
       }
     ],
     "plugins": {

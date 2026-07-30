@@ -1,6 +1,5 @@
 import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
-import vitetsConfigPaths from 'vite-tsconfig-paths';
 import { federation } from '@module-federation/vite';
 
 const makeShared = pkgs => {
@@ -24,12 +23,14 @@ const config = {
                 './ActionTelegram': './src/ActionTelegram.tsx',
             },
             remotes: {},
-            shared: makeShared(['react', '@iobroker/adapter-react-v5', 'react-dom', 'prop-types']),
+            shared: makeShared(['react', '@iobroker/gui-components', 'react-dom', 'prop-types']),
         }),
         react(),
-        vitetsConfigPaths(),
         commonjs(),
     ],
+    resolve: {
+        tsconfigPaths: true,
+    },
     server: {
         port: 3000,
     },

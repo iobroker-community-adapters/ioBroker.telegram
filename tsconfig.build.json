@@ -1,11 +1,8 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "allowJs": false,
         "checkJs": false,
         "noEmit": false,
-        "declaration": true,
-        "rootDir": "./src",
-        "types": ["@iobroker/types"]
+        "declaration": true
     }
 }

@@ -15,9 +15,9 @@ import {
 import { Delete as IconDelete } from '@mui/icons-material';
 // important to make from package and not from some children.
 // invalid
-// import ConfigGeneric from '@iobroker/adapter-react-v5/ConfigGeneric';
+// import ConfigGeneric from '@iobroker/gui-components/ConfigGeneric';
 // valid
-import { Confirm, I18n } from '@iobroker/adapter-react-v5';
+import { Confirm, I18n } from '@iobroker/gui-components';
 import { ConfigGeneric, type ConfigGenericProps, type ConfigGenericState } from '@iobroker/json-config';
 
 interface TelegramUser {

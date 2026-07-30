@@ -68,7 +68,7 @@ Use telegram service to communicate with ioBroker
 - (@GermanBluefox) Fixed: removed a stray empty entry from the generated command keyboard
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
-* (@klein0r) admin 7.6.17 and js-controller 6.0.11 (or later) are required
+* (@klein0r) admin 8.0.0 and js-controller 6.0.11 (or later) are required
 * (@klein0r) Updated dependencies
 
 ### 4.1.0 (2025-03-19)

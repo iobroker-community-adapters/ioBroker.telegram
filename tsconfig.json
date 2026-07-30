@@ -3,29 +3,20 @@
     "extends": "@tsconfig/node22/tsconfig.json",
     "compileOnSave": true,
     "compilerOptions": {
-        // do not compile anything; this file is just to configure type checking
-        // the compilation is configured in tsconfig.build.json
         "noEmit": true,
-
-        // check JS files, but do not compile them => tsconfig.build.json
-        "allowJs": true,
+        "allowJs": false,
         "checkJs": true,
-
         "skipLibCheck": true, // Don't report errors in 3rd party definitions
         "noEmitOnError": true,
         "outDir": "./build",
+        "rootDir": "./src",
         "removeComments": false,
         "module": "Node16",
         "moduleResolution": "node16",
-        "esModuleInterop": true,
-        // this is necessary for the automatic typing of the adapter config
         "resolveJsonModule": true,
-
-        // Set this to false if you want to disable the very strict rules (not recommended)
         "strict": true,
-
+        "strictNullChecks": true,
         "target": "es2022",
-
         "sourceMap": true,
         "inlineSourceMap": false,
         "useUnknownInCatchVariables": false,
