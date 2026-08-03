@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "5.0.1",
+    "version": "5.0.2",
     "news": {
+      "5.0.2": {
+        "en": "Adapter requires node.js >= 22 now\nAdapter requires admin >= 7.7.22 now\nadmin 8.0.0 and js-controller 6.0.11 (or later) are required\nUpdated dependencies",
+        "de": "Der Adapter benötigt jetzt Node.js >= 22.\nDer Adapter benötigt jetzt Administratorrechte ab Version 7.7.22.\nadmin 8.0.0 und js-controller 6.0.11 (oder höher) werden benötigt.\nAktualisierte Abhängigkeiten",
+        "ru": "Для работы адаптера требуется Node.js версии >= 22.\nДля работы адаптера требуется версия admin >= 7.7.22.\nДля работы требуются admin 8.0.0 и js-controller 6.0.11 (или более поздняя версия).\nОбновлены зависимости",
+        "pt": "O adaptador agora requer Node.js >= 22.\nO adaptador agora requer o administrador na versão 7.7.22 ou superior.\nÉ necessário ter o admin 8.0.0 e o js-controller 6.0.11 (ou posterior) instalados.\nDependências atualizadas",
+        "nl": "De adapter vereist nu Node.js versie 22 of hoger.\nAdapter vereist nu beheerdersversie >= 7.7.22.\nAdmin 8.0.0 en js-controller 6.0.11 (of later) zijn vereist.\nBijgewerkte afhankelijkheden",
+        "fr": "L'adaptateur nécessite désormais Node.js >= 22.\nL'adaptateur nécessite désormais une version d'administrateur supérieure ou égale à 7.7.22.\nadmin 8.0.0 et js-controller 6.0.11 (ou version ultérieure) sont requis\nDépendances mises à jour",
+        "it": "L'adattatore ora richiede Node.js >= 22\nL'adattatore richiede ora l'amministratore >= 7.7.22\nSono richiesti admin 8.0.0 e js-controller 6.0.11 (o versioni successive).\nDipendenze aggiornate",
+        "es": "El adaptador ahora requiere node.js >= 22.\nEl adaptador ahora requiere administrador >= 7.7.22\nSe requieren admin 8.0.0 y js-controller 6.0.11 (o posterior).\nDependencias actualizadas",
+        "pl": "Adapter wymaga teraz node.js >= 22\nAdapter wymaga teraz administratora >= 7.7.22\nWymagany jest admin 8.0.0 i js-controller 6.0.11 (lub nowszy)\nZaktualizowane zależności",
+        "uk": "Адаптер тепер вимагає node.js >= 22\nАдаптер тепер вимагає адміністратора >= 7.7.22\nПотрібні admin 8.0.0 та js-controller 6.0.11 (або пізнішої версії)\nОновлені залежності",
+        "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n适配器现在需要管理员版本 >= 7.7.22。\n需要 admin 8.0.0 和 js-controller 6.0.11（或更高版本）。\n更新依赖项"
+      },
       "4.1.0": {
         "en": "Admin component was migrated to TypeScript",
         "de": "Admin-Komponente wurde zu TypeScript migriert",
