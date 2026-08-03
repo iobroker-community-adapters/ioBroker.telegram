@@ -1,5 +1,5 @@
 // ioBroker eslint template configuration file for js and ts files
-// Please note that esm or react based modules need additional modules loaded.
+// Please note that esm or react-based modules need additional modules loaded.
 import config from '@iobroker/eslint-config';
 
 export default [
@@ -9,7 +9,9 @@ export default [
         // specify files to exclude from linting here
         ignores: [
             '.__mf__temp/',
+            '.mf/',
             'admin/',
+            'node_modules/',
             '**/*.test.js',
             'test/**/*.js',
             '*.config.mjs',

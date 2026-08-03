@@ -61,7 +61,7 @@
     "test": "npm run test:package",
     "build:ts": "tsc -p tsconfig.build.json",
     "check": "tsc --noEmit -p tsconfig.json",
-    "lint": "eslint -c eslint.config.mjs .",
+    "lint": "eslint -c eslint.config.mjs",
     "translate": "translate-adapter",
     "release": "release-script",
     "release-patch": "release-script patch --yes",

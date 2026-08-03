@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 5.0.0 (2026-08-03)
+### **WORK IN PROGRESS**
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
 - (@klein0r) admin 8.0.0 and js-controller 6.0.11 (or later) are required

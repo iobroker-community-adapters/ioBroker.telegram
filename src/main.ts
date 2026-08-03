@@ -222,9 +222,9 @@ class Telegram extends Adapter {
                     this.log.error('Cannot wipe list of saved users!');
                 }
             } else if (obj.command === 'sendNotification') {
-                this.processNotification(obj);
+                this.processNotification(obj).catch(err => this.log.error(err));
             } else {
-                this.processMessage(obj);
+                this.processMessage(obj).catch(err => this.log.error(err));
             }
         }
     }
@@ -387,9 +387,9 @@ class Telegram extends Adapter {
                         this.config.rememberUsers
                             ? I18n.translate('Restarting...')
                             : I18n.translate('Restarting... Reauthenticate!'),
-                    );
+                    ).catch(err => this.log.error(err));
                 } else {
-                    this.sendSystemMessage(this.config.restarting);
+                    this.sendSystemMessage(this.config.restarting).catch(err => this.log.error(err));
                 }
             }
             try {
@@ -562,9 +562,9 @@ class Telegram extends Adapter {
 
             // read actual state to detect changes
             if (this.commands[id].reportChanges) {
-                this.getForeignStateAsync(id).then(
-                    state => (this.commands[id].lastState = state ? state.val : undefined),
-                );
+                this.getForeignStateAsync(id)
+                    .then(state => (this.commands[id].lastState = state ? state.val : undefined))
+                    .catch(err => this.log.error(err));
             }
         } else if (this.commands[id]) {
             this.log.debug(`Removed command: ${id}`);
@@ -1638,13 +1638,15 @@ class Telegram extends Adapter {
                                 try {
                                     const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
 
-                                    this.writeFileAsync(this.namespace, fileName, Buffer.concat(buf)).then(() => {
-                                        callback({
-                                            info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
-                                            location: this.config.saveFilesTo,
-                                            path: fileLocation,
-                                        });
-                                    });
+                                    this.writeFileAsync(this.namespace, fileName, Buffer.concat(buf))
+                                        .then(() => {
+                                            callback({
+                                                info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
+                                                location: this.config.saveFilesTo,
+                                                path: fileLocation,
+                                            });
+                                        })
+                                        .catch(err => this.log.error(err));
                                 } catch (err) {
                                     return callback({ error: `Error: ${err}` });
                                 }
@@ -2475,10 +2477,9 @@ class Telegram extends Adapter {
                     let sValue = msgText.substring((this.commands[id].alias as string).length + 1);
                     found = true;
                     if (sValue === '?') {
-                        this.getForeignState(id, (err, state) =>
-                            bot
-                                .sendMessage(msg.chat.id, this.getStatus(id, state))
-                                .catch(error => this.log.error(`send Message Error: ${error}`)),
+                        const state = await this.getForeignStateAsync(id);
+                        bot.sendMessage(msg.chat.id, this.getStatus(id, state)).catch(error =>
+                            this.log.error(`send Message Error: ${error}`),
                         );
                     } else {
                         let value;
@@ -2546,39 +2547,43 @@ class Telegram extends Adapter {
                     val1 = null;
                 }, 1000);
 
-                this.getForeignState(id1, (err, state) => {
-                    if (memoryLeak1) {
-                        this.clearTimeout(memoryLeak1);
-                        memoryLeak1 = undefined;
-                        m = null;
-                    }
-                    if (currentMsg) {
-                        if (err) {
-                            bot.sendMessage(from.id, err.message).catch(error =>
-                                this.log.error(`send Message Error: ${error}`),
-                            );
+                let state: ioBroker.State | null | undefined = null;
+                try {
+                    state = await this.getForeignStateAsync(id1);
+                } catch (err) {
+                    bot.sendMessage(from.id, err.message).catch(error =>
+                        this.log.error(`send Message Error: ${error}`),
+                    );
+                }
+                if (memoryLeak1) {
+                    this.clearTimeout(memoryLeak1);
+                    memoryLeak1 = undefined;
+                    m = null;
+                }
+                if (currentMsg) {
+                    if (state) {
+                        try {
+                            await this.setForeignStateAsync(id1, val1, false);
+                            if (currentMsg) {
+                                bot.sendMessage(from.id, I18n.translate('Done')).catch(error =>
+                                    this.log.error(`send Message Error: ${error}`),
+                                );
+                            }
+                        } catch (err) {
+                            if (currentMsg) {
+                                bot.sendMessage(from.id, err.message).catch(error =>
+                                    this.log.error(`send Message Error: ${error}`),
+                                );
+                            }
                         }
-                        if (state) {
-                            this.setForeignState(id1 as string, val1, false, err => {
-                                if (currentMsg) {
-                                    if (err) {
-                                        bot.sendMessage(from.id, err.message).catch(error =>
-                                            this.log.error(`send Message Error: ${error}`),
-                                        );
-                                    } else {
-                                        bot.sendMessage(from.id, I18n.translate('Done')).catch(error =>
-                                            this.log.error(`send Message Error: ${error}`),
-                                        );
-                                    }
-                                }
-                            });
-                        } else {
-                            bot.sendMessage(from.id, I18n.translate('ID "%s" not found.', id1 as string)).catch(error =>
-                                this.log.error(`send Message Error: ${error}`),
-                            );
+                    } else {
+                        try {
+                            await bot.sendMessage(from.id, I18n.translate('ID "%s" not found.', id1));
+                        } catch (err) {
+                            this.log.error(`send Message Error: ${err}`);
                         }
                     }
-                });
+                }
                 return;
             }
 
@@ -2595,29 +2600,36 @@ class Telegram extends Adapter {
                     memoryLeak2 = undefined;
                 }, 1000);
 
-                this.getForeignState(id2, (err, state) => {
-                    if (memoryLeak2) {
-                        this.clearTimeout(memoryLeak2);
-                        memoryLeak2 = undefined;
-                        m = null;
-                    }
+                let state: ioBroker.State | null | undefined = null;
+                try {
+                    state = await this.getForeignStateAsync(id2);
+                } catch (err) {
                     if (currentMsg) {
-                        if (err) {
-                            bot.sendMessage(from.id, err.message).catch(error =>
-                                this.log.error(`send Message Error: ${error}`),
-                            );
+                        bot.sendMessage(from.id, err.message).catch(error =>
+                            this.log.error(`send Message Error: ${error}`),
+                        );
+                    }
+                }
+                if (memoryLeak2) {
+                    this.clearTimeout(memoryLeak2);
+                    memoryLeak2 = undefined;
+                    m = null;
+                }
+                if (currentMsg) {
+                    if (state) {
+                        try {
+                            await bot.sendMessage(from.id, String(state.val));
+                        } catch (error) {
+                            this.log.error(`send Message Error: ${error}`);
                         }
-                        if (state) {
-                            bot.sendMessage(from.id, String(state.val)).catch(error =>
-                                this.log.error(`send Message Error: ${error}`),
-                            );
-                        } else {
-                            bot.sendMessage(from.id, I18n.translate('ID "%s" not found.', id2 as string)).catch(error =>
-                                this.log.error(`send Message Error: ${error}`),
-                            );
+                    } else {
+                        try {
+                            await bot.sendMessage(from.id, I18n.translate('ID "%s" not found.', id2));
+                        } catch (error) {
+                            this.log.error(`send Message Error: ${error}`);
                         }
                     }
-                });
+                }
                 return;
             }
         }
@@ -2775,9 +2787,9 @@ class Telegram extends Adapter {
                             this.config.restarted === null ||
                             this.config.restarted === undefined
                         ) {
-                            this.sendSystemMessage(I18n.translate('Started!'));
+                            this.sendSystemMessage(I18n.translate('Started!')).catch(err => this.log.error(err));
                         } else {
-                            this.sendSystemMessage(this.config.restarted);
+                            this.sendSystemMessage(this.config.restarted).catch(err => this.log.error(err));
                         }
                     }
                 })
