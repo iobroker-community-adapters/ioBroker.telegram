@@ -1,0 +1,1 @@
+import{t as e}from"./virtual_mf-exposes___mfe_internal__ActionTelegram__customRuleBlocks_js-BEjoGfOy.js";export{e as default};
