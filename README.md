@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 5.0.0 (2026-08-03)
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
 - (@klein0r) admin 8.0.0 and js-controller 6.0.11 (or later) are required
@@ -73,7 +73,6 @@ Use telegram service to communicate with ioBroker
 - (@GermanBluefox) Fixed: `communicate.responseSilentJson` acknowledged the wrong state
 - (@GermanBluefox) Fixed: removed a stray empty entry from the generated command keyboard
 
-
 ### 4.1.0 (2025-03-19)
 * (bluefox) Admin component was migrated to TypeScript
 * (bluefox) Node.js >= 20.x and js-controller >= 6 and admin >= 7 are required now.
@@ -85,9 +84,6 @@ Use telegram service to communicate with ioBroker
 
 ### 3.9.0 (2024-07-22)
 * (klein0r) Added option to send venue (with title and address)
-
-### 3.8.2 (2024-07-16)
-* (bluefox) Username can consist of more than one user. The separator is comma, semicolon or space.
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

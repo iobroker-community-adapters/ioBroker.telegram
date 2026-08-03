@@ -1,4 +1,7 @@
 # Older changes
+## 3.8.2 (2024-07-16)
+* (bluefox) Username can consist of more than one user. The separator is comma, semicolon or space.
+
 ## 3.8.0 (2024-07-14)
 * (bluefox) Migrated GUI for Admin 7
 
