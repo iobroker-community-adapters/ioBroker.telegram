@@ -39,7 +39,7 @@ Use telegram service to communicate with ioBroker
 -->
 ### 5.0.2 (2026-08-03)
 - (copilot) Adapter requires node.js >= 22 now
-- (copilot) Adapter requires admin >= 7.7.22 now
+- (copilot) Adapter requires admin >= 8.0.0 now
 - (@klein0r) admin 8.0.0 and js-controller 6.0.11 (or later) are required
 - (@klein0r) Updated dependencies
 
