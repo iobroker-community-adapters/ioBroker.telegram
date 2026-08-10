@@ -37,6 +37,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (@GermanBluefox) Fixed: the configured text2command/assistant instance may now also be stored in the long form (`system.adapter.text2command.0`) - the alive check no longer fails with "instance is not running"
+
 ### 5.0.2 (2026-08-03)
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 8.0.0 now

@@ -2314,7 +2314,7 @@ class Telegram extends Adapter {
      * target is not running, `sendTo` would queue the message unanswered and the callback would never
      * fire, so we skip it (and log) instead.
      *
-     * @param instance target instance id, e.g. `assistant.0`
+     * @param instance target instance id, e.g. `assistant.0` or `system.adapter.assistant.0`
      * @param command the `sendTo` command
      * @param message the payload to forward
      */
@@ -2323,17 +2323,23 @@ class Telegram extends Adapter {
         command: string,
         message: Record<string, unknown>,
     ): Promise<ioBroker.Message | undefined> {
+        // depending on the admin version the configured instance is stored as `text2command.0` or as
+        // `system.adapter.text2command.0`, so normalize it to the short form
+        const instanceId = instance.startsWith('system.adapter.')
+            ? instance.substring('system.adapter.'.length)
+            : instance;
+
         try {
-            const aliveState = await this.getForeignStateAsync(`system.adapter.${instance}.alive`);
+            const aliveState = await this.getForeignStateAsync(`system.adapter.${instanceId}.alive`);
             if (!aliveState?.val) {
-                this.log.warn(`Cannot forward message to "${instance}": instance is not running`);
+                this.log.warn(`Cannot forward message to "${instanceId}": instance is not running`);
                 return;
             }
         } catch (err) {
-            this.log.warn(`Cannot check if "${instance}" is alive: ${err instanceof Error ? err.message : err}`);
+            this.log.warn(`Cannot check if "${instanceId}" is alive: ${err instanceof Error ? err.message : err}`);
             return;
         }
-        return await this.sendToAsync(instance, command, message);
+        return await this.sendToAsync(instanceId, command, message);
     }
 
     async processTelegramText(msg: Message): Promise<Message | void> {
