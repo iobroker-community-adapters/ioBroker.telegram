@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Components-BPb4U2ux.js","./TelegramComponent-B2NWSbGI.js"])))=>i.map(i=>d[i]);
-import{t as e}from"./vite-preload-helper-B7qeedMF.js";var t={"./Components":async()=>{let t=await e(()=>import(`./Components-BPb4U2ux.js`),__vite__mapDeps([0,1]),import.meta.url),n={};return Object.assign(n,t),Object.defineProperty(n,"__esModule",{value:!0,enumerable:!1}),n}};export{t as default};
