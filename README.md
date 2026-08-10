@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 5.0.3 (2026-08-10)
 - (@GermanBluefox) Fixed: the configured text2command/assistant instance may now also be stored in the long form (`system.adapter.text2command.0`) - the alive check no longer fails with "instance is not running"
 
 ### 5.0.2 (2026-08-03)
@@ -84,9 +84,6 @@ Use telegram service to communicate with ioBroker
 * NodeJS >= 20.x and js-controller >= 6 are required
 * (simatec) Responsive Design added
 * (klein0r) Allow async function calls in ask callback function
-
-### 3.9.0 (2024-07-22)
-* (klein0r) Added option to send venue (with title and address)
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "5.0.2",
+    "version": "5.0.3",
     "news": {
+      "5.0.3": {
+        "en": "Fixed: the configured text2command/assistant instance may now also be stored in the long form (`system.adapter.text2command.0`) - the alive check no longer fails with \"instance is not running\"",
+        "de": "Fixed: Die konfigurierte text2command/assistant instance kann nun auch im Long-Formular (`system.adapter.text2command.0`) gespeichert werden - der Live-Check schlägt nicht mehr mit \"instance is not running\" fehl",
+        "ru": "Исправлено: сконфигурированный экземпляр text2command/assistant теперь также может храниться в длинной форме (\"system.adapter.text2command.0\") - живой чек больше не выходит из строя с \"instance is not run\"",
+        "pt": "Corrigido: a instância configurada text2command/assistente pode agora também ser armazenada no formulário longo (`system.adapter.text2command.0`) - a verificação viva não falha mais com \"instance is not executing\"",
+        "nl": "Fixed: de geconfigureerde tekst2command/assistant instantie kan nu ook worden opgeslagen in de lange vorm (",
+        "fr": "Correction : l'instance text2command/assistant configurée peut désormais être stockée dans la forme longue (`system.adapter.text2command.0`) - la vérification vivante ne échoue plus avec \"l'installation n'est pas en cours d'exécution\"",
+        "it": "Risolto: l'istanza di text2command/assistant configurata può ora essere memorizzata nella forma lunga (`system.adapter.text2command.0`) - il controllo vivo non manca più con \"l'instanza non è in esecuzione\"",
+        "es": "Fijado: el texto configurado2command/asstant instancia puede ser almacenado en la forma larga (`system.adapter.text2command.0`) - el cheque vivo ya no falla con \"la posición no está funcionando\"",
+        "pl": "Naprawiono: skonfigurowana instancja text2command / assistant może być teraz również przechowywana w długiej formie ('system.adapter.text2command.0') - kontrola żywa nie zawodzi przy \"instance nie jest uruchomiona\"",
+        "uk": "Виправлено: налаштований текст2command/assistant екземпляр може тепер також зберігатися в довгостроковій формі (`system.adapter.text2command.0`) - живий чек більше не виходить з \"інтенсивом не працює\"",
+        "zh-cn": "固定 : 已配置的文本2 命令/ 辅助实例现在也可能以长窗体( 'system. adapter. text2 command. 0') 存储 - 活的检查不再以“ 无效运行” 失败 "
+      },
       "5.0.2": {
         "en": "Adapter requires node.js >= 22 now\nAdapter requires admin >= 7.7.22 now\nadmin 8.0.0 and js-controller 6.0.11 (or later) are required\nUpdated dependencies",
         "de": "Der Adapter benötigt jetzt Node.js >= 22.\nDer Adapter benötigt jetzt Administratorrechte ab Version 7.7.22.\nadmin 8.0.0 und js-controller 6.0.11 (oder höher) werden benötigt.\nAktualisierte Abhängigkeiten",
