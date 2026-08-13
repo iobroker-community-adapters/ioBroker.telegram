@@ -43,7 +43,7 @@
     "@types/node": "^22.20.1",
     "blockly": "^13.2.1",
     "esbuild": "^0.25.0",
-    "typescript": "~6.0.3"
+    "typescript": "~7.0.2"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.telegram/issues"
