@@ -1,0 +1,15 @@
+{
+    "telegram_ask": "通过Telegram 查询",
+    "telegram_ask_answer": "答复",
+    "telegram_ask_answers": "答复",
+    "telegram_ask_question": "问题",
+    "telegram_call": "通过电报电话",
+    "telegram_call_repeats": "重复",
+    "telegram_call_system": "系统语言",
+    "telegram_call_tooltip": "通过电报呼叫并说一些文字",
+    "telegram_chatid": "收件人（聊天 ID，可选）",
+    "telegram_disable_web_preview": "禁用网页预览",
+    "telegram_escaping": "escape chars",
+    "telegram_parsemode_default": "默认",
+    "telegram_username": "收件人（用户名，可选）"
+}

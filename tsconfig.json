@@ -4,8 +4,9 @@
     "compileOnSave": true,
     "compilerOptions": {
         "noEmit": true,
+        // No JS in `include`, so `checkJs` would have nothing to check - and TypeScript rejects it
+        // outright while `allowJs` is off
         "allowJs": false,
-        "checkJs": true,
         "skipLibCheck": true, // Don't report errors in 3rd party definitions
         "noEmitOnError": true,
         "outDir": "./build",

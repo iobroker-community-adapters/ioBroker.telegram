@@ -41,6 +41,8 @@
     "@iobroker/types": "^7.2.2",
     "@tsconfig/node22": "^22.0.5",
     "@types/node": "^22.20.1",
+    "blockly": "^13.2.1",
+    "esbuild": "^0.25.0",
     "typescript": "~6.0.3"
   },
   "bugs": {
@@ -60,9 +62,10 @@
     "test:js": "echo skip",
     "test": "npm run test:package",
     "build:ts": "tsc -p tsconfig.build.json",
+    "build:blockly": "tsc -p src-blockly/tsconfig.json && node src-blockly/build.mjs",
     "check": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint -c eslint.config.mjs",
-    "translate": "translate-adapter",
+    "translate": "translate-adapter -b src-blockly/i18n/en.json",
     "release": "release-script",
     "release-patch": "release-script patch --yes",
     "release-minor": "release-script minor --yes",
@@ -79,7 +82,7 @@
     "admin-2-compile": "node tasks --admin-2-compile",
     "admin-3-copy": "node tasks --admin-3-copy",
     "admin-build": "node tasks --admin-build",
-    "build": "npm run build:ts && node tasks --default"
+    "build": "npm run build:ts && node tasks --default && npm run build:blockly"
   },
   "license": "MIT"
 }
