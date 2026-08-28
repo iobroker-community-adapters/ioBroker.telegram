@@ -2824,6 +2824,18 @@ class Telegram extends Adapter {
                 }
             });
 
+            // Telegram Live Location updates are delivered as edited_message events.
+            // Process them like normal messages so location and raw request states are updated.
+            bot.on('edited_message', msg => {
+                this.connectionState(true);
+
+                if (this.config.storeRawRequest) {
+                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+                }
+
+                this.getMessage(msg);
+            });
+
             // Channel posts (in a channel where the bot is an admin) are delivered as a separate event, not
             // as `message`, so they were ignored before. They are anonymous (no `msg.from`), therefore the
             // auth/command pipeline cannot run; instead expose the post text and metadata so scripts can
