@@ -54,6 +54,7 @@
                 "baseApiUrl": {
                     "newLine": true,
                     "type": "text",
+                    "placeholder": "https://api.telegram.org",
                     "xs": 12,
                     "sm": 12,
                     "md": 8,

@@ -264,6 +264,14 @@ class Telegram extends Adapter {
     async onReady(): Promise<void> {
         this.isServer = this.config.server === 'true';
         await this.migrateInstanceIds();
+
+        // An empty "API URL" field must fall back to the default: node-telegram-bot-api >= 1.x takes the
+        // configured value as-is (`??` instead of the former `||`), so "" would produce relative request URLs
+        // and every API call fails with "EFATAL: Failed to parse URL". A trailing slash is stripped as well,
+        // because the library builds `${baseApiUrl}/bot<token>/...`.
+        // See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/1371
+        this.config.baseApiUrl =
+            (this.config.baseApiUrl || '').trim().replace(/\/+$/, '') || 'https://api.telegram.org';
         // i18n JSON files live in `<packageRoot>/i18n`; main.js runs from `<packageRoot>/build`
         await I18n.init(join(__dirname, '..'), this);
 
