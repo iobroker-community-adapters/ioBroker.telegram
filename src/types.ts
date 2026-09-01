@@ -26,6 +26,8 @@ export interface TelegramConfig {
     saveFilesQuality: string;
     allowStates: boolean;
     proxy: boolean;
+    /** `http` (default) or `socks5`; missing in configs created before the option existed */
+    proxyType?: 'http' | 'socks5';
     proxyHost: string;
     proxyPort: number;
     proxyLogin: string;

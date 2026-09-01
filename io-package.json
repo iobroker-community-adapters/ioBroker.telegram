@@ -272,6 +272,7 @@
     "saveFilesQuality": "",
     "allowStates": true,
     "proxy": false,
+    "proxyType": "http",
     "proxyHost": "",
     "proxyPort": 1234,
     "proxyLogin": "",

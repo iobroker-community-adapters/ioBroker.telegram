@@ -1,20 +1,34 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { get as httpsGet } from 'node:https';
 import type { Server as HttpServer, IncomingMessage, ServerResponse } from 'node:http';
 import type { Server as HttpsServer } from 'node:https';
 
 import axios from 'axios';
-import TelegramBot, {
+import {
+    Bot,
+    InputFile,
+    isTransientError,
+    ParseError,
     type CallbackQuery,
     type Chat,
     type EditMessageMediaParams,
+    type InputMediaPhoto,
     type Message,
     type ParseMode,
-    type TelegramBotOptions,
+    type SendAnimationParams,
+    type SendAudioParams,
+    type SendDocumentParams,
+    type SendLocationParams,
+    type SendMediaGroupParams,
+    type SendMessageParams,
+    type SendPhotoParams,
+    type SendStickerParams,
+    type SendVenueParams,
+    type SendVideoParams,
     type Update,
     type User,
 } from 'node-telegram-bot-api';
+import { fromPath } from 'node-telegram-bot-api/node';
 
 import { Adapter, EXIT_CODES, getAbsoluteDefaultDataDir, type AdapterOptions, I18n } from '@iobroker/adapter-core';
 import { WebServer } from '@iobroker/webserver';
@@ -38,6 +52,7 @@ import type {
     Users,
 } from './types';
 import { detectMediaTypeFromName, iobUriFromString, isIobUri, mimeToMediaType } from './iobUri';
+import { createProxiedFetch, createProxyDispatcher } from './proxy';
 
 const systemLang2CallMe: Record<string, string> = {
     en: 'en-GB-Standard-A',
@@ -63,14 +78,73 @@ const actions = [
     'find_location',
 ];
 
+/**
+ * Keys of the `SendOptions` bag that steer the adapter itself (recipient selection, media type detection,
+ * the edit/delete/answer sub-commands, ...). Everything else is forwarded to the Bot API unchanged, so callers
+ * can pass any documented parameter of the underlying method (e.g. `parse_mode`, `reply_markup`,
+ * `protect_content`, `message_thread_id`).
+ */
+const INTERNAL_OPTION_KEYS = new Set<string>([
+    'chatId',
+    'user',
+    'text',
+    'type',
+    'fileName',
+    'media',
+    'latitude',
+    'longitude',
+    'title',
+    'address',
+    'editMessageReplyMarkup',
+    'editMessageText',
+    'editMessageMedia',
+    'editMessageCaption',
+    'deleteMessage',
+    'answerCallbackQuery',
+]);
+
+/**
+ * Pick the Bot API parameters out of the option bag, dropping the adapter-internal keys.
+ *
+ * @param options the option bag of a send request
+ * @returns the parameters to forward to the Bot API method
+ */
+function toApiParams<T extends object>(options: SendOptions | undefined): Partial<T> {
+    const params: Record<string, unknown> = {};
+    if (options) {
+        for (const [key, value] of Object.entries(options)) {
+            if (!INTERNAL_OPTION_KEYS.has(key) && value !== undefined) {
+                params[key] = value;
+            }
+        }
+    }
+    return params as Partial<T>;
+}
+
+/**
+ * File names telegram gets to see when raw bytes are uploaded and the caller did not provide one. The extension
+ * matters: the library does no content sniffing, so the name decides how telegram treats the upload.
+ */
+const DEFAULT_FILE_NAMES: Record<string, string> = {
+    photo: 'photo.jpg',
+    animation: 'animation.gif',
+    video: 'video.mp4',
+    audio: 'audio.mp3',
+    document: 'document.bin',
+    sticker: 'sticker.webp',
+};
+
 class Telegram extends Adapter {
     declare config: TelegramConfig;
-    private bot: TelegramBot | undefined;
+    private bot: Bot | undefined;
+    /** The fetch used by the Bot API client and for media downloads - bound to the proxy when one is configured */
+    private fetchImpl: typeof fetch = globalThis.fetch;
     private storedUsers: Users = {};
     private storedChats: Chats = {};
     private systemLang: ioBroker.Languages = 'en';
     private reconnectTimer: ioBroker.Interval | undefined;
     private pollConnectionStatus: ioBroker.Timeout | undefined;
+    private pollingRestartTimer: ioBroker.Timeout | undefined;
     private isConnected: boolean | null = null;
     private lastMessageTime = 0;
     private lastMessageText = '';
@@ -99,6 +173,8 @@ class Telegram extends Adapter {
     private static readonly SEND_QUEUE_RETRY_MS = 30000;
     private static readonly MAX_SEND_QUEUE_AGE_MS = 24 * 60 * 60 * 1000; // 24 h
     private static readonly MAX_SEND_ATTEMPTS = 10;
+    /** Delay before the long-poll loop is restarted after it ended with a fatal error */
+    private static readonly POLLING_RESTART_MS = 30000;
 
     private readonly server: {
         server: ServerExt | null;
@@ -412,6 +488,14 @@ class Telegram extends Adapter {
             this.garbageCollectorInterval = undefined;
         }
 
+        if (this.pollingRestartTimer) {
+            this.clearTimeout(this.pollingRestartTimer);
+            this.pollingRestartTimer = undefined;
+        }
+
+        // stop the long-poll loop (no-op in webhook mode)
+        this.bot?.stop();
+
         // cancel any pending question answer-timeouts so they cannot fire after unload
         this.questions?.forEach(q => q.timeout && this.clearTimeout(q.timeout));
         this.questions = [];
@@ -667,8 +751,8 @@ class Telegram extends Adapter {
 
         const checkConnection = (): void => {
             this.pollConnectionStatus = undefined;
-            this.bot
-                ?.getMe?.()
+            this.bot?.api
+                .getMe()
                 .then(data => {
                     this.log.debug(`getMe (reconnect): ${JSON.stringify(data)}`);
                     this.connectionState(true, errorCounter > 0);
@@ -712,28 +796,11 @@ class Telegram extends Adapter {
      * @param error the error thrown by the telegram API call
      * @returns true if the send should be queued and retried later
      */
-    isRetryableSendError(error: any): boolean {
-        const code = error?.code;
-        // EFATAL: network/connection problem (e.g. no internet); EPARSE: telegram answered with a
-        // non-JSON body, typically a transient 5xx gateway error.
-        if (code === 'EFATAL' || code === 'EPARSE') {
-            return true;
-        }
-        if (code === 'ETELEGRAM') {
-            // the Bot API replied with ok:false - retry only on rate limit (429) or server errors (5xx)
-            const status = error?.response?.body?.error_code ?? error?.response?.statusCode;
-            if (status === 429 || (typeof status === 'number' && status >= 500 && status < 600)) {
-                return true;
-            }
-            const m = /ETELEGRAM:\s*(\d{3})/.exec(String(error?.message ?? error));
-            if (m) {
-                const s = parseInt(m[1], 10);
-                return s === 429 || (s >= 500 && s < 600);
-            }
-            return false;
-        }
-        // unknown error shape - be conservative and do not retry
-        return false;
+    isRetryableSendError(error: unknown): boolean {
+        // NetworkError/TimeoutError: telegram is unreachable; TelegramApiError with 429 or 5xx: rate limit or
+        // server-side problem; ParseError: telegram answered with a non-JSON body, typically a transient
+        // gateway error. Everything else (400 "chat not found", 403 "bot was blocked", ...) is permanent.
+        return isTransientError(error) || error instanceof ParseError;
     }
 
     /**
@@ -885,7 +952,7 @@ class Telegram extends Adapter {
                     return;
                 }
                 res.end('OK');
-                this.bot!.processUpdate(msg);
+                void this.bot!.handleUpdate(msg);
             });
         } else {
             res.writeHead(404, 'Resource Not Found', {
@@ -895,8 +962,11 @@ class Telegram extends Adapter {
         }
     }
 
-    saveSendRequest(msg: Message | boolean): void {
-        this.log.debug(`Request [saveSendRequest]: ${JSON.stringify(msg)}`);
+    saveSendRequest(result: Message | Message[] | boolean): void {
+        this.log.debug(`Request [saveSendRequest]: ${JSON.stringify(result)}`);
+
+        // sendMediaGroup answers with the list of sent messages - remember the first one
+        const msg = Array.isArray(result) ? result[0] : result;
 
         if (typeof msg === 'object') {
             if (this.config.storeRawRequest) {
@@ -1025,6 +1095,39 @@ class Telegram extends Adapter {
         return null;
     }
 
+    /**
+     * Convert a send payload into what the Bot API client expects for a file parameter: raw bytes and local
+     * files become an upload (`InputFile`, streamed as multipart part), everything else - an `http(s)` URL or a
+     * telegram `file_id` - is passed through as string.
+     *
+     * @param content the payload: a Buffer, a local file path, a URL or a file_id
+     * @param fileName the file name telegram should see for an upload
+     * @param defaultName file name used for raw bytes when the caller did not provide one
+     * @returns the value for the file parameter of the send method
+     */
+    async toInputFile(
+        content: unknown,
+        fileName: string | undefined,
+        defaultName: string,
+    ): Promise<InputFile | string> {
+        // a Buffer that travelled through the ioBroker message bus arrives JSON-serialized
+        if (
+            content &&
+            typeof content === 'object' &&
+            (content as { type?: string }).type === 'Buffer' &&
+            Array.isArray((content as { data?: unknown }).data)
+        ) {
+            content = Buffer.from((content as { data: number[] }).data);
+        }
+        if (Buffer.isBuffer(content)) {
+            return new InputFile(content, { filename: fileName || defaultName });
+        }
+        if (typeof content === 'string' && existsSync(content)) {
+            return fromPath(content, fileName ? { filename: fileName } : undefined);
+        }
+        return String(content);
+    }
+
     async sendMessageHelper(dest: number | string, name: string, text: any, options: SendOptions): Promise<string> {
         const bot = this.bot!;
 
@@ -1069,10 +1172,10 @@ class Telegram extends Adapter {
                 if (bot) {
                     this.executeSending(
                         () =>
-                            bot.editMessageReplyMarkup(
-                                options.editMessageReplyMarkup!.reply_markup,
-                                options.editMessageReplyMarkup!.options,
-                            ),
+                            bot.api.editMessageReplyMarkup({
+                                ...options.editMessageReplyMarkup!.options,
+                                reply_markup: options.editMessageReplyMarkup!.reply_markup,
+                            }),
                         options,
                         resolve,
                     );
@@ -1081,7 +1184,7 @@ class Telegram extends Adapter {
                 this.log.debug(`Send editMessageText to "${name}"`);
                 if (bot) {
                     this.executeSending(
-                        () => bot.editMessageText({ ...options.editMessageText!.options, text }),
+                        () => bot.api.editMessageText({ ...options.editMessageText!.options, text }),
                         options,
                         resolve,
                     );
@@ -1151,39 +1254,49 @@ class Telegram extends Adapter {
                     }
 
                     if (mediaInput) {
-                        // The library resolves the file itself (local path / Buffer / stream / URL /
-                        // file_id) and builds the multipart form + `attach://` reference internally.
-                        // We only pass the InputMedia object and the extra form fields.
-                        const inputMedia: {
-                            type: 'photo' | 'animation' | 'video' | 'audio' | 'document';
-                            media: string;
-                            caption?: string;
-                            parse_mode?: ParseMode;
-                        } = {
-                            type: mediaInput.type as 'photo' | 'animation' | 'video' | 'audio' | 'document',
-                            media: mediaInput.media,
-                        };
-
-                        if (options.editMessageMedia.options?.caption) {
-                            inputMedia.caption = options.editMessageMedia.options.caption;
-                        }
-                        if (options.editMessageMedia.options?.parse_mode) {
-                            inputMedia.parse_mode = options.editMessageMedia.options.parse_mode;
-                        }
+                        const { type: mediaType, media } = mediaInput;
+                        const editOptions = options.editMessageMedia.options;
 
                         const form: Omit<EditMessageMediaParams, 'media'> = {};
-                        if (options.editMessageMedia.options?.chat_id !== undefined) {
-                            form.chat_id = options.editMessageMedia.options.chat_id;
+                        if (editOptions?.chat_id !== undefined) {
+                            form.chat_id = editOptions.chat_id;
                         }
-                        if (options.editMessageMedia.options?.message_id !== undefined) {
-                            form.message_id = options.editMessageMedia.options.message_id;
+                        if (editOptions?.message_id !== undefined) {
+                            form.message_id = editOptions.message_id;
                         }
-                        if (options.editMessageMedia.options?.reply_markup) {
-                            form.reply_markup = options.editMessageMedia.options.reply_markup;
+                        if (editOptions?.reply_markup) {
+                            form.reply_markup = editOptions.reply_markup;
                         }
 
                         if (bot) {
-                            this.executeSending(() => bot.editMessageMedia(inputMedia, form), options, resolve);
+                            this.executeSending(
+                                async () => {
+                                    // a local file is uploaded as multipart part (the library adds the
+                                    // `attach://` reference), a URL or file_id is passed through as string
+                                    const inputMedia: {
+                                        type: string;
+                                        media: InputFile | string;
+                                        caption?: string;
+                                        parse_mode?: ParseMode;
+                                    } = {
+                                        type: mediaType,
+                                        media: await this.toInputFile(
+                                            media,
+                                            options.fileName,
+                                            DEFAULT_FILE_NAMES[mediaType] || 'media.bin',
+                                        ),
+                                    };
+                                    if (editOptions?.caption) {
+                                        inputMedia.caption = editOptions.caption;
+                                    }
+                                    if (editOptions?.parse_mode) {
+                                        inputMedia.parse_mode = editOptions.parse_mode;
+                                    }
+                                    return bot.api.editMessageMedia({ ...form, media: inputMedia });
+                                },
+                                options,
+                                resolve,
+                            );
                         }
                     } else {
                         this.log.error(
@@ -1201,7 +1314,7 @@ class Telegram extends Adapter {
                 this.log.debug(`Send editMessageCaption to "${name}"`);
                 if (bot) {
                     this.executeSending(
-                        () => bot.editMessageCaption(text, options.editMessageCaption!.options),
+                        () => bot.api.editMessageCaption({ ...options.editMessageCaption!.options, caption: text }),
                         options,
                         resolve,
                     );
@@ -1211,10 +1324,10 @@ class Telegram extends Adapter {
                 if (bot) {
                     this.executeSending(
                         () =>
-                            bot.deleteMessage(
-                                options.deleteMessage!.options.chat_id,
-                                options.deleteMessage!.options.message_id,
-                            ),
+                            bot.api.deleteMessage({
+                                chat_id: options.deleteMessage!.options.chat_id,
+                                message_id: options.deleteMessage!.options.message_id,
+                            }),
                         options,
                         resolve,
                     );
@@ -1230,14 +1343,14 @@ class Telegram extends Adapter {
                 if (bot) {
                     this.executeSending(
                         () =>
-                            bot.sendVenue(
-                                dest,
-                                parseFloat(String(options.latitude)),
-                                parseFloat(String(options.longitude)),
-                                options.title!,
-                                options.address!,
-                                options,
-                            ),
+                            bot.api.sendVenue({
+                                ...toApiParams<SendVenueParams>(options),
+                                chat_id: dest,
+                                latitude: parseFloat(String(options.latitude)),
+                                longitude: parseFloat(String(options.longitude)),
+                                title: options.title!,
+                                address: options.address!,
+                            }),
                         options,
                         resolve,
                     );
@@ -1247,12 +1360,12 @@ class Telegram extends Adapter {
                 if (bot) {
                     this.executeSending(
                         () =>
-                            bot.sendLocation(
-                                dest,
-                                parseFloat(String(options.latitude)),
-                                parseFloat(String(options.longitude)),
-                                options,
-                            ),
+                            bot.api.sendLocation({
+                                ...toApiParams<SendLocationParams>(options),
+                                chat_id: dest,
+                                latitude: parseFloat(String(options.latitude)),
+                                longitude: parseFloat(String(options.longitude)),
+                            }),
                         options,
                         resolve,
                     );
@@ -1262,32 +1375,27 @@ class Telegram extends Adapter {
                 if (bot) {
                     const { media: fileNames } = options;
                     if (fileNames instanceof Array) {
-                        bot.sendChatAction(dest, 'upload_photo')
+                        bot.api
+                            .sendChatAction({ chat_id: dest, action: 'upload_photo' })
                             .then(() => {
                                 if (fileNames.every((name: string) => existsSync(name))) {
-                                    const filesAsArray = fileNames
-                                        .map((element: string) => {
-                                            try {
-                                                return { type: 'photo', media: readFileSync(element) };
-                                            } catch (err) {
-                                                this.log.error(`Cannot read file ${element}: ${err}`);
-                                                return undefined;
+                                    this.log.info(`Send media group to "${name}": ${fileNames.length} file(s)`);
+                                    this.executeSending(
+                                        async () => {
+                                            // the files are streamed from disk as multipart parts
+                                            const media: InputMediaPhoto[] = [];
+                                            for (const element of fileNames) {
+                                                media.push({ type: 'photo', media: await fromPath(element) });
                                             }
-                                        })
-                                        .filter(element => element !== undefined);
-
-                                    const size = filesAsArray
-                                        .map(element => element.media.length)
-                                        .reduce((acc, val) => acc + val);
-
-                                    this.log.info(`Send media group to "${name}": ${size} bytes`);
-                                    if (filesAsArray.length > 0) {
-                                        this.executeSending(
-                                            () => bot.sendMediaGroup(dest, filesAsArray),
-                                            options,
-                                            resolve,
-                                        );
-                                    }
+                                            return bot.api.sendMediaGroup({
+                                                ...toApiParams<SendMediaGroupParams>(options),
+                                                chat_id: dest,
+                                                media,
+                                            });
+                                        },
+                                        options,
+                                        resolve,
+                                    );
                                 } else {
                                     this.log.debug('files must exists');
                                     resolve(JSON.stringify(messageIds));
@@ -1307,7 +1415,11 @@ class Telegram extends Adapter {
             } else if (text && typeof text === 'string' && actions.includes(text)) {
                 this.log.debug(`Send action to "${name}": ${text}`);
                 if (bot) {
-                    this.executeSending(() => bot.sendChatAction(dest, text), options, resolve);
+                    this.executeSending(
+                        () => bot.api.sendChatAction({ chat_id: dest, action: text }),
+                        options,
+                        resolve,
+                    );
                 }
             } else if (
                 text &&
@@ -1321,7 +1433,12 @@ class Telegram extends Adapter {
                 }
                 if (bot) {
                     this.executeSending(
-                        () => bot.sendSticker(dest, text, options, { filename: options.fileName }),
+                        async () =>
+                            bot.api.sendSticker({
+                                ...toApiParams<SendStickerParams>(options),
+                                chat_id: dest,
+                                sticker: await this.toInputFile(text, options.fileName, DEFAULT_FILE_NAMES.sticker),
+                            }),
                         options,
                         resolve,
                     );
@@ -1338,7 +1455,12 @@ class Telegram extends Adapter {
                 }
                 if (bot) {
                     this.executeSending(
-                        () => bot.sendAnimation(dest, text, options, { filename: options.fileName }),
+                        async () =>
+                            bot.api.sendAnimation({
+                                ...toApiParams<SendAnimationParams>(options),
+                                chat_id: dest,
+                                animation: await this.toInputFile(text, options.fileName, DEFAULT_FILE_NAMES.animation),
+                            }),
                         options,
                         resolve,
                     );
@@ -1354,7 +1476,12 @@ class Telegram extends Adapter {
                 }
                 if (bot) {
                     this.executeSending(
-                        () => bot.sendVideo(dest, text, options, { filename: options.fileName }),
+                        async () =>
+                            bot.api.sendVideo({
+                                ...toApiParams<SendVideoParams>(options),
+                                chat_id: dest,
+                                video: await this.toInputFile(text, options.fileName, DEFAULT_FILE_NAMES.video),
+                            }),
                         options,
                         resolve,
                     );
@@ -1367,7 +1494,12 @@ class Telegram extends Adapter {
                 this.log.debug(`Send document to "${name}": ${typeof text === 'string' ? text : text.length}`);
                 if (bot) {
                     this.executeSending(
-                        () => bot.sendDocument(dest, text, options, { filename: options.fileName }),
+                        async () =>
+                            bot.api.sendDocument({
+                                ...toApiParams<SendDocumentParams>(options),
+                                chat_id: dest,
+                                document: await this.toInputFile(text, options.fileName, DEFAULT_FILE_NAMES.document),
+                            }),
                         options,
                         resolve,
                     );
@@ -1381,7 +1513,12 @@ class Telegram extends Adapter {
 
                 if (bot) {
                     this.executeSending(
-                        () => bot.sendAudio(dest, text, options, { filename: options.fileName }),
+                        async () =>
+                            bot.api.sendAudio({
+                                ...toApiParams<SendAudioParams>(options),
+                                chat_id: dest,
+                                audio: await this.toInputFile(text, options.fileName, DEFAULT_FILE_NAMES.audio),
+                            }),
                         options,
                         resolve,
                     );
@@ -1397,7 +1534,12 @@ class Telegram extends Adapter {
 
                 if (bot) {
                     this.executeSending(
-                        () => bot.sendPhoto(dest, text, options, { filename: options.fileName }),
+                        async () =>
+                            bot.api.sendPhoto({
+                                ...toApiParams<SendPhotoParams>(options),
+                                chat_id: dest,
+                                photo: await this.toInputFile(text, options.fileName, DEFAULT_FILE_NAMES.photo),
+                            }),
                         options,
                         resolve,
                     );
@@ -1412,7 +1554,8 @@ class Telegram extends Adapter {
                     delete this.callbackQueryId[String(options.chatId)];
                     this.executeSending(
                         () =>
-                            bot.answerCallbackQuery(originalChatId, {
+                            bot.api.answerCallbackQuery({
+                                callback_query_id: originalChatId,
                                 text: options.answerCallbackQuery!.text,
                                 show_alert: options.answerCallbackQuery!.showAlert,
                             }),
@@ -1436,7 +1579,16 @@ class Telegram extends Adapter {
                     }
                 }
                 if (bot) {
-                    this.executeSending(() => bot.sendMessage(dest, text || '', options), options, resolve);
+                    this.executeSending(
+                        () =>
+                            bot.api.sendMessage({
+                                ...toApiParams<SendMessageParams>(options),
+                                chat_id: dest,
+                                text: text || '',
+                            }),
+                        options,
+                        resolve,
+                    );
                 }
             }
         });
@@ -1654,53 +1806,41 @@ class Telegram extends Adapter {
     saveFile(fileID: string, fileName: string, callback: (result: SaveFileResult) => void): void {
         this.log.debug(`Saving media file ${fileID} to ${fileName} (location = ${this.config.saveFilesTo})`);
 
-        this.bot!.getFileLink(fileID)
-            .then(url => {
-                this.log.debug(`Received message: ${url}`);
-                httpsGet(url, res => {
-                    if (res.statusCode === 200) {
-                        const buf: Buffer[] = [];
-                        res.on('data', data => buf.push(data));
-                        res.on('end', () => {
-                            if (this.config.saveFilesTo == 'filesystem') {
-                                const fileLocation = join(this.tmpDirName, fileName);
-                                try {
-                                    writeFileSync(fileLocation, Buffer.concat(buf));
+        this.bot!.api.getFile({ file_id: fileID })
+            .then(async file => {
+                if (!file.file_path) {
+                    throw new Error('telegram did not return a file path');
+                }
+                // the library offers no download helper, so build the file URL ourselves
+                const url = `${this.config.baseApiUrl}/file/bot${this.config.token}/${file.file_path}`;
+                this.log.debug(`Download media file: ${url.replace(this.config.token, '<token>')}`);
+                const response = await this.fetchImpl(url);
+                if (!response.ok) {
+                    throw new Error(`statusCode ${response.status}`);
+                }
+                const content = Buffer.from(await response.arrayBuffer());
 
-                                    callback({
-                                        info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
-                                        location: this.config.saveFilesTo,
-                                        path: fileLocation,
-                                    });
-                                } catch (err) {
-                                    return callback({ error: `Error: ${err}` });
-                                }
-                            } else if (this.config.saveFilesTo == 'iobroker') {
-                                try {
-                                    const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
+                if (this.config.saveFilesTo == 'filesystem') {
+                    const fileLocation = join(this.tmpDirName, fileName);
+                    writeFileSync(fileLocation, content);
 
-                                    this.writeFileAsync(this.namespace, fileName, Buffer.concat(buf))
-                                        .then(() => {
-                                            callback({
-                                                info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
-                                                location: this.config.saveFilesTo,
-                                                path: fileLocation,
-                                            });
-                                        })
-                                        .catch(err => this.log.error(err));
-                                } catch (err) {
-                                    return callback({ error: `Error: ${err}` });
-                                }
-                            }
-                        });
+                    callback({
+                        info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
+                        location: this.config.saveFilesTo,
+                        path: fileLocation,
+                    });
+                } else if (this.config.saveFilesTo == 'iobroker') {
+                    const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
+                    await this.writeFileAsync(this.namespace, fileName, content);
 
-                        res.on('error', err => callback({ error: `Error: ${err}` }));
-                    } else {
-                        callback({ error: 'Error: statusCode !== 200' });
-                    }
-                });
+                    callback({
+                        info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
+                        location: this.config.saveFilesTo,
+                        path: fileLocation,
+                    });
+                }
             })
-            .catch(err => callback({ error: `Error bot.getFileLink: ${err}` }));
+            .catch(err => callback({ error: `Error: ${err}` }));
     }
 
     getMessage(msg: Message): void {
@@ -1711,7 +1851,7 @@ class Telegram extends Adapter {
         this.storeChat(msg.chat);
 
         // Media messages (photo, document, voice, ...) do not contain `msg.text`, so they are not handled
-        // by `processTelegramText` (which is bound via `bot.onText`). As a result the request metadata
+        // by `processTelegramText` (which only runs for text messages). As a result the request metadata
         // (chat id, message id, user id) would stay empty for received files. Populate it here so the
         // sender can be identified. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/1043
         if (
@@ -1977,14 +2117,12 @@ class Telegram extends Adapter {
                                     // old, telegram answers "message to edit not found". Without a catch this
                                     // rejection is unhandled and terminates the whole adapter. See
                                     // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/879
-                                    this.bot
-                                        .editMessageReplyMarkup(
-                                            { inline_keyboard: [] },
-                                            {
-                                                chat_id: q.chatId,
-                                                message_id: q.msgId,
-                                            },
-                                        )
+                                    this.bot.api
+                                        .editMessageReplyMarkup({
+                                            chat_id: q.chatId,
+                                            message_id: q.msgId,
+                                            reply_markup: { inline_keyboard: [] },
+                                        })
                                         .then(() =>
                                             this.log.debug(
                                                 `removed inline_keyboard for msg ${q.msgId}: ${JSON.stringify(q)}`,
@@ -2261,7 +2399,9 @@ class Telegram extends Adapter {
             }
         });
 
-        this.bot!.sendMessage(chatId, I18n.translate('Select option'), {
+        this.bot!.api.sendMessage({
+            chat_id: chatId,
+            text: I18n.translate('Select option'),
             reply_markup: {
                 keyboard: keyboard.map(row => row.map(text => ({ text }))),
                 resize_keyboard: true,
@@ -2311,14 +2451,12 @@ class Telegram extends Adapter {
                         // telegram answers "message to edit not found". Without a catch this rejection is
                         // unhandled and terminates the whole adapter. See
                         // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/879
-                        this.bot
-                            .editMessageReplyMarkup(
-                                { inline_keyboard: [] },
-                                {
-                                    chat_id: answeredChatId,
-                                    message_id: answeredMsgId,
-                                },
-                            )
+                        this.bot.api
+                            .editMessageReplyMarkup({
+                                chat_id: answeredChatId,
+                                message_id: answeredMsgId,
+                                reply_markup: { inline_keyboard: [] },
+                            })
                             .then(() => this.log.debug(`removed inline_keyboard for msg ${answeredMsgId}`))
                             .catch(error =>
                                 this.log.warn(`Cannot remove inline_keyboard for msg ${answeredMsgId}: ${error}`),
@@ -2414,8 +2552,8 @@ class Telegram extends Adapter {
             this.log.warn(
                 `Message from ${from.first_name} ignored, because too old: (${pollingInterval + 30000}) ${msgText}`,
             );
-            return bot
-                .sendMessage(from.id, I18n.translate('Message ignored: ') + msgText)
+            return bot.api
+                .sendMessage({ chat_id: from.id, text: I18n.translate('Message ignored: ') + msgText })
                 .catch(error => this.log.error(`send Message Error: ${error}`));
         }
 
@@ -2428,8 +2566,11 @@ class Telegram extends Adapter {
         }
 
         if (msgText === '/password' && !this.config.doNotAcceptNewUser) {
-            return bot
-                .sendMessage(from.id, I18n.translate('Please enter password in form "/password phrase"'))
+            return bot.api
+                .sendMessage({
+                    chat_id: from.id,
+                    text: I18n.translate('Please enter password in form "/password phrase"'),
+                })
                 .catch(error => this.log.error(`send Message Error:${error}`));
         }
 
@@ -2442,11 +2583,11 @@ class Telegram extends Adapter {
                 this.garbageCollector();
 
                 if (this.protection[user] && this.protection[user].length >= 5) {
-                    return bot
-                        .sendMessage(
-                            from.id,
-                            `${I18n.translate('Too many attempts. Blocked for')} ${Math.round((now - this.protection[user][this.protection[user].length - 1]) / 1000)} ${I18n.translate('seconds')}`,
-                        )
+                    return bot.api
+                        .sendMessage({
+                            chat_id: from.id,
+                            text: `${I18n.translate('Too many attempts. Blocked for')} ${Math.round((now - this.protection[user][this.protection[user].length - 1]) / 1000)} ${I18n.translate('seconds')}`,
+                        })
                         .catch(error => this.log.error(`send Message Error: ${error}`));
                 }
 
@@ -2461,12 +2602,12 @@ class Telegram extends Adapter {
                     }
 
                     // delete the message that contains the password, so the passphrase is not left in the chat
-                    await bot
-                        .deleteMessage(msg.chat.id, msg.message_id)
+                    await bot.api
+                        .deleteMessage({ chat_id: msg.chat.id, message_id: msg.message_id })
                         .catch(error => this.log.warn(`Cannot delete password message: ${error}`));
 
-                    return bot
-                        .sendMessage(from.id, I18n.translate('Welcome ') + user)
+                    return bot.api
+                        .sendMessage({ chat_id: from.id, text: I18n.translate('Welcome ') + user })
                         .catch(error => this.log.error(`send Message Error: ${error}`));
                 }
                 this.protection[user] ||= [];
@@ -2476,9 +2617,9 @@ class Telegram extends Adapter {
 
                 this.log.warn(`Got invalid password from ${user}: ${m[1]}`);
 
-                bot.sendMessage(from.id, I18n.translate('Invalid password')).catch(error =>
-                    this.log.error(`send Message Error: ${error}`),
-                );
+                bot.api
+                    .sendMessage({ chat_id: from.id, text: I18n.translate('Invalid password') })
+                    .catch(error => this.log.error(`send Message Error: ${error}`));
 
                 if (this.storedUsers[from.id]) {
                     delete this.storedUsers[from.id];
@@ -2490,21 +2631,21 @@ class Telegram extends Adapter {
 
         // If a user is not in the trusted list
         if ((this.config.password || this.config.doNotAcceptNewUsers) && !this.storedUsers[from.id]) {
-            return bot
-                .sendMessage(
-                    from.id,
-                    I18n.translate(
+            return bot.api
+                .sendMessage({
+                    chat_id: from.id,
+                    text: I18n.translate(
                         this.config.doNotAcceptNewUsers
                             ? 'User is not in the list'
                             : 'Please enter password in form "/password phrase"',
                     ),
-                )
+                })
                 .catch(error => this.log.error(`send Message Error: ${error}`));
         }
 
         if (msgText === '/help') {
-            return bot
-                .sendMessage(from.id, this.getListOfCommands())
+            return bot.api
+                .sendMessage({ chat_id: from.id, text: this.getListOfCommands() })
                 .catch(error => this.log.error(`send Message Error: ${error}`));
         }
 
@@ -2534,9 +2675,9 @@ class Telegram extends Adapter {
                     found = true;
                     if (sValue === '?') {
                         const state = await this.getForeignStateAsync(id);
-                        bot.sendMessage(msg.chat.id, this.getStatus(id, state)).catch(error =>
-                            this.log.error(`send Message Error: ${error}`),
-                        );
+                        bot.api
+                            .sendMessage({ chat_id: msg.chat.id, text: this.getStatus(id, state) })
+                            .catch(error => this.log.error(`send Message Error: ${error}`));
                     } else {
                         let value;
                         if (this.commands[id].states) {
@@ -2559,9 +2700,12 @@ class Telegram extends Adapter {
                             sValue = sValue.replace('%', '').trim();
                             value = parseFloat(sValue);
                             if (sValue !== value.toString()) {
-                                bot.sendMessage(msg.chat.id, I18n.translate('Invalid number %s', sValue)).catch(error =>
-                                    this.log.error(`send Message Error: ${error}`),
-                                );
+                                bot.api
+                                    .sendMessage({
+                                        chat_id: msg.chat.id,
+                                        text: I18n.translate('Invalid number %s', sValue),
+                                    })
+                                    .catch(error => this.log.error(`send Message Error: ${error}`));
                                 continue;
                             }
                         } else {
@@ -2569,8 +2713,8 @@ class Telegram extends Adapter {
                         }
 
                         this.setForeignStateAsync(id, value, false, () =>
-                            bot
-                                .sendMessage(msg.chat.id, I18n.translate('Done'))
+                            bot.api
+                                .sendMessage({ chat_id: msg.chat.id, text: I18n.translate('Done') })
                                 .catch(error => this.log.error(`send Message Error: ${error}`)),
                         )?.catch(error => this.log.error(`setForeignState Error: ${error}`));
                     }
@@ -2607,9 +2751,9 @@ class Telegram extends Adapter {
                 try {
                     state = await this.getForeignStateAsync(id1);
                 } catch (err) {
-                    bot.sendMessage(from.id, err.message).catch(error =>
-                        this.log.error(`send Message Error: ${error}`),
-                    );
+                    bot.api
+                        .sendMessage({ chat_id: from.id, text: err.message })
+                        .catch(error => this.log.error(`send Message Error: ${error}`));
                 }
                 if (memoryLeak1) {
                     this.clearTimeout(memoryLeak1);
@@ -2621,20 +2765,23 @@ class Telegram extends Adapter {
                         try {
                             await this.setForeignStateAsync(id1, val1, false);
                             if (currentMsg) {
-                                bot.sendMessage(from.id, I18n.translate('Done')).catch(error =>
-                                    this.log.error(`send Message Error: ${error}`),
-                                );
+                                bot.api
+                                    .sendMessage({ chat_id: from.id, text: I18n.translate('Done') })
+                                    .catch(error => this.log.error(`send Message Error: ${error}`));
                             }
                         } catch (err) {
                             if (currentMsg) {
-                                bot.sendMessage(from.id, err.message).catch(error =>
-                                    this.log.error(`send Message Error: ${error}`),
-                                );
+                                bot.api
+                                    .sendMessage({ chat_id: from.id, text: err.message })
+                                    .catch(error => this.log.error(`send Message Error: ${error}`));
                             }
                         }
                     } else {
                         try {
-                            await bot.sendMessage(from.id, I18n.translate('ID "%s" not found.', id1));
+                            await bot.api.sendMessage({
+                                chat_id: from.id,
+                                text: I18n.translate('ID "%s" not found.', id1),
+                            });
                         } catch (err) {
                             this.log.error(`send Message Error: ${err}`);
                         }
@@ -2661,9 +2808,9 @@ class Telegram extends Adapter {
                     state = await this.getForeignStateAsync(id2);
                 } catch (err) {
                     if (currentMsg) {
-                        bot.sendMessage(from.id, err.message).catch(error =>
-                            this.log.error(`send Message Error: ${error}`),
-                        );
+                        bot.api
+                            .sendMessage({ chat_id: from.id, text: err.message })
+                            .catch(error => this.log.error(`send Message Error: ${error}`));
                     }
                 }
                 if (memoryLeak2) {
@@ -2674,13 +2821,16 @@ class Telegram extends Adapter {
                 if (currentMsg) {
                     if (state) {
                         try {
-                            await bot.sendMessage(from.id, String(state.val));
+                            await bot.api.sendMessage({ chat_id: from.id, text: String(state.val) });
                         } catch (error) {
                             this.log.error(`send Message Error: ${error}`);
                         }
                     } else {
                         try {
-                            await bot.sendMessage(from.id, I18n.translate('ID "%s" not found.', id2));
+                            await bot.api.sendMessage({
+                                chat_id: from.id,
+                                text: I18n.translate('ID "%s" not found.', id2),
+                            });
                         } catch (error) {
                             this.log.error(`send Message Error: ${error}`);
                         }
@@ -2718,9 +2868,9 @@ class Telegram extends Adapter {
                         }
 
                         this.log.debug(`Send response: ${text}`);
-                        bot.sendMessage(response.id, text, options).catch(error =>
-                            this.log.error(`send Message Error: ${error}`),
-                        );
+                        bot.api
+                            .sendMessage({ ...options, chat_id: response.id, text })
+                            .catch(error => this.log.error(`send Message Error: ${error}`));
                     }
                 })
                 .catch(err => this.log.error(`Cannot send message to ${this.config.text2command}: ${err}`));
@@ -2744,9 +2894,9 @@ class Telegram extends Adapter {
                     if (text) {
                         this.log.debug(`Assistant response: ${text}`);
                         const options = msg.is_topic_message ? { message_thread_id: msg.message_thread_id } : undefined;
-                        bot.sendMessage(msg.chat.id, text, options).catch(error =>
-                            this.log.error(`send Message Error: ${error}`),
-                        );
+                        bot.api
+                            .sendMessage({ ...options, chat_id: msg.chat.id, text })
+                            .catch(error => this.log.error(`send Message Error: ${error}`));
                     }
                 })
                 .catch(err => this.log.error(`Cannot send message to ${this.config.assistantInstance}: ${err}`));
@@ -2769,69 +2919,67 @@ class Telegram extends Adapter {
         if (this.bot) {
             const bot = this.bot;
             if (!this.isServer) {
-                try {
-                    if (bot.isPolling()) {
-                        this.log.debug('bot polling OK');
-                    } else {
-                        this.log.debug('bot restarting...');
-                        bot.stopPolling().then(
-                            () => {
-                                this.log.debug('Start Polling');
-                                bot.startPolling().catch(error => this.log.error(`Error start polling: ${error}`));
-                            },
-                            error => {
-                                this.log.error(`Error stop polling: ${error}`);
-                            },
-                        );
-                    }
-                } catch {
-                    // looks empty
+                if (bot.isRunning()) {
+                    this.log.debug('bot polling OK');
+                } else {
+                    this.log.debug('bot restarting...');
+                    this.startPolling();
                 }
             }
             // Check connection
-            bot.getMe()
+            bot.api
+                .getMe()
                 .then(data => {
                     this.log.debug(`getMe (reconnect): ${JSON.stringify(data)}`);
                     this.connectionState(true);
                 })
                 .catch(error => this.log.error(`getMe (reconnect) Error:${error}`));
         } else {
+            // Route every telegram request (API calls and file downloads) through the configured proxy
+            try {
+                const proxy = createProxyDispatcher(this.config);
+                if (proxy) {
+                    this.fetchImpl = createProxiedFetch(proxy.dispatcher);
+                    this.log.info(`Connecting to telegram via ${proxy.description}`);
+                }
+            } catch (err) {
+                this.log.error(
+                    `Proxy is enabled but cannot be used: ${err instanceof Error ? err.message : String(err)} - connecting directly`,
+                );
+            }
+
+            const bot = new Bot(this.config.token, { apiRoot: this.config.baseApiUrl, fetch: this.fetchImpl });
+            this.bot = bot;
+
+            // Route errors thrown by the update handlers to the ioBroker log (the library's default boundary
+            // prints them to the console). The update is consumed either way, so polling keeps running.
+            bot.catch((err, ctx) =>
+                this.log.error(
+                    `Cannot process update ${ctx.update.update_id}: ${err instanceof Error ? err.stack || err.message : String(err)}`,
+                ),
+            );
+            this.registerUpdateHandlers(bot);
+
             if (this.isServer) {
-                // Setup server way
-                const serverOptions: TelegramBotOptions = {
-                    polling: false,
-                    filepath: true,
-                    baseApiUrl: this.config.baseApiUrl,
-                };
-                this.bot = new TelegramBot(this.config.token, serverOptions);
+                // Setup server way: telegram pushes the updates to our own https server (see handleWebHook)
                 if (this.config.url[this.config.url.length - 1] === '/') {
                     this.config.url = this.config.url.substring(0, this.config.url.length - 1);
                 }
-                this.bot
-                    .setWebhook(`${this.config.url}/${this.config.token}`)
+                bot.api
+                    .setWebhook({ url: `${this.config.url}/${this.config.token}` })
                     .catch(error => this.log.error(`setWebhook Error: ${error}`));
             } else {
-                // Setup polling way
-                const pollingOptions = {
-                    polling: {
-                        interval: parseInt(String(this.config.pollingInterval), 10) || 300,
-                    },
-                    filepath: true,
-                    baseApiUrl: this.config.baseApiUrl,
-                };
-                this.log.debug(
-                    `Start polling with: ${pollingOptions.polling.interval}(${typeof pollingOptions.polling.interval}) ms interval`,
-                );
-                this.bot = new TelegramBot(this.config.token, pollingOptions);
-                this.bot.setWebhook('').catch(error => {
-                    this.log.error(`setWebhook Error:${error}`);
-                });
+                // Setup polling way. A webhook left over from a previous "server" configuration must be removed
+                // first: getUpdates is rejected with 409 while a webhook is active, which would end the loop.
+                bot.api
+                    .deleteWebhook()
+                    .catch(error => this.log.error(`deleteWebhook Error: ${error}`))
+                    .finally(() => this.startPolling());
             }
 
-            const bot = this.bot;
-
             // Check connection
-            bot.getMe()
+            bot.api
+                .getMe()
                 .then(data => {
                     this.log.debug(`getMe: ${JSON.stringify(data)}`);
                     this.connectionState(true);
@@ -2853,127 +3001,162 @@ class Telegram extends Adapter {
                     this.log.error(`getMe Error:${error}`);
                     this.connectionState(false);
                 });
+        }
+    }
 
-            // Matches /echo [whatever]
-            bot.onText(/(.+)/, msg => this.processTelegramText(msg));
-            bot.on('message', msg => {
-                this.connectionState(true);
+    /**
+     * Start the long-poll loop (polling mode only). Transient errors (network, timeout, 429, 5xx) are retried by
+     * the library itself and only mirrored into `info.connection`. A fatal error (e.g. 401 invalid token, or 409
+     * because another bot instance polls with the same token) ends the loop; it is restarted after a delay.
+     */
+    startPolling(): void {
+        const bot = this.bot;
+        if (!bot || this.isServer || bot.isRunning()) {
+            return;
+        }
+        if (this.pollingRestartTimer) {
+            this.clearTimeout(this.pollingRestartTimer);
+            this.pollingRestartTimer = undefined;
+        }
 
-                if (this.config.storeRawRequest) {
-                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
-                }
-
-                this.getMessage(msg);
-
-                // Media messages (photo, video, document, ...) carry their text in `msg.caption`, not in
-                // `msg.text`, so `bot.onText` never fires for them and the caption would be lost. Route the
-                // caption through the same text pipeline (auth check, command handling, communicate.request)
-                // by treating it as the message text.
-                if (!msg.text && msg.caption) {
-                    void this.processTelegramText({ ...msg, text: msg.caption });
-                }
-            });
-
-            // Telegram live location updates are delivered as `edited_message` events (only the first position
-            // arrives as a normal `message`). Route them through getMessage() so communicate.requestLocation
-            // (and requestRaw) follow the moving position.
-            bot.on('edited_message', msg => {
-                // Only location updates are relevant here. Any other edit (typo fix in a text, changed caption
-                // of a photo/document) would otherwise re-run getMessage() and e.g. download the media file a
-                // second time and overwrite the request* states with the data of an old message.
-                if (!msg.location) {
-                    return;
-                }
-
-                this.connectionState(true);
-
-                if (this.config.storeRawRequest) {
-                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
-                }
-
-                this.getMessage(msg);
-            });
-
-            // Channel posts (in a channel where the bot is an admin) are delivered as a separate event, not
-            // as `message`, so they were ignored before. They are anonymous (no `msg.from`), therefore the
-            // auth/command pipeline cannot run; instead expose the post text and metadata so scripts can
-            // react. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/289
-            bot.on('channel_post', msg => {
-                this.connectionState(true);
-
-                if (this.config.storeRawRequest) {
-                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
-                }
-
-                // stores the channel in communicate.chats and handles/saves any attached media
-                this.getMessage(msg);
-
-                const text = msg.text ?? msg.caption;
-                if (text !== undefined) {
-                    const name = msg.chat.title || String(msg.chat.id);
-                    this.setStateSafe('communicate.requestChatId', { val: msg.chat.id, ack: true });
-                    this.setStateSafe('communicate.requestMessageId', { val: msg.message_id, ack: true });
-                    this.setStateSafe('communicate.requestMessageThreadId', {
-                        val: msg.is_topic_message ? msg.message_thread_id : 0,
-                        ack: true,
-                    });
-                    this.setStateSafe('communicate.request', { val: `[${name}]${text}`, ack: true });
-                }
-            });
-
-            // callback InlineKeyboardButton
-            bot.on('callback_query', (callbackQuery: CallbackQuery) => {
-                this.connectionState(true);
-
-                // write received answer into variable
-                this.log.debug(`callback_query: ${JSON.stringify(callbackQuery)}`);
-                this.callbackQueryId[callbackQuery.from.id] = { id: callbackQuery.id, ts: Date.now() };
-
-                if (this.config.storeRawRequest) {
-                    this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(callbackQuery), ack: true });
-                }
-
-                this.setStateSafe('communicate.requestMessageId', {
-                    val: callbackQuery.message!.message_id,
-                    ack: true,
-                });
-                this.setStateSafe('communicate.requestChatId', { val: callbackQuery.message!.chat.id, ack: true });
-                this.setStateSafe('communicate.request', {
-                    val: `[${
-                        !this.config.useUsername
-                            ? callbackQuery.from.first_name
-                            : !callbackQuery.from.username
-                              ? callbackQuery.from.first_name
-                              : callbackQuery.from.username
-                    }]${callbackQuery.data}`,
-                    ack: true,
-                });
-
-                this.isAnswerForQuestion(callbackQuery);
-            });
-
-            bot.on('polling_error', (error: Error & { code?: string }) => {
+        this.log.debug('Start polling');
+        bot.startPolling(undefined, {
+            onError: error => {
                 if (this.isConnected) {
-                    this.log.warn(`polling_error: ${error.code}, ${error.message.replace(/<[^>]+>/g, '')}`); // => 'EFATAL'
+                    this.log.warn(
+                        `polling_error: ${error instanceof Error ? error.message.replace(/<[^>]+>/g, '') : String(error)}`,
+                    );
                     this.connectionState(false);
                 }
+            },
+        })
+            .then(() => this.log.debug('Polling stopped'))
+            .catch(error => {
+                this.log.error(`Polling stopped: ${error}. Restart in ${Telegram.POLLING_RESTART_MS / 1000} seconds`);
+                this.pollingRestartTimer = this.setTimeout(() => {
+                    this.pollingRestartTimer = undefined;
+                    this.startPolling();
+                }, Telegram.POLLING_RESTART_MS);
             });
+    }
 
-            bot.on('webhook_error', (error: Error & { code?: string }) => {
-                this.log.error(`webhook_error:${error.code}, ${error.message.replace(/<[^>]+>/g, '')}`); // => 'EPARSE'
-                this.log.debug('bot restarting...');
+    /**
+     * Register the handlers for the incoming update types.
+     *
+     * @param bot the bot instance
+     */
+    registerUpdateHandlers(bot: Bot): void {
+        bot.on('message', ctx => {
+            const msg = ctx.message;
+            if (!msg) {
+                return;
+            }
+            this.connectionState(true);
 
-                bot.stopPolling().then(
-                    () => {
-                        this.log.debug('Start Polling');
-                        void bot.startPolling();
-                    },
-                    error => {
-                        this.log.error(`Error stop polling: ${error}`);
-                    },
+            if (this.config.storeRawRequest) {
+                this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+            }
+
+            this.getMessage(msg);
+
+            // Text messages run through the auth/command pipeline (communicate.request, text2command, ...).
+            // Media messages (photo, video, document, ...) carry their text in `msg.caption`, not in
+            // `msg.text` - route the caption through the same pipeline by treating it as the message text.
+            if (msg.text) {
+                this.processTelegramText(msg).catch(error => this.log.error(`Cannot process message: ${error}`));
+            } else if (msg.caption) {
+                this.processTelegramText({ ...msg, text: msg.caption }).catch(error =>
+                    this.log.error(`Cannot process message: ${error}`),
                 );
+            }
+        });
+
+        // Telegram live location updates are delivered as `edited_message` events (only the first position
+        // arrives as a normal `message`). Route them through getMessage() so communicate.requestLocation
+        // (and requestRaw) follow the moving position.
+        bot.on('edited_message', ctx => {
+            const msg = ctx.editedMessage;
+            // Only location updates are relevant here. Any other edit (typo fix in a text, changed caption
+            // of a photo/document) would otherwise re-run getMessage() and e.g. download the media file a
+            // second time and overwrite the request* states with the data of an old message.
+            if (!msg?.location) {
+                return;
+            }
+
+            this.connectionState(true);
+
+            if (this.config.storeRawRequest) {
+                this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+            }
+
+            this.getMessage(msg);
+        });
+
+        // Channel posts (in a channel where the bot is an admin) are delivered as a separate event, not
+        // as `message`, so they were ignored before. They are anonymous (no `msg.from`), therefore the
+        // auth/command pipeline cannot run; instead expose the post text and metadata so scripts can
+        // react. See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/289
+        bot.on('channel_post', ctx => {
+            const msg = ctx.channelPost;
+            if (!msg) {
+                return;
+            }
+            this.connectionState(true);
+
+            if (this.config.storeRawRequest) {
+                this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(msg, null, 2), ack: true });
+            }
+
+            // stores the channel in communicate.chats and handles/saves any attached media
+            this.getMessage(msg);
+
+            const text = msg.text ?? msg.caption;
+            if (text !== undefined) {
+                const name = msg.chat.title || String(msg.chat.id);
+                this.setStateSafe('communicate.requestChatId', { val: msg.chat.id, ack: true });
+                this.setStateSafe('communicate.requestMessageId', { val: msg.message_id, ack: true });
+                this.setStateSafe('communicate.requestMessageThreadId', {
+                    val: msg.is_topic_message ? msg.message_thread_id : 0,
+                    ack: true,
+                });
+                this.setStateSafe('communicate.request', { val: `[${name}]${text}`, ack: true });
+            }
+        });
+
+        // callback InlineKeyboardButton
+        bot.on('callback_query', ctx => {
+            const callbackQuery = ctx.callbackQuery;
+            if (!callbackQuery) {
+                return;
+            }
+            this.connectionState(true);
+
+            // write received answer into variable
+            this.log.debug(`callback_query: ${JSON.stringify(callbackQuery)}`);
+            this.callbackQueryId[callbackQuery.from.id] = { id: callbackQuery.id, ts: Date.now() };
+
+            if (this.config.storeRawRequest) {
+                this.setStateSafe('communicate.requestRaw', { val: JSON.stringify(callbackQuery), ack: true });
+            }
+
+            this.setStateSafe('communicate.requestMessageId', {
+                val: callbackQuery.message!.message_id,
+                ack: true,
             });
-        }
+            this.setStateSafe('communicate.requestChatId', { val: callbackQuery.message!.chat.id, ack: true });
+            this.setStateSafe('communicate.request', {
+                val: `[${
+                    !this.config.useUsername
+                        ? callbackQuery.from.first_name
+                        : !callbackQuery.from.username
+                          ? callbackQuery.from.first_name
+                          : callbackQuery.from.username
+                }]${callbackQuery.data}`,
+                ack: true,
+            });
+
+            this.isAnswerForQuestion(callbackQuery);
+        });
     }
 
     async updateUsers(): Promise<void> {

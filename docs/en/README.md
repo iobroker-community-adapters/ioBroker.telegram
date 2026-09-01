@@ -270,7 +270,7 @@ if (command === '1_2') {
 }                      
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegrambotanswercallbackquerycallbackqueryid-text-showalert-options--promise).
+You can read more [here](https://core.telegram.org/bots/api#answercallbackquery).
 
 ### Question
 You can send to telegram the message, and the next answer will be returned in callback. 
@@ -433,7 +433,7 @@ if (command === '1_2') {
 }
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).     
+You can read more [here](https://core.telegram.org/bots/api#editmessagetext).     
 
 ### editMessageCaption
 Use this method to edit the caption of the message sent by the bot or via the bot (for inline bots). 
@@ -454,7 +454,7 @@ if (command === '1_2') {
 }
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagetexttext-options--promise).     
+You can read more [here](https://core.telegram.org/bots/api#editmessagecaption).     
 
 ### editMessageMedia
 Use this method to edit picture of the message sent by the bot or via the bot (for inline bots). 
@@ -503,7 +503,7 @@ if (command === '1_2') {
 }
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md#telegramboteditmessagereplymarkupreplymarkup-options--promise).
+You can read more [here](https://core.telegram.org/bots/api#editmessagereplymarkup).
 
 ### deleteMessage
 Use this method to delete a message, including service messages, with the following limitations:
@@ -524,7 +524,7 @@ if (command === 'delete') {
 }
 ```
 
-You can read more [here](https://github.com/yagop/node-telegram-bot-api/blob/master/doc/api.md#TelegramBot+deleteMessage).
+You can read more [here](https://core.telegram.org/bots/api#deletemessage).
 
 ## Reacting to user replies / messages
 Suppose you are using only JavaScript without `text2command`.
@@ -573,8 +573,11 @@ You can set the value of state if you now the ID:
 > Done
 ```
 
+## Proxy
+If the ioBroker host cannot reach the telegram servers directly, enable **Use proxy** in the main settings and enter the proxy type (HTTP(S) or SOCKS5), host, port and - if the proxy requires authentication - login and password. All requests to telegram (API calls as well as media downloads) are routed through the proxy. An HTTPS proxy can be addressed by entering the host with its scheme, e.g. `https://proxy.example.com`. Note that SOCKS5 support of the underlying HTTP client (undici) is still marked as experimental; Node.js prints a corresponding warning at startup.
+
 ## Polling or Server mode
-If polling mode is used, the adapter polls by default every 300ms the telegram server for updates. It uses traffic and messages can be delayed for up to the polling interval. The polling interval can be defined in adapter configuration.
+If polling mode is used, the adapter keeps a long-poll request open to the telegram server (up to 30 seconds per request, then it is renewed). Updates are delivered immediately and almost no traffic is generated while nothing happens, so no polling interval has to be configured. Polling works behind NAT/firewalls without any port forwarding.
 
 To use server mode you ioBroker instance must be reachable from internet (e.g., with `noip.com` dynamic DNS service).
 

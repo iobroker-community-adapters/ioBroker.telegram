@@ -29,16 +29,6 @@
                     "default": "false",
                     "label": "type"
                 },
-                "pollingInterval": {
-                    "hidden": "data.server === 'true'",
-                    "type": "number",
-                    "xs": 12,
-                    "sm": 12,
-                    "md": 5,
-                    "lg": 5,
-                    "xl": 5,
-                    "label": "Polling interval (ms)"
-                },
                 "token": {
                     "newLine": true,
                     "type": "text",
@@ -61,6 +51,81 @@
                     "lg": 8,
                     "xl": 8,
                     "label": "API URL"
+                },
+                "proxy": {
+                    "newLine": true,
+                    "type": "checkbox",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "xl": 3,
+                    "label": "Use proxy",
+                    "help": "Route the connection to the telegram servers through an HTTP(S) or SOCKS5 proxy"
+                },
+                "proxyType": {
+                    "type": "select",
+                    "hidden": "!data.proxy",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 2,
+                    "options": [
+                        {
+                            "label": "HTTP",
+                            "value": "http"
+                        },
+                        {
+                            "label": "SOCKS5",
+                            "value": "socks5"
+                        }
+                    ],
+                    "default": "http",
+                    "label": "Proxy type"
+                },
+                "proxyHost": {
+                    "type": "text",
+                    "hidden": "!data.proxy",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "xl": 4,
+                    "label": "Proxy host"
+                },
+                "proxyPort": {
+                    "type": "number",
+                    "hidden": "!data.proxy",
+                    "min": 1,
+                    "max": 65535,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 3,
+                    "lg": 3,
+                    "xl": 3,
+                    "label": "Proxy port"
+                },
+                "proxyLogin": {
+                    "newLine": true,
+                    "type": "text",
+                    "hidden": "!data.proxy",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "xl": 4,
+                    "label": "Proxy login"
+                },
+                "proxyPassword": {
+                    "type": "password",
+                    "hidden": "!data.proxy",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "xl": 4,
+                    "label": "Proxy password"
                 },
                 "password": {
                     "newLine": true,
