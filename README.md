@@ -45,7 +45,7 @@ Use telegram service to communicate with ioBroker
 - (@GermanBluefox) Added the states `communicate.requestLocationLive` (live location is still being shared), `communicate.requestLocationHeading` and `communicate.requestLocationAccuracy` for received (live) locations
 
 ### 5.0.4 (2026-09-01)
-- (@GermanBluefox) Blockly migrated to Typescript
+- (@GermanBluefox) Blockly migrated to TypeScript
 - (@bjoernjaeschke87-beep) Live location updates (delivered by Telegram as `edited_message`) now update `communicate.requestLocation` while the location is being shared
 
 ### 5.0.3 (2026-08-10)
