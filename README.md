@@ -30,14 +30,14 @@ Use telegram service to communicate with ioBroker
 
 ## Sentry
 
-**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
+**This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information on how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
 
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 6.0.0-alpha.0 (2026-09-01)
 - (@GermanBluefox) The connection to the telegram servers can be routed through an HTTP(S) or SOCKS5 proxy (new "Use proxy" settings; the old proxy fields had been without function for years)
 - (@GermanBluefox) Migrated to `node-telegram-bot-api` v2. Updates are now received via long polling, so the "Polling interval" setting became obsolete and was removed from the configuration dialog. Errors thrown while processing an update are logged by the adapter instead of ending up on the console
 - (@GermanBluefox) An empty "API URL" field no longer breaks every API call with "EFATAL: Failed to parse URL" - the default `https://api.telegram.org` is used again (#1371)
@@ -86,10 +86,6 @@ Use telegram service to communicate with ioBroker
 - (@GermanBluefox) Fixed: a question timeout could drop other pending questions
 - (@GermanBluefox) Fixed: `communicate.responseSilentJson` acknowledged the wrong state
 - (@GermanBluefox) Fixed: removed a stray empty entry from the generated command keyboard
-
-### 4.1.0 (2025-03-19)
-* (bluefox) Admin component was migrated to TypeScript
-* (bluefox) Node.js >= 20.x and js-controller >= 6 and admin >= 7 are required now.
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
