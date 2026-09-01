@@ -640,6 +640,84 @@
       "native": {}
     },
     {
+      "_id": "communicate.requestLocationLive",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Last received location is a live location that is still being shared",
+          "de": "Letzte empfangene Position ist ein Live-Standort, der noch geteilt wird",
+          "ru": "Последнее полученное местоположение — трансляция геопозиции, которая ещё обновляется",
+          "pt": "A última localização recebida é uma localização em tempo real que ainda está a ser partilhada",
+          "nl": "Laatst ontvangen locatie is een live locatie die nog wordt gedeeld",
+          "fr": "La dernière position reçue est une position en direct toujours partagée",
+          "it": "L'ultima posizione ricevuta è una posizione in tempo reale ancora condivisa",
+          "es": "La última ubicación recibida es una ubicación en tiempo real que aún se comparte",
+          "pl": "Ostatnia odebrana lokalizacja jest lokalizacją na żywo, która nadal jest udostępniana",
+          "uk": "Останнє отримане місцезнаходження — трансляція геопозиції, яка ще оновлюється",
+          "zh-cn": "最后收到的位置是仍在共享的实时位置"
+        },
+        "type": "boolean",
+        "role": "indicator",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestLocationHeading",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Direction of movement of last received live location (degrees, 1-360)",
+          "de": "Bewegungsrichtung des letzten empfangenen Live-Standorts (Grad, 1-360)",
+          "ru": "Направление движения последней полученной геопозиции (градусы, 1-360)",
+          "pt": "Direção do movimento da última localização em tempo real recebida (graus, 1-360)",
+          "nl": "Bewegingsrichting van de laatst ontvangen live locatie (graden, 1-360)",
+          "fr": "Direction de déplacement de la dernière position en direct reçue (degrés, 1-360)",
+          "it": "Direzione di movimento dell'ultima posizione in tempo reale ricevuta (gradi, 1-360)",
+          "es": "Dirección de movimiento de la última ubicación en tiempo real recibida (grados, 1-360)",
+          "pl": "Kierunek ruchu ostatniej odebranej lokalizacji na żywo (stopnie, 1-360)",
+          "uk": "Напрямок руху останньої отриманої геопозиції (градуси, 1-360)",
+          "zh-cn": "最后收到的实时位置的移动方向（度，1-360）"
+        },
+        "type": "number",
+        "role": "value.direction",
+        "unit": "°",
+        "min": 0,
+        "max": 360,
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestLocationAccuracy",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Radius of uncertainty of last received location (meters)",
+          "de": "Unsicherheitsradius der letzten empfangenen Position (Meter)",
+          "ru": "Радиус погрешности последнего полученного местоположения (метры)",
+          "pt": "Raio de incerteza da última localização recebida (metros)",
+          "nl": "Onzekerheidsstraal van de laatst ontvangen locatie (meter)",
+          "fr": "Rayon d'incertitude de la dernière position reçue (mètres)",
+          "it": "Raggio di incertezza dell'ultima posizione ricevuta (metri)",
+          "es": "Radio de incertidumbre de la última ubicación recibida (metros)",
+          "pl": "Promień niepewności ostatniej odebranej lokalizacji (metry)",
+          "uk": "Радіус похибки останнього отриманого місцезнаходження (метри)",
+          "zh-cn": "最后收到位置的不确定半径（米）"
+        },
+        "type": "number",
+        "role": "value.distance",
+        "unit": "m",
+        "min": 0,
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
       "_id": "communicate.response",
       "type": "state",
       "common": {

@@ -229,8 +229,41 @@ class Telegram extends Adapter {
         }
     }
 
+    /**
+     * Normalize the configured text2command/assistant instance ids to the short form (`text2command.0`).
+     *
+     * The config UI before v1.12.6 stored the instance in the long form (`system.adapter.text2command.0`).
+     * `sendTo` accepts both forms, so such a value kept working unnoticed for years - but the jsonConfig
+     * instance selector expects the short form and shows an empty field for it. Persist the short form once,
+     * so the config dialog displays the selected instance again. The controller restarts the instance after
+     * the config update; until then the normalized value is used in memory.
+     * See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/1365
+     */
+    async migrateInstanceIds(): Promise<void> {
+        const migrated: Partial<Pick<TelegramConfig, 'text2command' | 'assistantInstance'>> = {};
+
+        for (const key of ['text2command', 'assistantInstance'] as const) {
+            const value = this.config[key];
+            if (typeof value === 'string' && value.startsWith('system.adapter.')) {
+                const shortId = value.substring('system.adapter.'.length);
+                migrated[key] = shortId;
+                this.config[key] = shortId;
+            }
+        }
+
+        if (Object.keys(migrated).length) {
+            this.log.info(`Migrating instance id(s) to the short form: ${JSON.stringify(migrated)}`);
+            try {
+                await this.updateConfig(migrated);
+            } catch (err) {
+                this.log.warn(`Cannot store migrated instance id(s): ${err instanceof Error ? err.message : err}`);
+            }
+        }
+    }
+
     async onReady(): Promise<void> {
         this.isServer = this.config.server === 'true';
+        await this.migrateInstanceIds();
         // i18n JSON files live in `<packageRoot>/i18n`; main.js runs from `<packageRoot>/build`
         await I18n.init(join(__dirname, '..'), this);
 
@@ -1701,6 +1734,15 @@ class Telegram extends Adapter {
         if (location) {
             this.setStateSafe('communicate.requestLocation', {
                 val: `${location.latitude};${location.longitude}`,
+                ack: true,
+            });
+            // `live_period` and `heading` are only present while a live location is active. When the sharing
+            // is stopped (or expires) Telegram sends a final `edited_message` without them, so
+            // `requestLocationLive` drops back to false and the heading is cleared at that point.
+            this.setStateSafe('communicate.requestLocationLive', { val: !!location.live_period, ack: true });
+            this.setStateSafe('communicate.requestLocationHeading', { val: location.heading ?? null, ack: true });
+            this.setStateSafe('communicate.requestLocationAccuracy', {
+                val: location.horizontal_accuracy ?? null,
                 ack: true,
             });
         }

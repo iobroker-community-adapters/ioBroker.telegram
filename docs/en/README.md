@@ -348,6 +348,20 @@ on({ id: 'telegram.0.communicate.requestLocation', change: 'any' }, obj => {
 });
 ```
 
+Live locations (paperclip → location → "Share My Live Location") are supported as well: Telegram delivers every position update and `requestLocation` is updated each time. Three additional states describe the last received location:
+
+- `communicate.requestLocationLive` - `true` while the location is a live location that is still being shared. Telegram sends a final update without the live flag when the sharing is stopped or expires, so the state drops back to `false` at that point. For a normal (static) location or a venue it is `false`.
+- `communicate.requestLocationHeading` - direction of movement in degrees (1-360). Only available for active live locations and only if the device reports it, otherwise `null`.
+- `communicate.requestLocationAccuracy` - radius of uncertainty of the position in meters (0-1500), if reported, otherwise `null`.
+
+```javascript
+on({ id: 'telegram.0.communicate.requestLocationLive', change: 'ne' }, obj => {
+    if (!obj.state.val) {
+        console.log('Live location sharing has ended');
+    }
+});
+```
+
 ## Receiving channel posts
 If the bot is an administrator of a channel, posts published in that channel are received as well and written
 to `telegram.INSTANCE.communicate.request` in the form `[channel title]text` (together with
