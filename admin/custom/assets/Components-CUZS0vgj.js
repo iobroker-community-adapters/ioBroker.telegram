@@ -1,0 +1,1 @@
+import{t as e}from"./TelegramComponent-CNIPIS8W.js";var t={TelegramComponent:e};export{t as default};

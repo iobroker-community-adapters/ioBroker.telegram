@@ -2824,9 +2824,17 @@ class Telegram extends Adapter {
                 }
             });
 
-            // Telegram Live Location updates are delivered as edited_message events.
-            // Process them like normal messages so location and raw request states are updated.
+            // Telegram live location updates are delivered as `edited_message` events (only the first position
+            // arrives as a normal `message`). Route them through getMessage() so communicate.requestLocation
+            // (and requestRaw) follow the moving position.
             bot.on('edited_message', msg => {
+                // Only location updates are relevant here. Any other edit (typo fix in a text, changed caption
+                // of a photo/document) would otherwise re-run getMessage() and e.g. download the media file a
+                // second time and overwrite the request* states with the data of an old message.
+                if (!msg.location) {
+                    return;
+                }
+
                 this.connectionState(true);
 
                 if (this.config.storeRawRequest) {
