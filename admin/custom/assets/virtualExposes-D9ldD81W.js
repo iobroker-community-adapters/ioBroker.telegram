@@ -1,0 +1,1 @@
+import{t as e}from"./virtual_mf-exposes___mfe_internal__ConfigCustomTelegramSet__customComponents_js-CVExw4BU.js";export{e as default};
