@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 5.0.4 (2026-09-01)
 - (@GermanBluefox) Blockly migrated to Typescript
 - (@bjoernjaeschke87-beep) Live location updates (delivered by Telegram as `edited_message`) now update `communicate.requestLocation` while the location is being shared
 
@@ -83,11 +83,6 @@ Use telegram service to communicate with ioBroker
 ### 4.1.0 (2025-03-19)
 * (bluefox) Admin component was migrated to TypeScript
 * (bluefox) Node.js >= 20.x and js-controller >= 6 and admin >= 7 are required now.
-
-### 4.0.0 (2025-01-13)
-* NodeJS >= 20.x and js-controller >= 6 are required
-* (simatec) Responsive Design added
-* (klein0r) Allow async function calls in ask callback function
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

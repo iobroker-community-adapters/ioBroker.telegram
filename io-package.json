@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "5.0.3",
+    "version": "5.0.4",
     "news": {
+      "5.0.4": {
+        "en": "Blockly migrated to Typescript\nLive location updates (delivered by Telegram as `edited_message`) now update `communicate.requestLocation` while the location is being shared",
+        "de": "Blockly migrierte zu TypeScript.\nLive-Standortaktualisierungen (von Telegram als `edited_message` übermittelt) aktualisieren nun `communicate.requestLocation`, während der Standort geteilt wird.",
+        "ru": "Blockly перешёл на Typescript.\nТеперь обновления местоположения в реальном времени (передаваемые Telegram в виде `edited_message`) обновляют `communicate.requestLocation` во время передачи данных о местоположении.",
+        "pt": "Blockly migrou para Typescript\nAs atualizações de localização em tempo real (enviadas pelo Telegram como `edited_message`) agora atualizam `communicate.requestLocation` enquanto a localização está sendo compartilhada.",
+        "nl": "Blockly is overgestapt naar TypeScript.\nLive locatie-updates (die door Telegram worden weergegeven als `edited_message`) werken nu `communicate.requestLocation` bij terwijl de locatie wordt gedeeld.",
+        "fr": "Blockly a migré vers TypeScript\nLes mises à jour de localisation en direct (fournies par Telegram sous forme de `edited_message`) mettent désormais à jour `communicate.requestLocation` pendant le partage de la localisation.",
+        "it": "Blockly è passato a Typescript\nGli aggiornamenti di posizione in tempo reale (inviati da Telegram come `edited_message`) ora aggiornano `communicate.requestLocation` mentre la posizione viene condivisa.",
+        "es": "Blockly migró a TypeScript.\nLas actualizaciones de ubicación en tiempo real (que Telegram envía como `edited_message`) ahora actualizan `communicate.requestLocation` mientras se comparte la ubicación.",
+        "pl": "Blockly migrowane do Typescript\nAktualizacje lokalizacji na żywo (dostarczane przez Telegram jako `edited_message`) teraz aktualizują `communicate.requestLocation` podczas udostępniania lokalizacji",
+        "uk": "Блоково перенесено на Typescript\nОновлення місцезнаходження в реальному часі (надсилаються Telegram як `edited_message`) тепер оновлюють `communicate.requestLocation` під час поширення місцезнаходження",
+        "zh-cn": "Blockly 已迁移到 TypeScript\n现在，在共享位置时，实时位置更新（由 Telegram 以 `edited_message` 的形式发送）会同时更新 `communicate.requestLocation`。"
+      },
       "5.0.3": {
         "en": "Fixed: the configured text2command/assistant instance may now also be stored in the long form (`system.adapter.text2command.0`) - the alive check no longer fails with \"instance is not running\"",
         "de": "Fixed: Die konfigurierte text2command/assistant instance kann nun auch im Long-Formular (`system.adapter.text2command.0`) gespeichert werden - der Live-Check schlägt nicht mehr mit \"instance is not running\" fehl",
@@ -80,19 +93,6 @@
         "pl": "Nazwa użytkownika może zawierać więcej niż jednego użytkownika. Separator to przecinek, średnik lub przestrzeń.",
         "uk": "Ім'я користувача може містити більше одного користувача. Сепаратор - кома, напівколон або простір.",
         "zh-cn": "用户名可以由多个用户组成. 分隔符是逗号,分号或空格."
-      },
-      "3.8.0": {
-        "en": "Migrated GUI for Admin 7",
-        "de": "Migrated GUI für Admin 7",
-        "ru": "GUI подогнана для Admin 7",
-        "pt": "GUI Migrada para administrador 7",
-        "nl": "GUI voor beheerder 7 migreren",
-        "fr": "GUI modifié pour l'administrateur 7",
-        "it": "GUI migrata per Admin 7",
-        "es": "GUI migrado por Admin 7",
-        "pl": "Interfejs z migracją dla admin 7",
-        "uk": "Мігрований графічний інтерфейс для адміністратора 7",
-        "zh-cn": "为管理 7 添加了图形界面"
       }
     },
     "messages": [
