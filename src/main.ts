@@ -427,9 +427,7 @@ class Telegram extends Adapter {
                             );
                         }
                         if (!serverListening) {
-                            this.terminate
-                                ? this.terminate(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION)
-                                : process.exit(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
+                            this.terminate(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
                         }
                     });
 
@@ -439,7 +437,7 @@ class Telegram extends Adapter {
                         port => {
                             if (parseInt(String(port), 10) !== this.config.port && !this.config.findNextPort) {
                                 this.log.error(`port ${this.config.port} already in use`);
-                                this.terminate ? this.terminate() : process.exit(1);
+                                this.terminate(EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
                             }
                             serverPort = port;
 
