@@ -37,8 +37,8 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 5.0.4 (2026-09-01)
-- (@GermanBluefox) Blockly migrated to Typescript
+### 5.0.5 (2026-09-02)
+- (@GermanBluefox) Blockly migrated to TypeScript
 - (@bjoernjaeschke87-beep) Live location updates (delivered by Telegram as `edited_message`) now update `communicate.requestLocation` while the location is being shared
 
 ### 5.0.3 (2026-08-10)

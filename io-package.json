@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "telegram",
-    "version": "5.0.4",
+    "version": "5.0.5",
     "news": {
-      "5.0.4": {
+      "5.0.5": {
         "en": "Blockly migrated to Typescript\nLive location updates (delivered by Telegram as `edited_message`) now update `communicate.requestLocation` while the location is being shared",
         "de": "Blockly migrierte zu TypeScript.\nLive-Standortaktualisierungen (von Telegram als `edited_message` übermittelt) aktualisieren nun `communicate.requestLocation`, während der Standort geteilt wird.",
         "ru": "Blockly перешёл на Typescript.\nТеперь обновления местоположения в реальном времени (передаваемые Telegram в виде `edited_message`) обновляют `communicate.requestLocation` во время передачи данных о местоположении.",
