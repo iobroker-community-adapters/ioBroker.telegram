@@ -9,6 +9,7 @@ import {
     InputFile,
     isTransientError,
     ParseError,
+    TelegramApiError,
     type CallbackQuery,
     type Chat,
     type EditMessageMediaParams,
@@ -173,8 +174,13 @@ class Telegram extends Adapter {
     private static readonly SEND_QUEUE_RETRY_MS = 30000;
     private static readonly MAX_SEND_QUEUE_AGE_MS = 24 * 60 * 60 * 1000; // 24 h
     private static readonly MAX_SEND_ATTEMPTS = 10;
-    /** Delay before the long-poll loop is restarted after it ended with a fatal error */
+    /**
+     * Base delay before the long-poll loop is restarted after it ended with a fatal error. A random
+     * jitter (see startPolling) is added on top so that two pollers fatally colliding on the same
+     * token (e.g. a leftover process from a previous run) don't retry in perfect lock-step forever.
+     */
     private static readonly POLLING_RESTART_MS = 30000;
+    private static readonly POLLING_RESTART_JITTER_MS = 5000;
 
     private readonly server: {
         server: ServerExt | null;
@@ -3030,11 +3036,27 @@ class Telegram extends Adapter {
         })
             .then(() => this.log.debug('Polling stopped'))
             .catch(error => {
-                this.log.error(`Polling stopped: ${error}. Restart in ${Telegram.POLLING_RESTART_MS / 1000} seconds`);
+                if (error instanceof TelegramApiError && error.errorCode === 409) {
+                    this.log.error(
+                        `Polling stopped: ${error}. This means Telegram is receiving getUpdates requests for this ` +
+                            'token from more than one place at the same time - e.g. a leftover/zombie process from a ' +
+                            'previous restart, this same instance running on another host in a multihost setup, or ' +
+                            'another tool/adapter configured with the same bot token. Only one process may poll a ' +
+                            'given token at a time; check for and stop the other one.',
+                    );
+                } else {
+                    this.log.error(`Polling stopped: ${error}.`);
+                }
+                // Random jitter on top of the base delay: if the collision is with another poller that
+                // also retries on a fixed cadence, a fixed delay here would keep both retrying in lock-step
+                // and conflicting forever. See POLLING_RESTART_MS.
+                const restartDelay =
+                    Telegram.POLLING_RESTART_MS + Math.floor(Math.random() * Telegram.POLLING_RESTART_JITTER_MS);
+                this.log.info(`Restart polling in ${Math.round(restartDelay / 1000)} seconds`);
                 this.pollingRestartTimer = this.setTimeout(() => {
                     this.pollingRestartTimer = undefined;
                     this.startPolling();
-                }, Telegram.POLLING_RESTART_MS);
+                }, restartDelay);
             });
     }
 
