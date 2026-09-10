@@ -146,6 +146,14 @@ class Telegram extends Adapter {
     private reconnectTimer: ioBroker.Interval | undefined;
     private pollConnectionStatus: ioBroker.Timeout | undefined;
     private pollingRestartTimer: ioBroker.Timeout | undefined;
+    /**
+     * Consecutive `getUpdates` 409 (Conflict) restarts, reset as soon as the connection is confirmed
+     * working again (see connectionState). Used to retry a fresh conflict quickly - it is usually just
+     * Telegram not having noticed yet that a previous connection (e.g. from a restart moments ago) is
+     * gone - before falling back to the slower, clearly-logged retry once it looks like a real,
+     * persisting conflict rather than a one-off race.
+     */
+    private pollingConflictCount = 0;
     private isConnected: boolean | null = null;
     private lastMessageTime = 0;
     private lastMessageText = '';
@@ -174,12 +182,18 @@ class Telegram extends Adapter {
     private static readonly SEND_QUEUE_RETRY_MS = 30000;
     private static readonly MAX_SEND_QUEUE_AGE_MS = 24 * 60 * 60 * 1000; // 24 h
     private static readonly MAX_SEND_ATTEMPTS = 10;
-    /**
-     * Base delay before the long-poll loop is restarted after it ended with a fatal error. A random
-     * jitter (see startPolling) is added on top so that two pollers fatally colliding on the same
-     * token (e.g. a leftover process from a previous run) don't retry in perfect lock-step forever.
-     */
+    /** Delay before the long-poll loop is restarted after it ended with a fatal (non-409) error. */
     private static readonly POLLING_RESTART_MS = 30000;
+    /**
+     * Delay for the first few restarts after a `getUpdates` 409 (Conflict). Short, because right after a
+     * restart a 409 is usually just Telegram still finishing off the previous connection - it normally
+     * clears within a couple of seconds. A random jitter is added on top so that two processes that both
+     * hit 409 at the same time don't keep retrying in perfect lock-step.
+     */
+    private static readonly POLLING_CONFLICT_QUICK_RETRY_MS = 3000;
+    private static readonly POLLING_CONFLICT_QUICK_RETRY_JITTER_MS = 2000;
+    /** Number of quick 409 retries (see above) before falling back to the slower POLLING_RESTART_MS. */
+    private static readonly POLLING_CONFLICT_QUICK_RETRY_ATTEMPTS = 3;
     private static readonly POLLING_RESTART_JITTER_MS = 5000;
 
     private readonly server: {
@@ -751,6 +765,12 @@ class Telegram extends Adapter {
     }
 
     connectionState(connected: boolean, logSuccess?: boolean): void {
+        if (connected) {
+            // The connection works again, so any earlier getUpdates conflict is resolved; the next one
+            // (if any) is a fresh problem and should again get the quick retries first.
+            this.pollingConflictCount = 0;
+        }
+
         let errorCounter = 0;
 
         const checkConnection = (): void => {
@@ -3036,22 +3056,36 @@ class Telegram extends Adapter {
         })
             .then(() => this.log.debug('Polling stopped'))
             .catch(error => {
+                let restartDelay: number;
                 if (error instanceof TelegramApiError && error.errorCode === 409) {
-                    this.log.error(
-                        `Polling stopped: ${error}. This means Telegram is receiving getUpdates requests for this ` +
-                            'token from more than one place at the same time - e.g. a leftover/zombie process from a ' +
-                            'previous restart, this same instance running on another host in a multihost setup, or ' +
-                            'another tool/adapter configured with the same bot token. Only one process may poll a ' +
-                            'given token at a time; check for and stop the other one.',
-                    );
+                    this.pollingConflictCount++;
+                    if (this.pollingConflictCount <= Telegram.POLLING_CONFLICT_QUICK_RETRY_ATTEMPTS) {
+                        // Right after a restart, Telegram can take a moment to notice that a previous
+                        // getUpdates connection is gone; retry quickly a few times, as a conflict like
+                        // that normally clears on its own within a couple of seconds.
+                        this.log.warn(`Polling stopped: ${error}. Retrying shortly.`);
+                        restartDelay =
+                            Telegram.POLLING_CONFLICT_QUICK_RETRY_MS +
+                            Math.floor(Math.random() * Telegram.POLLING_CONFLICT_QUICK_RETRY_JITTER_MS);
+                    } else {
+                        // Still conflicting after several quick retries: this is not a one-off startup
+                        // race any more, so fall back to the slower cadence and explain what to check.
+                        this.log.error(
+                            `Polling stopped: ${error}. This means Telegram is receiving getUpdates requests for ` +
+                                'this token from more than one place at the same time - e.g. a leftover/zombie ' +
+                                'process from a previous restart, this same instance running on another host in a ' +
+                                'multihost setup, or another tool/adapter configured with the same bot token. Only ' +
+                                'one process may poll a given token at a time; check for and stop the other one.',
+                        );
+                        restartDelay =
+                            Telegram.POLLING_RESTART_MS +
+                            Math.floor(Math.random() * Telegram.POLLING_RESTART_JITTER_MS);
+                    }
                 } else {
                     this.log.error(`Polling stopped: ${error}.`);
+                    restartDelay =
+                        Telegram.POLLING_RESTART_MS + Math.floor(Math.random() * Telegram.POLLING_RESTART_JITTER_MS);
                 }
-                // Random jitter on top of the base delay: if the collision is with another poller that
-                // also retries on a fixed cadence, a fixed delay here would keep both retrying in lock-step
-                // and conflicting forever. See POLLING_RESTART_MS.
-                const restartDelay =
-                    Telegram.POLLING_RESTART_MS + Math.floor(Math.random() * Telegram.POLLING_RESTART_JITTER_MS);
                 this.log.info(`Restart polling in ${Math.round(restartDelay / 1000)} seconds`);
                 this.pollingRestartTimer = this.setTimeout(() => {
                     this.pollingRestartTimer = undefined;
