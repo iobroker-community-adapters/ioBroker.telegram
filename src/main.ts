@@ -3071,11 +3071,7 @@ class Telegram extends Adapter {
                         // Still conflicting after several quick retries: this is not a one-off startup
                         // race any more, so fall back to the slower cadence and explain what to check.
                         this.log.error(
-                            `Polling stopped: ${error}. This means Telegram is receiving getUpdates requests for ` +
-                                'this token from more than one place at the same time - e.g. a leftover/zombie ' +
-                                'process from a previous restart, this same instance running on another host in a ' +
-                                'multihost setup, or another tool/adapter configured with the same bot token. Only ' +
-                                'one process may poll a given token at a time; check for and stop the other one.',
+                            `Polling stopped: ${error}. Telegram rejected getUpdates; check for a leftover/zombie process, another host/tool using this token, and verify that no webhook is still active.`,
                         );
                         restartDelay =
                             Telegram.POLLING_RESTART_MS +
