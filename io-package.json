@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "6.0.1",
+    "version": "6.0.2",
     "news": {
+      "6.0.2": {
+        "en": "Updated packages and improved the rules block\nRetried getUpdates 409 conflicts quickly before falling back to a slow restartart",
+        "de": "Pakete aktualisiert und Regelblock verbessert\nGetUpdates 409-Konflikte vor einem langsamen Neustart erneut",
+        "ru": "Обновлены пакеты и улучшен блок правил\nБыстро повторил попытку GetUpdates (409 конфликтов), а затем вернулся к медленному перезапуску",
+        "pt": "Atualizou pacotes e melhorou o bloco de regras\nTentei novamente o GetUpdates 409 conflita antes de reiniciar lentamente",
+        "nl": "Pakketten bijgewerkt en het regelblok verbeterd\nOpnieuw geprobeerd. Update 409 conflicten snel voordat het terugviel op een langzame herstart",
+        "fr": "Packages mis à jour et bloc de règles amélioré\nRéessayé GetUpdates 409 rapidement avant de revenir à un redémarrage lent",
+        "it": "Pacchetti aggiornati e regole migliorate\nRiprovato GetUpdates 409 è in conflitto prima di riavviare lentamente",
+        "es": "Actualizó los paquetes y mejoró el bloque de reglas\nReintentó GetUpdates 409 conflictos rápidamente antes de volver a un reinicio lento",
+        "pl": "Zaktualizowano pakiety i ulepszono blok reguł\nPonownie próbowano GetUpdates 409 szybko koliduje, zanim wrócisz do powolnego restartartu",
+        "uk": "Оновлені пакети та покращено блок правил\nПовторно спробували швидкі конфлікти GetUpdates 409, перш ніж повернутися до повільного перезапуску",
+        "zh-cn": "更新了软件包并改进了规则块\n快速重试了 getUpdates 409 冲突，然后又回到了缓慢的重启状态"
+      },
       "6.0.0": {
         "en": "Adapter requires Node.js >= 22.19 now (required by undici 8)\nThe connection to the telegram servers can be routed through an HTTP(S) or SOCKS5 proxy (new \"Use proxy\" settings; the old proxy fields had been without function for years)\nMigrated to `node-telegram-bot-api` v2. Updates are now received via long polling, so the \"Polling interval\" setting became obsolete and was removed from the configuration dialog. Errors thrown while processing an update are logged by the adapter instead of ending up on the console\nAn empty \"API URL\" field no longer breaks every API call with \"EFATAL: Failed to parse URL\" - the default `https://api.telegram.org` is used again (#1371)\nA `text2command`/`assistant` instance stored in the long form (`system.adapter.text2command.0`, written by the config UI before v1.12.6) is migrated to the short form on startup, so the config dialog shows the selected instance again (#1365)\nAdded the states `communicate.requestLocationLive` (live location is still being shared), `communicate.requestLocationHeading` and `communicate.requestLocationAccuracy` for received (live) locations",
         "de": "Adapter benötigt jetzt Node.js >= 22.19 (für Undici 8)\nDie Verbindung zu den Telegram-Servern kann über HTTP (S) oder SOCKS5-Proxy erfolgen (neue „Use Proxy“ -Einstellungen; die alten Proxyfelder waren jahrelang nutzlos)\nMigriert auf `Node-Telegram-Bot-Api` v2. Updates erhalten wir jetzt per Langabfrage. Die Einstellung „Abfrageintervall“ wurde aus dem Konfigurationsdialog entfernt. Fehler beim Update werden vom Adapter protokolliert und landen nicht auf der Konsole\nEin leeres API-URL-Feld führt nicht mehr zu „EFATAL: Failed to parse URL“ — es wird wieder das Standard−https://api.telegram.org verwendet (#1371)\nEine `text2command`/`assistant`-Instanz in der Langform (`system.adapter.text2command.0`, geschrieben von der Config-UI vor v1.12.6) wird beim Start in die Kurzform migriert, sodass die gewählte Instanz erneut angezeigt wird (#1365)\nDie Status „Communicate.RequestLocationLive“ (Live-Standort wird noch geteilt), „Communicate.RequestLocationHeading“ und „Communicate.RequestLocationAccuracy“ hinzugefügt",
