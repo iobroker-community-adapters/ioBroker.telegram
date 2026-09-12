@@ -1,0 +1,1 @@
+import{t as e}from"./TelegramComponent-mtwgdiDL.js";var t={TelegramComponent:e};export{t as default};
