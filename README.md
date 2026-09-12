@@ -37,7 +37,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### 6.0.1 (2026-09-12)
+### **WORK IN PROGRESS**
 - (@GermanBluefox) Updated packages and improved the rules block
 - (@patricknitsch) Retried getUpdates 409 conflicts quickly before falling back to a slow restartart
 
