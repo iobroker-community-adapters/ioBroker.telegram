@@ -148,12 +148,17 @@ class Telegram extends Adapter {
     private pollingRestartTimer: ioBroker.Timeout | undefined;
     /**
      * Consecutive `getUpdates` 409 (Conflict) restarts, reset as soon as the connection is confirmed
-     * working again (see connectionState). Used to retry a fresh conflict quickly - it is usually just
+     * working again (see resetPollingConflictCount). Used to retry a fresh conflict quickly - it is usually just
      * Telegram not having noticed yet that a previous connection (e.g. from a restart moments ago) is
      * gone - before falling back to the slower, clearly-logged retry once it looks like a real,
      * persisting conflict rather than a one-off race.
      */
     private pollingConflictCount = 0;
+    /**
+     * Whether a webhook is currently active. Used to improve error messages when a 409 conflict occurs
+     * during polling (if a webhook is active, the 409 is likely due to the failed webhook cleanup).
+     */
+    private webhookActive = false;
     private isConnected: boolean | null = null;
     private lastMessageTime = 0;
     private lastMessageText = '';
@@ -765,13 +770,11 @@ class Telegram extends Adapter {
     }
 
     connectionState(connected: boolean, logSuccess?: boolean): void {
-        if (connected) {
-            // The connection works again, so any earlier getUpdates conflict is resolved; the next one
-            // (if any) is a fresh problem and should again get the quick retries first.
-            this.pollingConflictCount = 0;
-        }
-
         let errorCounter = 0;
+        // Note: Do NOT reset pollingConflictCount here. connectionState() is called after getMe() succeeds,
+        // which is not evidence that getUpdates polling will work. A persistent duplicate poller could
+        // reset the counter here even though getUpdates is still failing. The counter is reset only when
+        // polling explicitly succeeds (via onError callback when polling runs without error).
 
         const checkConnection = (): void => {
             this.pollConnectionStatus = undefined;
@@ -3029,6 +3032,35 @@ class Telegram extends Adapter {
     }
 
     /**
+     * Reset the polling conflict counter to 0. Called only when polling has explicitly recovered,
+     * not on generic connection signals like getMe() success.
+     */
+    private resetPollingConflictCount(): void {
+        if (this.pollingConflictCount > 0) {
+            this.log.debug(`Polling conflict counter reset from ${this.pollingConflictCount} to 0`);
+        }
+        this.pollingConflictCount = 0;
+    }
+
+    /**
+     * Build an informative error message for a getUpdates 409 conflict, based on context.
+     *
+     * @param error the TelegramApiError
+     * @param attemptNumber which quick-retry attempt we're on
+     * @returns the diagnostic message
+     */
+    private buildPollingConflictMessage(error: TelegramApiError, attemptNumber: number): string {
+        if (attemptNumber <= Telegram.POLLING_CONFLICT_QUICK_RETRY_ATTEMPTS) {
+            return `Polling stopped: ${error}. Retrying shortly.`;
+        }
+        return (
+            `Polling stopped: ${error}. Telegram rejected getUpdates; possible causes: ` +
+            `leftover/zombie process, another host/tool using this token, failed webhook cleanup. ` +
+            `Check your adapter logs for 'deleteWebhook' errors, kill lingering processes, or verify token usage.`
+        );
+    }
+
+    /**
      * Start the long-poll loop (polling mode only). Transient errors (network, timeout, 429, 5xx) are retried by
      * the library itself and only mirrored into `info.connection`. A fatal error (e.g. 401 invalid token, or 409
      * because another bot instance polls with the same token) ends the loop; it is restarted after a delay.
@@ -3036,6 +3068,14 @@ class Telegram extends Adapter {
     startPolling(): void {
         const bot = this.bot;
         if (!bot || this.isServer || bot.isRunning()) {
+            if (!bot || this.isServer) {
+                // Polling is not applicable in server mode
+                return;
+            }
+            if (bot.isRunning()) {
+                // Polling already running, reset conflict counter since it's clearly working
+                this.resetPollingConflictCount();
+            }
             return;
         }
         if (this.pollingRestartTimer) {
@@ -3047,6 +3087,8 @@ class Telegram extends Adapter {
         bot.startPolling(undefined, {
             onError: error => {
                 if (this.isConnected) {
+                    // Polling is still active but hit an error. This is transient.
+                    // Do NOT reset pollingConflictCount here; only 409s reset it.
                     this.log.warn(
                         `polling_error: ${error instanceof Error ? error.message.replace(/<[^>]+>/g, '') : String(error)}`,
                     );
@@ -3055,24 +3097,27 @@ class Telegram extends Adapter {
             },
         })
             .then(() => this.log.debug('Polling stopped'))
+            .then(() => {
+                // Polling loop ended normally (e.g., bot.stop() called). Reset conflict counter.
+                this.resetPollingConflictCount();
+            })
             .catch(error => {
                 let restartDelay: number;
                 if (error instanceof TelegramApiError && error.errorCode === 409) {
                     this.pollingConflictCount++;
+                    const attemptNum = this.pollingConflictCount;
                     if (this.pollingConflictCount <= Telegram.POLLING_CONFLICT_QUICK_RETRY_ATTEMPTS) {
                         // Right after a restart, Telegram can take a moment to notice that a previous
                         // getUpdates connection is gone; retry quickly a few times, as a conflict like
                         // that normally clears on its own within a couple of seconds.
-                        this.log.warn(`Polling stopped: ${error}. Retrying shortly.`);
+                        this.log.warn(this.buildPollingConflictMessage(error, attemptNum));
                         restartDelay =
                             Telegram.POLLING_CONFLICT_QUICK_RETRY_MS +
                             Math.floor(Math.random() * Telegram.POLLING_CONFLICT_QUICK_RETRY_JITTER_MS);
                     } else {
                         // Still conflicting after several quick retries: this is not a one-off startup
                         // race any more, so fall back to the slower cadence and explain what to check.
-                        this.log.error(
-                            `Polling stopped: ${error}. Telegram rejected getUpdates; check for a leftover/zombie process, another host/tool using this token, and verify that no webhook is still active.`,
-                        );
+                        this.log.error(this.buildPollingConflictMessage(error, attemptNum));
                         restartDelay =
                             Telegram.POLLING_RESTART_MS +
                             Math.floor(Math.random() * Telegram.POLLING_RESTART_JITTER_MS);

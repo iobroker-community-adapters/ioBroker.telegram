@@ -1,4 +1,3 @@
-import type React from 'react';
 import { I18n } from '@iobroker/gui-components';
 
 import {
@@ -9,6 +8,7 @@ import {
     type RuleBlockDescription,
     type RuleContext,
     type RuleTagCardTitle,
+    type RuleBlockSummary,
 } from '@iobroker/javascript-rules-dev';
 
 declare global {
@@ -19,36 +19,46 @@ declare global {
 
 const GenericBlock = window.GenericBlock || WidgetGenericBlock;
 
-export interface TelegramRuleBlockConfig extends RuleBlockConfig {
+export interface RuleBlockConfigActionTelegram extends RuleBlockConfig {
     text: string;
     instance: string;
     user: string;
     tagCard?: RuleTagCardTitle;
 }
 
-class ActionTelegram extends GenericBlock<TelegramRuleBlockConfig> {
-    cachePromises: Record<string, Promise<ioBroker.State | null | undefined>>;
+export default class ActionTelegram extends GenericBlock<RuleBlockConfigActionTelegram> {
+    private readonly cachePromises: Record<string, Promise<ioBroker.State | null | undefined>>;
 
-    constructor(props: GenericBlockProps<TelegramRuleBlockConfig>) {
+    constructor(props: GenericBlockProps<RuleBlockConfigActionTelegram>) {
         super(props, ActionTelegram.getStaticData());
         this.cachePromises = {};
     }
 
-    static compile(config: TelegramRuleBlockConfig, context: RuleContext): string {
+    static compile(config: RuleBlockConfigActionTelegram, context: RuleContext): string {
         const text = (config.text || '').replace(/"/g, '\\"');
         if (!text) {
             return `// no text defined
 _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
         }
-
         return `// Telegram ${text || ''}
 \t\tconst subActionVar${config._id} = "${(text || '').replace(/"/g, '\\"')}"${GenericBlock.getReplacesInText(context)};
 \t\t_sendToFrontEnd(${config._id}, {text: subActionVar${config._id}});
 \t\tsendTo("${config.instance}", "send", ${config.user && config.user !== '_' ? `{user: "${(config.user || '').replace(/"/g, '\\"')}", text: subActionVar${config._id}}` : `subActionVar${config._id}`});`;
     }
 
-    renderDebug(debugMessage: { data: { text: string } }): React.JSX.Element | string {
+    renderDebug(debugMessage: { data: { text: string } }): string {
         return `${I18n.t('Sent:')} ${debugMessage.data.text}`;
+    }
+
+    getSummary(): RuleBlockSummary | null {
+        const { text, instance, user } = this.state.settings;
+        if (!text) {
+            return null;
+        }
+        // the stored user is a chat ID - the select knows the name behind it
+        const recipient = user && user !== '_' ? this.optionTitle('user', user, 'title') || user : undefined;
+        const details = [instance, recipient].filter(Boolean);
+        return { title: String(text), subtitle: details.length ? details.join(' · ') : undefined };
     }
 
     onValueChanged(value: any, attr: string): void {
@@ -59,8 +69,9 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
 
     _setUsers(instance?: string): void {
         instance = instance || this.state.settings.instance || 'telegram.0';
-        this.cachePromises[instance] ||= this.props.socket.getState(`${instance}.communicate.users`);
-
+        if (!(this.cachePromises[instance] instanceof Promise)) {
+            this.cachePromises[instance] = this.props.socket.getState(`${instance}.communicate.users`);
+        }
         if (!this.state.settings._id) {
             return this.setState(
                 {
@@ -92,21 +103,20 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
             );
         }
 
-        void this.cachePromises[instance].then((users: ioBroker.State | null | undefined): void => {
-            let options: { title: string; value: string }[];
+        void this.cachePromises[instance].then((usersObj: ioBroker.State | null | undefined) => {
+            let users: { title: string; value: string }[];
             try {
-                const usersStruct: Record<string, { userName: string; firstName: string }> | null = users?.val
-                    ? JSON.parse(users.val as string)
-                    : null;
-                options = usersStruct
-                    ? Object.keys(usersStruct).map(user => ({
-                          title: usersStruct[user].userName || usersStruct[user].firstName,
+                const usersA = usersObj?.val ? JSON.parse(usersObj.val as string) : null;
+                users = usersA
+                    ? Object.keys(usersA).map(user => ({
+                          title: usersA[user].userName || usersA[user].firstName,
                           value: user,
                       }))
                     : [];
-                options.unshift({ title: 'all', value: '' });
+                users ||= [];
+                users.unshift({ title: 'all', value: '' });
             } catch {
-                options = [{ title: 'all', value: '' }];
+                users = [{ title: 'all', value: '' }];
             }
 
             this.setState(
@@ -122,7 +132,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
                         {
                             nameRender: 'renderSelect',
                             attr: 'user',
-                            options,
+                            options: users,
                             defaultValue: '_',
                             frontText: 'User:',
                         },
@@ -140,7 +150,7 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
         });
     }
 
-    onTagChange(_tagCard: RuleTagCardTitle): void {
+    onTagChange(): void {
         this._setUsers();
     }
 
@@ -160,5 +170,3 @@ _sendToFrontEnd(${config._id}, {text: 'No text defined'});`;
         return ActionTelegram.getStaticData();
     }
 }
-
-export default ActionTelegram;
