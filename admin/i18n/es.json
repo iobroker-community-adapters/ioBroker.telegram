@@ -105,6 +105,6 @@
     "url": "Url",
     "url_help": "como \"https://mydomain.noip.com:8443\"",
     "value as boolean": "valor como booleano",
-    "value as number": "valor como número",
+    "value as number": "valor como numero",
     "value as string": "valor como cadena"
 }
