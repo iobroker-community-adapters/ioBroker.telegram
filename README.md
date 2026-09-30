@@ -20,6 +20,9 @@
 [![Test and Release](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/test-and-release.yml)
 [![CodeQL](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/codeql.yml/badge.svg)](https://github.com/iobroker-community-adapters/ioBroker.telegram/actions/workflows/codeql.yml)
 
+> [!IMPORTANT]
+> This adapter cannot be installed from github
+
 ## ioBroker telegram adapter
 
 Use telegram service to communicate with ioBroker
