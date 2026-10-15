@@ -24,7 +24,7 @@
         "@iobroker/gui-components": "^10.2.3",
         "@iobroker/javascript-rules-dev": "^1.1.0",
         "@iobroker/types": "^7.2.2",
-        "@module-federation/runtime": "^2.9.0",
+        "@module-federation/runtime": "^2.9.2",
         "@module-federation/vite": "^1.21.6",
         "@mui/material": "^9.4.0",
         "@mui/styles": "^6.4.8",
