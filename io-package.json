@@ -285,6 +285,7 @@
     "storeRawRequest": false,
     "text2command": "",
     "assistantInstance": "",
+    "assistantMedia": true,
     "answerTimeoutSec": 60,
     "url": "",
     "bind": "0.0.0.0",

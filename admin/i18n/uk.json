@@ -38,6 +38,8 @@
     "OFF-Status": "Статус на сервери",
     "ON-Command": "на",
     "ON-Status": "Оф-статус",
+    "Photos and videos to the assistant": "Фото та відео асистенту",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "Фото передаються асистенту разом із підписом як питанням. Відео зберігаються у файловому сховищі цього екземпляра (папка assistant), передається лише їхнє розташування.",
     "Please enter password in form \"/password phrase\"": "Будь ласка, введіть пароль у форму \"/password фраза\"",
     "Polling": "Опитування",
     "Polling interval (ms)": "Інтервал опитування (мс)",

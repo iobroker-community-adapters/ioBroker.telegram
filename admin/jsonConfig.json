@@ -329,6 +329,17 @@
                     "hidden": "!!data.text2command",
                     "help": "Forward messages that no internal rule/command matched to this ioBroker.assistant instance and reply with its answer."
                 },
+                "assistantMedia": {
+                    "type": "checkbox",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "xl": 8,
+                    "label": "Photos and videos to the assistant",
+                    "help": "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.",
+                    "hidden": "!data.assistantInstance"
+                },
                 "answerTimeoutSec": {
                     "newLine": true,
                     "type": "number",

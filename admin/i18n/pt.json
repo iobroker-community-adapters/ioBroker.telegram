@@ -38,6 +38,8 @@
     "OFF-Status": "apagado",
     "ON-Command": "ligado",
     "ON-Status": "ligado",
+    "Photos and videos to the assistant": "Fotos e vídeos para o assistente",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "As fotos são enviadas ao assistente com a legenda como pergunta. Os vídeos são guardados no armazenamento de ficheiros desta instância (pasta assistant) e só é enviado o seu local.",
     "Please enter password in form \"/password phrase\"": "A senha deve ser inserida no formato \"/password phrase\"",
     "Polling": "Polling",
     "Polling interval (ms)": "Intervalo de pergunta (ms)",

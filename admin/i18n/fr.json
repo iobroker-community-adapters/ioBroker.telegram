@@ -38,6 +38,8 @@
     "OFF-Status": "Statut OFF",
     "ON-Command": "Sur commande",
     "ON-Status": "ON-Status",
+    "Photos and videos to the assistant": "Photos et vidéos vers l'assistant",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "Les photos sont envoyées à l'assistant avec leur légende comme question. Les vidéos sont enregistrées dans le stockage de fichiers de cette instance (dossier assistant) et seul leur emplacement est transmis.",
     "Please enter password in form \"/password phrase\"": "Veuillez entrer le mot de passe dans le formulaire \"/mot de passe\"",
     "Polling": "Interrogation",
     "Polling interval (ms)": "Intervalle d'interrogation (ms)",

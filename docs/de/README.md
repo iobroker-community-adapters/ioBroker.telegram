@@ -80,6 +80,15 @@ Im ioBroker-Log erscheint dann die Chat-ID.
 ## Verwendung
 Telegram kann zusammen mit dem Adapter [text2command](https://github.com/ioBroker/ioBroker.text2command) verwendet werden. Es gibt ein vordefiniertes Kommunikationsschema, mit dem du dein Haus in Textform steuern kannst.
 
+Statt `text2command` kann eine [assistant](https://github.com/ioBroker/ioBroker.assistant)-Instanz gewählt werden („Assistant-Instanz“ in den Einstellungen). Nachrichten, auf die keine Regel und kein Befehl dieses Adapters passt, gehen dorthin, und die Antwort kommt in den Chat zurück:
+
+- **Text** ist die Frage.
+- **Sprachnachrichten** erkennt der Assistent (Sprache muss dort eingeschaltet sein, mit Spracherkennung und ffmpeg); die Antwort beginnt mit dem erkannten Text (🎤 …).
+- **Fotos** gehen als Bilder mit, die Bildunterschrift ist die Frage (ohne beschreibt der Assistent das Bild). Die Fotos eines Albums gehen als eine Frage, höchstens 4. Der Assistent braucht dafür ein Cloud-Modell, das Bilder sehen kann.
+- **Videos** werden nicht mitgeschickt: sie landen im Dateispeicher dieser Instanz (Ordner `assistant`, die neuesten 20 bleiben), und der Assistent erfährt nur den Ablageort. Videos sieht er sich noch nicht an. Telegram lässt Bots nur Dateien bis 20 MB herunterladen.
+
+Fotos und Videos lassen sich mit „Fotos und Videos an den Assistenten“ abschalten. Der Assistent hat 2 Minuten für eine Antwort; danach erfährt der Nutzer, dass keine rechtzeitig kam.
+
 Um ein Foto zu senden, übergib statt eines Textes einfach einen Dateipfad oder eine URL: `sendTo('telegram', 'absolute/path/file.png')` oder `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
 Beispiel, wie ein Schnappschuss einer Webcam an Telegram gesendet wird:
