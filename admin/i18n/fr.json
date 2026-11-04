@@ -82,6 +82,7 @@
     "Welcome ": "Bienvenue ",
     "assistant instance": "Exemple d'assistant",
     "chained certificate": "certificat chaîné",
+    "https://api.telegram.org": "https://api.telegram.org",
     "ioBroker database": "Base de données ioBroker",
     "ip": "IP",
     "password": "Mot de passe",

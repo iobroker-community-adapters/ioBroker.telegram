@@ -21,6 +21,7 @@
     "telegram_message": "bericht",
     "telegram_parsemode_default": "standaard",
     "telegram_silent": "zonder kennisgeving",
+    "telegram_threadid": "Onderwerp (Thread-ID, optioneel)",
     "telegram_tooltip": "Stuur bericht naar telegram",
     "telegram_username": "Ontvanger (gebruikersnaam, optioneel)"
 }

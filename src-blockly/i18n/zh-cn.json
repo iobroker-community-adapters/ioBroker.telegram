@@ -1,4 +1,6 @@
 {
+    "telegram": "telegram",
+    "telegram_anyInstance": "所有实例",
     "telegram_ask": "通过Telegram 查询",
     "telegram_ask_answer": "答复",
     "telegram_ask_answers": "答复",
@@ -10,6 +12,16 @@
     "telegram_chatid": "收件人（聊天 ID，可选）",
     "telegram_disable_web_preview": "禁用网页预览",
     "telegram_escaping": "escape chars",
+    "telegram_log": "日志级别",
+    "telegram_log_debug": "调试",
+    "telegram_log_error": "错误",
+    "telegram_log_info": "信息",
+    "telegram_log_none": "无",
+    "telegram_log_warn": "警告",
+    "telegram_message": "消息",
     "telegram_parsemode_default": "默认",
+    "telegram_silent": "无通知",
+    "telegram_threadid": "话题（Thread-ID，可选）",
+    "telegram_tooltip": "向 Telegram 发送消息",
     "telegram_username": "收件人（用户名，可选）"
 }

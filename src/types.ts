@@ -163,6 +163,11 @@ export interface SendOptions {
     editMessageCaption?: { options?: Omit<EditMessageCaptionParams, 'caption'> };
     deleteMessage?: { options: { chat_id: number | string; message_id: number } };
     answerCallbackQuery?: { text?: string; showAlert?: boolean };
+    /**
+     * `send` only: answer the callback with the ids of the sent messages (`{ "<chatId>": messageId }`) instead of
+     * the number of recipients - to edit or delete the message later (#1389).
+     */
+    returnMessageIds?: boolean;
 }
 
 /** Result map returned (as JSON string) by the send helpers: chatId => messageId (+ optional error map). */
