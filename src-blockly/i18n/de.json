@@ -21,6 +21,7 @@
     "telegram_message": "Meldung",
     "telegram_parsemode_default": "Standard",
     "telegram_silent": "ohne Benachrichtigung",
+    "telegram_threadid": "Thema (Thread-ID, optional)",
     "telegram_tooltip": "Sende eine Meldung über Telegram",
     "telegram_username": "Empfänger (Benutzername, optional)"
 }

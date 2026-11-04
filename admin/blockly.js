@@ -94,11 +94,13 @@
       init: function() {
         this.appendDummyInput("INSTANCE").appendField(Blockly2.Translate("telegram")).appendField(new Blockly2.FieldDropdown(instanceOptions()), "INSTANCE");
         this.appendValueInput("MESSAGE").appendField(Blockly2.Translate("telegram_message"));
-        for (const [name, word] of [
-          ["USERNAME", "telegram_username"],
-          ["CHATID", "telegram_chatid"]
+        for (const [name, word, check] of [
+          ["USERNAME", "telegram_username", "String"],
+          ["CHATID", "telegram_chatid", "String"],
+          // the topic of a forum group; a number, but a text from a state works as well
+          ["THREADID", "telegram_threadid", ["Number", "String"]]
         ]) {
-          const input = this.appendValueInput(name).setCheck("String").appendField(Blockly2.Translate(word));
+          const input = this.appendValueInput(name).setCheck(check).appendField(Blockly2.Translate(word));
           if (input.connection) {
             input.connection._optional = true;
           }
@@ -121,6 +123,7 @@
       const logLevel = block.getFieldValue("LOG");
       const username = Blockly2.JavaScript.valueToCode(block, "USERNAME", Blockly2.JavaScript.ORDER_ATOMIC);
       const chatId = Blockly2.JavaScript.valueToCode(block, "CHATID", Blockly2.JavaScript.ORDER_ATOMIC);
+      const threadId = Blockly2.JavaScript.valueToCode(block, "THREADID", Blockly2.JavaScript.ORDER_ATOMIC);
       const silent = block.getFieldValue("SILENT");
       const escaping = block.getFieldValue("ESCAPING");
       const disableWebPagePreview = block.getFieldValue("DISABLE_WEB_PAGE_PREVIEW");
@@ -142,6 +145,10 @@
       }
       if (chatId) {
         lines.push(`  chatId: ${chatId},
+`);
+      }
+      if (threadId) {
+        lines.push(`  message_thread_id: ${threadId},
 `);
       }
       if (silent === "TRUE") {
@@ -607,6 +614,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "Meldung",
     telegram_parsemode_default: "Standard",
     telegram_silent: "ohne Benachrichtigung",
+    telegram_threadid: "Thema (Thread-ID, optional)",
     telegram_tooltip: "Sende eine Meldung über Telegram",
     telegram_username: "Empfänger (Benutzername, optional)"
   };
@@ -635,6 +643,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "message",
     telegram_parsemode_default: "default",
     telegram_silent: "without notification",
+    telegram_threadid: "Topic (Thread-ID, optional)",
     telegram_tooltip: "Send message to telegram",
     telegram_username: "Recipient (Username, optional)"
   };
@@ -663,6 +672,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "mensaje",
     telegram_parsemode_default: "predeterminado",
     telegram_silent: "sin notificación",
+    telegram_threadid: "Tema (Thread-ID, opcional)",
     telegram_tooltip: "Enviar mensaje al telegrama",
     telegram_username: "Destinatario (nombre de usuario, opcional)"
   };
@@ -691,6 +701,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "message",
     telegram_parsemode_default: "par défaut",
     telegram_silent: "sans notification",
+    telegram_threadid: "Sujet (Thread-ID, facultatif)",
     telegram_tooltip: "Envoyer un message au télégramme",
     telegram_username: "Destinataire (nom d'utilisateur, facultatif)"
   };
@@ -719,6 +730,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "Messaggio",
     telegram_parsemode_default: "predefinito",
     telegram_silent: "senza notifica",
+    telegram_threadid: "Argomento (ID thread, facoltativo)",
     telegram_tooltip: "Invia messaggio al telegramma",
     telegram_username: "Destinatario (Nome utente, facoltativo)"
   };
@@ -747,6 +759,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "bericht",
     telegram_parsemode_default: "standaard",
     telegram_silent: "zonder kennisgeving",
+    telegram_threadid: "Onderwerp (Thread-ID, optioneel)",
     telegram_tooltip: "Stuur bericht naar telegram",
     telegram_username: "Ontvanger (gebruikersnaam, optioneel)"
   };
@@ -775,6 +788,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "wiadomość",
     telegram_parsemode_default: "domyślny",
     telegram_silent: "bez powiadomienia",
+    telegram_threadid: "Wątek (identyfikator wątku, opcjonalnie)",
     telegram_tooltip: "Wyślij wiadomość do telegramu",
     telegram_username: "Odbiorca (nazwa użytkownika, opcjonalnie)"
   };
@@ -803,6 +817,7 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "mensagem",
     telegram_parsemode_default: "padrão",
     telegram_silent: "sem notificação",
+    telegram_threadid: "Tópico (Thread-ID, opcional)",
     telegram_tooltip: "Enviar mensagem para telegrama",
     telegram_username: "Destinatário (nome de usuário, opcional)"
   };
@@ -831,21 +846,44 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_message: "сообщение",
     telegram_parsemode_default: "по умолчанию",
     telegram_silent: "без уведомления",
+    telegram_threadid: "Тема (Thread-ID, необязательно)",
     telegram_tooltip: "Послать сообщение через Telegram",
     telegram_username: "Получатель (имя пользователя, необязательно)"
   };
 
   // src-blockly/i18n/uk.json
   var uk_default = {
+    telegram: "telegram",
+    telegram_anyInstance: "Усі екземпляри",
     telegram_ask: "подати заявку",
     telegram_ask_answer: "Відправити",
     telegram_ask_answers: "Відповідей",
     telegram_ask_question: "Питання",
-    telegram_parsemode_default: "за замовчуванням"
+    telegram_call: "дзвінок через Telegram",
+    telegram_call_repeats: "Повтори",
+    telegram_call_system: "Мова системи",
+    telegram_call_tooltip: "Зателефонувати через Telegram і промовити текст",
+    telegram_chatid: "Одержувач (Chat-ID, необов'язково)",
+    telegram_disable_web_preview: "вимкнути попередній перегляд посилань",
+    telegram_escaping: "Екранувати символи",
+    telegram_log: "рівень журналу",
+    telegram_log_debug: "налагодження",
+    telegram_log_error: "помилка",
+    telegram_log_info: "інформація",
+    telegram_log_none: "немає",
+    telegram_log_warn: "попередження",
+    telegram_message: "повідомлення",
+    telegram_parsemode_default: "за замовчуванням",
+    telegram_silent: "без сповіщення",
+    telegram_threadid: "Тема (Thread-ID, необов'язково)",
+    telegram_tooltip: "Надіслати повідомлення в Telegram",
+    telegram_username: "Одержувач (ім'я користувача, необов'язково)"
   };
 
   // src-blockly/i18n/zh-cn.json
   var zh_cn_default = {
+    telegram: "telegram",
+    telegram_anyInstance: "所有实例",
     telegram_ask: "通过Telegram 查询",
     telegram_ask_answer: "答复",
     telegram_ask_answers: "答复",
@@ -857,7 +895,17 @@ ${logLine(logLevel, "telegramCall", username, text)}`);
     telegram_chatid: "收件人（聊天 ID，可选）",
     telegram_disable_web_preview: "禁用网页预览",
     telegram_escaping: "escape chars",
+    telegram_log: "日志级别",
+    telegram_log_debug: "调试",
+    telegram_log_error: "错误",
+    telegram_log_info: "信息",
+    telegram_log_none: "无",
+    telegram_log_warn: "警告",
+    telegram_message: "消息",
     telegram_parsemode_default: "默认",
+    telegram_silent: "无通知",
+    telegram_threadid: "话题（Thread-ID，可选）",
+    telegram_tooltip: "向 Telegram 发送消息",
     telegram_username: "收件人（用户名，可选）"
   };
 

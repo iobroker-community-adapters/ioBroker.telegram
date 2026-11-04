@@ -33,11 +33,15 @@ export function installTelegram(): void {
 
             this.appendValueInput('MESSAGE').appendField(Blockly.Translate('telegram_message'));
 
-            for (const [name, word] of [
-                ['USERNAME', 'telegram_username'],
-                ['CHATID', 'telegram_chatid'],
+            for (const [name, word, check] of [
+                ['USERNAME', 'telegram_username', 'String'],
+                ['CHATID', 'telegram_chatid', 'String'],
+                // the topic of a forum group; a number, but a text from a state works as well
+                ['THREADID', 'telegram_threadid', ['Number', 'String']],
             ] as const) {
-                const input = this.appendValueInput(name).setCheck('String').appendField(Blockly.Translate(word));
+                const input = this.appendValueInput(name)
+                    .setCheck(check as string | string[])
+                    .appendField(Blockly.Translate(word));
                 if (input.connection) {
                     // Blockly has no public API for an optional input
                     (input.connection as unknown as { _optional: boolean })._optional = true;
@@ -79,6 +83,7 @@ export function installTelegram(): void {
         const logLevel = block.getFieldValue('LOG');
         const username = Blockly.JavaScript.valueToCode(block, 'USERNAME', Blockly.JavaScript.ORDER_ATOMIC);
         const chatId = Blockly.JavaScript.valueToCode(block, 'CHATID', Blockly.JavaScript.ORDER_ATOMIC);
+        const threadId = Blockly.JavaScript.valueToCode(block, 'THREADID', Blockly.JavaScript.ORDER_ATOMIC);
         const silent = block.getFieldValue('SILENT');
         const escaping = block.getFieldValue('ESCAPING');
         const disableWebPagePreview = block.getFieldValue('DISABLE_WEB_PAGE_PREVIEW');
@@ -103,6 +108,9 @@ export function installTelegram(): void {
         }
         if (chatId) {
             lines.push(`  chatId: ${chatId},\n`);
+        }
+        if (threadId) {
+            lines.push(`  message_thread_id: ${threadId},\n`);
         }
         if (silent === 'TRUE') {
             lines.push('  disable_notification: true,\n');

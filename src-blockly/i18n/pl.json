@@ -21,6 +21,7 @@
     "telegram_message": "wiadomość",
     "telegram_parsemode_default": "domyślny",
     "telegram_silent": "bez powiadomienia",
+    "telegram_threadid": "Wątek (identyfikator wątku, opcjonalnie)",
     "telegram_tooltip": "Wyślij wiadomość do telegramu",
     "telegram_username": "Odbiorca (nazwa użytkownika, opcjonalnie)"
 }
