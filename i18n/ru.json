@@ -19,5 +19,6 @@
     "Done": "Готово",
     "ID \"%s\" not found.": "Идентификатор \" %s\" не найден.",
     "Started!": "Бот запущен!",
-    "uncertain": "неизвестно"
+    "uncertain": "неизвестно",
+    "The assistant did not answer in time.": "Ассистент не ответил вовремя."
 }

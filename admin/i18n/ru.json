@@ -38,6 +38,8 @@
     "OFF-Status": "выключен(о/а)",
     "ON-Command": "включить",
     "ON-Status": "включен(о/а)",
+    "Photos and videos to the assistant": "Фото и видео ассистенту",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "Фото передаются ассистенту вместе с подписью в качестве вопроса. Видео сохраняются в файловом хранилище этого экземпляра (папка assistant), передаётся только их расположение.",
     "Please enter password in form \"/password phrase\"": "Пожалуйста введите пароль в формате: \"/password phrase\"",
     "Polling": "Опрос",
     "Polling interval (ms)": "Интервал опроса (мс)",

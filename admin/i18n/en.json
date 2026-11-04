@@ -38,6 +38,8 @@
     "OFF-Status": "switched off",
     "ON-Command": "on",
     "ON-Status": "switched on",
+    "Photos and videos to the assistant": "Photos and videos to the assistant",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.",
     "Please enter password in form \"/password phrase\"": "Please enter password in form \"/password phrase\"",
     "Polling": "Polling",
     "Polling interval (ms)": "Polling interval (ms)",

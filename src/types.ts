@@ -40,6 +40,8 @@ export interface TelegramConfig {
     storeRawRequest: boolean;
     text2command: string;
     assistantInstance: string;
+    /** Photos and videos go to the assistant instance too (default on) */
+    assistantMedia?: boolean;
     answerTimeoutSec: number;
     url: string;
     bind: string;
