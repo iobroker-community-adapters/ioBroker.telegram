@@ -40,7 +40,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 6.1.0 (2026-11-04)
 - (@GermanBluefox) Voice messages are forwarded to the configured `assistant` instance: it recognises the speech and the answer is sent back to the chat with the recognised text in front (🎤 …). The same user check as for text messages applies; a voice message with a caption is answered by its caption. Needs ioBroker.assistant with voice enabled, a speech recognition engine and ffmpeg on the host
 - (@GermanBluefox) `send` can return the ids of the sent messages again (`returnMessageIds: true`), to edit or delete the message later; failed recipients come with the reason (#1389)
 - (@GermanBluefox) The Blockly block "telegram" has an optional input for the topic (thread id) of a forum group (#952)
@@ -64,12 +64,6 @@ Use telegram service to communicate with ioBroker
 
 ### 5.0.3 (2026-08-10)
 - (@GermanBluefox) Fixed: the configured `text2command`/`assistant` instance may now also be stored in the long form (`system.adapter.text2command.0`) - the alive check no longer fails with "instance is not running"
-
-### 5.0.2 (2026-08-03)
-- (copilot) Adapter requires node.js >= 22 now
-- (copilot) Adapter requires admin >= 8.0.0 now
-- (@klein0r) admin 8.0.0 and js-controller 6.0.11 (or later) are required
-- (@klein0r) Updated dependencies
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

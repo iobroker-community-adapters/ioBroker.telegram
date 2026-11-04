@@ -1,4 +1,10 @@
 # Older changes
+## 5.0.2 (2026-08-03)
+- (copilot) Adapter requires node.js >= 22 now
+- (copilot) Adapter requires admin >= 8.0.0 now
+- (@klein0r) admin 8.0.0 and js-controller 6.0.11 (or later) are required
+- (@klein0r) Updated dependencies
+
 ## 5.0.0-alpha.0 (2026-07-10)
 - (@GermanBluefox) Channel posts (from a channel where the bot is an admin) are now received and written to `communicate.request`/`communicate.requestChatId` (previously ignored)
 - (@GermanBluefox) Robustness: all `setState` calls now catch their errors (via a `setStateSafe` helper), so a failing state write can no longer cause an unhandled promise rejection
