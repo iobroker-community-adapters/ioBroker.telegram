@@ -80,6 +80,15 @@ The iobroker log will then show you the chat id in the logs.
 ## Usage
 You can use a telegram with [text2command](https://github.com/ioBroker/ioBroker.text2command) adapter. There is a predefined communication schema, and you can command to you home in text form.
 
+Instead of `text2command` you can select an [assistant](https://github.com/ioBroker/ioBroker.assistant) instance ("assistant instance" in the settings). Messages that no rule or command of this adapter matched go there, and its answer is sent back to the chat:
+
+- **Text** is the question.
+- **Voice messages** are recognised by the assistant (it needs voice enabled, a speech recognition engine and ffmpeg); the answer starts with the recognised text (🎤 …).
+- **Photos** go along as pictures, the caption is the question (without one the assistant describes the picture). The photos of an album go as one question, at most 4 of them. The assistant needs a cloud model that can see pictures.
+- **Videos** are not sent along: they are stored in the file storage of this instance (folder `assistant`, the newest 20 are kept) and the assistant only learns where. It does not look at videos yet. Telegram lets bots download files up to 20 MB only.
+
+Photos and videos can be switched off with "Photos and videos to the assistant". The assistant gets 2 minutes for an answer; after that the user is told that it did not answer in time.
+
 To send a photo, just send a path to file instead of text or URL: `sendTo('telegram', 'absolute/path/file.png')` or `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
 Example how to send a screenshot from webcam to telegram:

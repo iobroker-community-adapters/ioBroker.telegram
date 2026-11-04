@@ -38,6 +38,8 @@
     "OFF-Status": "OFF-Status",
     "ON-Command": "Op commando",
     "ON-Status": "ON-Status",
+    "Photos and videos to the assistant": "Foto's en video's naar de assistent",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "Foto's gaan met hun bijschrift als vraag naar de assistent. Video's worden opgeslagen in de bestandsopslag van deze instantie (map assistant) en alleen hun locatie wordt meegestuurd.",
     "Please enter password in form \"/password phrase\"": "Voer een wachtwoord in het formulier \"/ wachtwoord zin\"",
     "Polling": "Polling",
     "Polling interval (ms)": "Polling-interval (ms)",

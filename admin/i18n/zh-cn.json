@@ -38,6 +38,8 @@
     "OFF-Status": "关掉",
     "ON-Command": "上",
     "ON-Status": "切换到",
+    "Photos and videos to the assistant": "将照片和视频发送给助手",
+    "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.": "照片连同其说明文字作为问题发送给助手。视频保存在此实例的文件存储中（assistant 文件夹），只传递其存放位置。",
     "Please enter password in form \"/password phrase\"": "请以“ /密码短语”形式输入密码",
     "Polling": "轮询",
     "Polling interval (ms)": "轮询间隔（ms）",

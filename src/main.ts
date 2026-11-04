@@ -94,6 +94,44 @@ const ASSISTANT_TIMEOUT_MS = 120_000;
 /** Rejected by `sendToIfAlive` when the instance did not answer in time. */
 class SendToTimeoutError extends Error {}
 
+/** Telegram lets bots download files up to this size only. */
+const TELEGRAM_DOWNLOAD_LIMIT = 20 * 1024 * 1024;
+/** The photos and videos of an album arrive as separate messages within a moment: wait this long for the rest. */
+const ALBUM_WAIT_MS = 1500;
+/** At most this many pictures go to the assistant with one question (as many as it accepts). */
+const ASSISTANT_MAX_IMAGES = 4;
+/** The size of a photo for the assistant: the largest one up to this edge (Telegram has e.g. 320, 800, 1280, 2560). */
+const ASSISTANT_IMAGE_EDGE = 1600;
+/** Videos for the assistant stay in the file storage (`<instance>/assistant/`); older ones are deleted. */
+const ASSISTANT_VIDEOS_KEPT = 20;
+
+/** Where a video for the assistant was stored, or why it was not (it never goes along as content). */
+interface AssistantVideo {
+    adapter?: string;
+    path?: string;
+    mimeType: string;
+    durationSec?: number;
+    size?: number;
+    error?: string;
+}
+
+type PhotoSize = NonNullable<Message['photo']>[number];
+
+/**
+ * The size of a photo that goes to the assistant: the largest one up to {@link ASSISTANT_IMAGE_EDGE}, else the
+ * smallest. Enough to see what is on it, and far below the limit of the models.
+ *
+ * @param sizes the sizes Telegram offers (`msg.photo`)
+ */
+function assistantPhotoSize(sizes: PhotoSize[]): PhotoSize {
+    const area = (s: PhotoSize): number => s.width * s.height;
+    const fitting = sizes.filter(s => Math.max(s.width, s.height) <= ASSISTANT_IMAGE_EDGE);
+    if (fitting.length) {
+        return fitting.reduce((a, b) => (area(b) > area(a) ? b : a));
+    }
+    return sizes.reduce((a, b) => (area(b) < area(a) ? b : a));
+}
+
 const INTERNAL_OPTION_KEYS = new Set<string>([
     'chatId',
     'user',
@@ -1876,7 +1914,7 @@ class Telegram extends Adapter {
     }
 
     saveFile(fileID: string, fileName: string, callback: (result: SaveFileResult) => void): void {
-        this.downloadFile(fileID)
+        this.downloadFileOnce(fileID)
             .then(content => this.storeFile(fileName, content, callback))
             .catch(err => callback({ error: `Error: ${err}` }));
     }
@@ -1901,8 +1939,33 @@ class Telegram extends Adapter {
         return Buffer.from(await response.arrayBuffer());
     }
 
+    /** Downloads of the last minute by file id: a photo or video that is saved and forwarded is downloaded once. */
+    private readonly downloads = new Map<string, Promise<Buffer>>();
+
+    /**
+     * {@link downloadFile}, but a second call for the same file within a minute gets the same download.
+     *
+     * @param fileID the Telegram file id
+     */
+    downloadFileOnce(fileID: string): Promise<Buffer> {
+        let download = this.downloads.get(fileID);
+        if (!download) {
+            download = this.downloadFile(fileID);
+            this.downloads.set(fileID, download);
+            download.then(
+                () => this.setTimeout(() => this.downloads.delete(fileID), 60_000),
+                () => this.downloads.delete(fileID),
+            );
+        }
+        return download;
+    }
+
     /** Set once an assistant instance answered a voice message as an empty question (too old for audio). */
     private assistantVoiceWarned = false;
+    /** Set once an assistant instance answered pictures as an empty question (too old for pictures). */
+    private assistantMediaWarned = false;
+    /** Albums waiting for their last photo or video, by `media_group_id`. */
+    private readonly assistantAlbums = new Map<string, { msgs: Message[]; timer?: ioBroker.Timeout }>();
     /** How long the assistant may take for an answer (a field so that tests can shorten it). */
     private assistantTimeoutMs = ASSISTANT_TIMEOUT_MS;
 
@@ -2014,6 +2077,210 @@ class Telegram extends Adapter {
     }
 
     /**
+     * Whether the photos and videos of this message go to the assistant. Its caption then goes along with them and not
+     * a second time through the text pipeline.
+     *
+     * @param msg the received message
+     */
+    forwardsMediaToAssistant(msg: Message): boolean {
+        return !!(
+            this.config.assistantInstance &&
+            this.config.assistantMedia !== false &&
+            msg.from &&
+            (msg.photo?.length || msg.video || msg.video_note)
+        );
+    }
+
+    /**
+     * Forward a photo or video message to the assistant. The parts of an album are collected first and go as one
+     * question - otherwise ten photos would get ten answers.
+     *
+     * @param msg the received message
+     */
+    queueAssistantMedia(msg: Message): void {
+        const group = msg.media_group_id;
+        const forward = (msgs: Message[]): void => {
+            this.askAssistantWithMedia(msgs).catch(err =>
+                this.log.error(`Cannot send media to ${this.config.assistantInstance}: ${err}`),
+            );
+        };
+        if (!group) {
+            forward([msg]);
+            return;
+        }
+        const album = this.assistantAlbums.get(group) || { msgs: [] };
+        album.msgs.push(msg);
+        if (album.timer) {
+            this.clearTimeout(album.timer);
+        }
+        album.timer = this.setTimeout(() => {
+            this.assistantAlbums.delete(group);
+            forward(album.msgs);
+        }, ALBUM_WAIT_MS);
+        this.assistantAlbums.set(group, album);
+    }
+
+    /**
+     * Forward photos and a video to the ioBroker.assistant instance. The photos go along as base64 (one size each, see
+     * {@link assistantPhotoSize}); a video never does: it is stored in the ioBroker file storage of this instance
+     * (`assistant/`, the newest {@link ASSISTANT_VIDEOS_KEPT}), which every host reads, and only its place goes along.
+     * The caption is the question. The same user check as for text messages applies.
+     *
+     * @param msgs the message, or all messages of an album
+     */
+    async askAssistantWithMedia(msgs: Message[]): Promise<void> {
+        const bot = this.bot!;
+        const msg = msgs[0];
+        const from: User = msg.from!;
+        const user = !this.config.useUsername ? from.first_name : !from.username ? from.first_name : from.username;
+        // only one message of an album has the caption
+        const caption = (msgs.find(m => m.caption)?.caption || '').trim();
+
+        const pollingInterval = parseInt(String(this.config.pollingInterval ?? 0), 10) || 0;
+        if (Date.now() - msg.date * 1000 > pollingInterval + 30000) {
+            this.log.warn(`Photo/video from ${from.first_name} ignored, because too old`);
+            return;
+        }
+        if ((this.config.password || this.config.doNotAcceptNewUsers) && !this.storedUsers[from.id]) {
+            // a caption went through the text pipeline, which has told the user already
+            if (!caption) {
+                await bot.api
+                    .sendMessage({
+                        chat_id: from.id,
+                        text: I18n.translate(
+                            this.config.doNotAcceptNewUsers
+                                ? 'User is not in the list'
+                                : 'Please enter password in form "/password phrase"',
+                        ),
+                    })
+                    .catch(error => this.log.error(`send Message Error: ${error}`));
+            }
+            return;
+        }
+
+        const options = msg.is_topic_message ? { message_thread_id: msg.message_thread_id } : undefined;
+        bot.api.sendChatAction({ ...options, chat_id: msg.chat.id, action: 'typing' }).catch(() => {});
+
+        const photos = msgs.filter(m => m.photo?.length);
+        if (photos.length > ASSISTANT_MAX_IMAGES) {
+            this.log.info(
+                `Album with ${photos.length} photos: only the first ${ASSISTANT_MAX_IMAGES} go to ${this.config.assistantInstance}`,
+            );
+        }
+        let images: { data: string; mimeType: string }[];
+        try {
+            images = await Promise.all(
+                photos.slice(0, ASSISTANT_MAX_IMAGES).map(async m => ({
+                    data: (await this.downloadFileOnce(assistantPhotoSize(m.photo!).file_id)).toString('base64'),
+                    // Telegram sends every photo as JPEG
+                    mimeType: 'image/jpeg',
+                })),
+            );
+        } catch (error) {
+            this.log.warn(`Cannot download the photo for ${this.config.assistantInstance}: ${error}`);
+            return;
+        }
+        const videoMsg = msgs.find(m => m.video || m.video_note);
+        const video = videoMsg ? await this.storeVideoForAssistant(videoMsg) : undefined;
+        if (!images.length && !video) {
+            return;
+        }
+
+        this.log.debug(
+            `Forward ${images.length} photo(s)${video ? ` and a video (${video.path || video.error})` : ''} from ${user} to ${this.config.assistantInstance}`,
+        );
+        let response: { answer?: string; error?: string } | undefined;
+        try {
+            response = (await this.sendToIfAlive(
+                this.config.assistantInstance,
+                'ask',
+                {
+                    text: caption,
+                    ...(images.length ? { images } : {}),
+                    ...(video ? { video } : {}),
+                    source: `telegram:${user}`,
+                    user,
+                    chatId: msg.chat.id,
+                    userId: from.id.toString(),
+                    messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
+                },
+                this.assistantTimeoutMs,
+            )) as typeof response;
+        } catch (error) {
+            return this.assistantFailed(msg, error);
+        }
+        if (!response) {
+            return;
+        }
+        // an assistant that does not know pictures sees no text and rejects the request as an empty question
+        if (response.error === 'empty question') {
+            if (!this.assistantMediaWarned) {
+                this.assistantMediaWarned = true;
+                this.log.warn(
+                    `${this.config.assistantInstance} cannot look at pictures - update ioBroker.assistant to the latest version`,
+                );
+            }
+            return;
+        }
+        const answer = response.answer || response.error;
+        if (!answer) {
+            return;
+        }
+        this.log.debug(`Assistant response: ${answer}`);
+        await bot.api
+            .sendMessage({ ...options, chat_id: msg.chat.id, text: answer })
+            .catch(error => this.log.error(`send Message Error: ${error}`));
+    }
+
+    /**
+     * Store a video for the assistant in the ioBroker file storage of this instance - the assistant may run on another
+     * host, and a video does not go through the message bus. Keeps the newest {@link ASSISTANT_VIDEOS_KEPT}.
+     *
+     * @param msg the message with the video or video note
+     * @returns where it is, or why it is not there
+     */
+    async storeVideoForAssistant(msg: Message): Promise<AssistantVideo> {
+        const file = (msg.video || msg.video_note)!;
+        const mimeType = msg.video?.mime_type || 'video/mp4';
+        const info: AssistantVideo = { mimeType, durationSec: file.duration, size: file.file_size };
+        if (file.file_size && file.file_size > TELEGRAM_DOWNLOAD_LIMIT) {
+            return {
+                ...info,
+                error: `too big to download (${Math.round(file.file_size / 1024 / 1024)} MB, Telegram allows bots 20 MB)`,
+            };
+        }
+        try {
+            const content = await this.downloadFileOnce(file.file_id);
+            const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
+            const ext = mimeType === 'video/quicktime' ? 'mov' : (mimeType.split('/')[1] || 'mp4').replace(/\W/g, '');
+            const path = `assistant/video_${date}_${msg.message_id}.${ext}`;
+            await this.writeFileAsync(this.namespace, path, content);
+            void this.pruneAssistantVideos();
+            return { ...info, adapter: this.namespace, path, size: content.length };
+        } catch (error) {
+            this.log.warn(`Cannot store the video for ${this.config.assistantInstance}: ${error}`);
+            return { ...info, error: `could not be stored: ${error instanceof Error ? error.message : String(error)}` };
+        }
+    }
+
+    /** Delete all but the newest {@link ASSISTANT_VIDEOS_KEPT} videos for the assistant. */
+    async pruneAssistantVideos(): Promise<void> {
+        try {
+            const files = await this.readDirAsync(this.namespace, 'assistant');
+            // the names start with the date, so the order of the names is the order of time
+            const videos = files
+                .filter(f => !f.isDir && f.file.startsWith('video_'))
+                .map(f => f.file)
+                .sort();
+            for (const file of videos.slice(0, Math.max(0, videos.length - ASSISTANT_VIDEOS_KEPT))) {
+                await this.delFileAsync(this.namespace, `assistant/${file}`);
+            }
+        } catch (error) {
+            this.log.debug(`Cannot delete old videos of the assistant: ${error}`);
+        }
+    }
+
+    /**
      * Store a downloaded file where `saveFilesTo` says (file system or ioBroker file storage).
      *
      * @param fileName path below the storage root, e.g. `/voice/temp.ogg`
@@ -2093,6 +2360,11 @@ class Telegram extends Adapter {
                 val: location.horizontal_accuracy ?? null,
                 ack: true,
             });
+        }
+
+        // Photos and videos (with their caption) to the assistant; saved below as before
+        if (this.forwardsMediaToAssistant(msg)) {
+            this.queueAssistantMedia(msg);
         }
 
         if (msg.voice) {
@@ -3123,8 +3395,8 @@ class Telegram extends Adapter {
 
         // Forward messages that no internal rule/command matched to the ioBroker.assistant instance and
         // reply with its answer. The reply is routed via this closure (msg.chat.id), so the answer always
-        // goes back to the right chat/thread.
-        if (this.config.assistantInstance) {
+        // goes back to the right chat/thread. The caption of a photo or video goes there with the media instead.
+        if (this.config.assistantInstance && !this.forwardsMediaToAssistant(msg)) {
             this.sendToIfAlive(
                 this.config.assistantInstance,
                 'ask',
