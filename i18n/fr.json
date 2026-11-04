@@ -19,5 +19,6 @@
     "Done": "Terminé",
     "ID \"%s\" not found.": "ID \"%s\" non trouvé.",
     "Started!": "Commencé!",
-    "uncertain": "incertain"
+    "uncertain": "incertain",
+    "The assistant did not answer in time.": "L'assistant n'a pas répondu à temps."
 }

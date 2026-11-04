@@ -85,6 +85,15 @@ const actions = [
  * can pass any documented parameter of the underlying method (e.g. `parse_mode`, `reply_markup`,
  * `protect_content`, `message_thread_id`).
  */
+/**
+ * How long a question to the assistant instance may take: speech recognition plus an LLM that may call tools. Without
+ * a limit a request lost on the way (e.g. the assistant restarted meanwhile) would leave the user without any reply.
+ */
+const ASSISTANT_TIMEOUT_MS = 120_000;
+
+/** Rejected by `sendToIfAlive` when the instance did not answer in time. */
+class SendToTimeoutError extends Error {}
+
 const INTERNAL_OPTION_KEYS = new Set<string>([
     'chatId',
     'user',
@@ -1894,6 +1903,30 @@ class Telegram extends Adapter {
 
     /** Set once an assistant instance answered a voice message as an empty question (too old for audio). */
     private assistantVoiceWarned = false;
+    /** How long the assistant may take for an answer (a field so that tests can shorten it). */
+    private assistantTimeoutMs = ASSISTANT_TIMEOUT_MS;
+
+    /**
+     * Tell the user that the assistant did not answer, instead of leaving the question unanswered.
+     *
+     * @param msg the message that was forwarded
+     * @param error why: a timeout gets a message in the chat, anything else only a log entry
+     */
+    private async assistantFailed(msg: Message, error: unknown): Promise<void> {
+        if (!(error instanceof SendToTimeoutError)) {
+            this.log.error(
+                `Cannot send message to ${this.config.assistantInstance}: ${error instanceof Error ? error.message : String(error)}`,
+            );
+            return;
+        }
+        this.log.warn(error.message);
+        const options = msg.is_topic_message ? { message_thread_id: msg.message_thread_id } : undefined;
+        await this.bot!.api.sendMessage({
+            ...options,
+            chat_id: msg.chat.id,
+            text: I18n.translate('The assistant did not answer in time.'),
+        }).catch(err => this.log.error(`send Message Error: ${err}`));
+    }
 
     /**
      * Forward a voice message to the ioBroker.assistant instance: it recognises the speech, answers like a text
@@ -1935,16 +1968,26 @@ class Telegram extends Adapter {
         this.log.debug(
             `Forward voice message from ${user} (${content.length} bytes) to ${this.config.assistantInstance}`,
         );
-        const response = (await this.sendToIfAlive(this.config.assistantInstance, 'ask', {
-            text: '',
-            audio: content.toString('base64'),
-            format: 'ogg',
-            source: `telegram:${user}`,
-            user,
-            chatId: msg.chat.id,
-            userId: from.id.toString(),
-            messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
-        })) as { answer?: string; error?: string; heard?: string } | undefined;
+        let response: { answer?: string; error?: string; heard?: string } | undefined;
+        try {
+            response = (await this.sendToIfAlive(
+                this.config.assistantInstance,
+                'ask',
+                {
+                    text: '',
+                    audio: content.toString('base64'),
+                    format: 'ogg',
+                    source: `telegram:${user}`,
+                    user,
+                    chatId: msg.chat.id,
+                    userId: from.id.toString(),
+                    messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
+                },
+                this.assistantTimeoutMs,
+            )) as typeof response;
+        } catch (error) {
+            return this.assistantFailed(msg, error);
+        }
         if (!response) {
             return;
         }
@@ -2675,10 +2718,19 @@ class Telegram extends Adapter {
      * @param command the `sendTo` command
      * @param message the payload to forward
      */
+    /**
+     * `sendTo` an instance that is running; a stopped one is only logged.
+     *
+     * @param instance the instance, short (`assistant.0`) or long (`system.adapter.assistant.0`)
+     * @param command the command
+     * @param message the message
+     * @param timeoutMs if set, rejects with a `SendToTimeoutError` when there is no answer by then
+     */
     async sendToIfAlive(
         instance: string,
         command: string,
         message: Record<string, unknown>,
+        timeoutMs?: number,
     ): Promise<ioBroker.Message | undefined> {
         // depending on the admin version the configured instance is stored as `text2command.0` or as
         // `system.adapter.text2command.0`, so normalize it to the short form
@@ -2696,7 +2748,31 @@ class Telegram extends Adapter {
             this.log.warn(`Cannot check if "${instanceId}" is alive: ${err instanceof Error ? err.message : err}`);
             return;
         }
-        return await this.sendToAsync(instanceId, command, message);
+        if (!timeoutMs) {
+            return await this.sendToAsync(instanceId, command, message);
+        }
+        let timer: ioBroker.Timeout | undefined;
+        try {
+            return await Promise.race([
+                // The controller gets a timeout too, a bit later, only so that it forgets the callback.
+                this.sendToAsync(instanceId, command, message, { timeout: timeoutMs + 5000 }),
+                new Promise<never>((_, reject) => {
+                    timer = this.setTimeout(
+                        () =>
+                            reject(
+                                new SendToTimeoutError(
+                                    `${instanceId} did not answer "${command}" within ${Math.round(timeoutMs / 1000)} s`,
+                                ),
+                            ),
+                        timeoutMs,
+                    );
+                }),
+            ]);
+        } finally {
+            if (timer) {
+                this.clearTimeout(timer);
+            }
+        }
     }
 
     async processTelegramText(msg: Message): Promise<Message | void> {
@@ -3049,14 +3125,19 @@ class Telegram extends Adapter {
         // reply with its answer. The reply is routed via this closure (msg.chat.id), so the answer always
         // goes back to the right chat/thread.
         if (this.config.assistantInstance) {
-            this.sendToIfAlive(this.config.assistantInstance, 'ask', {
-                text: msgText,
-                source: `telegram:${user}`,
-                user,
-                chatId: msg.chat.id,
-                userId: from.id.toString(),
-                messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
-            })
+            this.sendToIfAlive(
+                this.config.assistantInstance,
+                'ask',
+                {
+                    text: msgText,
+                    source: `telegram:${user}`,
+                    user,
+                    chatId: msg.chat.id,
+                    userId: from.id.toString(),
+                    messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
+                },
+                this.assistantTimeoutMs,
+            )
                 // @ts-expect-error types fixed in js-controller
                 .then((response: { answer?: string; error?: string }) => {
                     const text = response && (response.answer || response.error);
@@ -3068,7 +3149,7 @@ class Telegram extends Adapter {
                             .catch(error => this.log.error(`send Message Error: ${error}`));
                     }
                 })
-                .catch(err => this.log.error(`Cannot send message to ${this.config.assistantInstance}: ${err}`));
+                .catch(err => this.assistantFailed(msg, err));
         }
 
         this.setStateSafe('communicate.requestChatId', { val: msg.chat.id, ack: true });
