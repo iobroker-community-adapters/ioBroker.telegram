@@ -24,6 +24,8 @@ export interface TelegramConfig {
     saveFiles: boolean;
     saveFilesTo: string;
     saveFilesQuality: string;
+    /** Received files older than this many days are deleted; 0 = keep them */
+    deleteFilesAfterDays?: number;
     allowStates: boolean;
     proxy: boolean;
     /** `http` (default) or `socks5`; missing in configs created before the option existed */

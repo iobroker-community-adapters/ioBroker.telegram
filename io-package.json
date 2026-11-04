@@ -270,6 +270,7 @@
     "saveFiles": false,
     "saveFilesTo": "filesystem",
     "saveFilesQuality": "",
+    "deleteFilesAfterDays": 0,
     "allowStates": true,
     "proxy": false,
     "proxyType": "http",
