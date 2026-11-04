@@ -40,6 +40,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (@GermanBluefox) Voice messages are forwarded to the configured `assistant` instance: it recognises the speech and the answer is sent back to the chat with the recognised text in front (🎤 …). The same user check as for text messages applies; a voice message with a caption is answered by its caption. Needs ioBroker.assistant with voice enabled, a speech recognition engine and ffmpeg on the host
+
 ### 6.0.2 (2026-09-12)
 - (@GermanBluefox) Updated packages and improved the rules block
 - (@patricknitsch) Retried getUpdates 409 conflicts quickly before falling back to a slow restartart

@@ -1831,43 +1831,137 @@ class Telegram extends Adapter {
     }
 
     saveFile(fileID: string, fileName: string, callback: (result: SaveFileResult) => void): void {
-        this.log.debug(`Saving media file ${fileID} to ${fileName} (location = ${this.config.saveFilesTo})`);
-
-        this.bot!.api.getFile({ file_id: fileID })
-            .then(async file => {
-                if (!file.file_path) {
-                    throw new Error('telegram did not return a file path');
-                }
-                // the library offers no download helper, so build the file URL ourselves
-                const url = `${this.config.baseApiUrl}/file/bot${this.config.token}/${file.file_path}`;
-                this.log.debug(`Download media file: ${url.replace(this.config.token, '<token>')}`);
-                const response = await this.fetchImpl(url);
-                if (!response.ok) {
-                    throw new Error(`statusCode ${response.status}`);
-                }
-                const content = Buffer.from(await response.arrayBuffer());
-
-                if (this.config.saveFilesTo == 'filesystem') {
-                    const fileLocation = join(this.tmpDirName, fileName);
-                    writeFileSync(fileLocation, content);
-
-                    callback({
-                        info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
-                        location: this.config.saveFilesTo,
-                        path: fileLocation,
-                    });
-                } else if (this.config.saveFilesTo == 'iobroker') {
-                    const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
-                    await this.writeFileAsync(this.namespace, fileName, content);
-
-                    callback({
-                        info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
-                        location: this.config.saveFilesTo,
-                        path: fileLocation,
-                    });
-                }
-            })
+        this.downloadFile(fileID)
+            .then(content => this.storeFile(fileName, content, callback))
             .catch(err => callback({ error: `Error: ${err}` }));
+    }
+
+    /**
+     * Download a file the user sent (photo, voice, document, ...) from the Telegram servers.
+     *
+     * @param fileID the Telegram file id
+     */
+    async downloadFile(fileID: string): Promise<Buffer> {
+        const file = await this.bot!.api.getFile({ file_id: fileID });
+        if (!file.file_path) {
+            throw new Error('telegram did not return a file path');
+        }
+        // the library offers no download helper, so build the file URL ourselves
+        const url = `${this.config.baseApiUrl}/file/bot${this.config.token}/${file.file_path}`;
+        this.log.debug(`Download media file: ${url.replace(this.config.token, '<token>')}`);
+        const response = await this.fetchImpl(url);
+        if (!response.ok) {
+            throw new Error(`statusCode ${response.status}`);
+        }
+        return Buffer.from(await response.arrayBuffer());
+    }
+
+    /** Set once an assistant instance answered a voice message as an empty question (too old for audio). */
+    private assistantVoiceWarned = false;
+
+    /**
+     * Forward a voice message to the ioBroker.assistant instance: it recognises the speech, answers like a text
+     * question (same `source`, so the conversation continues) and returns what it heard. The same user check as for
+     * text messages applies — without it anyone could talk to the assistant just by sending a voice message.
+     *
+     * @param msg the voice message
+     * @param download the running download of the recording (OGG/Opus)
+     */
+    async askAssistantByVoice(msg: Message, download: Promise<Buffer>): Promise<void> {
+        const bot = this.bot!;
+        const from: User = msg.from!;
+        const user = !this.config.useUsername ? from.first_name : !from.username ? from.first_name : from.username;
+
+        const pollingInterval = parseInt(String(this.config.pollingInterval ?? 0), 10) || 0;
+        if (Date.now() - msg.date * 1000 > pollingInterval + 30000) {
+            this.log.warn(`Voice message from ${from.first_name} ignored, because too old`);
+            return;
+        }
+        if ((this.config.password || this.config.doNotAcceptNewUsers) && !this.storedUsers[from.id]) {
+            await bot.api
+                .sendMessage({
+                    chat_id: from.id,
+                    text: I18n.translate(
+                        this.config.doNotAcceptNewUsers
+                            ? 'User is not in the list'
+                            : 'Please enter password in form "/password phrase"',
+                    ),
+                })
+                .catch(error => this.log.error(`send Message Error: ${error}`));
+            return;
+        }
+
+        const content = await download;
+        const options = msg.is_topic_message ? { message_thread_id: msg.message_thread_id } : undefined;
+        // recognition + answer take a few seconds: show that something is happening
+        bot.api.sendChatAction({ ...options, chat_id: msg.chat.id, action: 'typing' }).catch(() => {});
+
+        this.log.debug(
+            `Forward voice message from ${user} (${content.length} bytes) to ${this.config.assistantInstance}`,
+        );
+        const response = (await this.sendToIfAlive(this.config.assistantInstance, 'ask', {
+            text: '',
+            audio: content.toString('base64'),
+            format: 'ogg',
+            source: `telegram:${user}`,
+            user,
+            chatId: msg.chat.id,
+            userId: from.id.toString(),
+            messageThreadId: msg.is_topic_message ? msg.message_thread_id : 0,
+        })) as { answer?: string; error?: string; heard?: string } | undefined;
+        if (!response) {
+            return;
+        }
+        // an assistant that does not know `audio` sees no text and rejects the request as an empty question
+        if (response.error === 'empty question' && response.heard === undefined) {
+            if (!this.assistantVoiceWarned) {
+                this.assistantVoiceWarned = true;
+                this.log.warn(
+                    `${this.config.assistantInstance} cannot recognise voice messages - update ioBroker.assistant to the latest version`,
+                );
+            }
+            return;
+        }
+        const answer = response.answer || response.error;
+        if (!answer) {
+            return;
+        }
+        // show what was understood, so a wrong answer can be told apart from a misheard question
+        const text = response.heard ? `🎤 ${response.heard}\n\n${answer}` : answer;
+        this.log.debug(`Assistant response: ${text}`);
+        await bot.api
+            .sendMessage({ ...options, chat_id: msg.chat.id, text })
+            .catch(error => this.log.error(`send Message Error: ${error}`));
+    }
+
+    /**
+     * Store a downloaded file where `saveFilesTo` says (file system or ioBroker file storage).
+     *
+     * @param fileName path below the storage root, e.g. `/voice/temp.ogg`
+     * @param content the file content
+     * @param callback called with the stored location (not called when saving is off)
+     */
+    async storeFile(fileName: string, content: Buffer, callback: (result: SaveFileResult) => void): Promise<void> {
+        this.log.debug(`Saving media file to ${fileName} (location = ${this.config.saveFilesTo})`);
+        if (this.config.saveFilesTo == 'filesystem') {
+            const fileLocation = join(this.tmpDirName, fileName);
+            writeFileSync(fileLocation, content);
+
+            callback({
+                info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
+                location: this.config.saveFilesTo,
+                path: fileLocation,
+            });
+        } else if (this.config.saveFilesTo == 'iobroker') {
+            const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
+            await this.writeFileAsync(this.namespace, fileName, content);
+
+            callback({
+                info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
+                location: this.config.saveFilesTo,
+                path: fileLocation,
+            });
+        }
     }
 
     getMessage(msg: Message): void {
@@ -1923,22 +2017,22 @@ class Telegram extends Adapter {
         }
 
         if (msg.voice) {
-            try {
-                this.saveFile(
-                    msg.voice.file_id,
-                    this.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg',
-                    res => {
-                        if (!res.error) {
-                            this.log.info(res.info!);
-                            this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
-                        } else {
-                            this.log.debug(res.error);
-                        }
-                    },
+            // Downloaded once: stored as before (communicate.pathFile) and, with an assistant instance, recognised
+            // and answered there. A voice message with a caption is answered by its caption (text pipeline) instead.
+            const download = this.downloadFile(msg.voice.file_id);
+            if (this.config.assistantInstance && msg.from && !msg.caption) {
+                this.askAssistantByVoice(msg, download).catch(err =>
+                    this.log.error(`Cannot send voice message to ${this.config.assistantInstance}: ${err}`),
                 );
-            } catch (err) {
-                this.log.error(`Error saving voice file: ${err}`);
             }
+            download
+                .then(content =>
+                    this.storeFile(this.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', content, res => {
+                        this.log.info(res.info!);
+                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                    }),
+                )
+                .catch(err => this.log.debug(`Error saving voice file: ${err}`));
         } else if (this.config.saveFiles && msg.photo) {
             try {
                 const qualityMap: Record<number, string> = {
