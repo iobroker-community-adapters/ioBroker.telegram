@@ -102,7 +102,41 @@ const INTERNAL_OPTION_KEYS = new Set<string>([
     'editMessageCaption',
     'deleteMessage',
     'answerCallbackQuery',
+    'returnMessageIds',
 ]);
+
+/**
+ * Merge the per-recipient results of `sendMessage` - each a JSON `{ "<chatId>": messageId }`, with `error` for a
+ * recipient that failed - into one object, e.g. `{ "12345": 678, "error": { "999": "Forbidden: ..." } }`.
+ *
+ * @param results what `sendMessage` resolved with
+ * @returns chat id => message id, plus `error` (chat id => reason) if a recipient failed
+ */
+export function mergeMessageIds(results: unknown): MessageIds {
+    const merged: MessageIds = {};
+    if (!Array.isArray(results)) {
+        return merged;
+    }
+    for (const item of results) {
+        let ids: unknown;
+        try {
+            ids = typeof item === 'string' ? JSON.parse(item) : item;
+        } catch {
+            continue;
+        }
+        if (!ids || typeof ids !== 'object') {
+            continue;
+        }
+        for (const [key, value] of Object.entries(ids as Record<string, unknown>)) {
+            if (key === 'error' && value && typeof value === 'object') {
+                merged.error = { ...(merged.error as Record<string, unknown> | undefined), ...value };
+            } else if (typeof value === 'number' || typeof value === 'string') {
+                merged[key] = value;
+            }
+        }
+    }
+    return merged;
+}
 
 /**
  * Pick the Bot API parameters out of the option bag, dropping the adapter-internal keys.
@@ -1655,8 +1689,10 @@ class Telegram extends Adapter {
                 resolve(JSON.stringify(messageIds));
             })
             .catch(error => {
-                // add the error to the message ids object
-                messageIds.error = { [String(options.chat_id ?? options.chatId)]: error };
+                // add the error to the message ids object - as text: an Error object becomes `{}` in JSON
+                messageIds.error = {
+                    [String(options.chat_id ?? options.chatId)]: error instanceof Error ? error.message : String(error),
+                };
                 // log error to the system
                 this.log.error(
                     `Failed sending [${options.chatId ? 'chatId' : 'user'} - ${options.chatId ? options.chatId : options.user}]: ${error}`,
@@ -2093,9 +2129,21 @@ class Telegram extends Adapter {
                     }
 
                     tPromise
-                        .then(
-                            results => obj.callback && this.sendTo(obj.from, obj.command, results.length, obj.callback),
-                        )
+                        .then(results => {
+                            if (!obj.callback) {
+                                return;
+                            }
+                            // Before 5.0 the callback got the message ids, and scripts used them to edit or delete
+                            // the message later (#1389). Since then it gets the number of recipients, which newer
+                            // scripts rely on - so the ids come on request.
+                            const wantIds = typeof obj.message === 'object' && !!obj.message.returnMessageIds;
+                            this.sendTo(
+                                obj.from,
+                                obj.command,
+                                wantIds ? mergeMessageIds(results) : results.length,
+                                obj.callback,
+                            );
+                        })
                         .catch(e => this.log.error(`Cannot send command: ${e}`));
                 }
                 break;

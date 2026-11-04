@@ -21,6 +21,7 @@
     "telegram_message": "сообщение",
     "telegram_parsemode_default": "по умолчанию",
     "telegram_silent": "без уведомления",
+    "telegram_threadid": "Тема (Thread-ID, необязательно)",
     "telegram_tooltip": "Послать сообщение через Telegram",
     "telegram_username": "Получатель (имя пользователя, необязательно)"
 }

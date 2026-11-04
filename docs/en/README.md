@@ -336,6 +336,22 @@ sendTo('telegram.0', 'send', {
 });
 ```
 
+The Blockly block "telegram" has an optional input "Topic (Thread-ID)" for it as well.
+
+## Message ids of sent messages
+The callback of `send` gets the number of recipients. To edit or delete the message later, ask for the ids instead
+with `returnMessageIds: true`: the callback then gets an object `chat id => message id`, and `error`
+(`chat id => reason`) if a recipient failed.
+
+```javascript
+sendTo('telegram.0', 'send', { text: 'Washing machine is done', chatId: 12345678, returnMessageIds: true }, ids => {
+    // ids = { '12345678': 4711 }
+    setTimeout(() => sendTo('telegram.0', 'send', {
+        deleteMessage: { options: { chat_id: 12345678, message_id: ids['12345678'] } },
+    }), 3600000);
+});
+```
+
 ## Receiving a location
 When a user shares a location with the bot (paperclip → location) or sends a venue, the coordinates are written to the state `telegram.INSTANCE.communicate.requestLocation` as a `latitude;longitude` string (role `value.gps`). The metadata states (`requestChatId`, `requestMessageId`, `requestUserId`) are updated as well, so you know who sent it.
 
