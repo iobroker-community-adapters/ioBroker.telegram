@@ -19,5 +19,6 @@
     "Done": "Gotowe",
     "ID \"%s\" not found.": "Nie znaleziono identyfikatora \"%s\".",
     "Started!": "Rozpoczęty!",
-    "uncertain": "nieznany"
+    "uncertain": "nieznany",
+    "The assistant did not answer in time.": "Asystent nie odpowiedział na czas."
 }

@@ -19,5 +19,6 @@
     "Done": "Сонце",
     "ID \"%s\" not found.": "Не знайдено ID \"%s\".",
     "Started!": "Почати!",
-    "uncertain": "невідомо"
+    "uncertain": "невідомо",
+    "The assistant did not answer in time.": "Асистент не відповів вчасно."
 }

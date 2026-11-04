@@ -19,5 +19,6 @@
     "Done": "Gedaan",
     "ID \"%s\" not found.": "ID \"%s\" niet gevonden.",
     "Started!": "Begonnen!",
-    "uncertain": "onbekend"
+    "uncertain": "onbekend",
+    "The assistant did not answer in time.": "De assistent heeft niet op tijd geantwoord."
 }

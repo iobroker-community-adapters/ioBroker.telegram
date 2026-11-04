@@ -19,5 +19,6 @@
     "Done": "Pronto",
     "ID \"%s\" not found.": "ID \"%s\" não foi encontrado.",
     "Started!": "O bot foi iniciado!",
-    "uncertain": "incerto"
+    "uncertain": "incerto",
+    "The assistant did not answer in time.": "O assistente não respondeu a tempo."
 }

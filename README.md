@@ -40,6 +40,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (@GermanBluefox) Questions to the `assistant` instance (text and voice) wait at most 2 minutes for the answer; after that the user gets "The assistant did not answer in time." instead of no reply at all (e.g. when the assistant restarted meanwhile)
+
 ### 6.1.0 (2026-11-04)
 - (@GermanBluefox) Voice messages are forwarded to the configured `assistant` instance: it recognises the speech and the answer is sent back to the chat with the recognised text in front (🎤 …). The same user check as for text messages applies; a voice message with a caption is answered by its caption. Needs ioBroker.assistant with voice enabled, a speech recognition engine and ffmpeg on the host
 - (@GermanBluefox) `send` can return the ids of the sent messages again (`returnMessageIds: true`), to edit or delete the message later; failed recipients come with the reason (#1389)

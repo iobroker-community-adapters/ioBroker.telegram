@@ -19,5 +19,6 @@
     "Done": "完毕",
     "ID \"%s\" not found.": "找不到ID“％s”。",
     "Started!": "开始！",
-    "uncertain": "未知"
+    "uncertain": "未知",
+    "The assistant did not answer in time.": "助手未能及时回答。"
 }
