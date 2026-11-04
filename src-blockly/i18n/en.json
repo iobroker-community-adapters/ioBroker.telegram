@@ -21,6 +21,7 @@
     "telegram_message": "message",
     "telegram_parsemode_default": "default",
     "telegram_silent": "without notification",
+    "telegram_threadid": "Topic (Thread-ID, optional)",
     "telegram_tooltip": "Send message to telegram",
     "telegram_username": "Recipient (Username, optional)"
 }

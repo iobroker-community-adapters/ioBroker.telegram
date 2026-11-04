@@ -1,7 +1,27 @@
 {
+    "telegram": "telegram",
+    "telegram_anyInstance": "Усі екземпляри",
     "telegram_ask": "подати заявку",
     "telegram_ask_answer": "Відправити",
     "telegram_ask_answers": "Відповідей",
     "telegram_ask_question": "Питання",
-    "telegram_parsemode_default": "за замовчуванням"
+    "telegram_call": "дзвінок через Telegram",
+    "telegram_call_repeats": "Повтори",
+    "telegram_call_system": "Мова системи",
+    "telegram_call_tooltip": "Зателефонувати через Telegram і промовити текст",
+    "telegram_chatid": "Одержувач (Chat-ID, необов'язково)",
+    "telegram_disable_web_preview": "вимкнути попередній перегляд посилань",
+    "telegram_escaping": "Екранувати символи",
+    "telegram_log": "рівень журналу",
+    "telegram_log_debug": "налагодження",
+    "telegram_log_error": "помилка",
+    "telegram_log_info": "інформація",
+    "telegram_log_none": "немає",
+    "telegram_log_warn": "попередження",
+    "telegram_message": "повідомлення",
+    "telegram_parsemode_default": "за замовчуванням",
+    "telegram_silent": "без сповіщення",
+    "telegram_threadid": "Тема (Thread-ID, необов'язково)",
+    "telegram_tooltip": "Надіслати повідомлення в Telegram",
+    "telegram_username": "Одержувач (ім'я користувача, необов'язково)"
 }
