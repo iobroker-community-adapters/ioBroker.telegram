@@ -911,6 +911,30 @@
         "write": false
       },
       "native": {}
+    },
+    {
+      "_id": "communicate.pathFileUrl",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "URL of the last received file (iobdisk://, readable from every host)",
+          "de": "URL der zuletzt empfangenen Datei (iobdisk://, von jedem Host lesbar)",
+          "ru": "URL последнего полученного файла (iobdisk://, читается с любого хоста)",
+          "pt": "URL do último arquivo recebido (iobdisk://, legível a partir de qualquer host)",
+          "nl": "URL van het laatst ontvangen bestand (iobdisk://, leesbaar vanaf elke host)",
+          "fr": "URL du dernier fichier reçu (iobdisk://, lisible depuis chaque hôte)",
+          "it": "URL dell'ultimo file ricevuto (iobdisk://, leggibile da ogni host)",
+          "es": "URL del último archivo recibido (iobdisk://, legible desde cualquier host)",
+          "pl": "URL ostatnio odebranego pliku (iobdisk://, czytelny z każdego hosta)",
+          "uk": "URL останнього отриманого файлу (iobdisk://, читається з будь-якого хоста)",
+          "zh-cn": "最后收到的文件的 URL（iobdisk://，可从每台主机读取）"
+        },
+        "type": "string",
+        "role": "url",
+        "read": true,
+        "write": false
+      },
+      "native": {}
     }
   ]
 }

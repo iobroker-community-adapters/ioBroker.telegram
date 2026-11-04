@@ -178,6 +178,8 @@ export interface SaveFileResult {
     info?: string;
     location?: string;
     path?: string;
+    /** `iobdisk://` URL of the stored file, readable by instances on every host (empty if not available) */
+    url?: string;
     error?: string;
 }
 
