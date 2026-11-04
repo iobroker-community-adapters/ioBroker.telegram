@@ -850,6 +850,38 @@ class Telegram extends Adapter {
         this.setState(id, value).catch(e => this.log.error(`Cannot set state "${id}": ${e}`));
     }
 
+    /**
+     * Publish the last received file: its path on this host (`communicate.pathFile`) and its `iobdisk://` URL
+     * (`communicate.pathFileUrl`), which an instance on another host can read with `readDiskFile(url)`.
+     *
+     * @param res the result of storeFile
+     */
+    setReceivedFile(res: SaveFileResult): void {
+        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+        this.setStateSafe('communicate.pathFileUrl', { val: res.url || '', ack: true });
+    }
+
+    /**
+     * The `iobdisk://` URL of a file in the data directory of this instance, e.g.
+     * `iobdisk://pi4/telegram.0/video/2026-11-04_10-00-00.mp4`
+     *
+     * @param fileLocation absolute path of the file
+     * @returns the URL, or an empty string if js-controller is older than 8.0
+     */
+    getReceivedFileUrl(fileLocation: string): string {
+        // js-controller 8.0 and newer
+        const getDiskFileUrl = (this as unknown as { getDiskFileUrl?: (filePath: string) => string }).getDiskFileUrl;
+        if (typeof getDiskFileUrl !== 'function') {
+            return '';
+        }
+        try {
+            return getDiskFileUrl.call(this, fileLocation);
+        } catch (e) {
+            this.log.debug(`Cannot build the URL of ${fileLocation}: ${(e as Error).message}`);
+            return '';
+        }
+    }
+
     connectionState(connected: boolean, logSuccess?: boolean): void {
         let errorCounter = 0;
         // Note: Do NOT reset pollingConflictCount here. connectionState() is called after getMe() succeeds,
@@ -2297,6 +2329,7 @@ class Telegram extends Adapter {
                 info: `media file has been saved to "${this.config.saveFilesTo}": ${fileLocation}`,
                 location: this.config.saveFilesTo,
                 path: fileLocation,
+                url: this.getReceivedFileUrl(fileLocation),
             });
         } else if (this.config.saveFilesTo == 'iobroker') {
             const fileLocation = join(this.tmpDirName, fileName); // TODO: check new urn format https://github.com/ioBroker/ioBroker.js-controller/issues/2710
@@ -2380,7 +2413,7 @@ class Telegram extends Adapter {
                 .then(content =>
                     this.storeFile(this.config.saveFiles ? `/voice/${date}.ogg` : '/voice/temp.ogg', content, res => {
                         this.log.info(res.info!);
-                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                        this.setReceivedFile(res);
                     }),
                 )
                 .catch(err => this.log.debug(`Error saving voice file: ${err}`));
@@ -2436,7 +2469,7 @@ class Telegram extends Adapter {
                     this.saveFile(item.file_id, fileName, res => {
                         if (!res.error) {
                             this.log.info(res.info!);
-                            this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                            this.setReceivedFile(res);
                         } else {
                             this.log.debug(res.error);
                         }
@@ -2450,7 +2483,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.video.file_id, `/video/${date}.mp4`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                        this.setReceivedFile(res);
                     } else {
                         this.log.debug(res.error);
                     }
@@ -2463,7 +2496,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.video_note.file_id, `/video/${date}.mp4`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                        this.setReceivedFile(res);
                     } else {
                         this.log.debug(res.error);
                     }
@@ -2476,7 +2509,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.audio.file_id, `/audio/${date}.mp3`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                        this.setReceivedFile(res);
                     } else {
                         this.log.debug(res.error);
                     }
@@ -2489,7 +2522,7 @@ class Telegram extends Adapter {
                 this.saveFile(msg.document.file_id, `/document/${msg.document.file_name}`, res => {
                     if (!res.error) {
                         this.log.info(res.info!);
-                        this.setStateSafe('communicate.pathFile', { val: res.path!, ack: true });
+                        this.setReceivedFile(res);
                     } else {
                         this.log.debug(res.error);
                     }
@@ -3901,6 +3934,7 @@ class Telegram extends Adapter {
         await this.setState('communicate.responseSilentJson', { val: '', ack: true });
         await this.setState('communicate.requestResponse', { val: '', ack: true });
         await this.setState('communicate.pathFile', { val: '', ack: true });
+        await this.setState('communicate.pathFileUrl', { val: '', ack: true });
 
         this.config.password ||= '';
         this.config.keyboard ||= '/cmds';
