@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "6.2.1",
+    "version": "6.3.0",
     "news": {
+      "6.3.0": {
+        "en": "Added \"Delete received files after (days)\": saved voice messages, photos, videos, audio files and documents older than that are deleted, in the file system or in the file storage, checked every hour. 0 (default) keeps them as before",
+        "de": "„Empfangene Dateien löschen nach (Tagen)“ hinzugefügt: gespeicherte Sprachnachrichten, Fotos, Videos, Audiodateien und Dokumente werden stündlich im Dateisystem oder im Speicher gelöscht. 0 (Standard)",
+        "ru": "Добавлена функция «Удалять полученные файлы через (дней)»: сохраненные голосовые сообщения, фотографии, видео, аудиофайлы и документы старше этого срока удаляются в файловой системе или в файловом хранилище каждый час. 0 (по умолчанию) сохраняет их в прежнем виде",
+        "pt": "Adicionado “Excluir arquivos recebidos após (dias)”: mensagens de voz, fotos, vídeos, arquivos de áudio e documentos antigos são verificados a cada hora. 0 (padrão) os mantém como antes",
+        "nl": "„Ontvangen bestanden verwijderen na (dagen)” toegevoegd: opgeslagen spraakberichten, foto's, video's, audiobestanden en documenten die ouder zijn, worden verwijderd in het bestandssysteem of in de bestandsopslag, elk uur gecontroleerd. 0 (standaard) bewaart ze zoals voorheen",
+        "fr": "Ajout de « Supprimer les fichiers reçus après (des jours) » : messages vocaux, photos, vidéos, fichiers audio et documents plus anciens que ceux supprimés, vérifiés toutes les heures. 0 (par défaut) les conserve comme avant",
+        "it": "Aggiunto «Elimina i file ricevuti dopo (giorni)»: messaggi vocali, foto, video, file audio e documenti più vecchi, salvati nel file system o nell'archivio, controllati ogni ora. 0 (predefinito) li mantiene come prima",
+        "es": "Se ha añadido «Eliminar los archivos recibidos después de (días)»: guarda los mensajes de voz, fotos, vídeos, archivos de audio y documentos más antiguos, en el sistema de archivos o en el almacenamiento de archivos, comprobados cada hora. 0 (por defecto) los mantiene como antes",
+        "pl": "Dodano „Usuń odebrane pliki po (dniach)”: zapisane wiadomości głosowe, zdjęcia, filmy, pliki audio i dokumenty starsze niż te są usuwane, w systemie plików lub w pamięci plików, sprawdzane co godzinę. 0 (domyślnie) zachowuje je jak poprzednio",
+        "uk": "Додано «Видалити отримані файли після (днів)»: збережені голосові повідомлення, фотографії, відео, аудіофайли та документи старші, ніж ті, видаляються, у файловій системі або в сховищі файлів, перевіряються щогодини. 0 (за замовчуванням) зберігає їх як раніше",
+        "zh-cn": "添加了 “在（天）之后删除收到的文件”：在文件系统或文件存储器中保存的语音消息、照片、视频、音频文件和已删除的文档，每小时检查一次。0（默认）使它们保持原样"
+      },
       "6.2.1": {
         "en": "Videos for the `assistant` instance are stored in the data directory of the instance (`iobroker-data/telegram_0/assistant`, the newest 20) and go along as `iobdisk://` URL, which the assistant reads from any host (js-controller 8.0+). With an older js-controller they still go to the file storage",
         "de": "Videos für die `Assistant`-Instanz werden im Datenverzeichnis der Instanz gespeichert (`iobroker-data/telegram_0/assistant`, die neuesten 20) und haben die URL `iobdisk: //`, die der Assistent von jedem Host liest (js-controller 8.0+). Mit einem älteren JS-Controller gehen sie immer noch",
@@ -80,19 +93,6 @@
         "pl": "Naprawiono: skonfigurowana instancja text2command / assistant może być teraz również przechowywana w długiej formie ('system.adapter.text2command.0') - kontrola żywa nie zawodzi przy \"instance nie jest uruchomiona\"",
         "uk": "Виправлено: налаштований текст2command/assistant екземпляр може тепер також зберігатися в довгостроковій формі (`system.adapter.text2command.0`) - живий чек більше не виходить з \"інтенсивом не працює\"",
         "zh-cn": "固定 : 已配置的文本2 命令/ 辅助实例现在也可能以长窗体( 'system. adapter. text2 command. 0') 存储 - 活的检查不再以“ 无效运行” 失败 "
-      },
-      "5.0.2": {
-        "en": "Adapter requires node.js >= 22 now\nAdapter requires admin >= 7.7.22 now\nadmin 8.0.0 and js-controller 6.0.11 (or later) are required\nUpdated dependencies",
-        "de": "Der Adapter benötigt jetzt Node.js >= 22.\nDer Adapter benötigt jetzt Administratorrechte ab Version 7.7.22.\nadmin 8.0.0 und js-controller 6.0.11 (oder höher) werden benötigt.\nAktualisierte Abhängigkeiten",
-        "ru": "Для работы адаптера требуется Node.js версии >= 22.\nДля работы адаптера требуется версия admin >= 7.7.22.\nДля работы требуются admin 8.0.0 и js-controller 6.0.11 (или более поздняя версия).\nОбновлены зависимости",
-        "pt": "O adaptador agora requer Node.js >= 22.\nO adaptador agora requer o administrador na versão 7.7.22 ou superior.\nÉ necessário ter o admin 8.0.0 e o js-controller 6.0.11 (ou posterior) instalados.\nDependências atualizadas",
-        "nl": "De adapter vereist nu Node.js versie 22 of hoger.\nAdapter vereist nu beheerdersversie >= 7.7.22.\nAdmin 8.0.0 en js-controller 6.0.11 (of later) zijn vereist.\nBijgewerkte afhankelijkheden",
-        "fr": "L'adaptateur nécessite désormais Node.js >= 22.\nL'adaptateur nécessite désormais une version d'administrateur supérieure ou égale à 7.7.22.\nadmin 8.0.0 et js-controller 6.0.11 (ou version ultérieure) sont requis\nDépendances mises à jour",
-        "it": "L'adattatore ora richiede Node.js >= 22\nL'adattatore richiede ora l'amministratore >= 7.7.22\nSono richiesti admin 8.0.0 e js-controller 6.0.11 (o versioni successive).\nDipendenze aggiornate",
-        "es": "El adaptador ahora requiere node.js >= 22.\nEl adaptador ahora requiere administrador >= 7.7.22\nSe requieren admin 8.0.0 y js-controller 6.0.11 (o posterior).\nDependencias actualizadas",
-        "pl": "Adapter wymaga teraz node.js >= 22\nAdapter wymaga teraz administratora >= 7.7.22\nWymagany jest admin 8.0.0 i js-controller 6.0.11 (lub nowszy)\nZaktualizowane zależności",
-        "uk": "Адаптер тепер вимагає node.js >= 22\nАдаптер тепер вимагає адміністратора >= 7.7.22\nПотрібні admin 8.0.0 та js-controller 6.0.11 (або пізнішої версії)\nОновлені залежності",
-        "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n适配器现在需要管理员版本 >= 7.7.22。\n需要 admin 8.0.0 和 js-controller 6.0.11（或更高版本）。\n更新依赖项"
       }
     },
     "messages": [

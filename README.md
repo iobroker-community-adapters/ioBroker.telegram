@@ -40,7 +40,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 6.3.0 (2026-11-07)
 - (@GermanBluefox) Added "Delete received files after (days)": saved voice messages, photos, videos, audio files and documents older than that are deleted, in the file system or in the file storage, checked every hour. 0 (default) keeps them as before
 
 ### 6.2.1 (2026-11-07)
@@ -60,14 +60,6 @@ Use telegram service to communicate with ioBroker
 ### 6.0.2 (2026-09-12)
 - (@GermanBluefox) Updated packages and improved the rules block
 - (@patricknitsch) Retried getUpdates 409 conflicts quickly before falling back to a slow restartart
-
-### 6.0.0 (2026-09-02)
-- (@GermanBluefox) Adapter requires Node.js >= 22.19 now (required by undici 8)
-- (@GermanBluefox) The connection to the telegram servers can be routed through an HTTP(S) or SOCKS5 proxy (new "Use proxy" settings; the old proxy fields had been without function for years)
-- (@GermanBluefox) Migrated to `node-telegram-bot-api` v2. Updates are now received via long polling, so the "Polling interval" setting became obsolete and was removed from the configuration dialog. Errors thrown while processing an update are logged by the adapter instead of ending up on the console
-- (@GermanBluefox) An empty "API URL" field no longer breaks every API call with "EFATAL: Failed to parse URL" - the default `https://api.telegram.org` is used again (#1371)
-- (@GermanBluefox) A `text2command`/`assistant` instance stored in the long form (`system.adapter.text2command.0`, written by the config UI before v1.12.6) is migrated to the short form on startup, so the config dialog shows the selected instance again (#1365)
-- (@GermanBluefox) Added the states `communicate.requestLocationLive` (live location is still being shared), `communicate.requestLocationHeading` and `communicate.requestLocationAccuracy` for received (live) locations
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
