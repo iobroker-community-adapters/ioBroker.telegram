@@ -85,7 +85,7 @@ Instead of `text2command` you can select an [assistant](https://github.com/ioBro
 - **Text** is the question.
 - **Voice messages** are recognised by the assistant (it needs voice enabled, a speech recognition engine and ffmpeg); the answer starts with the recognised text (🎤 …).
 - **Photos** go along as pictures, the caption is the question (without one the assistant describes the picture). The photos of an album go as one question, at most 4 of them. The assistant needs a cloud model that can see pictures.
-- **Videos** are not sent along: they are stored in the file storage of this instance (folder `assistant`, the newest 20 are kept) and the assistant only learns where. It does not look at videos yet. Telegram lets bots download files up to 20 MB only.
+- **Videos** are not sent along: they are stored in the folder `assistant` of this instance (the newest 20 are kept) and the assistant only learns where - with js-controller 8.0+ in the data directory (`iobroker-data/telegram_0/assistant`) as `iobdisk://` URL, which the assistant reads from any host, with an older js-controller in the file storage. It does not look at videos yet. Telegram lets bots download files up to 20 MB only.
 
 Photos and videos can be switched off with "Photos and videos to the assistant". The assistant gets 2 minutes for an answer; after that the user is told that it did not answer in time.
 

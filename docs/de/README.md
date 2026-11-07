@@ -85,7 +85,7 @@ Statt `text2command` kann eine [assistant](https://github.com/ioBroker/ioBroker.
 - **Text** ist die Frage.
 - **Sprachnachrichten** erkennt der Assistent (Sprache muss dort eingeschaltet sein, mit Spracherkennung und ffmpeg); die Antwort beginnt mit dem erkannten Text (🎤 …).
 - **Fotos** gehen als Bilder mit, die Bildunterschrift ist die Frage (ohne beschreibt der Assistent das Bild). Die Fotos eines Albums gehen als eine Frage, höchstens 4. Der Assistent braucht dafür ein Cloud-Modell, das Bilder sehen kann.
-- **Videos** werden nicht mitgeschickt: sie landen im Dateispeicher dieser Instanz (Ordner `assistant`, die neuesten 20 bleiben), und der Assistent erfährt nur den Ablageort. Videos sieht er sich noch nicht an. Telegram lässt Bots nur Dateien bis 20 MB herunterladen.
+- **Videos** werden nicht mitgeschickt: sie landen im Ordner `assistant` dieser Instanz (die neuesten 20 bleiben), und der Assistent erfährt nur den Ablageort - mit js-controller 8.0+ im Datenverzeichnis (`iobroker-data/telegram_0/assistant`) als `iobdisk://`-URL, die der Assistent von jedem Host lesen kann, mit einem älteren js-controller im Dateispeicher. Videos sieht er sich noch nicht an. Telegram lässt Bots nur Dateien bis 20 MB herunterladen.
 
 Fotos und Videos lassen sich mit „Fotos und Videos an den Assistenten“ abschalten. Der Assistent hat 2 Minuten für eine Antwort; danach erfährt der Nutzer, dass keine rechtzeitig kam.
 
