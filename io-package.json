@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "6.2.0",
+    "version": "6.2.1",
     "news": {
+      "6.2.1": {
+        "en": "Videos for the `assistant` instance are stored in the data directory of the instance (`iobroker-data/telegram_0/assistant`, the newest 20) and go along as `iobdisk://` URL, which the assistant reads from any host (js-controller 8.0+). With an older js-controller they still go to the file storage",
+        "de": "Videos für die `Assistant`-Instanz werden im Datenverzeichnis der Instanz gespeichert (`iobroker-data/telegram_0/assistant`, die neuesten 20) und haben die URL `iobdisk: //`, die der Assistent von jedem Host liest (js-controller 8.0+). Mit einem älteren JS-Controller gehen sie immer noch",
+        "ru": "Видеозаписи экземпляра `assistant` хранятся в каталоге данных экземпляра (`iobroker-data/telegram_0/assistant`, новые 20) и сопровождаются URL-адресом `iobdisk: //`, который ассистент считывает с любого хоста (js-controller 8.0+). Со старым js-контроллером они все равно отправляются в файловое хранилище",
+        "pt": "Os vídeos da instância `assistant` são armazenados no diretório de dados da instância (`iobroker-data/telegram_0/assistant`, os 20 mais novos) e como URL `iobdisk: //`, que o assistente lê de qualquer host (js-controller 8.0+). Com um controlador js antigo, eles ainda armazenam arquivos",
+        "nl": "Video's voor de instantie `assistant` worden opgeslagen in de gegevensmap van de instantie (`iobroker-data/telegram_0/assistant`, de nieuwste 20) en worden gebruikt als `iobdisk: //` URL, die de assistent van elke host leest (js-controller 8.0+). Met een oudere js-controller gaan ze nog steeds naar de bestandsopslag",
+        "fr": "Les vidéos de l'instance « assistant » sont stockées dans le répertoire de données de l'instance (« iobroker-data/telegram_0/assistant », le 20 plus récent) et sont accompagnées de l'URL « iobdisk ://», que l'assistant lit depuis n'importe quel hôte (js-controller 8.0+). Avec un ancien JS-Controller, ils accèdent toujours à la mémoire",
+        "it": "I video per l'istanza Assistant sono memorizzati nella cartella dati dell'istanza (iobroker-data/telegram_0/assistant, la più recente 20) e sono indicati come URL iobdisk://, che l'assistente legge da qualsiasi host (js-controller 8.0+). Con un vecchio js-controller vanno ancora all'archivio",
+        "es": "Los vídeos de la instancia `assistant` se almacenan en el directorio de datos de la instancia (`iobroker-data/telegram_0/assistant`, los 20 más recientes) y van como URL `iobdisk: //`, que el asistente lee desde cualquier host (js-controller 8.0+). Con un controlador js antiguo, aún van al almacén de archivos",
+        "pl": "Filmy dla instancji `assistant` są przechowywane w katalogu danych instancji (`iobroker-data/telegram_0/assistant`, najnowsze 20) i pojawiają się jako `iobdisk: //` URL, który asystent odczytuje z dowolnego hosta (js-controller 8.0+). Ze starszym kontrolerem js nadal przechodzą do przechowywania plików",
+        "uk": "Відео для екземпляра `assistant` зберігаються в каталозі даних екземпляра (`iobroker-data/telegram_0/assistant`, найновіша 20) і переходять як `iobdisk: //` URL, яку помічник читає з будь-якого хоста (js-controller 8.0+). З більш старим js-контролером вони все ще переходять до сховища файлів",
+        "zh-cn": "“助手” 实例的视频存储在实例的数据目录中（“iobroker-data/telegram_0/assistant”，最新的 20 个），作为 `iobdisk: //` 网址，助手从任何主机（js-controller 8.0+）读取该网址。使用较旧的 js-controller，它们仍然会进入文件存储"
+      },
       "6.2.0": {
         "en": "Questions to the `assistant` instance (text and voice) wait at most 2 minutes for the answer; after that the user gets \"The assistant did not answer in time.\" instead of no reply at all (e.g. when the assistant restarted meanwhile)\nPhotos and videos are forwarded to the `assistant` instance too: photos (an album as one question, at most 4) with their caption as the question, videos are stored in the file storage of the instance (folder `assistant`, the newest 20) and only their place goes along. Can be switched off with \"Photos and videos to the assistant\"\nAdded the state `communicate.pathFileUrl`: the `iobdisk://` URL of the last received file (e.g. `iobdisk://pi4/telegram.0/video/2026-11-04_10-00-00.mp4`), which instances on other hosts can read with `readDiskFile(url)` - the path in `communicate.pathFile` is only valid on the host of telegram. Needs js-controller 8.0 and `saveFilesTo: filesystem`, otherwise the state stays empty",
         "de": "Fragen an den Assistenten (Text und Stimme) warten maximal 2 Minuten. Danach erhält der Nutzer „Der Assistent hat nicht rechtzeitig geantwortet“ statt gar keine Antwort (z. B. wenn der Assistent zwischenzeitlich neu gestartet wurde)\nFotos und Videos werden auch an die Assistenteninstanz weitergeleitet: Fotos (ein Album als eine Frage, maximal 4) mit der Überschrift als Frage, Videos werden im Dateispeicher der Instanz gespeichert (Ordner `Assistent`, die neuesten 20) und nur ihr Platz geht mit. Abschaltbar mit „Fotos und Videos für den Assistenten“\nStatus `communicate.pathFileUrl` hinzugefügt: die `iobdisk: //` URL der zuletzt empfangenen Datei (z. B. `iobdisk: //pi4/telegram.0/video/2026-11-04_10-00-00.mp4`), die Instanzen auf anderen Hosts mit `ReadDiskFile (url) `lesen können — der Pfad in `Communicate.PathFile` ist nur auf dem Host von Telegram gültig. Benötigt JS-Controller 8.0 und `SaveFilesTo: filesystem`, sonst bleibt der Status leer",
@@ -80,19 +93,6 @@
         "pl": "Adapter wymaga teraz node.js >= 22\nAdapter wymaga teraz administratora >= 7.7.22\nWymagany jest admin 8.0.0 i js-controller 6.0.11 (lub nowszy)\nZaktualizowane zależności",
         "uk": "Адаптер тепер вимагає node.js >= 22\nАдаптер тепер вимагає адміністратора >= 7.7.22\nПотрібні admin 8.0.0 та js-controller 6.0.11 (або пізнішої версії)\nОновлені залежності",
         "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n适配器现在需要管理员版本 >= 7.7.22。\n需要 admin 8.0.0 和 js-controller 6.0.11（或更高版本）。\n更新依赖项"
-      },
-      "4.1.0": {
-        "en": "Admin component was migrated to TypeScript",
-        "de": "Admin-Komponente wurde zu TypeScript migriert",
-        "ru": "Компонент администратора был перенесен в TypeScript",
-        "pt": "O componente de administrador foi migrado para TypeScript",
-        "nl": "Admin-component is gemigreerd naar TypeScript",
-        "fr": "La composante Admin a été migrée vers TypeScript",
-        "it": "Componente Admin è stato migrato a TypeScript",
-        "es": "El componente Admin fue migrado a TipoScript",
-        "pl": "Składnik admin został przeniesiony do TypeScript",
-        "uk": "Компонент адміністратора мігрувався на TypeScript",
-        "zh-cn": "管理员组件已迁移到类型脚本"
       }
     },
     "messages": [
