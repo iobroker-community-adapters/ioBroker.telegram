@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Server as HttpServer, IncomingMessage, ServerResponse } from 'node:http';
 import type { Server as HttpsServer } from 'node:https';
@@ -102,11 +103,17 @@ const ALBUM_WAIT_MS = 1500;
 const ASSISTANT_MAX_IMAGES = 4;
 /** The size of a photo for the assistant: the largest one up to this edge (Telegram has e.g. 320, 800, 1280, 2560). */
 const ASSISTANT_IMAGE_EDGE = 1600;
-/** Videos for the assistant stay in the file storage (`<instance>/assistant/`); older ones are deleted. */
+/**
+ * Videos for the assistant stay in the folder `assistant` - in the data directory of the instance with js-controller
+ * 8.0+, else in its file storage; older ones are deleted.
+ */
 const ASSISTANT_VIDEOS_KEPT = 20;
 
 /** Where a video for the assistant was stored, or why it was not (it never goes along as content). */
 interface AssistantVideo {
+    /** `iobdisk://` URL of the file in the data directory of this instance (js-controller 8.0+) */
+    url?: string;
+    /** File storage of this instance, with an older js-controller */
     adapter?: string;
     path?: string;
     mimeType: string;
@@ -2154,8 +2161,8 @@ class Telegram extends Adapter {
 
     /**
      * Forward photos and a video to the ioBroker.assistant instance. The photos go along as base64 (one size each, see
-     * {@link assistantPhotoSize}); a video never does: it is stored in the ioBroker file storage of this instance
-     * (`assistant/`, the newest {@link ASSISTANT_VIDEOS_KEPT}), which every host reads, and only its place goes along.
+     * {@link assistantPhotoSize}); a video never does: it is stored by
+     * {@link storeVideoForAssistant} and only its place goes along.
      * The caption is the question. The same user check as for text messages applies.
      *
      * @param msgs the message, or all messages of an album
@@ -2219,7 +2226,7 @@ class Telegram extends Adapter {
         }
 
         this.log.debug(
-            `Forward ${images.length} photo(s)${video ? ` and a video (${video.path || video.error})` : ''} from ${user} to ${this.config.assistantInstance}`,
+            `Forward ${images.length} photo(s)${video ? ` and a video (${video.url || video.path || video.error})` : ''} from ${user} to ${this.config.assistantInstance}`,
         );
         let response: { answer?: string; error?: string } | undefined;
         try {
@@ -2265,8 +2272,11 @@ class Telegram extends Adapter {
     }
 
     /**
-     * Store a video for the assistant in the ioBroker file storage of this instance - the assistant may run on another
-     * host, and a video does not go through the message bus. Keeps the newest {@link ASSISTANT_VIDEOS_KEPT}.
+     * Store a video for the assistant - it may run on another host, and a video does not go through the message bus.
+     * With js-controller 8.0+ the video is written to the folder `assistant` in the data directory of this instance and
+     * goes along as `iobdisk://` URL, which the assistant reads from any host with `readDiskFile(url)`. With an older
+     * js-controller it goes to the ioBroker file storage of this instance as `{ adapter, path }`. Keeps the newest
+     * {@link ASSISTANT_VIDEOS_KEPT}.
      *
      * @param msg the message with the video or video note
      * @returns where it is, or why it is not there
@@ -2285,7 +2295,13 @@ class Telegram extends Adapter {
             const content = await this.downloadFileOnce(file.file_id);
             const date = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
             const ext = mimeType === 'video/quicktime' ? 'mov' : (mimeType.split('/')[1] || 'mp4').replace(/\W/g, '');
-            const path = `assistant/video_${date}_${msg.message_id}.${ext}`;
+            const name = `video_${date}_${msg.message_id}.${ext}`;
+            const url = await this.storeAssistantVideoOnDisk(name, content);
+            if (url) {
+                void this.pruneAssistantVideos();
+                return { ...info, url, size: content.length };
+            }
+            const path = `assistant/${name}`;
             await this.writeFileAsync(this.namespace, path, content);
             void this.pruneAssistantVideos();
             return { ...info, adapter: this.namespace, path, size: content.length };
@@ -2295,16 +2311,62 @@ class Telegram extends Adapter {
         }
     }
 
-    /** Delete all but the newest {@link ASSISTANT_VIDEOS_KEPT} videos for the assistant. */
+    /**
+     * Write a video for the assistant to the folder `assistant` in the data directory of this instance.
+     *
+     * @param name the file name
+     * @param content the video
+     * @returns its `iobdisk://` URL, or an empty string if js-controller is older than 8.0 or writing failed
+     */
+    async storeAssistantVideoOnDisk(name: string, content: Buffer): Promise<string> {
+        // js-controller 8.0 and newer
+        if (
+            !this.tmpDirName ||
+            typeof (this as unknown as { getDiskFileUrl?: unknown }).getDiskFileUrl !== 'function'
+        ) {
+            return '';
+        }
+        const fileLocation = join(this.tmpDirName, 'assistant', name);
+        try {
+            await mkdir(join(this.tmpDirName, 'assistant'), { recursive: true });
+            await writeFile(fileLocation, content);
+        } catch (error) {
+            this.log.debug(`Cannot write the video to ${fileLocation}, it goes to the file storage: ${error}`);
+            return '';
+        }
+        const url = this.getReceivedFileUrl(fileLocation);
+        if (!url) {
+            await unlink(fileLocation).catch(() => {});
+        }
+        return url;
+    }
+
+    /**
+     * Delete all but the newest {@link ASSISTANT_VIDEOS_KEPT} videos for the assistant, in the data directory and in the
+     * file storage (where they were before js-controller 8.0).
+     */
     async pruneAssistantVideos(): Promise<void> {
+        // the names start with the date, so the order of the names is the order of time
+        const tooOld = (names: string[]): string[] => {
+            const videos = names.filter(name => name.startsWith('video_')).sort();
+            return videos.slice(0, Math.max(0, videos.length - ASSISTANT_VIDEOS_KEPT));
+        };
+        if (this.tmpDirName) {
+            const dir = join(this.tmpDirName, 'assistant');
+            try {
+                const entries = await readdir(dir, { withFileTypes: true });
+                for (const name of tooOld(entries.filter(e => e.isFile()).map(e => e.name))) {
+                    await unlink(join(dir, name));
+                }
+            } catch (error) {
+                if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+                    this.log.debug(`Cannot delete old videos of the assistant in ${dir}: ${error}`);
+                }
+            }
+        }
         try {
             const files = await this.readDirAsync(this.namespace, 'assistant');
-            // the names start with the date, so the order of the names is the order of time
-            const videos = files
-                .filter(f => !f.isDir && f.file.startsWith('video_'))
-                .map(f => f.file)
-                .sort();
-            for (const file of videos.slice(0, Math.max(0, videos.length - ASSISTANT_VIDEOS_KEPT))) {
+            for (const file of tooOld(files.filter(f => !f.isDir).map(f => f.file))) {
                 await this.delFileAsync(this.namespace, `assistant/${file}`);
             }
         } catch (error) {
