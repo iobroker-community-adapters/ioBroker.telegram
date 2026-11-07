@@ -1,4 +1,5 @@
 {
+    "0 = keep them. Checked every hour": "0 = bewaren. Elk uur gecontroleerd",
     "API URL": "API-URL",
     "All received files": "Alle ontvangen bestanden",
     "Allow state control": "Staatscontrole toestaan",
@@ -11,6 +12,7 @@
     "Chained certificate": "Geketend certificaat",
     "Changed_Password": "U hebt het wachtwoord voor uw Bot gewijzigd. Wilt u alle opgeslagen gebruikers nu verwijderen? Elke gebruiker moet vervolgens opnieuw verifiëren met het nieuwe wachtwoord voordat deze weer met de bot kan communiceren.",
     "Command to show the keyboard": "Commando om het toetsenbord te tonen",
+    "Delete received files after (days)": "Ontvangen bestanden verwijderen na (dagen)",
     "Do not accept new users": "Accepteer geen nieuwe gebruikers.",
     "Done": "Gedaan",
     "File system": "Bestandssysteem",

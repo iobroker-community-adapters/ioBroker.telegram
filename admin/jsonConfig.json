@@ -235,6 +235,20 @@
                         }
                     ]
                 },
+                "deleteFilesAfterDays": {
+                    "newLine": true,
+                    "type": "number",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "xl": 4,
+                    "min": 0,
+                    "label": "Delete received files after (days)",
+                    "help": "0 = keep them. Checked every hour",
+                    "hidden": "!data.saveFiles",
+                    "default": 0
+                },
                 "allowStates": {
                     "newLine": true,
                     "type": "checkbox",

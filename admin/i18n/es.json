@@ -1,4 +1,5 @@
 {
+    "0 = keep them. Checked every hour": "0 = conservarlos. Se comprueba cada hora",
     "API URL": "URL de API",
     "All received files": "Todos los archivos recibidos",
     "Allow state control": "Permitir el control del estado",
@@ -11,6 +12,7 @@
     "Chained certificate": "Certificado encadenado",
     "Changed_Password": "Has cambiado la contraseña de tu Bot. ¿Desea eliminar todos los usuarios guardados ahora? Luego, cada usuario debe volver a autenticarse con la nueva contraseña antes de poder comunicarse con el bot nuevamente.",
     "Command to show the keyboard": "Comando para mostrar el teclado",
+    "Delete received files after (days)": "Eliminar los archivos recibidos después de (días)",
     "Do not accept new users": "No acepte nuevos usuarios.",
     "Done": "Hecho",
     "File system": "Sistema de archivos",

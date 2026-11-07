@@ -1,4 +1,5 @@
 {
+    "0 = keep them. Checked every hour": "0 = keep them. Checked every hour",
     "API URL": "API URL",
     "All received files": "All received files",
     "Allow state control": "Allow state control",
@@ -11,6 +12,7 @@
     "Chained certificate": "Chained certificate",
     "Changed_Password": "You have changed the password for your Bot. Do you want to delete all saved users now? Every user would have to authenticate again with the new password before they can communicate with the bot again.",
     "Command to show the keyboard": "Command to show the keyboard",
+    "Delete received files after (days)": "Delete received files after (days)",
     "Do not accept new users": "Do not accept new users",
     "Done": "Done",
     "File system": "File system",

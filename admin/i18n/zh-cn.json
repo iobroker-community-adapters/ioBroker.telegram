@@ -1,4 +1,5 @@
 {
+    "0 = keep them. Checked every hour": "0 = 保留。每小时检查一次",
     "API URL": "API 地址",
     "All received files": "所有收到的文件",
     "Allow state control": "允许控制状态",
@@ -11,6 +12,7 @@
     "Chained certificate": "链式证书",
     "Changed_Password": "您已更改Bot的密码。要立即删除所有已保存的用户吗？然后，每个用户必须使用新密码重新进行身份验证，然后才能再次与bot进行通信。",
     "Command to show the keyboard": "用于显示键盘的命令",
+    "Delete received files after (days)": "在指定天数后删除收到的文件",
     "Do not accept new users": "不对新用户进行身份验证",
     "Done": "完毕",
     "File system": "文件系统",

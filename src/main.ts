@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
-import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Server as HttpServer, IncomingMessage, ServerResponse } from 'node:http';
 import type { Server as HttpsServer } from 'node:https';
@@ -108,6 +108,18 @@ const ASSISTANT_IMAGE_EDGE = 1600;
  * 8.0+, else in its file storage; older ones are deleted.
  */
 const ASSISTANT_VIDEOS_KEPT = 20;
+/** Folders of received files that `deleteFilesAfterDays` cleans up (`assistant/` keeps its newest videos itself). */
+const RECEIVED_FILE_FOLDERS = ['voice', 'photo', 'video', 'audio', 'document'];
+/** How often old received files are looked for. */
+const DELETE_OLD_FILES_INTERVAL_MS = 60 * 60 * 1000;
+
+/** A received file found by `deleteOldFiles` */
+interface ReceivedFile {
+    /** Modification time in ms, if known */
+    mtime?: number;
+    /** Deletes the file */
+    delete: () => Promise<void>;
+}
 
 /** Where a video for the assistant was stored, or why it was not (it never goes along as content). */
 interface AssistantVideo {
@@ -261,6 +273,7 @@ class Telegram extends Adapter {
 
     private questions: Question[] = [];
     private garbageCollectorInterval: ioBroker.Interval | undefined;
+    private deleteOldFilesInterval: ioBroker.Interval | undefined;
     private isServer = false;
 
     /**
@@ -500,6 +513,14 @@ class Telegram extends Adapter {
             }
         }
 
+        if (this.deleteFilesAfterDays() > 0) {
+            void this.deleteOldFiles();
+            this.deleteOldFilesInterval = this.setInterval(
+                () => void this.deleteOldFiles(),
+                DELETE_OLD_FILES_INTERVAL_MS,
+            );
+        }
+
         if (this.isServer) {
             this.config.port = parseInt(String(this.config.port), 10);
 
@@ -597,6 +618,11 @@ class Telegram extends Adapter {
         if (this.garbageCollectorInterval) {
             this.clearInterval(this.garbageCollectorInterval);
             this.garbageCollectorInterval = undefined;
+        }
+
+        if (this.deleteOldFilesInterval) {
+            this.clearInterval(this.deleteOldFilesInterval);
+            this.deleteOldFilesInterval = undefined;
         }
 
         if (this.pollingRestartTimer) {
@@ -2372,6 +2398,91 @@ class Telegram extends Adapter {
         } catch (error) {
             this.log.debug(`Cannot delete old videos of the assistant: ${error}`);
         }
+    }
+
+    /** After how many days received files are deleted; 0 = never */
+    deleteFilesAfterDays(): number {
+        const days = Number(this.config.deleteFilesAfterDays);
+        return Number.isFinite(days) && days > 0 ? days : 0;
+    }
+
+    /**
+     * Delete received files (voice, photo, video, audio, document) that are older than `deleteFilesAfterDays`, where
+     * `saveFilesTo` stores them: in the file system or in the file storage of the instance.
+     *
+     * @param now the current time in ms
+     * @returns how many files were deleted
+     */
+    async deleteOldFiles(now = Date.now()): Promise<number> {
+        const days = this.deleteFilesAfterDays();
+        if (!days) {
+            return 0;
+        }
+        const limit = now - days * 24 * 60 * 60 * 1000;
+        let deleted = 0;
+        let failed = 0;
+        let lastError: unknown;
+        for (const folder of RECEIVED_FILE_FOLDERS) {
+            for (const file of await this.receivedFiles(folder)) {
+                // a file without a known time is kept
+                if (file.mtime === undefined || file.mtime >= limit) {
+                    continue;
+                }
+                try {
+                    await file.delete();
+                    deleted++;
+                } catch (error) {
+                    failed++;
+                    lastError = error;
+                }
+            }
+        }
+        if (deleted) {
+            this.log.info(`Deleted ${deleted} received file(s) older than ${days} day(s)`);
+        }
+        if (failed) {
+            this.log.warn(`Cannot delete ${failed} received file(s) older than ${days} day(s): ${String(lastError)}`);
+        }
+        return deleted;
+    }
+
+    /**
+     * The files in one folder of received files, with their modification time
+     *
+     * @param folder e.g. `video`
+     */
+    async receivedFiles(folder: string): Promise<ReceivedFile[]> {
+        try {
+            if (this.config.saveFilesTo === 'filesystem') {
+                const dir = join(this.tmpDirName, folder);
+                if (!existsSync(dir)) {
+                    return [];
+                }
+                const files: ReceivedFile[] = [];
+                for (const name of await readdir(dir)) {
+                    const file = join(dir, name);
+                    const stat = await lstat(file);
+                    // only files, no folders or links
+                    if (stat.isFile()) {
+                        files.push({ mtime: stat.mtimeMs, delete: () => unlink(file) });
+                    }
+                }
+                return files;
+            }
+            if (this.config.saveFilesTo === 'iobroker') {
+                const entries = await this.readDirAsync(this.namespace, `/${folder}`);
+                return entries
+                    .filter(entry => !entry.isDir)
+                    .map(entry => ({
+                        mtime: entry.modifiedAt ?? entry.createdAt,
+                        delete: () => this.delFileAsync(this.namespace, `/${folder}/${entry.file}`),
+                    }));
+            }
+        } catch (error) {
+            // e.g. the folder does not exist in the file storage
+            this.log.debug(`Cannot list the received files in ${folder}: ${String(error)}`);
+        }
+        return [];
     }
 
     /**
