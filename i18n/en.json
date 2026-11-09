@@ -20,5 +20,6 @@
     "ID \"%s\" not found.": "ID \"%s\" not found.",
     "Started!": "Started!",
     "uncertain": "uncertain",
-    "The assistant did not answer in time.": "The assistant did not answer in time."
+    "The assistant did not answer in time.": "The assistant did not answer in time.",
+    "The voice message could not be recognised.": "The voice message could not be recognised."
 }

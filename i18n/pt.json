@@ -20,5 +20,6 @@
     "ID \"%s\" not found.": "ID \"%s\" não foi encontrado.",
     "Started!": "O bot foi iniciado!",
     "uncertain": "incerto",
-    "The assistant did not answer in time.": "O assistente não respondeu a tempo."
+    "The assistant did not answer in time.": "O assistente não respondeu a tempo.",
+    "The voice message could not be recognised.": "Não foi possível reconhecer a mensagem de voz."
 }

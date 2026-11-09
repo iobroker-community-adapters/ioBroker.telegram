@@ -354,6 +354,29 @@
                     "help": "Photos go to the assistant with their caption as the question. Videos are stored in the file storage of this instance (folder assistant) and only their place goes along.",
                     "hidden": "!data.assistantInstance"
                 },
+                "speechToText": {
+                    "newLine": true,
+                    "type": "instance",
+                    "adapter": "ai-parakeet",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 4,
+                    "xl": 4,
+                    "label": "Speech recognition instance",
+                    "help": "speechToText_help"
+                },
+                "speechToTextEcho": {
+                    "type": "checkbox",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 8,
+                    "xl": 8,
+                    "label": "Show the recognised text in the chat",
+                    "help": "speechToTextEcho_help",
+                    "hidden": "!data.speechToText"
+                },
                 "answerTimeoutSec": {
                     "newLine": true,
                     "type": "number",

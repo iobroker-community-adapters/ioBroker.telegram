@@ -91,6 +91,8 @@ const actions = [
  * a limit a request lost on the way (e.g. the assistant restarted meanwhile) would leave the user without any reply.
  */
 const ASSISTANT_TIMEOUT_MS = 120_000;
+/** How long the speech recognition (ioBroker.ai-parakeet) may take, including loading the model after idle. */
+const SPEECH_TO_TEXT_TIMEOUT_MS = 90_000;
 
 /** Rejected by `sendToIfAlive` when the instance did not answer in time. */
 class SendToTimeoutError extends Error {}
@@ -442,9 +444,9 @@ class Telegram extends Adapter {
      * See https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/1365
      */
     async migrateInstanceIds(): Promise<void> {
-        const migrated: Partial<Pick<TelegramConfig, 'text2command' | 'assistantInstance'>> = {};
+        const migrated: Partial<Pick<TelegramConfig, 'text2command' | 'assistantInstance' | 'speechToText'>> = {};
 
-        for (const key of ['text2command', 'assistantInstance'] as const) {
+        for (const key of ['text2command', 'assistantInstance', 'speechToText'] as const) {
             const value = this.config[key];
             if (typeof value === 'string' && value.startsWith('system.adapter.')) {
                 const shortId = value.substring('system.adapter.'.length);
@@ -2057,6 +2059,109 @@ class Telegram extends Adapter {
     }
 
     /**
+     * The checks of the text pipeline for a voice message, done before the recording is recognised: an old message
+     * is dropped, and a user that is not allowed gets the same answer as for a text message. Without it anyone could
+     * use the speech recognition (or talk to the assistant) just by sending a voice message.
+     *
+     * @param msg the voice message
+     * @returns whether the voice message may be processed
+     */
+    private async acceptVoiceMessage(msg: Message): Promise<boolean> {
+        const from: User = msg.from!;
+        const pollingInterval = parseInt(String(this.config.pollingInterval ?? 0), 10) || 0;
+        if (Date.now() - msg.date * 1000 > pollingInterval + 30000) {
+            this.log.warn(`Voice message from ${from.first_name} ignored, because too old`);
+            return false;
+        }
+        if ((this.config.password || this.config.doNotAcceptNewUsers) && !this.storedUsers[from.id]) {
+            await this.bot!.api.sendMessage({
+                chat_id: from.id,
+                text: I18n.translate(
+                    this.config.doNotAcceptNewUsers
+                        ? 'User is not in the list'
+                        : 'Please enter password in form "/password phrase"',
+                ),
+            }).catch(error => this.log.error(`send Message Error: ${error}`));
+            return false;
+        }
+        return true;
+    }
+
+    /** How long the speech recognition may take (a field so that tests can shorten it). */
+    private speechToTextTimeoutMs = SPEECH_TO_TEXT_TIMEOUT_MS;
+
+    /**
+     * Recognise a voice message with the speech recognition instance (ioBroker.ai-parakeet, `transcribe`) and process
+     * the recognised text like a text message: `communicate.request`, the commands of this adapter, text2command and
+     * the assistant all get it.
+     *
+     * @param msg the voice message
+     * @param download the running download of the recording (OGG/Opus)
+     */
+    async transcribeVoice(msg: Message, download: Promise<Buffer>): Promise<void> {
+        const bot = this.bot!;
+        const instance = this.config.speechToText!;
+        if (!(await this.acceptVoiceMessage(msg))) {
+            return;
+        }
+
+        const content = await download;
+        const options = msg.is_topic_message ? { message_thread_id: msg.message_thread_id } : undefined;
+        bot.api.sendChatAction({ ...options, chat_id: msg.chat.id, action: 'typing' }).catch(() => {});
+
+        // the names of the commands help the recognition to write them as configured (e.g. "ioBroker")
+        const prompt = Object.values(this.commands)
+            .map(command => command.alias)
+            .filter(alias => typeof alias === 'string' && alias)
+            .join(', ');
+
+        this.log.debug(`Recognise voice message (${content.length} bytes) with ${instance}`);
+        let response: { text?: string; error?: string } | undefined;
+        try {
+            response = (await this.sendToIfAlive(
+                instance,
+                'transcribe',
+                { audio: content.toString('base64'), ...(prompt ? { prompt } : {}) },
+                this.speechToTextTimeoutMs,
+            )) as typeof response;
+        } catch (error) {
+            this.log.warn(
+                `Cannot recognise voice message with ${instance}: ${error instanceof Error ? error.message : String(error)}`,
+            );
+            response = { error: String(error) };
+        }
+        if (!response) {
+            // the instance is not running: already logged
+            return;
+        }
+        // the model writes a full stop at the end, which would break e.g. "<alias> on"
+        const text = (response.text || '').trim().replace(/[.!]+$/, '');
+        if (response.error || !text) {
+            if (response.error) {
+                this.log.warn(`${instance} cannot recognise the voice message: ${response.error}`);
+            }
+            await bot.api
+                .sendMessage({
+                    ...options,
+                    chat_id: msg.chat.id,
+                    text: I18n.translate('The voice message could not be recognised.'),
+                })
+                .catch(error => this.log.error(`send Message Error: ${error}`));
+            return;
+        }
+
+        this.log.debug(`Recognised voice message: ${text}`);
+        this.setStateSafe('communicate.requestVoiceText', { val: text, ack: true });
+        if (this.config.speechToTextEcho !== false) {
+            // show what was understood, so a wrong answer can be told apart from a misheard command
+            await bot.api
+                .sendMessage({ ...options, chat_id: msg.chat.id, text: `🎤 ${text}` })
+                .catch(error => this.log.error(`send Message Error: ${error}`));
+        }
+        await this.processTelegramText({ ...msg, text });
+    }
+
+    /**
      * Forward a voice message to the ioBroker.assistant instance: it recognises the speech, answers like a text
      * question (same `source`, so the conversation continues) and returns what it heard. The same user check as for
      * text messages applies — without it anyone could talk to the assistant just by sending a voice message.
@@ -2069,22 +2174,7 @@ class Telegram extends Adapter {
         const from: User = msg.from!;
         const user = !this.config.useUsername ? from.first_name : !from.username ? from.first_name : from.username;
 
-        const pollingInterval = parseInt(String(this.config.pollingInterval ?? 0), 10) || 0;
-        if (Date.now() - msg.date * 1000 > pollingInterval + 30000) {
-            this.log.warn(`Voice message from ${from.first_name} ignored, because too old`);
-            return;
-        }
-        if ((this.config.password || this.config.doNotAcceptNewUsers) && !this.storedUsers[from.id]) {
-            await bot.api
-                .sendMessage({
-                    chat_id: from.id,
-                    text: I18n.translate(
-                        this.config.doNotAcceptNewUsers
-                            ? 'User is not in the list'
-                            : 'Please enter password in form "/password phrase"',
-                    ),
-                })
-                .catch(error => this.log.error(`send Message Error: ${error}`));
+        if (!(await this.acceptVoiceMessage(msg))) {
             return;
         }
 
@@ -2574,10 +2664,15 @@ class Telegram extends Adapter {
         }
 
         if (msg.voice) {
-            // Downloaded once: stored as before (communicate.pathFile) and, with an assistant instance, recognised
-            // and answered there. A voice message with a caption is answered by its caption (text pipeline) instead.
+            // Downloaded once: stored as before (communicate.pathFile) and recognised: with a speech recognition
+            // instance here, and the text goes on like a text message; else with an assistant instance there.
+            // A voice message with a caption is answered by its caption (text pipeline) instead.
             const download = this.downloadFile(msg.voice.file_id);
-            if (this.config.assistantInstance && msg.from && !msg.caption) {
+            if (this.config.speechToText && msg.from && !msg.caption) {
+                this.transcribeVoice(msg, download).catch(err =>
+                    this.log.error(`Cannot recognise voice message with ${this.config.speechToText}: ${err}`),
+                );
+            } else if (this.config.assistantInstance && msg.from && !msg.caption) {
                 this.askAssistantByVoice(msg, download).catch(err =>
                     this.log.error(`Cannot send voice message to ${this.config.assistantInstance}: ${err}`),
                 );

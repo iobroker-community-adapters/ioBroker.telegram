@@ -44,6 +44,10 @@ export interface TelegramConfig {
     assistantInstance: string;
     /** Photos and videos go to the assistant instance too (default on) */
     assistantMedia?: boolean;
+    /** Speech recognition instance (ioBroker.ai-parakeet): voice messages are recognised and go on as text */
+    speechToText?: string;
+    /** Send the recognised text of a voice message back to the chat (default on) */
+    speechToTextEcho?: boolean;
     answerTimeoutSec: number;
     url: string;
     bind: string;

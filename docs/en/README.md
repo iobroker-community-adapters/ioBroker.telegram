@@ -89,6 +89,18 @@ Instead of `text2command` you can select an [assistant](https://github.com/ioBro
 
 Photos and videos can be switched off with "Photos and videos to the assistant". The assistant gets 2 minutes for an answer; after that the user is told that it did not answer in time.
 
+### Voice messages as text (ai-parakeet)
+
+With an [ai-parakeet](https://github.com/ioBroker/ioBroker.ai-parakeet) instance ("Speech recognition instance" in the settings), voice messages are converted to text locally, and this text is processed like a typed message: it goes to `communicate.request`, and the commands of this adapter, `text2command` and the assistant get it. The recognised text is also written to `communicate.requestVoiceText`.
+
+- With "Show the recognised text in the chat" (default: on) the bot answers first with what it understood (🎤 …).
+- A full stop or exclamation mark at the end of the recognised text is removed, so that e.g. "Light on" matches a command.
+- The names of the commands of this adapter go along as `prompt`, so that they are written as configured (if this is enabled in ai-parakeet).
+- For OGG/Opus, ai-parakeet needs ffmpeg (it can be downloaded on the tab **Recognition** of ai-parakeet).
+- The speech recognition gets 90 seconds. If it fails, the user gets "The voice message could not be recognised."
+- If an assistant instance is selected too, ai-parakeet recognises the voice message and the assistant gets the text.
+- A voice message with a caption is answered by its caption, as before.
+
 To send a photo, just send a path to file instead of text or URL: `sendTo('telegram', 'absolute/path/file.png')` or `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
 Example how to send a screenshot from webcam to telegram:

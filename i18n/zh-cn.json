@@ -20,5 +20,6 @@
     "ID \"%s\" not found.": "找不到ID“％s”。",
     "Started!": "开始！",
     "uncertain": "未知",
-    "The assistant did not answer in time.": "助手未能及时回答。"
+    "The assistant did not answer in time.": "助手未能及时回答。",
+    "The voice message could not be recognised.": "无法识别语音消息。"
 }
