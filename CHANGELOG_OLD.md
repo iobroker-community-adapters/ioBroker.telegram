@@ -1,4 +1,8 @@
 # Older changes
+## 6.0.2 (2026-09-12)
+- (@GermanBluefox) Updated packages and improved the rules block
+- (@patricknitsch) Retried getUpdates 409 conflicts quickly before falling back to a slow restartart
+
 ## 6.0.0 (2026-09-02)
 - (@GermanBluefox) Adapter requires Node.js >= 22.19 now (required by undici 8)
 - (@GermanBluefox) The connection to the telegram servers can be routed through an HTTP(S) or SOCKS5 proxy (new "Use proxy" settings; the old proxy fields had been without function for years)

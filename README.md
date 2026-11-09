@@ -40,7 +40,7 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 6.4.0 (2026-11-09)
 - (@GermanBluefox) Voice messages can be converted to text by an `ai-parakeet` instance (new setting "Speech recognition instance"); the text is then processed like a typed message (`communicate.request`, commands, `text2command`, assistant) and also written to the new state `communicate.requestVoiceText`. "Show the recognised text in the chat" answers with what was understood (🎤 …)
 
 ### 6.3.0 (2026-11-07)
@@ -59,10 +59,6 @@ Use telegram service to communicate with ioBroker
 - (@GermanBluefox) `send` can return the ids of the sent messages again (`returnMessageIds: true`), to edit or delete the message later; failed recipients come with the reason (#1389)
 - (@GermanBluefox) The Blockly block "telegram" has an optional input for the topic (thread id) of a forum group (#952)
 - (@GermanBluefox) Completed the Blockly translations for Ukrainian and Chinese
-
-### 6.0.2 (2026-09-12)
-- (@GermanBluefox) Updated packages and improved the rules block
-- (@patricknitsch) Retried getUpdates 409 conflicts quickly before falling back to a slow restartart
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
