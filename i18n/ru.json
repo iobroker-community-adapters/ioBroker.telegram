@@ -20,5 +20,6 @@
     "ID \"%s\" not found.": "Идентификатор \" %s\" не найден.",
     "Started!": "Бот запущен!",
     "uncertain": "неизвестно",
-    "The assistant did not answer in time.": "Ассистент не ответил вовремя."
+    "The assistant did not answer in time.": "Ассистент не ответил вовремя.",
+    "The voice message could not be recognised.": "Не удалось распознать голосовое сообщение."
 }

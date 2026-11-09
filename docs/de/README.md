@@ -89,6 +89,18 @@ Statt `text2command` kann eine [assistant](https://github.com/ioBroker/ioBroker.
 
 Fotos und Videos lassen sich mit „Fotos und Videos an den Assistenten“ abschalten. Der Assistent hat 2 Minuten für eine Antwort; danach erfährt der Nutzer, dass keine rechtzeitig kam.
 
+### Sprachnachrichten als Text (ai-parakeet)
+
+Mit einer [ai-parakeet](https://github.com/ioBroker/ioBroker.ai-parakeet)-Instanz („Spracherkennungs-Instanz“ in den Einstellungen) werden Sprachnachrichten lokal in Text umgewandelt, und dieser Text wird wie eine getippte Nachricht verarbeitet: er landet in `communicate.request`, die Befehle dieses Adapters, `text2command` und der Assistent bekommen ihn. Der erkannte Text steht zusätzlich in `communicate.requestVoiceText`.
+
+- Mit „Erkannten Text im Chat anzeigen“ (Standard: an) antwortet der Bot zuerst mit dem, was er verstanden hat (🎤 …).
+- Ein Punkt oder Ausrufezeichen am Ende des erkannten Textes wird entfernt, damit z. B. „Licht an“ als Befehl passt.
+- Die Namen der Befehle dieses Adapters gehen als `prompt` mit, damit sie wie konfiguriert geschrieben werden (wenn das in ai-parakeet eingeschaltet ist).
+- Für OGG/Opus braucht ai-parakeet ffmpeg (auf dem Tab **Erkennung** von ai-parakeet herunterladbar).
+- Die Spracherkennung hat 90 Sekunden Zeit. Klappt sie nicht, bekommt der Nutzer „Die Sprachnachricht konnte nicht erkannt werden.“
+- Ist zusätzlich eine Assistant-Instanz gewählt, erkennt ai-parakeet die Sprachnachricht, und der Assistent bekommt den Text.
+- Eine Sprachnachricht mit Bildunterschrift wird wie bisher über die Bildunterschrift beantwortet.
+
 Um ein Foto zu senden, übergib statt eines Textes einfach einen Dateipfad oder eine URL: `sendTo('telegram', 'absolute/path/file.png')` oder `sendTo('telegram', 'https://telegram.org/img/t_logo.png')`.
 
 Beispiel, wie ein Schnappschuss einer Webcam an Telegram gesendet wird:

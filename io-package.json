@@ -287,6 +287,8 @@
     "text2command": "",
     "assistantInstance": "",
     "assistantMedia": true,
+    "speechToText": "",
+    "speechToTextEcho": true,
     "answerTimeoutSec": 60,
     "url": "",
     "bind": "0.0.0.0",
@@ -933,6 +935,30 @@
         },
         "type": "string",
         "role": "url",
+        "read": true,
+        "write": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "communicate.requestVoiceText",
+      "type": "state",
+      "common": {
+        "name": {
+          "en": "Text recognised from the last voice message",
+          "de": "Erkannter Text der letzten Sprachnachricht",
+          "ru": "Распознанный текст последнего голосового сообщения",
+          "pt": "Texto reconhecido da última mensagem de voz",
+          "nl": "Herkende tekst van het laatste spraakbericht",
+          "fr": "Texte reconnu du dernier message vocal",
+          "it": "Testo riconosciuto dall'ultimo messaggio vocale",
+          "es": "Texto reconocido del último mensaje de voz",
+          "pl": "Rozpoznany tekst ostatniej wiadomości głosowej",
+          "uk": "Розпізнаний текст останнього голосового повідомлення",
+          "zh-cn": "最后一条语音消息识别出的文本"
+        },
+        "type": "string",
+        "role": "text",
         "read": true,
         "write": false
       },

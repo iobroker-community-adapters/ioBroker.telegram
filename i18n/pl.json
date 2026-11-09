@@ -20,5 +20,6 @@
     "ID \"%s\" not found.": "Nie znaleziono identyfikatora \"%s\".",
     "Started!": "Rozpoczęty!",
     "uncertain": "nieznany",
-    "The assistant did not answer in time.": "Asystent nie odpowiedział na czas."
+    "The assistant did not answer in time.": "Asystent nie odpowiedział na czas.",
+    "The voice message could not be recognised.": "Nie udało się rozpoznać wiadomości głosowej."
 }
