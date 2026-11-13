@@ -91,7 +91,7 @@
     "https://api.telegram.org": "https://api.telegram.org",
     "ioBroker database": "Base de datos de ioBroker",
     "ip": "IP",
-    "password": "Contraseña",
+    "password": "Clave",
     "password repeat": "Repite la contraseña",
     "polling": "sondeo",
     "pollingInterval": "Intervalo de sondeo",
