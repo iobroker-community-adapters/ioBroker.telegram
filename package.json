@@ -27,7 +27,7 @@
     "@iobroker/adapter-core": "^3.4.3",
     "@iobroker/webserver": "^3.4.0",
     "axios": "^1.20.0",
-    "node-telegram-bot-api": "^2.1.0",
+    "node-telegram-bot-api": "^2.3.0",
     "undici": "^8.12.3"
   },
   "devDependencies": {
