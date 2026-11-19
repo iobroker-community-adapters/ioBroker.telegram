@@ -2971,20 +2971,43 @@ class Telegram extends Adapter {
                     }
 
                     if (!call.users || !call.users.length) {
-                        this.log.error(
-                            `Cannot make a call, because no users stored in ${this.namespace}.communicate.users`,
-                        );
+                        const error = `Cannot make a call, because no users stored in ${this.namespace}.communicate.users`;
+                        this.log.error(error);
+                        if (obj.callback) {
+                            this.sendTo(obj.from, obj.command, { called: 0, error }, obj.callback);
+                        }
                     } else {
-                        this.callUsers(call.users, call.message, call.lang, call.file, call.repeats);
+                        const count = call.users.length;
+                        this.callUsers(call.users, call.message, call.lang, call.file, call.repeats, errors => {
+                            if (obj.callback) {
+                                // called: the number of successful calls; error: the reasons of the failed ones
+                                this.sendTo(
+                                    obj.from,
+                                    obj.command,
+                                    errors.length
+                                        ? { called: count - errors.length, error: errors.join('; ') }
+                                        : { called: count },
+                                    obj.callback,
+                                );
+                            }
+                        });
                     }
                 }
                 break;
         }
     }
 
-    callUsers(users: string[], text?: string, lang?: string, file?: string, repeats?: number, cb?: () => void): void {
+    callUsers(
+        users: string[],
+        text?: string,
+        lang?: string,
+        file?: string,
+        repeats?: number,
+        cb?: (errors: string[]) => void,
+        errors: string[] = [],
+    ): void {
         if (!users || !users.length) {
-            cb && cb();
+            cb && cb(errors);
         } else {
             let user = users.shift() as string;
             if (!user.startsWith('@') && !user.startsWith('+') && !user.startsWith('00')) {
@@ -3014,16 +3037,18 @@ class Telegram extends Adapter {
                         this.log.error(
                             `Cannot make a call to ${user}: ${body || (response && response.status) || 'Unknown error'}`,
                         );
+                        errors.push(`${user}: ${body || (response && response.status) || 'Unknown error'}`);
                     } else {
                         this.log.debug(
                             `Call to ${user} was made: ${body.substring(body.indexOf('<p>')).replace(/<p>/g, ' ')}`,
                         );
                     }
-                    setImmediate(() => this.callUsers(users, text, lang, file, repeats, cb));
+                    setImmediate(() => this.callUsers(users, text, lang, file, repeats, cb, errors));
                 })
                 .catch(err => {
                     this.log.error(`Cannot make a call to ${user}: ${err || 'Unknown error'}`);
-                    setImmediate(() => this.callUsers(users, text, lang, file, repeats, cb));
+                    errors.push(`${user}: ${err || 'Unknown error'}`);
+                    setImmediate(() => this.callUsers(users, text, lang, file, repeats, cb, errors));
                 });
         }
     }

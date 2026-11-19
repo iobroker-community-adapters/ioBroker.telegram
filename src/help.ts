@@ -53,8 +53,10 @@ Commands (sendTo telegram.0):
   "__timeout__" if nobody replied. The sendTo of the caller must wait longer than that timeout.
 - call {text, user?, users?, lang?, file?, repeats?} or just a text: a voice call in the Telegram app via CallMeBot
   that reads the text. users: array of telegram usernames (@name) or phone numbers (+49...); user: one of them;
-  neither: every stored user with a username. lang: a voice such as de-DE-Standard-A (default: by the system
-  language). file: URL of an mp3 to play instead of the text. repeats: number of repeats. No answer.
+  neither: every stored user with a username (all of them, like send without user). lang: a voice such as
+  de-DE-Standard-A (default: by the system language). file: URL of an mp3 to play instead of the text. repeats:
+  number of repeats. The calls are made one after the other; answer when all are done: {called: number of
+  successful calls, error?: the reasons of the failed ones, or that no user with a username is stored}.
 - sendNotification: for the notification-manager (sends the notification to the users that receive system
   messages); answer {sent}.
 - help: this text and the list of commands {help, commands: [{command, write}]}.
@@ -68,8 +70,8 @@ like the message of send), requestResponse (a text into the chat of the last rec
 
 How to talk to the user:
 - Ask for the recipient (user, chat or group) when it is not clear; take the names from communicate.users and the
-  groups from communicate.chats, never guess a chat id. Without user and chatId send goes to every stored user:
-  fine if only the user is stored, else ask.
+  groups from communicate.chats, never guess a chat id. Without user and chatId send goes to every stored user, and
+  call without user and users calls every stored user: fine if only the user is stored, else ask.
 - Sending to other people than the user, into groups or to all users, and calls only on the user's explicit request.
 - Name users and chats by their names, not by ids; times in local time.
 - Tell the user to whom the message went; an answer 0 means the name is unknown to the bot.`;

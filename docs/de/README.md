@@ -656,7 +656,7 @@ oder
 ```javascript
 sendTo('telegram.0', 'call', {
     text: 'Some text',
-    user: '@Username', // optional and the call will be done to the first user in telegram.0.communicate.users.
+    user: '@Username', // optional: without user and users every user in telegram.0.communicate.users with a username is called
     lang: 'de-DE-Standard-A', // optional and the system language will be taken
     repeats: 0, // number of repeats
 });
@@ -679,6 +679,8 @@ sendTo('telegram.0', 'call', {
     users: ['@Username1', '@Username2'] // Array of `users' or telephone numbers.
 });
 ```
+
+Mit Callback antwortet der Adapter, sobald alle Anrufe erledigt sind: `{ called: <Anzahl der erfolgreichen Anrufe>, error?: <die Gründe der fehlgeschlagenen Anrufe> }`.
 
 Mögliche Werte für die Sprache:
 - `ar-XA-Standard-A` - Arabisch (weibliche Stimme)
