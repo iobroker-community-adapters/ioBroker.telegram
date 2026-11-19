@@ -21,7 +21,7 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
-        "@iobroker/gui-components": "^10.3.15",
+        "@iobroker/gui-components": "^10.4.4",
         "@iobroker/javascript-rules-dev": "^1.1.0",
         "@iobroker/types": "^7.2.5",
         "@module-federation/runtime": "2.9.2",
