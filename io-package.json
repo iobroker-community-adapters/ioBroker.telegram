@@ -188,7 +188,8 @@
     "messagebox": true,
     "supportedMessages": {
       "custom": true,
-      "notifications": true
+      "notifications": true,
+      "help": true
     },
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.telegram/blob/master/README.md",
     "loglevel": "info",

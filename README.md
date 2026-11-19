@@ -31,6 +31,12 @@ Use telegram service to communicate with ioBroker
 
 [Documentation](./docs/en/README.md)
 
+## Messages for scripts and AI agents
+
+`sendTo('telegram.0', 'help', {})` answers `{ help, commands }`: a description of all messages (`send`, `ask`, `call` ...)
+with their parameters and answers for AI agents (e.g. ioBroker.pi-agent) and script authors, and the list of all commands
+with `write` (whether the command has an effect, e.g. sends a message).
+
 ## Sentry
 
 **This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers.** For more details and for information on how to disable the error reporting see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
@@ -40,6 +46,9 @@ Use telegram service to communicate with ioBroker
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (@GermanBluefox) Added the message `help`: a description of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
+
 ### 6.4.0 (2026-11-09)
 - (@GermanBluefox) Voice messages can be converted to text by an `ai-parakeet` instance (new setting "Speech recognition instance"); the text is then processed like a typed message (`communicate.request`, commands, `text2command`, assistant) and also written to the new state `communicate.requestVoiceText`. "Show the recognised text in the chat" answers with what was understood (🎤 …)
 

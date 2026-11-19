@@ -54,6 +54,7 @@ import type {
     Users,
 } from './types';
 import { detectMediaTypeFromName, iobUriFromString, isIobUri, mimeToMediaType } from './iobUri';
+import { COMMANDS, HELP } from './help';
 import { createProxiedFetch, createProxyDispatcher } from './proxy';
 
 const systemLang2CallMe: Record<string, string> = {
@@ -343,7 +344,12 @@ class Telegram extends Adapter {
 
     onMessage(obj: ioBroker.Message): void {
         if (obj) {
-            if (obj.command === 'adminuser') {
+            if (obj.command === 'help') {
+                // A description of all commands for AI agents and scripts; works also without a connection
+                if (obj.callback) {
+                    this.sendTo(obj.from, obj.command, { help: HELP, commands: COMMANDS }, obj.callback);
+                }
+            } else if (obj.command === 'adminuser') {
                 let adminUserData: Users;
                 this.getState('communicate.users', (err, state) => {
                     if (err) {

@@ -1,0 +1,75 @@
+/**
+ * The answer of `help`: what the instance answers, written for an AI agent (e.g. ioBroker.pi-agent, or the MCP
+ * server with `send_to`) and for script authors. Keep it in sync with `onMessage` / `processMessage` in main.ts.
+ */
+
+/** Every command `onMessage` answers; `write: true` = it has an effect (sends, calls, changes the user list) */
+export const COMMANDS: { command: string; write: boolean }[] = [
+    { command: 'help', write: false },
+    { command: 'send', write: true },
+    { command: 'ask', write: true },
+    { command: 'call', write: true },
+    { command: 'sendNotification', write: true },
+    { command: 'adminuser', write: false },
+    { command: 'delUser', write: true },
+    { command: 'systemMessages', write: true },
+    { command: 'delAllUser', write: true },
+];
+
+export const HELP = `ioBroker.telegram: a Telegram bot. It sends messages, pictures, files and locations to the users of the bot and
+to chats and groups, asks questions with buttons and returns the reply, and receives messages (they go to the state
+communicate.request, to text2command or to an assistant instance). It can also call a user via CallMeBot.
+Recipients: the users who authenticated with the bot (stored in communicate.users) and the chats and groups the bot
+has seen (communicate.chats). Telegram lets a bot write only into chats that wrote to it before.
+
+Commands (sendTo telegram.0):
+- send {text, user?, chatId?, ...options} or just a text: sends a message; answer: the number of addressed
+  recipients (0 = no name matched), or with returnMessageIds: true {<chatId>: messageId, error?: {<chatId>: reason}}.
+  Recipients: chatId (number or string, a private chat or a group such as "-1001234567890") wins over user.
+  user: a name (the telegram username, or the first name if the settings use first names or the user has no
+  username) or a user id; several separated by "," ";" or space, or an array. Without chatId and user: every
+  stored user; a text that starts with "@name" then goes only to the user whose name matches.
+  text: the message (string or number); <HTML>...</HTML>, <Markdown>...</Markdown> or <MarkdownV2>...</MarkdownV2>
+  around it sets parse_mode. A local file path, an http(s) URL of a picture, a URI iobfile://<adapter.0>/<path>,
+  iobstate://<state id> or iobobject://<object id>/<path>, or a Buffer is sent as a file: the kind follows the
+  extension (jpg, png, gif, bmp: photo; mp4: video; mp3, ogg, wav: audio; webp: sticker; txt, pdf, csv, doc, docx,
+  xls, xlsx: document) or the option type. The texts typing, upload_photo, upload_video, record_video, record_audio,
+  upload_document, find_location show that action in the chat.
+  Options: type (photo, video, audio, document, sticker, animation, mediagroup), fileName (name for a Buffer or
+  URI), caption, parse_mode (HTML, Markdown, MarkdownV2), disable_notification (true = silent), message_thread_id
+  (topic of a forum group), reply_markup ({keyboard: [["A", "B"]], resize_keyboard?, one_time_keyboard?} or
+  {inline_keyboard: [[{text, callback_data}]]}), media (with type mediagroup: array of local photo paths), and any
+  other parameter of the Bot API method (e.g. disable_web_page_preview, protect_content), passed on unchanged.
+  latitude, longitude: sends a location; with title and address too a venue.
+  Change a sent message (chat_id, message_id from returnMessageIds): editMessageText {options: {chat_id,
+  message_id, ...}} with text = the new text; editMessageCaption {options: {chat_id, message_id}} with text = the
+  new caption; editMessageMedia {options: {chat_id, message_id, caption?, parse_mode?, reply_markup?}} with text =
+  the new file; editMessageReplyMarkup {reply_markup, options: {chat_id, message_id}}; deleteMessage {options:
+  {chat_id, message_id}}. answerCallbackQuery {text?, showAlert?} with chatId or user of the person who pressed
+  an inline button: confirms the press (text as a notice, showAlert true = as a dialog).
+- ask {text, user?, chatId?, reply_markup?, ...options of send} or just a text: sends a question and answers with
+  the reply within the answer timeout of the settings (default 60 s): the Telegram message ({text, chat, from,
+  ...}) or for an inline button the callback query ({data: the callback_data of the button, from, message});
+  "__timeout__" if nobody replied. The sendTo of the caller must wait longer than that timeout.
+- call {text, user?, users?, lang?, file?, repeats?} or just a text: a voice call in the Telegram app via CallMeBot
+  that reads the text. users: array of telegram usernames (@name) or phone numbers (+49...); user: one of them;
+  neither: every stored user with a username. lang: a voice such as de-DE-Standard-A (default: by the system
+  language). file: URL of an mp3 to play instead of the text. repeats: number of repeats. No answer.
+- sendNotification: for the notification-manager (sends the notification to the users that receive system
+  messages); answer {sent}.
+- help: this text and the list of commands {help, commands: [{command, write}]}.
+- adminuser, delUser, systemMessages, delAllUser: for the settings, not for agents.
+
+States (telegram.0.communicate.*): users (JSON: user id -> {firstName, userName, sysMessages}), chats (JSON: chat
+id -> {title, type: private, group, supergroup or channel}), request (the last received message as "[name]text"),
+requestChatId, requestUserId, requestMessageId of it. Writing with ack false sends: response (a text to every
+user, or "@name text"), responseSilent (the same without notification), responseJson and responseSilentJson (JSON
+like the message of send), requestResponse (a text into the chat of the last received message).
+
+How to talk to the user:
+- Ask for the recipient (user, chat or group) when it is not clear; take the names from communicate.users and the
+  groups from communicate.chats, never guess a chat id. Without user and chatId send goes to every stored user:
+  fine if only the user is stored, else ask.
+- Sending to other people than the user, into groups or to all users, and calls only on the user's explicit request.
+- Name users and chats by their names, not by ids; times in local time.
+- Tell the user to whom the message went; an answer 0 means the name is unknown to the bot.`;
