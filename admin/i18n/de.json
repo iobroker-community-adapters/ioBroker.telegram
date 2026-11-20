@@ -106,7 +106,7 @@
     "restarting_help": "Dieser Text wird an die Clients gesendet, sobald die Adapterinstanz gestoppt wird. Zum Deaktivieren: leer lassen.",
     "server": "Server",
     "speechToTextEcho_help": "Der Bot antwortet auf eine Sprachnachricht zuerst mit dem, was er verstanden hat (🎤 …)",
-    "speechToText_help": "Sprachnachrichten werden von dieser ioBroker.ai-parakeet-Instanz erkannt und wie eine Textnachricht verarbeitet (Befehle, text2command, Assistent). Leer: aus",
+    "speechToText_help": "Sprachnachrichten werden von dieser ioBroker.voice-Instanz erkannt und wie eine Textnachricht verarbeitet (Befehle, text2command, Assistent). Leer: aus",
     "telegram adapter settings": "Adapter-Einstellungen",
     "text2command instance": "text2Command-Instanz",
     "token": "Token",

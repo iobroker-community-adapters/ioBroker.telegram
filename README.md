@@ -48,6 +48,7 @@ with `write` (whether the command has an effect, e.g. sends a message).
 -->
 ### **WORK IN PROGRESS**
 - (@GermanBluefox) Fixed: the message `call` now answers when the calls are done: `{called, error?}`
+- (@GermanBluefox) The speech recognition instance is now selected from the `voice` adapter instead of `ai-parakeet`
 
 ### 6.5.0 (2026-11-19)
 - (@GermanBluefox) Added the message `help`: a description of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`

@@ -92,7 +92,7 @@ const actions = [
  * a limit a request lost on the way (e.g. the assistant restarted meanwhile) would leave the user without any reply.
  */
 const ASSISTANT_TIMEOUT_MS = 120_000;
-/** How long the speech recognition (ioBroker.ai-parakeet) may take, including loading the model after idle. */
+/** How long the speech recognition (ioBroker.voice) may take, including loading the model after idle. */
 const SPEECH_TO_TEXT_TIMEOUT_MS = 90_000;
 
 /** Rejected by `sendToIfAlive` when the instance did not answer in time. */
@@ -2097,7 +2097,7 @@ class Telegram extends Adapter {
     private speechToTextTimeoutMs = SPEECH_TO_TEXT_TIMEOUT_MS;
 
     /**
-     * Recognise a voice message with the speech recognition instance (ioBroker.ai-parakeet, `transcribe`) and process
+     * Recognise a voice message with the speech recognition instance (ioBroker.voice, `transcribe`) and process
      * the recognised text like a text message: `communicate.request`, the commands of this adapter, text2command and
      * the assistant all get it.
      *

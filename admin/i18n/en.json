@@ -106,7 +106,7 @@
     "restarting_help": "This text will be sent to clients once the adapter instance is going to be stopped. Leave blank to deactivate.",
     "server": "server",
     "speechToTextEcho_help": "The bot answers a voice message first with what it understood (🎤 …)",
-    "speechToText_help": "Voice messages are recognised by this ioBroker.ai-parakeet instance and processed like a text message (commands, text2command, assistant). Empty: off",
+    "speechToText_help": "Voice messages are recognised by this ioBroker.voice instance and processed like a text message (commands, text2command, assistant). Empty: off",
     "telegram adapter settings": "telegram adapter settings",
     "text2command instance": "Text2Command instance",
     "token": "Token",

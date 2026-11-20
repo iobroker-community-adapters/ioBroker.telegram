@@ -106,7 +106,7 @@
     "restarting_help": "Questo testo verrà inviato ai client una volta che l'istanza dell'adattatore verrà arrestata. Lascia vuoto per disattivare.",
     "server": "server",
     "speechToTextEcho_help": "Il bot risponde prima a un messaggio vocale con ciò che ha capito (🎤 …)",
-    "speechToText_help": "I messaggi vocali vengono riconosciuti da questa istanza di ioBroker.ai-parakeet ed elaborati come un messaggio di testo (comandi, text2command, assistente). Vuoto: disattivato",
+    "speechToText_help": "I messaggi vocali vengono riconosciuti da questa istanza di ioBroker.voice ed elaborati come un messaggio di testo (comandi, text2command, assistente). Vuoto: disattivato",
     "telegram adapter settings": "impostazioni dell'adattatore telegramma",
     "text2command instance": "Istanza Text2Command",
     "token": "Token",
