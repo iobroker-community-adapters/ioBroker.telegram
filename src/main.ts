@@ -55,6 +55,7 @@ import type {
 } from './types';
 import { detectMediaTypeFromName, iobUriFromString, isIobUri, mimeToMediaType } from './iobUri';
 import { COMMANDS, HELP } from './help';
+import { findRecipient, listRecipients } from './recipients';
 import { createProxiedFetch, createProxyDispatcher } from './proxy';
 
 const systemLang2CallMe: Record<string, string> = {
@@ -172,6 +173,7 @@ const INTERNAL_OPTION_KEYS = new Set<string>([
     'deleteMessage',
     'answerCallbackQuery',
     'returnMessageIds',
+    'recipient',
 ]);
 
 /**
@@ -348,6 +350,16 @@ class Telegram extends Adapter {
                 // A description of all commands for AI agents and scripts; works also without a connection
                 if (obj.callback) {
                     this.sendTo(obj.from, obj.command, { help: HELP, commands: COMMANDS }, obj.callback);
+                }
+            } else if (obj.command === 'getRecipients') {
+                // message.getRecipients of the shared catalog: the stored users and chats, nothing is sent
+                if (obj.callback) {
+                    this.sendTo(
+                        obj.from,
+                        obj.command,
+                        { recipients: listRecipients(this.storedUsers, this.storedChats) },
+                        obj.callback,
+                    );
                 }
             } else if (obj.command === 'adminuser') {
                 let adminUserData: Users;
@@ -2834,12 +2846,8 @@ class Telegram extends Adapter {
                 if (obj.message) {
                     let tPromise: Promise<string[]>;
                     if (typeof obj.message === 'object') {
-                        tPromise = this.sendMessage(
-                            obj.message.text,
-                            obj.message?.user,
-                            obj.message?.chatId,
-                            obj.message,
-                        );
+                        const { user, chatId } = this.addressOf(obj.message);
+                        tPromise = this.sendMessage(obj.message.text, user, chatId, obj.message);
                     } else {
                         tPromise = this.sendMessage(obj.message as string | number);
                     }
@@ -2994,7 +3002,104 @@ class Telegram extends Adapter {
                     }
                 }
                 break;
+
+            case 'edit':
+            case 'delete':
+                await this.editOrDeleteMessage(obj);
+                break;
+
+            default:
+                if (obj.callback) {
+                    this.sendTo(
+                        obj.from,
+                        obj.command,
+                        { error: `Unknown command "${obj.command}"`, reason: 'NOT_SUPPORTED' },
+                        obj.callback,
+                    );
+                }
+                break;
         }
+    }
+
+    /**
+     * The recipients of `send`: user and chatId as given, else `recipient` of the shared catalog (an id or name of
+     * getRecipients). An unknown recipient goes the way of user: no stored user matches, the answer is 0.
+     *
+     * @param message the message of send
+     * @param message.user the user(s) as given
+     * @param message.chatId the chat as given
+     * @param message.recipient an id or name of getRecipients
+     * @returns user and chatId for sendMessage
+     */
+    addressOf(message: { user?: string | string[]; chatId?: number | string; recipient?: string | number }): {
+        user?: string | string[];
+        chatId?: number | string;
+    } {
+        const { user, chatId, recipient } = message;
+        if (user || chatId || recipient === undefined || recipient === null || recipient === '') {
+            return { user, chatId };
+        }
+        const found = findRecipient(recipient, this.storedUsers, this.storedChats);
+        return found ? { chatId: found } : { user: String(recipient) };
+    }
+
+    /**
+     * edit {id, text, recipient?} and delete {id, recipient?} of the shared catalog (message.edit, message.delete):
+     * the same as send with editMessageText or deleteMessage. Telegram numbers the messages per chat, so the chat
+     * comes from recipient, or is the only stored user. Answer {ok: true} or {error, reason?}.
+     *
+     * @param obj the message with the command edit or delete
+     */
+    async editOrDeleteMessage(obj: ioBroker.Message): Promise<void> {
+        const message = obj.message && typeof obj.message === 'object' ? obj.message : {};
+        const answer = (result: Record<string, unknown>): void => {
+            if (obj.callback) {
+                this.sendTo(obj.from, obj.command, result, obj.callback);
+            }
+        };
+        const messageId = parseInt(message.id, 10);
+        if (!messageId) {
+            return answer({ error: 'id (the message id) is missing', reason: 'BAD_REQUEST' });
+        }
+        const text = message.text;
+        if (obj.command === 'edit' && (text === undefined || text === null || text === '')) {
+            return answer({ error: 'text is missing', reason: 'BAD_REQUEST' });
+        }
+
+        let chatId: string | undefined;
+        const userIds = Object.keys(this.storedUsers);
+        if (message.recipient !== undefined && message.recipient !== null && message.recipient !== '') {
+            chatId = findRecipient(message.recipient, this.storedUsers, this.storedChats);
+            if (!chatId) {
+                return answer({
+                    error: `Unknown recipient "${message.recipient}"`,
+                    reason: 'NOT_FOUND',
+                    candidates: listRecipients(this.storedUsers, this.storedChats).map(r => r.name),
+                });
+            }
+        } else if (userIds.length === 1) {
+            chatId = userIds[0];
+        } else {
+            return answer({ error: 'recipient (the chat of the message) is missing', reason: 'BAD_REQUEST' });
+        }
+        if (!this.bot) {
+            return answer({ error: 'Not connected to Telegram', reason: 'NOT_CONNECTED' });
+        }
+
+        const target = { chat_id: chatId, message_id: messageId };
+        const results: unknown = await this.sendMessage(
+            obj.command === 'edit' ? text : '',
+            null,
+            chatId,
+            obj.command === 'edit' ? { editMessageText: { options: target } } : { deleteMessage: { options: target } },
+        );
+        // sendMessage resolves with the error itself if a send helper threw
+        const errors = mergeMessageIds(results).error as Record<string, string> | undefined;
+        let failed = errors ? Object.values(errors)[0] : undefined;
+        if (!Array.isArray(results)) {
+            failed = results instanceof Error ? results.message : `Cannot ${obj.command} the message`;
+        }
+        answer(failed ? { error: failed } : { ok: true });
     }
 
     callUsers(

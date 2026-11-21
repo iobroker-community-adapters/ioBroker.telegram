@@ -3,12 +3,18 @@
  * server with `send_to`) and for script authors. Keep it in sync with `onMessage` / `processMessage` in main.ts.
  */
 
-/** Every command `onMessage` answers; `write: true` = it has an effect (sends, calls, changes the user list) */
-export const COMMANDS: { command: string; write: boolean }[] = [
+/**
+ * Every command `onMessage` answers; `write: true` = it has an effect (sends, calls, changes the user list);
+ * `standard` = it follows the shared catalog of commands for adapter families (message.*)
+ */
+export const COMMANDS: { command: string; write: boolean; standard?: string }[] = [
     { command: 'help', write: false },
     { command: 'send', write: true },
     { command: 'ask', write: true },
     { command: 'call', write: true },
+    { command: 'getRecipients', write: false, standard: 'message.getRecipients' },
+    { command: 'edit', write: true, standard: 'message.edit' },
+    { command: 'delete', write: true, standard: 'message.delete' },
     { command: 'sendNotification', write: true },
     { command: 'adminuser', write: false },
     { command: 'delUser', write: true },
@@ -21,6 +27,8 @@ to chats and groups, asks questions with buttons and returns the reply, and rece
 communicate.request, to text2command or to an assistant instance). It can also call a user via CallMeBot.
 Recipients: the users who authenticated with the bot (stored in communicate.users) and the chats and groups the bot
 has seen (communicate.chats). Telegram lets a bot write only into chats that wrote to it before.
+getRecipients, edit and delete follow the shared catalog of message commands (message.getRecipients, message.edit,
+message.delete); send and ask keep their own answers.
 
 Commands (sendTo telegram.0):
 - send {text, user?, chatId?, ...options} or just a text: sends a message; answer: the number of addressed
@@ -29,6 +37,8 @@ Commands (sendTo telegram.0):
   user: a name (the telegram username, or the first name if the settings use first names or the user has no
   username) or a user id; several separated by "," ";" or space, or an array. Without chatId and user: every
   stored user; a text that starts with "@name" then goes only to the user whose name matches.
+  recipient: an id or name of getRecipients (a user by first name or username, a group by its title, without case);
+  used only when neither chatId nor user is given.
   text: the message (string or number); <HTML>...</HTML>, <Markdown>...</Markdown> or <MarkdownV2>...</MarkdownV2>
   around it sets parse_mode. A local file path, an http(s) URL of a picture, a URI iobfile://<adapter.0>/<path>,
   iobstate://<state id> or iobobject://<object id>/<path>, or a Buffer is sent as a file: the kind follows the
@@ -57,10 +67,19 @@ Commands (sendTo telegram.0):
   de-DE-Standard-A (default: by the system language). file: URL of an mp3 to play instead of the text. repeats:
   number of repeats. The calls are made one after the other; answer when all are done: {called: number of
   successful calls, error?: the reasons of the failed ones, or that no user with a username is stored}.
+- getRecipients {}: the users and chats the bot knows, from communicate.users and communicate.chats (nothing is
+  sent); answer {recipients: [{id, name, kind: user, group or chat, default?: true, userName?}]}. default: send
+  without a recipient goes to every stored user.
+- edit {id, text, recipient?}: changes the text of a message the bot sent; delete {id, recipient?}: deletes a
+  message (the bot's own, or in a group where it may delete). id: the message id (from send with
+  returnMessageIds: true, {<chatId>: messageId}); recipient: the chat of the message, an id or name of
+  getRecipients; default the only stored user (with several users it is needed). Answer {ok: true} or {error,
+  reason?: BAD_REQUEST, NOT_FOUND (with candidates), NOT_CONNECTED}.
 - sendNotification: for the notification-manager (sends the notification to the users that receive system
   messages); answer {sent}.
-- help: this text and the list of commands {help, commands: [{command, write}]}.
+- help: this text and the list of commands {help, commands: [{command, write, standard?}]}.
 - adminuser, delUser, systemMessages, delAllUser: for the settings, not for agents.
+Other commands are answered with {error, reason: "NOT_SUPPORTED"}.
 
 States (telegram.0.communicate.*): users (JSON: user id -> {firstName, userName, sysMessages}), chats (JSON: chat
 id -> {title, type: private, group, supergroup or channel}), request (the last received message as "[name]text"),
@@ -69,9 +88,10 @@ user, or "@name text"), responseSilent (the same without notification), response
 like the message of send), requestResponse (a text into the chat of the last received message).
 
 How to talk to the user:
-- Ask for the recipient (user, chat or group) when it is not clear; take the names from communicate.users and the
-  groups from communicate.chats, never guess a chat id. Without user and chatId send goes to every stored user, and
-  call without user and users calls every stored user: fine if only the user is stored, else ask.
+- Ask for the recipient (user, chat or group) when it is not clear; take the names from getRecipients (or
+  communicate.users and communicate.chats), never guess a chat id. Without user and chatId send goes to every
+  stored user, and call without user and users calls every stored user: fine if only the user is stored, else ask.
 - Sending to other people than the user, into groups or to all users, and calls only on the user's explicit request.
+  Edit or delete a message only on the user's explicit request.
 - Name users and chats by their names, not by ids; times in local time.
 - Tell the user to whom the message went; an answer 0 means the name is unknown to the bot.`;

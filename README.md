@@ -47,6 +47,7 @@ with `write` (whether the command has an effect, e.g. sends a message).
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (@GermanBluefox) Added the standard commands of the shared catalog: message.getRecipients, message.edit, message.delete (`getRecipients`, `edit`, `delete`); `send` takes `recipient`; unknown commands are answered with an error
 - (@GermanBluefox) Fixed: the message `call` now answers when the calls are done: `{called, error?}`
 - (@GermanBluefox) The speech recognition instance is now selected from the `voice` adapter instead of `ai-parakeet`
 
