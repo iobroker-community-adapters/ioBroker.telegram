@@ -106,7 +106,7 @@
     "restarting_help": "一旦适配器实例即将停止，此文本将发送给客户端。留空以停用。",
     "server": "服务器",
     "speechToTextEcho_help": "机器人先用它听懂的内容回复语音消息（🎤 …）",
-    "speechToText_help": "语音消息由此 ioBroker.ai-parakeet 实例识别，并像文本消息一样处理（命令、text2command、助手）。留空：关闭",
+    "speechToText_help": "语音消息由此 ioBroker.voice 实例识别，并像文本消息一样处理（命令、text2command、助手）。留空：关闭",
     "telegram adapter settings": "电报适配器设置",
     "text2command instance": "Text2Command实例",
     "token": "代币",

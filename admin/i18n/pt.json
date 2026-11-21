@@ -106,7 +106,7 @@
     "restarting_help": "Esse texto é enviado aos clientes assim que a instância do adaptador é interrompida. Para desativar deixe em branco.",
     "server": "servidor",
     "speechToTextEcho_help": "O bot responde primeiro a uma mensagem de voz com o que entendeu (🎤 …)",
-    "speechToText_help": "As mensagens de voz são reconhecidas por esta instância do ioBroker.ai-parakeet e processadas como uma mensagem de texto (comandos, text2command, assistente). Vazio: desligado",
+    "speechToText_help": "As mensagens de voz são reconhecidas por esta instância do ioBroker.voice e processadas como uma mensagem de texto (comandos, text2command, assistente). Vazio: desligado",
     "telegram adapter settings": "Configurações do adaptador de Telegrama",
     "text2command instance": "Instância de Text2Command",
     "token": "Token",

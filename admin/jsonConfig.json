@@ -357,7 +357,7 @@
                 "speechToText": {
                     "newLine": true,
                     "type": "instance",
-                    "adapter": "ai-parakeet",
+                    "adapter": "voice",
                     "xs": 12,
                     "sm": 12,
                     "md": 4,

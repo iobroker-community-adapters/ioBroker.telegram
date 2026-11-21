@@ -106,7 +106,7 @@
     "restarting_help": "Deze tekst wordt naar klanten verzonden zodra de adapterinstantie wordt gestopt. Laat leeg om te deactiveren.",
     "server": "server",
     "speechToTextEcho_help": "De bot antwoordt op een spraakbericht eerst met wat hij heeft verstaan (🎤 …)",
-    "speechToText_help": "Spraakberichten worden door deze ioBroker.ai-parakeet-instantie herkend en verwerkt als een tekstbericht (commando’s, text2command, assistent). Leeg: uit",
+    "speechToText_help": "Spraakberichten worden door deze ioBroker.voice-instantie herkend en verwerkt als een tekstbericht (commando’s, text2command, assistent). Leeg: uit",
     "telegram adapter settings": "telegram-adapterinstellingen",
     "text2command instance": "Text2Command Instance",
     "token": "Token",
