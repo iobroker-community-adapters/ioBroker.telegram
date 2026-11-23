@@ -56,6 +56,20 @@ import type {
 import { detectMediaTypeFromName, iobUriFromString, isIobUri, mimeToMediaType } from './iobUri';
 import { COMMANDS, HELP } from './help';
 import { findRecipient, listRecipients } from './recipients';
+import {
+    answerData,
+    answerKeyboard,
+    answerList,
+    askAnswer,
+    CATALOG_KEYS,
+    fileList,
+    isSilent,
+    parseModeOf,
+    repliesTo,
+    sendAnswer,
+    type StandardAnswer,
+    withTitle,
+} from './standardMessage';
 import { createProxiedFetch, createProxyDispatcher } from './proxy';
 
 const systemLang2CallMe: Record<string, string> = {
@@ -2898,48 +2912,17 @@ class Telegram extends Adapter {
                     }
 
                     if (obj.callback) {
-                        this.questions.push(question);
-                        this.log.debug(
-                            `added question: ${JSON.stringify(question)} - answer timeout: ${this.config.answerTimeoutSec}`,
-                        );
-
-                        question.timeout = this.setTimeout(
-                            (q: Question) => {
-                                q.timeout = null;
-                                this.sendTo(q.from, 'ask', '__timeout__', q.cb);
-
-                                this.log.info(`question timeout for: ${JSON.stringify(q)}`);
-
-                                // Remove keyboard
-                                if (this.bot && q?.chatId && q?.msgId) {
-                                    // Catch the rejection: if the message was already deleted/edited or is too
-                                    // old, telegram answers "message to edit not found". Without a catch this
-                                    // rejection is unhandled and terminates the whole adapter. See
-                                    // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/879
-                                    this.bot.api
-                                        .editMessageReplyMarkup({
-                                            chat_id: q.chatId,
-                                            message_id: q.msgId,
-                                            reply_markup: { inline_keyboard: [] },
-                                        })
-                                        .then(() =>
-                                            this.log.debug(
-                                                `removed inline_keyboard for msg ${q.msgId}: ${JSON.stringify(q)}`,
-                                            ),
-                                        )
-                                        .catch(error =>
-                                            this.log.warn(`Cannot remove inline_keyboard for msg ${q.msgId}: ${error}`),
-                                        );
-                                }
-
-                                const pos = this.questions.indexOf(q);
-                                pos !== -1 && this.questions.splice(pos, 1);
-                            },
-                            this.config.answerTimeoutSec + 1000,
-                            question,
-                        );
+                        this.waitForAnswer(question);
                     }
                 }
+                break;
+
+            case 'message.send':
+                await this.standardSend(obj);
+                break;
+
+            case 'message.ask':
+                await this.standardAsk(obj);
                 break;
 
             case 'call':
@@ -3100,6 +3083,358 @@ class Telegram extends Adapter {
             failed = results instanceof Error ? results.message : `Cannot ${obj.command} the message`;
         }
         answer(failed ? { error: failed } : { ok: true });
+    }
+
+    /**
+     * How long a question waits for its reply (ms): timeoutSec of message.ask, else the answer timeout of the
+     * settings.
+     *
+     * @param question the question
+     */
+    answerWindow(question: Question): number {
+        return question.timeoutMs ?? this.config.answerTimeoutSec;
+    }
+
+    /**
+     * Wait for the reply to a question of ask or message.ask (sent already). Without a reply in time the caller
+     * gets "__timeout__" (ask) or {timeout: true} (message.ask), and the buttons are removed.
+     *
+     * @param question the question
+     */
+    waitForAnswer(question: Question): void {
+        this.questions.push(question);
+        const timeoutMs = this.answerWindow(question);
+        this.log.debug(`added question: ${JSON.stringify(question)} - answer timeout: ${timeoutMs}`);
+
+        question.timeout = this.setTimeout(
+            (q: Question) => {
+                q.timeout = null;
+                this.sendTo(q.from, 'ask', q.standard ? { timeout: true } : '__timeout__', q.cb);
+
+                this.log.info(`question timeout for: ${JSON.stringify(q)}`);
+
+                // Remove keyboard
+                if (this.bot && q?.chatId && q?.msgId) {
+                    // Catch the rejection: if the message was already deleted/edited or is too
+                    // old, telegram answers "message to edit not found". Without a catch this
+                    // rejection is unhandled and terminates the whole adapter. See
+                    // https://github.com/iobroker-community-adapters/ioBroker.telegram/issues/879
+                    this.bot.api
+                        .editMessageReplyMarkup({
+                            chat_id: q.chatId,
+                            message_id: q.msgId,
+                            reply_markup: { inline_keyboard: [] },
+                        })
+                        .then(() => this.log.debug(`removed inline_keyboard for msg ${q.msgId}: ${JSON.stringify(q)}`))
+                        .catch(error => this.log.warn(`Cannot remove inline_keyboard for msg ${q.msgId}: ${error}`));
+                }
+
+                const pos = this.questions.indexOf(q);
+                pos !== -1 && this.questions.splice(pos, 1);
+            },
+            timeoutMs + 1000,
+            question,
+        );
+    }
+
+    /**
+     * The chats of message.send and message.ask: chatId (of send) as given, else the names of user (of send) or
+     * recipient (ids or names of getRecipients, also several), else every stored user. Each chat gets its own send,
+     * so that the message ids come back per chat.
+     *
+     * @param message the message of message.send or message.ask
+     * @param message.user the user(s) as send takes them
+     * @param message.chatId the chat as send takes it
+     * @param message.recipient an id or name of getRecipients, or an array of them
+     * @returns the chat ids, or the error answer
+     */
+    standardChats(message: { user?: unknown; chatId?: unknown; recipient?: unknown }): {
+        chats: string[];
+        failure?: StandardAnswer;
+    } {
+        const { user, chatId, recipient } = message;
+        if ((typeof chatId === 'number' || typeof chatId === 'string') && chatId !== '') {
+            return { chats: [String(chatId)] };
+        }
+        const given = user || user === 0 ? user : recipient;
+        const names = (Array.isArray(given) ? given : typeof given === 'string' ? given.split(/[,;]/) : [given])
+            .filter(name => typeof name === 'string' || typeof name === 'number')
+            .map(name => String(name).trim())
+            .filter(name => !!name);
+        if (!names.length) {
+            const chats = Object.keys(this.storedUsers);
+            return chats.length
+                ? { chats }
+                : { chats, failure: { error: 'No user has written to the bot yet', reason: 'NOT_FOUND' } };
+        }
+        const chats: string[] = [];
+        for (const name of names) {
+            const found = findRecipient(name, this.storedUsers, this.storedChats);
+            if (!found) {
+                return {
+                    chats,
+                    failure: {
+                        error: `Unknown recipient "${name}"`,
+                        reason: 'NOT_FOUND',
+                        candidates: listRecipients(this.storedUsers, this.storedChats).map(r => r.name),
+                    },
+                };
+            }
+            if (!chats.includes(found)) {
+                chats.push(found);
+            }
+        }
+        return { chats };
+    }
+
+    /**
+     * Send one message to every chat (in parallel), each with its own options; the results merged per send.
+     *
+     * @param content the text or the file
+     * @param chats the chat ids
+     * @param options the options of send
+     * @returns per chat {<chatId>: messageId, error?}, or the error text if a send failed as a whole
+     */
+    async sendToChats(
+        content: string | Buffer,
+        chats: string[],
+        options: SendOptions,
+    ): Promise<(MessageIds | string)[]> {
+        const results: unknown[] = await Promise.all(
+            chats.map(chat => this.sendMessage(content as string, null, chat, { ...options })),
+        );
+        // sendMessage resolves with the error itself if a send helper threw
+        return results.map(result =>
+            Array.isArray(result)
+                ? mergeMessageIds(result)
+                : result instanceof Error
+                  ? result.message
+                  : `Cannot send the message: ${String(result)}`,
+        );
+    }
+
+    /**
+     * The options of send that message.send and message.ask pass on: everything but the parameters of the catalog
+     * and the recipients.
+     *
+     * @param message the message of message.send or message.ask
+     */
+    standardOptions(message: Record<string, unknown>): SendOptions {
+        const options: SendOptions & Record<string, unknown> = { ...message };
+        for (const key of [...CATALOG_KEYS, 'user', 'chatId', 'returnMessageIds']) {
+            delete options[key];
+        }
+        return options;
+    }
+
+    /**
+     * A file of message.send as send takes it: {data, contentType} (base64 or a data URL, as pictures are answered),
+     * a data URL, base64 with the parameter contentType, iobfile://<adapter.0>/<path> (also iobstate://,
+     * iobobject://), an http(s) URL, or a path on the host.
+     *
+     * @param file the file
+     * @param contentType the parameter contentType of message.send, for bare base64
+     * @returns the content with its kind (photo, video, audio, animation, document) and name, or null
+     */
+    async standardFile(
+        file: unknown,
+        contentType: unknown,
+    ): Promise<{ content: Buffer | string; type?: string; fileName?: string } | null> {
+        const fromBase64 = (
+            data: string,
+            mime: string,
+            fileName?: string,
+        ): { content: Buffer; type: string; fileName: string } => ({
+            content: Buffer.from(data, 'base64'),
+            type: mimeToMediaType(mime),
+            fileName: fileName || `file.${mime.split('/')[1]?.split('+')[0] || 'bin'}`,
+        });
+        try {
+            if (file && typeof file === 'object') {
+                const {
+                    data,
+                    contentType: mime,
+                    fileName,
+                } = file as {
+                    data?: unknown;
+                    contentType?: unknown;
+                    fileName?: unknown;
+                };
+                if (typeof data !== 'string' || !data) {
+                    return null;
+                }
+                const name = typeof fileName === 'string' && fileName ? fileName : undefined;
+                if (data.startsWith('data:')) {
+                    const payload = await this.valueToPayload(data, 0);
+                    return payload && name ? { ...payload, fileName: name } : payload;
+                }
+                const type =
+                    typeof mime === 'string' && mime
+                        ? mime
+                        : typeof contentType === 'string' && contentType
+                          ? contentType
+                          : 'application/octet-stream';
+                return fromBase64(data, type, name);
+            }
+            if (typeof file !== 'string') {
+                return null;
+            }
+            if (
+                typeof contentType === 'string' &&
+                contentType &&
+                !file.startsWith('data:') &&
+                !isIobUri(file) &&
+                !/^https?:\/\//i.test(file) &&
+                !existsSync(file)
+            ) {
+                return fromBase64(file, contentType);
+            }
+            return await this.valueToPayload(file, 0);
+        } catch (err) {
+            this.log.warn(`Cannot read the file for message.send: ${err instanceof Error ? err.message : err}`);
+            return null;
+        }
+    }
+
+    /**
+     * message.send of the shared catalog {text, recipient?, title?, file?, files?, priority?}, under the full name
+     * because send answers the number of recipients. The text goes as a message, or as the caption of the first file
+     * if it fits (1024 characters); every file is a message of its own. Answer {ok: true, sent, id?, failed?} or
+     * {error, reason?}.
+     *
+     * @param obj the message with the command message.send
+     */
+    async standardSend(obj: ioBroker.Message): Promise<void> {
+        const message = obj.message && typeof obj.message === 'object' ? obj.message : { text: obj.message };
+        const answer = (result: StandardAnswer): void => {
+            if (obj.callback) {
+                this.sendTo(obj.from, obj.command, result, obj.callback);
+            }
+        };
+        const text = withTitle(
+            message.text === undefined || message.text === null ? '' : String(message.text),
+            message.title,
+        );
+        const files = fileList(message);
+        if (!text && !files.length) {
+            return answer({ error: 'text or file is missing', reason: 'BAD_REQUEST' });
+        }
+        const { chats, failure } = this.standardChats(message);
+        if (failure) {
+            return answer(failure);
+        }
+        if (!this.bot || this.isConnected === false) {
+            return answer({ error: 'Not connected to Telegram', reason: 'NOT_CONNECTED' });
+        }
+
+        // read every file first: one that cannot be read stops before anything is sent
+        const payloads: { content: Buffer | string; type?: string; fileName?: string }[] = [];
+        for (const file of files) {
+            const payload = await this.standardFile(file, message.contentType);
+            if (!payload) {
+                return answer({ error: `Cannot read the file ${payloads.length + 1}`, reason: 'BAD_REQUEST' });
+            }
+            payloads.push(payload);
+        }
+
+        const extras = this.standardOptions(message);
+        if (extras.disable_notification === undefined && isSilent(message.priority)) {
+            extras.disable_notification = true;
+        }
+        const caption = payloads.length && text.length <= 1024 ? parseModeOf(text) : null;
+        const parts: (MessageIds | string)[] = [];
+        if (text && !caption) {
+            parts.push(...(await this.sendToChats(text, chats, extras)));
+        }
+        for (let i = 0; i < payloads.length; i++) {
+            const { content, type, fileName } = payloads[i];
+            const options: SendOptions = { ...extras, type: type || 'document' };
+            if (fileName) {
+                options.fileName = fileName;
+            }
+            if (i === 0 && caption?.text) {
+                options.caption = caption.text;
+                if (caption.parse_mode) {
+                    options.parse_mode = caption.parse_mode;
+                }
+            }
+            parts.push(...(await this.sendToChats(content, chats, options)));
+        }
+        answer(sendAnswer(parts));
+    }
+
+    /**
+     * message.ask of the shared catalog {text, answers?, recipient?, timeoutSec?}, under the full name because ask
+     * answers the raw Telegram message. answers become inline buttons. Answer {answer, index?, from?} or
+     * {timeout: true}; at once {error, reason?} if the question could not be sent.
+     *
+     * @param obj the message with the command message.ask
+     */
+    async standardAsk(obj: ioBroker.Message): Promise<void> {
+        const message = obj.message && typeof obj.message === 'object' ? obj.message : { text: obj.message };
+        const answer = (result: StandardAnswer): void => {
+            if (obj.callback) {
+                this.sendTo(obj.from, obj.command, result, obj.callback);
+            }
+        };
+        const text = message.text === undefined || message.text === null ? '' : String(message.text);
+        if (!text) {
+            return answer({ error: 'text is missing', reason: 'BAD_REQUEST' });
+        }
+        const { chats, failure } = this.standardChats(message);
+        if (failure) {
+            return answer(failure);
+        }
+        if (!this.bot || this.isConnected === false) {
+            return answer({ error: 'Not connected to Telegram', reason: 'NOT_CONNECTED' });
+        }
+
+        const answers = answerList(message.answers);
+        const data = answerData(answers);
+        const options = this.standardOptions(message);
+        if (answers.length) {
+            options.reply_markup = answerKeyboard(answers, data);
+        }
+        const parts = await this.sendToChats(text, chats, options);
+        const sent = sendAnswer(parts);
+        if (sent.error) {
+            return answer(sent);
+        }
+        if (!obj.callback) {
+            return;
+        }
+
+        // the chats that got the question, with its message id there
+        const sentTo: Record<string, number> = {};
+        for (const part of parts) {
+            if (typeof part === 'object') {
+                const errors = part.error as Record<string, unknown> | undefined;
+                for (const [chat, id] of Object.entries(part)) {
+                    if (chat !== 'error' && errors?.[chat] === undefined) {
+                        sentTo[chat] = Number(id);
+                    }
+                }
+            }
+        }
+        const asked = Object.keys(sentTo);
+        const seconds = Number(message.timeoutSec);
+        const question: Question = {
+            cb: obj.callback,
+            from: obj.from,
+            ts: Date.now(),
+            standard: true,
+            answers,
+            answerData: data,
+            sentTo,
+        };
+        if (seconds > 0) {
+            question.timeoutMs = seconds * 1000;
+        }
+        if (asked.length === 1) {
+            question.chatId = Number(asked[0]);
+            question.msgId = sentTo[asked[0]];
+        }
+        this.waitForAnswer(question);
     }
 
     callUsers(
@@ -3337,27 +3672,48 @@ class Telegram extends Adapter {
             });
     }
 
-    isAnswerForQuestion(msg: Message | CallbackQuery): void {
+    /**
+     * Give a received message or a pressed button to a waiting question of ask or message.ask.
+     *
+     * @param msg the text message or the callback query of the button
+     * @returns true if it answered a question of message.ask: then it is not processed further
+     */
+    isAnswerForQuestion(msg: Message | CallbackQuery): boolean {
+        let taken = false;
         if (this.questions?.length) {
             const now = Date.now();
             const chatId = 'chat' in msg ? msg.chat?.id : undefined;
             const fromId = msg.from?.id;
+            // in time; a question of message.ask only by a reply in its chats (a button only on its message)
+            const fits = (q: Question): boolean =>
+                now - q.ts < this.answerWindow(q) && (!q.standard || !q.sentTo || repliesTo(q.sentTo, msg));
 
-            let question =
-                chatId &&
-                this.questions.find(
-                    q => q.chatId === chatId && q.user === fromId && now - q.ts < this.config.answerTimeoutSec,
-                );
-            question ||=
-                chatId && this.questions.find(q => q.chatId === chatId && now - q.ts < this.config.answerTimeoutSec);
-            question ||= this.questions.find(q => now - q.ts < this.config.answerTimeoutSec);
+            let question = chatId && this.questions.find(q => q.chatId === chatId && q.user === fromId && fits(q));
+            question ||= chatId && this.questions.find(q => q.chatId === chatId && fits(q));
+            question ||= this.questions.find(q => fits(q));
 
             // user have 60 seconds for answer
-            if (question && Date.now() - question.ts < this.config.answerTimeoutSec) {
+            if (question && Date.now() - question.ts < this.answerWindow(question)) {
                 if (question.timeout) {
                     this.clearTimeout(question.timeout);
                     question.timeout = null;
-                    this.sendTo(question.from, 'ask', msg, question.cb);
+                    if (question.standard) {
+                        taken = true;
+                        this.sendTo(
+                            question.from,
+                            'ask',
+                            askAnswer(question, msg, !!this.config.useUsername),
+                            question.cb,
+                        );
+                        // stop the spinner on the pressed button
+                        if (this.bot && 'chat_instance' in msg) {
+                            this.bot.api
+                                .answerCallbackQuery({ callback_query_id: msg.id })
+                                .catch(error => this.log.debug(`Cannot answer the callback query: ${error}`));
+                        }
+                    } else {
+                        this.sendTo(question.from, 'ask', msg, question.cb);
+                    }
 
                     // Remove the inline keyboard. For a broadcast question `question.chatId`/`msgId` are
                     // empty (the question was not tied to a single chat), so prefer the chat/message the
@@ -3388,8 +3744,9 @@ class Telegram extends Adapter {
             }
 
             // remove old questions
-            this.questions = this.questions.filter(q => now - q.ts < this.config.answerTimeoutSec);
+            this.questions = this.questions.filter(q => now - q.ts < this.answerWindow(q));
         }
+        return taken;
     }
 
     garbageCollector(): void {
@@ -3603,7 +3960,10 @@ class Telegram extends Adapter {
                 .catch(error => this.log.error(`send Message Error: ${error}`));
         }
 
-        this.isAnswerForQuestion(msg);
+        // the reply to a question of message.ask goes only to the one who asked
+        if (this.isAnswerForQuestion(msg)) {
+            return;
+        }
 
         if (msgText === this.config.keyboard || msgText === '/commands') {
             this.log.debug('Response keyboard');

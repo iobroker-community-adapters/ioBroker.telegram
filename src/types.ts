@@ -127,6 +127,16 @@ export interface Question {
     user?: string;
     msgId?: number;
     timeout?: ioBroker.Timeout | null;
+    /** message.ask of the shared catalog: the answer is {answer, index?, from?} or {timeout: true} */
+    standard?: boolean;
+    /** message.ask: the texts of the buttons */
+    answers?: string[];
+    /** message.ask: the callback_data of each button (the answer, or its index if an answer does not fit) */
+    answerData?: string[];
+    /** message.ask: chat id => message id of the question; a reply counts only in these chats */
+    sentTo?: Record<string, number>;
+    /** message.ask: how long the question waits (ms), instead of the answer timeout of the settings */
+    timeoutMs?: number;
 }
 
 /** The extra options accepted for an `editMessageMedia` request (caption/parse_mode are applied to the media). */

@@ -15,6 +15,8 @@ export const COMMANDS: { command: string; write: boolean; standard?: string }[] 
     { command: 'getRecipients', write: false, standard: 'message.getRecipients' },
     { command: 'edit', write: true, standard: 'message.edit' },
     { command: 'delete', write: true, standard: 'message.delete' },
+    { command: 'message.send', write: true, standard: 'message.send' },
+    { command: 'message.ask', write: true, standard: 'message.ask' },
     { command: 'sendNotification', write: true },
     { command: 'adminuser', write: false },
     { command: 'delUser', write: true },
@@ -27,8 +29,10 @@ to chats and groups, asks questions with buttons and returns the reply, and rece
 communicate.request, to text2command or to an assistant instance). It can also call a user via CallMeBot.
 Recipients: the users who authenticated with the bot (stored in communicate.users) and the chats and groups the bot
 has seen (communicate.chats). Telegram lets a bot write only into chats that wrote to it before.
-getRecipients, edit and delete follow the shared catalog of message commands (message.getRecipients, message.edit,
-message.delete); send and ask keep their own answers.
+getRecipients, edit, delete, message.send and message.ask follow the shared catalog of message commands
+(message.getRecipients, message.edit, message.delete, message.send, message.ask). send and ask keep their own answers
+(a number, the raw Telegram message), so the catalog versions of them have the full names message.send and
+message.ask.
 
 Commands (sendTo telegram.0):
 - send {text, user?, chatId?, ...options} or just a text: sends a message; answer: the number of addressed
@@ -75,6 +79,24 @@ Commands (sendTo telegram.0):
   returnMessageIds: true, {<chatId>: messageId}); recipient: the chat of the message, an id or name of
   getRecipients; default the only stored user (with several users it is needed). Answer {ok: true} or {error,
   reason?: BAD_REQUEST, NOT_FOUND (with candidates), NOT_CONNECTED}.
+- message.send {text, recipient?, title?, file?, files?, priority?}: sends a message as the shared catalog says.
+  recipient: an id or name of getRecipients, or several (array or "," between them); default every stored user,
+  like send. chatId and user (names) of send work too. title: the first line of the text. file, files: pictures or files - {data, contentType} (base64 or a data
+  URL, as cameras and charts answer), a data URL, base64 with the parameter contentType, iobfile://<adapter.0>/
+  <path>, an http(s) URL; the kind (photo, video, audio, document) follows the content type or the extension. The
+  text goes as the caption of the first file (if it has at most 1024 characters), every file is a message of its
+  own. priority: low or a negative number = without notification sound. Other options of send (parse_mode,
+  reply_markup, message_thread_id, ...) are passed on. Answer {ok: true, sent: number of chats that got it, id?:
+  the message id (with one chat; for edit and delete), failed?: {<chatId>: reason}} or {error, reason?: BAD_REQUEST,
+  NOT_FOUND (with candidates), NOT_CONNECTED}.
+- message.ask {text, answers?, recipient?, timeoutSec?}: sends a question and answers with the reply: {answer: the
+  text of the pressed button or the typed reply, index?: the button (0-based; also for a typed reply equal to a
+  button), from?: the name of the person} or {timeout: true}. answers: texts for inline buttons (array, or a text
+  with "," between them); without them the reply is free text. recipient as in message.send (without it every
+  stored user gets the question, the first reply counts). timeoutSec: default the answer timeout of the settings
+  (60 s); the sendTo of the caller must wait longer. A reply counts only in the chats of the question, a button only
+  on the question; it is not processed further (not forwarded to text2command or an assistant). At once {error,
+  reason?} (as message.send) if the question could not be sent.
 - sendNotification: for the notification-manager (sends the notification to the users that receive system
   messages); answer {sent}.
 - help: this text and the list of commands {help, commands: [{command, write, standard?}]}.
@@ -94,4 +116,5 @@ How to talk to the user:
 - Sending to other people than the user, into groups or to all users, and calls only on the user's explicit request.
   Edit or delete a message only on the user's explicit request.
 - Name users and chats by their names, not by ids; times in local time.
-- Tell the user to whom the message went; an answer 0 means the name is unknown to the bot.`;
+- Tell the user to whom the message went; an answer 0 means the name is unknown to the bot.
+- message.send and message.ask reach other people: only on the user's explicit request, like send and ask.`;
