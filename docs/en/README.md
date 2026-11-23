@@ -362,7 +362,8 @@ The Blockly block "telegram" has an optional input "Topic (Thread-ID)" for it as
 ## Message ids of sent messages
 The callback of `send` gets the number of recipients. To edit or delete the message later, ask for the ids instead
 with `returnMessageIds: true`: the callback then gets an object `chat id => message id`, and `error`
-(`chat id => reason`) if a recipient failed.
+(`chat id => reason`) if a recipient failed. `queued` (`chat id => reason`) means that Telegram was not reachable:
+the adapter sends the message to that chat again by itself, so do not send it again.
 
 ```javascript
 sendTo('telegram.0', 'send', { text: 'Washing machine is done', chatId: 12345678, returnMessageIds: true }, ids => {

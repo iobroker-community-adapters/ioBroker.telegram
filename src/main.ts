@@ -192,10 +192,12 @@ const INTERNAL_OPTION_KEYS = new Set<string>([
 
 /**
  * Merge the per-recipient results of `sendMessage` - each a JSON `{ "<chatId>": messageId }`, with `error` for a
- * recipient that failed - into one object, e.g. `{ "12345": 678, "error": { "999": "Forbidden: ..." } }`.
+ * recipient that failed and `queued` for one whose send waits in the send queue (Telegram was not reachable, it is
+ * sent again by itself) - into one object, e.g. `{ "12345": 678, "error": { "999": "Forbidden: ..." } }`.
  *
  * @param results what `sendMessage` resolved with
- * @returns chat id => message id, plus `error` (chat id => reason) if a recipient failed
+ * @returns chat id => message id, plus `error` (chat id => reason) if a recipient failed and `queued` (chat id =>
+ *   reason) if a send is queued
  */
 export function mergeMessageIds(results: unknown): MessageIds {
     const merged: MessageIds = {};
@@ -213,8 +215,8 @@ export function mergeMessageIds(results: unknown): MessageIds {
             continue;
         }
         for (const [key, value] of Object.entries(ids as Record<string, unknown>)) {
-            if (key === 'error' && value && typeof value === 'object') {
-                merged.error = { ...(merged.error as Record<string, unknown> | undefined), ...value };
+            if ((key === 'error' || key === 'queued') && value && typeof value === 'object') {
+                merged[key] = { ...(merged[key] as Record<string, unknown> | undefined), ...value };
             } else if (typeof value === 'number' || typeof value === 'string') {
                 merged[key] = value;
             }
@@ -388,7 +390,13 @@ class Telegram extends Adapter {
                         } catch (err) {
                             this.log.error(err);
                             this.log.error('Cannot parse stored user IDs!');
+                            if (obj.callback) {
+                                this.sendTo(obj.from, obj.command, {}, obj.callback);
+                            }
                         }
+                    } else if (obj.callback) {
+                        // no user has authenticated yet: an empty list
+                        this.sendTo(obj.from, obj.command, {}, obj.callback);
                     }
                 });
             } else if (obj.command === 'delUser') {
@@ -408,11 +416,33 @@ class Telegram extends Adapter {
                                     void this.updateUsers();
                                     this.log.warn(`User ${userID} has been deleted!`);
                                 })
-                                .catch(e => this.log.error(`Cannot set state communicate.users: ${e}`));
+                                .catch(e => {
+                                    this.log.error(`Cannot set state communicate.users: ${e}`);
+                                    if (obj.callback) {
+                                        this.sendTo(
+                                            obj.from,
+                                            obj.command,
+                                            { error: `Cannot delete user ${userID}: ${e}` },
+                                            obj.callback,
+                                        );
+                                    }
+                                });
                         } catch (err) {
                             this.log.error(err);
                             this.log.error(`Cannot delete user ${userID}!`);
+                            if (obj.callback) {
+                                this.sendTo(
+                                    obj.from,
+                                    obj.command,
+                                    { error: `Cannot delete user ${userID}` },
+                                    obj.callback,
+                                );
+                            }
                         }
+                    } else if (obj.callback) {
+                        // no stored user: the user is not stored, as after deleting it (the same answer as for an
+                        // id that is not in the list)
+                        this.sendTo(obj.from, obj.command, userID, obj.callback);
                     }
                 });
             } else if (obj.command === 'systemMessages') {
@@ -435,11 +465,33 @@ class Telegram extends Adapter {
                                         `Receiving of system messages for user "${userID}" has been changed to ${checked}!`,
                                     );
                                 })
-                                .catch(e => this.log.error(`Cannot set state communicate.users: ${e}`));
+                                .catch(e => {
+                                    this.log.error(`Cannot set state communicate.users: ${e}`);
+                                    if (obj.callback) {
+                                        this.sendTo(
+                                            obj.from,
+                                            obj.command,
+                                            { error: `Cannot change user ${userID}: ${e}` },
+                                            obj.callback,
+                                        );
+                                    }
+                                });
                         } catch (err) {
+                            // also an unknown user (userObj[userID] is undefined)
                             this.log.error(err);
                             this.log.error(`Cannot change user ${userID}!`);
+                            if (obj.callback) {
+                                this.sendTo(
+                                    obj.from,
+                                    obj.command,
+                                    { error: `Cannot change user ${userID}` },
+                                    obj.callback,
+                                );
+                            }
                         }
+                    } else if (obj.callback) {
+                        // no stored user: there is nothing to change
+                        this.sendTo(obj.from, obj.command, { error: `Unknown user ${userID}` }, obj.callback);
                     }
                 });
             } else if (obj.command === 'delAllUser') {
@@ -1336,7 +1388,13 @@ class Telegram extends Adapter {
     }
 
     async sendMessageHelper(dest: number | string, name: string, text: any, options: SendOptions): Promise<string> {
-        const bot = this.bot!;
+        const bot = this.bot;
+        if (!bot) {
+            // no bot (no token, or not started yet): nothing can be sent or queued, so the send fails at once like
+            // any other send error - before, the promise never resolved and send/ask with a callback hung
+            this.log.warn(`Cannot send to "${name}": not connected to Telegram`);
+            return JSON.stringify({ error: { [String(options.chatId ?? dest)]: 'Not connected to Telegram' } });
+        }
 
         // Resolve ioBroker URIs (iobfile://, iobobject://, iobstate://) to their content before dispatching.
         // This allows sending files that live in the ioBroker file storage (e.g. behind Redis/jsonl) and are
@@ -1610,6 +1668,14 @@ class Telegram extends Adapter {
                             })
                             .catch(error => {
                                 this.log.error(`upload Error: ${error}`);
+                                resolve(
+                                    JSON.stringify({
+                                        error: {
+                                            [String(options.chatId ?? dest)]:
+                                                error instanceof Error ? error.message : String(error),
+                                        },
+                                    }),
+                                );
                             });
                     } else {
                         this.log.debug('option media should be an array');
@@ -1769,6 +1835,10 @@ class Telegram extends Adapter {
                         options,
                         resolve,
                     );
+                } else {
+                    // no pressed button of this chat is waiting for its confirmation (or it was confirmed already)
+                    this.log.warn(`Cannot send answerCallbackQuery to "${name}": no pressed button to answer`);
+                    resolve(JSON.stringify({ error: { [String(options.chatId)]: 'No pressed button to answer' } }));
                 }
             } else {
                 this.log.debug(`Send message to [${name}]: "${text}"`);
@@ -1835,8 +1905,8 @@ class Telegram extends Adapter {
                 resolve(JSON.stringify(messageIds));
             })
             .catch(error => {
-                // add the error to the message ids object - as text: an Error object becomes `{}` in JSON
-                messageIds.error = {
+                // as text: an Error object becomes `{}` in JSON
+                const reason = {
                     [String(options.chat_id ?? options.chatId)]: error instanceof Error ? error.message : String(error),
                 };
                 // log error to the system
@@ -1844,10 +1914,14 @@ class Telegram extends Adapter {
                     `Failed sending [${options.chatId ? 'chatId' : 'user'} - ${options.chatId ? options.chatId : options.user}]: ${error}`,
                 );
                 // If telegram was unreachable, queue the send so it can be retried on reconnect (issue #839).
-                // The original promise is still resolved right away so callers never block on the retry.
+                // The original promise is still resolved right away so callers never block on the retry - but as
+                // queued, not as failed: a caller that retries a failed send would send the message twice.
                 if (this.isRetryableSendError(error)) {
+                    messageIds.queued = reason;
                     const label = String(options.chat_id ?? options.chatId ?? options.user ?? 'all');
                     this.enqueueFailedSend(action, label, error);
+                } else {
+                    messageIds.error = reason;
                 }
                 // send the successfully sent messages as callback
                 resolve(JSON.stringify(messageIds));
@@ -1950,7 +2024,9 @@ class Telegram extends Adapter {
                             options.chatId = id;
                         }
                         matches++;
-                        tPromiseList.push(this.sendMessageHelper(id, userName, text, options));
+                        // a copy per chat: the helper takes the chat of its message id or error from the options,
+                        // and with one shared object every result landed under the last chat
+                        tPromiseList.push(this.sendMessageHelper(id, userName, text, { ...options }));
                         break;
                     }
                 }
@@ -2003,7 +2079,8 @@ class Telegram extends Adapter {
                             ? this.storedUsers[id].userName
                             : this.storedUsers[id].firstName,
                         text,
-                        options,
+                        // a copy per chat, as above
+                        { ...options },
                     ),
                 );
             });
@@ -2842,7 +2919,9 @@ class Telegram extends Adapter {
             return;
         }
 
-        // filter out the double messages
+        // filter out the double messages. Every sendTo gets its own _id (and callback id), so only a copy of the same
+        // message is filtered - its callback is the one of the first, which gets the answer; a script that sends the
+        // same text twice sends two different messages, and both are processed.
         const json = JSON.stringify(obj);
         if (this.lastMessageTime && this.lastMessageText === json && Date.now() - this.lastMessageTime < 1200) {
             return this.log.debug(
@@ -2883,11 +2962,21 @@ class Telegram extends Adapter {
                             );
                         })
                         .catch(e => this.log.error(`Cannot send command: ${e}`));
+                } else if (obj.callback) {
+                    // nothing to send: 0 recipients, the answer of send when nothing went out (as for an unknown name)
+                    this.log.warn('Cannot send an empty message');
+                    this.sendTo(obj.from, obj.command, 0, obj.callback);
                 }
                 break;
 
             case 'ask':
-                if (obj.message) {
+                if (!obj.message) {
+                    if (obj.callback) {
+                        // nothing to ask: no reply can come, so "no reply" at once
+                        this.log.warn('Cannot ask an empty question');
+                        this.sendTo(obj.from, obj.command, '__timeout__', obj.callback);
+                    }
+                } else {
                     const question: Question = {
                         cb: obj.callback,
                         from: obj.from,
@@ -2912,7 +3001,13 @@ class Telegram extends Adapter {
                     }
 
                     if (obj.callback) {
-                        this.waitForAnswer(question);
+                        if (this.bot) {
+                            this.waitForAnswer(question);
+                        } else {
+                            // without a bot nothing was sent and no reply can come: "no reply" at once, the answer
+                            // old scripts know (instead of waiting the whole answer timeout)
+                            this.sendTo(obj.from, obj.command, '__timeout__', obj.callback);
+                        }
                     }
                 }
                 break;
@@ -3077,12 +3172,14 @@ class Telegram extends Adapter {
             obj.command === 'edit' ? { editMessageText: { options: target } } : { deleteMessage: { options: target } },
         );
         // sendMessage resolves with the error itself if a send helper threw
-        const errors = mergeMessageIds(results).error as Record<string, string> | undefined;
+        const merged = mergeMessageIds(results);
+        const errors = merged.error as Record<string, string> | undefined;
         let failed = errors ? Object.values(errors)[0] : undefined;
         if (!Array.isArray(results)) {
             failed = results instanceof Error ? results.message : `Cannot ${obj.command} the message`;
         }
-        answer(failed ? { error: failed } : { ok: true });
+        // queued: Telegram was not reachable, the send queue does it later by itself
+        answer(failed ? { error: failed } : merged.queued ? { ok: true, pending: true } : { ok: true });
     }
 
     /**
@@ -3404,15 +3501,19 @@ class Telegram extends Adapter {
             return;
         }
 
-        // the chats that got the question, with its message id there
+        // the chats that got the question, with its message id there; 0 = the question waits in the send queue, its
+        // message id is not known yet
         const sentTo: Record<string, number> = {};
         for (const part of parts) {
             if (typeof part === 'object') {
                 const errors = part.error as Record<string, unknown> | undefined;
                 for (const [chat, id] of Object.entries(part)) {
-                    if (chat !== 'error' && errors?.[chat] === undefined) {
+                    if (chat !== 'error' && chat !== 'queued' && errors?.[chat] === undefined) {
                         sentTo[chat] = Number(id);
                     }
+                }
+                for (const chat of Object.keys(part.queued || {})) {
+                    sentTo[chat] ??= 0;
                 }
             }
         }

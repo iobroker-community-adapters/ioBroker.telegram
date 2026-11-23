@@ -47,6 +47,10 @@ with `write` (whether the command has an effect, e.g. sends a message).
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (@GermanBluefox) Fixed: `send` and `ask` with a callback no longer wait forever while the bot is not running (no token, not started yet): `send` answers at once as on other send errors, `ask` answers `'__timeout__'`
+- (@GermanBluefox) Fixed: a message that Telegram could not take and that the adapter sends again later is no longer answered as failed (a caller could send it twice): `queued` instead of `error` with `returnMessageIds`, `{ok, pending: true, queued}` from `message.send`, `{ok, pending: true}` from `edit`/`delete`; `message.ask` waits for the reply
+- (@GermanBluefox) Fixed: with `returnMessageIds`, a message to several users gets the message id or error of each chat (they all landed under the last chat)
+- (@GermanBluefox) Fixed: `send` with an empty message (answers 0), `ask` with an empty question (`'__timeout__'`) and `adminuser`, `delUser`, `systemMessages` without stored users or for an unknown user are answered
 - (@GermanBluefox) Added the full-name standard commands of the shared catalog: `message.send` (answers `{ok, sent, id?}`, takes files as `{data, contentType}`, data URL, `iobfile://` or URL) and `message.ask` (buttons from `answers`, answers `{answer, index?, from?}` or `{timeout: true}`); `send` and `ask` keep their answers
 - (@GermanBluefox) Added the standard commands of the shared catalog: message.getRecipients, message.edit, message.delete (`getRecipients`, `edit`, `delete`); `send` takes `recipient`; unknown commands are answered with an error
 - (@GermanBluefox) Fixed: the message `call` now answers when the calls are done: `{called, error?}`

@@ -36,7 +36,9 @@ message.ask.
 
 Commands (sendTo telegram.0):
 - send {text, user?, chatId?, ...options} or just a text: sends a message; answer: the number of addressed
-  recipients (0 = no name matched), or with returnMessageIds: true {<chatId>: messageId, error?: {<chatId>: reason}}.
+  recipients (0 = no name matched, or an empty message), or with returnMessageIds: true {<chatId>: messageId,
+  error?: {<chatId>: reason}, queued?: {<chatId>: reason}}. queued: Telegram was not reachable, the adapter sends
+  the message again by itself (do not send it again).
   Recipients: chatId (number or string, a private chat or a group such as "-1001234567890") wins over user.
   user: a name (the telegram username, or the first name if the settings use first names or the user has no
   username) or a user id; several separated by "," ";" or space, or an array. Without chatId and user: every
@@ -64,7 +66,8 @@ Commands (sendTo telegram.0):
 - ask {text, user?, chatId?, reply_markup?, ...options of send} or just a text: sends a question and answers with
   the reply within the answer timeout of the settings (default 60 s): the Telegram message ({text, chat, from,
   ...}) or for an inline button the callback query ({data: the callback_data of the button, from, message});
-  "__timeout__" if nobody replied. The sendTo of the caller must wait longer than that timeout.
+  "__timeout__" if nobody replied (at once if the question cannot be sent: empty, or no connection to Telegram
+  yet). The sendTo of the caller must wait longer than that timeout.
 - call {text, user?, users?, lang?, file?, repeats?} or just a text: a voice call in the Telegram app via CallMeBot
   that reads the text. users: array of telegram usernames (@name) or phone numbers (+49...); user: one of them;
   neither: every stored user with a username (all of them, like send without user). lang: a voice such as
@@ -77,8 +80,9 @@ Commands (sendTo telegram.0):
 - edit {id, text, recipient?}: changes the text of a message the bot sent; delete {id, recipient?}: deletes a
   message (the bot's own, or in a group where it may delete). id: the message id (from send with
   returnMessageIds: true, {<chatId>: messageId}); recipient: the chat of the message, an id or name of
-  getRecipients; default the only stored user (with several users it is needed). Answer {ok: true} or {error,
-  reason?: BAD_REQUEST, NOT_FOUND (with candidates), NOT_CONNECTED}.
+  getRecipients; default the only stored user (with several users it is needed). Answer {ok: true, pending?: true
+  (Telegram was not reachable, the adapter does it later by itself)} or {error, reason?: BAD_REQUEST, NOT_FOUND
+  (with candidates), NOT_CONNECTED}.
 - message.send {text, recipient?, title?, file?, files?, priority?}: sends a message as the shared catalog says.
   recipient: an id or name of getRecipients, or several (array or "," between them); default every stored user,
   like send. chatId and user (names) of send work too. title: the first line of the text. file, files: pictures or files - {data, contentType} (base64 or a data
@@ -87,8 +91,9 @@ Commands (sendTo telegram.0):
   text goes as the caption of the first file (if it has at most 1024 characters), every file is a message of its
   own. priority: low or a negative number = without notification sound. Other options of send (parse_mode,
   reply_markup, message_thread_id, ...) are passed on. Answer {ok: true, sent: number of chats that got it, id?:
-  the message id (with one chat; for edit and delete), failed?: {<chatId>: reason}} or {error, reason?: BAD_REQUEST,
-  NOT_FOUND (with candidates), NOT_CONNECTED}.
+  the message id (with one chat; for edit and delete), failed?: {<chatId>: reason}, pending?: true with queued:
+  {<chatId>: reason} (Telegram was not reachable, the adapter sends it to these chats again by itself - do not send
+  it again)} or {error, reason?: BAD_REQUEST, NOT_FOUND (with candidates), NOT_CONNECTED}.
 - message.ask {text, answers?, recipient?, timeoutSec?}: sends a question and answers with the reply: {answer: the
   text of the pressed button or the typed reply, index?: the button (0-based; also for a typed reply equal to a
   button), from?: the name of the person} or {timeout: true}. answers: texts for inline buttons (array, or a text
@@ -96,7 +101,8 @@ Commands (sendTo telegram.0):
   stored user gets the question, the first reply counts). timeoutSec: default the answer timeout of the settings
   (60 s); the sendTo of the caller must wait longer. A reply counts only in the chats of the question, a button only
   on the question; it is not processed further (not forwarded to text2command or an assistant). At once {error,
-  reason?} (as message.send) if the question could not be sent.
+  reason?} (as message.send) if the question could not be sent; a question that waits in the send queue (Telegram
+  was not reachable) waits for its reply all the same.
 - sendNotification: for the notification-manager (sends the notification to the users that receive system
   messages); answer {sent}.
 - help: this text and the list of commands {help, commands: [{command, write, standard?}]}.

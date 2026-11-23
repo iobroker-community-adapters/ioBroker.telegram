@@ -362,7 +362,9 @@ Der Blockly-Block „telegram“ hat dafür ebenfalls einen optionalen Eingang �
 ## Nachrichten-IDs gesendeter Nachrichten
 Der Callback von `send` bekommt die Anzahl der Empfänger. Um die Nachricht später zu bearbeiten oder zu löschen,
 fordert man mit `returnMessageIds: true` stattdessen die IDs an: Der Callback bekommt dann ein Objekt
-`Chat-ID => Nachrichten-ID` und `error` (`Chat-ID => Grund`), falls ein Empfänger fehlschlug.
+`Chat-ID => Nachrichten-ID` und `error` (`Chat-ID => Grund`), falls ein Empfänger fehlschlug. `queued`
+(`Chat-ID => Grund`) heißt, dass Telegram nicht erreichbar war: Der Adapter sendet die Nachricht an diesen Chat später
+selbst noch einmal, sie also nicht erneut senden.
 
 ```javascript
 sendTo('telegram.0', 'send', { text: 'Waschmaschine ist fertig', chatId: 12345678, returnMessageIds: true }, ids => {

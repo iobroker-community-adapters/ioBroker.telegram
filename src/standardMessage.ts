@@ -126,7 +126,7 @@ export function answerKeyboard(answers: string[], data: string[]): InlineKeyboar
  * Whether a reply can answer a question of message.ask: it must come from a chat the question went to, and a button
  * must be one of the question's message (not of an older message in the same chat).
  *
- * @param sentTo chat id => message id of the question
+ * @param sentTo chat id => message id of the question (0 = queued, not sent yet)
  * @param msg the text message or the callback query of the button
  */
 export function repliesTo(sentTo: Record<string, number>, msg: Message | CallbackQuery): boolean {
@@ -135,7 +135,8 @@ export function repliesTo(sentTo: Record<string, number>, msg: Message | Callbac
     if (chat === undefined || sentTo[String(chat)] === undefined) {
         return false;
     }
-    return !button || button.message?.message_id === sentTo[String(chat)];
+    // 0: the question still waits in the send queue, its message id is not known - any button in that chat
+    return !button || !sentTo[String(chat)] || button.message?.message_id === sentTo[String(chat)];
 }
 
 /**
@@ -178,15 +179,18 @@ export function askAnswer(
 
 /**
  * The answer of message.send from the results of its sends (the text and every file is one send).
- * A chat counts as sent when it got every part.
+ * A chat counts as sent when it got every part. A part that waits in the send queue (Telegram was not reachable)
+ * is sent later by the adapter itself, so it is no failure: the answer says pending and the queued chats.
  *
- * @param parts per send the merged message ids ({<chatId>: messageId, error?: {<chatId>: reason}}), or the error
- *     text of a send that failed as a whole (then the answer is that error)
- * @returns ok: true, sent, id? (with one chat) and failed? (chat id => reason), or error and reason?
+ * @param parts per send the merged message ids ({<chatId>: messageId, error?: {<chatId>: reason}, queued?:
+ *     {<chatId>: reason}}), or the error text of a send that failed as a whole (then the answer is that error)
+ * @returns ok: true, sent, id? (with one chat), failed? (chat id => reason) and pending: true with queued (chat id =>
+ *     reason), or error and reason?
  */
 export function sendAnswer(parts: (MessageIds | string)[]): StandardAnswer {
     const firstIds: Record<string, number> = {};
     const failed: Record<string, string> = {};
+    const queued: Record<string, string> = {};
     let failure = '';
     for (const part of parts) {
         if (typeof part === 'string') {
@@ -194,9 +198,10 @@ export function sendAnswer(parts: (MessageIds | string)[]): StandardAnswer {
             continue;
         }
         for (const [chat, value] of Object.entries(part)) {
-            if (chat === 'error') {
+            if (chat === 'error' || chat === 'queued') {
+                const into = chat === 'error' ? failed : queued;
                 for (const [errorChat, reason] of Object.entries(value as Record<string, unknown>)) {
-                    failed[errorChat] ??= String(reason);
+                    into[errorChat] ??= String(reason);
                 }
             } else if (firstIds[chat] === undefined) {
                 firstIds[chat] = Number(value);
@@ -206,8 +211,9 @@ export function sendAnswer(parts: (MessageIds | string)[]): StandardAnswer {
     if (failure) {
         return { error: failure };
     }
-    const sent = Object.keys(firstIds).filter(chat => failed[chat] === undefined);
-    if (!sent.length) {
+    const sent = Object.keys(firstIds).filter(chat => failed[chat] === undefined && queued[chat] === undefined);
+    const pending = Object.keys(queued).length > 0;
+    if (!sent.length && !pending) {
         const reason = Object.values(failed)[0];
         return reason ? { error: reason } : { error: 'No recipient got the message', reason: 'NOT_FOUND' };
     }
@@ -217,6 +223,10 @@ export function sendAnswer(parts: (MessageIds | string)[]): StandardAnswer {
     }
     if (Object.keys(failed).length) {
         answer.failed = failed;
+    }
+    if (pending) {
+        answer.pending = true;
+        answer.queued = queued;
     }
     return answer;
 }
