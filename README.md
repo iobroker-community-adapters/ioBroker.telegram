@@ -46,7 +46,7 @@ with `write` (whether the command has an effect, e.g. sends a message).
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 6.6.0 (2026-11-25)
 - (@GermanBluefox) Fixed: the message `call` now answers when the calls are done: `{called, error?}`
 - (@GermanBluefox) The speech recognition instance is now selected from the `voice` adapter instead of `ai-parakeet`
 
@@ -61,11 +61,6 @@ with `write` (whether the command has an effect, e.g. sends a message).
 
 ### 6.2.1 (2026-11-07)
 - (@GermanBluefox) Videos for the `assistant` instance are stored in the data directory of the instance (`iobroker-data/telegram_0/assistant`, the newest 20) and go along as `iobdisk://` URL, which the assistant reads from any host (js-controller 8.0+). With an older js-controller they still go to the file storage
-
-### 6.2.0 (2026-11-04)
-- (@GermanBluefox) Questions to the `assistant` instance (text and voice) wait at most 2 minutes for the answer; after that the user gets "The assistant did not answer in time." instead of no reply at all (e.g. when the assistant restarted meanwhile)
-- (@GermanBluefox) Photos and videos are forwarded to the `assistant` instance too: photos (an album as one question, at most 4) with their caption as the question, videos are stored in the file storage of the instance (folder `assistant`, the newest 20) and only their place goes along. Can be switched off with "Photos and videos to the assistant"
-- (@GermanBluefox) Added the state `communicate.pathFileUrl`: the `iobdisk://` URL of the last received file (e.g. `iobdisk://pi4/telegram.0/video/2026-11-04_10-00-00.mp4`), which instances on other hosts can read with `readDiskFile(url)` - the path in `communicate.pathFile` is only valid on the host of telegram. Needs js-controller 8.0 and `saveFilesTo: filesystem`, otherwise the state stays empty
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

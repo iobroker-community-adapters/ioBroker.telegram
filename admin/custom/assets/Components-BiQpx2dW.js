@@ -1,0 +1,1 @@
+import{t as e}from"./TelegramComponent-CLLnnf9U.js";var t={TelegramComponent:e};export{t as default};

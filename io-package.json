@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "telegram",
-    "version": "6.5.0",
+    "version": "6.6.0",
     "news": {
+      "6.6.0": {
+        "en": "Fixed: the message `call` now answers when the calls are done: `{called, error?}`\nThe speech recognition instance is now selected from the `voice` adapter instead of `ai-parakeet`",
+        "de": "Behoben: Die Meldung „Anruf“ wird nun beantwortet: `{gerufen, Fehler?} `\nDie Spracherkennungsinstanz wird jetzt vom Sprachadapter statt von AI-Sittich ausgewählt",
+        "ru": "Исправлено: сообщение `call` теперь отвечает после завершения вызова: `{called, error?} `\nТеперь экземпляр распознавания речи выбирается из адаптера `voice` вместо `ai-parakeet`",
+        "pt": "Corrigido: a mensagem `call` agora atende ao fim: `{called, error?} `\nA instância de reconhecimento de voz agora é selecionada no adaptador `voice` em vez de `ai-parakeet`",
+        "nl": "Opgelost: het bericht `call` wordt nu beantwoord als de gesprekken zijn voltooid: `{gebeld, fout?} `\nDe spraakherkenningsinstantie is nu geselecteerd via de `voice` adapter in plaats van `ai-parakeet`",
+        "fr": "Corrigé : le message « call » répond désormais à la fin des appels : `{called, error ?} `\nL'instance de reconnaissance vocale est désormais sélectionnée via l'adaptateur « voice » au lieu de « ai-parakeet »",
+        "it": "Risolto: il messaggio `call` ora risponde a fine chiamata: `{chiamato, errore?} `\nL'istanza vocale è ora selezionata dall'adattatore «voice» anziché da «ai-parakeet»",
+        "es": "Corregido: el mensaje `call` ahora responde cuando terminan: `{call, error?} `\nLa instancia de reconocimiento de voz se selecciona ahora en el adaptador de «voz» en lugar de en «periquito automático»",
+        "pl": "Naprawiono: komunikat „call” odpowiada teraz po wykonaniu połączeń: `{wywołany, błąd?} `\nInstancja rozpoznawania mowy jest teraz wybrana z adaptera `voice` zamiast `ai-parakeet`",
+        "uk": "Виправлено: повідомлення `call` тепер відповідає, коли дзвінки виконані: `{викликав, помилка?} `\nТепер екземпляр розпізнавання мовлення вибрано з адаптера `voice` замість `ai-parakeet`",
+        "zh-cn": "修复：通话完成后 “call” 消息现在会回复：`{已调用，错误？}`\n现在从 “语音” 适配器中选择语音识别实例，而不是 “ai-parakeet”"
+      },
       "6.5.0": {
         "en": "Added the message `help`: a description of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`",
         "de": "Die Meldung `help`, eine Beschreibung aller Nachrichten für KI-Agenten (z. B. pi-agent), und `common.supportedMessages.Help` hinzugefügt",
@@ -80,19 +93,6 @@
         "pl": "Wiadomości głosowe są przekazywane do skonfigurowanej instancji „asystenta”: rozpoznaje mowę, a odpowiedź jest wysyłana z powrotem na czat z rozpoznanym tekstem z przodu (🎤...). Obowiązuje ta sama kontrola użytkownika, co w przypadku wiadomości tekstowych; na wiadomość głosową z podpisem odpowiada jej podpis. Potrzebuje iOBroker.Assistant z włączonym głosem, silnikiem rozpoznawania mowy i ffmpeg na hoście\n`send` może ponownie zwrócić identyfikatory wysłanych wiadomości (`ReturnMessageIds: true`), aby później edytować lub usunąć wiadomość; nieudani odbiorcy mają przyczynę (#1389)\nBlok Blockly „telegram” ma opcjonalne dane wejściowe dla tematu (id wątku) grupy forum (#952)\nUkończono tłumaczenia Blockly na język ukraiński i chiński",
         "uk": "Голосові повідомлення пересилаються налаштованому екземпляру «помічника»: він розпізнає мову, а відповідь надсилається назад до чату з розпізнаним текстом попереду (🎤...). Застосовується така ж перевірка користувача, що і для текстових повідомлень; на голосове повідомлення з підписом відповідає його підпис. Потрібен IObroker.assistant з увімкненим голосом, двигун розпізнавання мовлення та ffmpeg на хості\n`send` може знову повернути ідентифікатори надісланих повідомлень (`returnMessageIds: true`), щоб редагувати або видалити повідомлення пізніше; невдалі одержувачі мають причину (#1389)\nБлок Blockly «telegram» має необов'язковий вхід для теми (id теми) групи форуму (#952)\nВиконано переклади Blockly українською та китайською мовами",
         "zh-cn": "语音消息被转发到配置的 “助手” 实例：它识别语音并将答案发送回聊天中，前面有识别出的文本（🎤...）。与短信相同的用户检查同样适用；带标题的语音消息由其标题回复。需要在主机上启用语音、语音识别引擎和 ffmpeg 的 iobroker.Assistant\n`send` 可以再次返回已发送消息的 ID（`returnMessageIds: true`），以便稍后编辑或删除消息；失败的收件人有原因 (#1389)\nBlockly 区块的 “电报” 为论坛群组的主题（话题 ID）提供了可选输入 (#952)\n完成了乌克兰语和中文的 Blockly 翻译"
-      },
-      "6.0.2": {
-        "en": "Updated packages and improved the rules block\nRetried getUpdates 409 conflicts quickly before falling back to a slow restartart",
-        "de": "Pakete aktualisiert und Regelblock verbessert\nGetUpdates 409-Konflikte vor einem langsamen Neustart erneut",
-        "ru": "Обновлены пакеты и улучшен блок правил\nБыстро повторил попытку GetUpdates (409 конфликтов), а затем вернулся к медленному перезапуску",
-        "pt": "Atualizou pacotes e melhorou o bloco de regras\nTentei novamente o GetUpdates 409 conflita antes de reiniciar lentamente",
-        "nl": "Pakketten bijgewerkt en het regelblok verbeterd\nOpnieuw geprobeerd. Update 409 conflicten snel voordat het terugviel op een langzame herstart",
-        "fr": "Packages mis à jour et bloc de règles amélioré\nRéessayé GetUpdates 409 rapidement avant de revenir à un redémarrage lent",
-        "it": "Pacchetti aggiornati e regole migliorate\nRiprovato GetUpdates 409 è in conflitto prima di riavviare lentamente",
-        "es": "Actualizó los paquetes y mejoró el bloque de reglas\nReintentó GetUpdates 409 conflictos rápidamente antes de volver a un reinicio lento",
-        "pl": "Zaktualizowano pakiety i ulepszono blok reguł\nPonownie próbowano GetUpdates 409 szybko koliduje, zanim wrócisz do powolnego restartartu",
-        "uk": "Оновлені пакети та покращено блок правил\nПовторно спробували швидкі конфлікти GetUpdates 409, перш ніж повернутися до повільного перезапуску",
-        "zh-cn": "更新了软件包并改进了规则块\n快速重试了 getUpdates 409 冲突，然后又回到了缓慢的重启状态"
       }
     },
     "messages": [
