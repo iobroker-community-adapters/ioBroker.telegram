@@ -34,4 +34,5 @@ jobs:
           # Optional: Wait for other checks to complete
           # wait-for-checks: 'true'
           # Optional: Maximum time to wait for checks in seconds (default: 3600)
-          # max-wait-time: '3600'
+          # 2 hours: the macOS runners of the adapter tests are often queued for more than an hour
+          max-wait-time: '7200'

@@ -3,18 +3,31 @@
     "name": "telegram",
     "version": "6.6.0",
     "news": {
+      "NEXT": {
+        "en": "Updated packages, especially `node-telegram-bot-api` to 2.5.0: stopping the adapter while a message is processed no longer makes Telegram deliver this message again after the restart",
+        "de": "Pakete aktualisiert, insbesondere `node-telegram-bot-api` auf 2.5.0: Wird der Adapter gestoppt, während eine Nachricht verarbeitet wird, stellt Telegram diese Nachricht nach dem Neustart nicht mehr erneut zu",
+        "ru": "Обновлены пакеты, в частности `node-telegram-bot-api` до 2.5.0: если адаптер останавливается во время обработки сообщения, Telegram больше не доставляет это сообщение повторно после перезапуска",
+        "pt": "Pacotes atualizados, especialmente `node-telegram-bot-api` para 2.5.0: se o adaptador for parado enquanto uma mensagem é processada, o Telegram já não entrega essa mensagem novamente após o reinício",
+        "nl": "Pakketten bijgewerkt, vooral `node-telegram-bot-api` naar 2.5.0: als de adapter wordt gestopt terwijl een bericht wordt verwerkt, levert Telegram dit bericht na de herstart niet meer opnieuw af",
+        "fr": "Paquets mis à jour, notamment `node-telegram-bot-api` en 2.5.0 : si l'adaptateur est arrêté pendant le traitement d'un message, Telegram ne renvoie plus ce message après le redémarrage",
+        "it": "Pacchetti aggiornati, in particolare `node-telegram-bot-api` alla 2.5.0: se l'adattatore viene arrestato mentre elabora un messaggio, Telegram non consegna più di nuovo questo messaggio dopo il riavvio",
+        "es": "Paquetes actualizados, especialmente `node-telegram-bot-api` a 2.5.0: si el adaptador se detiene mientras procesa un mensaje, Telegram ya no vuelve a entregar ese mensaje después del reinicio",
+        "pl": "Zaktualizowano pakiety, zwłaszcza `node-telegram-bot-api` do 2.5.0: jeśli adapter zostanie zatrzymany podczas przetwarzania wiadomości, Telegram po ponownym uruchomieniu nie dostarcza już tej wiadomości ponownie",
+        "uk": "Оновлено пакети, зокрема `node-telegram-bot-api` до 2.5.0: якщо адаптер зупиняється під час обробки повідомлення, Telegram більше не доставляє це повідомлення повторно після перезапуску",
+        "zh-cn": "更新了软件包，特别是将 `node-telegram-bot-api` 更新到 2.5.0：如果在处理消息时停止适配器，Telegram 在重启后不再重新投递该消息"
+      },
       "6.6.0": {
         "en": "Fixed: the message `call` now answers when the calls are done: `{called, error?}`\nThe speech recognition instance is now selected from the `voice` adapter instead of `ai-parakeet`",
-        "de": "Behoben: Die Meldung „Anruf“ wird nun beantwortet: `{gerufen, Fehler?} `\nDie Spracherkennungsinstanz wird jetzt vom Sprachadapter statt von AI-Sittich ausgewählt",
-        "ru": "Исправлено: сообщение `call` теперь отвечает после завершения вызова: `{called, error?} `\nТеперь экземпляр распознавания речи выбирается из адаптера `voice` вместо `ai-parakeet`",
-        "pt": "Corrigido: a mensagem `call` agora atende ao fim: `{called, error?} `\nA instância de reconhecimento de voz agora é selecionada no adaptador `voice` em vez de `ai-parakeet`",
-        "nl": "Opgelost: het bericht `call` wordt nu beantwoord als de gesprekken zijn voltooid: `{gebeld, fout?} `\nDe spraakherkenningsinstantie is nu geselecteerd via de `voice` adapter in plaats van `ai-parakeet`",
-        "fr": "Corrigé : le message « call » répond désormais à la fin des appels : `{called, error ?} `\nL'instance de reconnaissance vocale est désormais sélectionnée via l'adaptateur « voice » au lieu de « ai-parakeet »",
-        "it": "Risolto: il messaggio `call` ora risponde a fine chiamata: `{chiamato, errore?} `\nL'istanza vocale è ora selezionata dall'adattatore «voice» anziché da «ai-parakeet»",
-        "es": "Corregido: el mensaje `call` ahora responde cuando terminan: `{call, error?} `\nLa instancia de reconocimiento de voz se selecciona ahora en el adaptador de «voz» en lugar de en «periquito automático»",
-        "pl": "Naprawiono: komunikat „call” odpowiada teraz po wykonaniu połączeń: `{wywołany, błąd?} `\nInstancja rozpoznawania mowy jest teraz wybrana z adaptera `voice` zamiast `ai-parakeet`",
-        "uk": "Виправлено: повідомлення `call` тепер відповідає, коли дзвінки виконані: `{викликав, помилка?} `\nТепер екземпляр розпізнавання мовлення вибрано з адаптера `voice` замість `ai-parakeet`",
-        "zh-cn": "修复：通话完成后 “call” 消息现在会回复：`{已调用，错误？}`\n现在从 “语音” 适配器中选择语音识别实例，而不是 “ai-parakeet”"
+        "de": "Behoben: Die Nachricht `call` antwortet jetzt, wenn die Anrufe beendet sind: `{called, error?}`\nDie Instanz für die Spracherkennung wird jetzt aus dem Adapter `voice` statt `ai-parakeet` ausgewählt",
+        "ru": "Исправлено: сообщение `call` теперь отвечает, когда звонки завершены: `{called, error?}`\nЭкземпляр распознавания речи теперь выбирается из адаптера `voice` вместо `ai-parakeet`",
+        "pt": "Corrigido: a mensagem `call` agora responde quando as chamadas terminam: `{called, error?}`\nA instância de reconhecimento de voz agora é selecionada do adaptador `voice` em vez de `ai-parakeet`",
+        "nl": "Opgelost: het bericht `call` antwoordt nu wanneer de oproepen klaar zijn: `{called, error?}`\nDe instantie voor spraakherkenning wordt nu gekozen uit de adapter `voice` in plaats van `ai-parakeet`",
+        "fr": "Corrigé : le message `call` répond désormais lorsque les appels sont terminés : `{called, error?}`\nL'instance de reconnaissance vocale est désormais sélectionnée depuis l'adaptateur `voice` au lieu de `ai-parakeet`",
+        "it": "Corretto: il messaggio `call` ora risponde quando le chiamate sono terminate: `{called, error?}`\nL'istanza per il riconoscimento vocale ora viene selezionata dall'adattatore `voice` invece che da `ai-parakeet`",
+        "es": "Corregido: el mensaje `call` ahora responde cuando terminan las llamadas: `{called, error?}`\nLa instancia de reconocimiento de voz ahora se selecciona del adaptador `voice` en lugar de `ai-parakeet`",
+        "pl": "Naprawiono: komunikat `call` odpowiada teraz po zakończeniu połączeń: `{called, error?}`\nInstancja rozpoznawania mowy jest teraz wybierana z adaptera `voice` zamiast `ai-parakeet`",
+        "uk": "Виправлено: повідомлення `call` тепер відповідає, коли дзвінки завершено: `{called, error?}`\nЕкземпляр розпізнавання мовлення тепер вибирається з адаптера `voice` замість `ai-parakeet`",
+        "zh-cn": "修复：消息 `call` 现在会在呼叫完成后回复：`{called, error?}`\n语音识别实例现在从 `voice` 适配器中选择，而不是 `ai-parakeet`"
       },
       "6.5.0": {
         "en": "Added the message `help`: a description of all messages for AI agents (e.g. pi-agent), and `common.supportedMessages.help`",

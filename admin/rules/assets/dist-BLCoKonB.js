@@ -1,0 +1,1 @@
+import{a as e,i as t,o as n,r,t as i}from"./utils-B0R_RCuD.js";function a(e){let i=new((t())||r)({id:`${e.name}@${e.version||Date.now()}`,...e});return n(i),i}var o=null;function s(e){let t=i(e.name,e.version),n={...e,id:e.id||``};return t?(t.initOptions(n),o||=t,t):(o=a(n),o)}e(r);export{s as t};

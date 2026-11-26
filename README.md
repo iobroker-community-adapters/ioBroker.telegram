@@ -46,6 +46,9 @@ with `write` (whether the command has an effect, e.g. sends a message).
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (@GermanBluefox) Updated packages, especially `node-telegram-bot-api` to 2.5.0: stopping the adapter while a message is processed no longer makes Telegram deliver this message again after the restart
+
 ### 6.6.0 (2026-11-25)
 - (@GermanBluefox) Fixed: the message `call` now answers when the calls are done: `{called, error?}`
 - (@GermanBluefox) The speech recognition instance is now selected from the `voice` adapter instead of `ai-parakeet`

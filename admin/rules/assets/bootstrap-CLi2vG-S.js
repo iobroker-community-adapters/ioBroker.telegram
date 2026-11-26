@@ -1,0 +1,1 @@
+import{a as e,k as t,n}from"./_virtual_mf___mfe_internal__ActionTelegram__mf_owner__261476461279401__loadShare__shared-DZlABrZH.js";n.createRoot(document.getElementById(`root`)).render(e(t.StrictMode,{}));
